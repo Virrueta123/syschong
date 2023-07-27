@@ -1,0 +1,47 @@
+{
+    "success": true,
+    "data": {
+        "numero": "76827876",
+        "nombre_completo": "VIRRUETA CORAL, JUAN ALEX",
+        "nombres": "JUAN ALEX",
+        "apellido_paterno": "VIRRUETA",
+        "apellido_materno": "CORAL",
+        "codigo_verificacion": 3,
+        "departamento": "SAN MARTIN",
+        "provincia": "SAN MARTIN",
+        "distrito": "TARAPOTO",
+        "direccion": "JR. MICAELA BASTIDAS 648",
+        "direccion_completa": "JR. MICAELA BASTIDAS 648, SAN MARTIN - SAN MARTIN - TARAPOTO",
+        "ubigeo_reniec": "210601",
+        "ubigeo_sunat": "220901",
+        "ubigeo": [
+            "22",
+            "2209",
+            "220901"
+        ]
+    },
+    "source": "apiperu.dev"
+},
+{
+    "success": true,
+    "data": {
+        "direccion": "PJ. UNION NRO. 126B",
+        "direccion_completa": "PJ. UNION NRO. 126B, SAN MARTIN - SAN MARTIN - TARAPOTO",
+        "ruc": "10464579481",
+        "nombre_o_razon_social": "INGA TORRES ROSA LUZ",
+        "estado": "ACTIVO",
+        "condicion": "HABIDO",
+        "departamento": "SAN MARTIN",
+        "provincia": "SAN MARTIN",
+        "distrito": "TARAPOTO",
+        "ubigeo_sunat": "220901",
+        "ubigeo": [
+            "22",
+            "2209",
+            "220901"
+        ],
+        "es_agente_de_retencion": null,
+        "anexos": []
+    },
+    "source": "apiperu.dev"
+}
