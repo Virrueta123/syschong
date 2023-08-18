@@ -19,7 +19,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-striped dataTable " id="table_cli">
+                        <table class="table table-striped dataTable table-bordered table-hover " id="table_cli">
                             <thead>
                                 <tr>
                                     <th>
@@ -35,11 +35,13 @@
                                         Correo Electronico
                                     </th>
                                     <th>
-                                        <i class="fa fa-cogs" aria-hidden="true"></i>
+                                        <i class="fa fa-cogs" aria-hidden="true"></i> Config
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                
+                            </tbody>
                             <tfoot>
                                 <tr>
                                     <th>
@@ -67,11 +69,11 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
     <script>
         $(function() {
 
             var table = $('#table_cli').DataTable({
-
                 initComplete: search_input_by_column,
                 language: {
                     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
@@ -99,13 +101,41 @@
                     },
 
                 ],
+               
                 dom: 'Bfrtip',
-                "lengthChange": false,
+                "info": true,fixedColumns: true,keys: true,colReorder: true,
+                "lengthChange": true,
                 "autoWidth": false,
-                "buttons": ["copy", "csvHtml5", [{
-                    extend: 'excelHtml5'
-                }], "pdfHtml5", "print"]
+                "ordering": true,
+                "buttons": [
+                    {
+                    text: '<i class="fa fa-bars"></i> columnas visibles',
+                    extend: 'colvis', 
+                },
+                {
+                    text: '<i class="fa fa-copy"></i> Copiar',
+                    extend: 'copy',
+                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                }, {
+                    text: '<i class="fa fa-file-csv"></i> Csv',
+                    extend: 'csvHtml5',
+                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                }, {
+                    text: '<i class="fa fa-file-excel"></i> Excel',
+                    extend: 'excelHtml5',
+                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                }, {
+                    text: '<i class="fa fa-file-pdf"></i> Pdf',
+                    extend: 'pdfHtml5',
+                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                }, {
+                    text: '<i class="fa fa-print"></i> Imprimir',
+                    extend: "print",
+                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                }, ]
             })
         });
+
+        
     </script>
 @endsection

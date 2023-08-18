@@ -26,9 +26,8 @@
                 </div>
                 <div class="card-body">
                     <div id="app">
-
-                        <dni></dni>
-                        <ruc></ruc>
+                        <dni cli_dni="" cli_nombre="" cli_apellido="" cli_direccion="" cli_departamento="" cli_provincia="" cli_distrito="" ></dni>
+                        <ruc cli_ruc="" cli_razon_social="" cli_direccion_ruc="" cli_departamento_ruc="" cli_provincia_ruc="" cli_distrito_ruc=""></ruc>
                     </div>
                     <h2 class="section-title">Contactos</h2>
                     <div class="form-row">
@@ -45,7 +44,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-danger boton-color">Crear Cliente</button>
+                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear Cliente</button>
                 </div>
             </form>
         </div>
@@ -155,7 +154,12 @@
                 },
                 cli_distrito_ruc: {
                     maxlength: 255,
-                },
+                }  
+            },
+            submitHandler: function(form){ 
+                $("#crear_cliente").addClass("disabled btn-progress")
+                console.log("disabled")
+                 return true;
             }
         });
         /* -- *********************** -- */

@@ -99,13 +99,13 @@ export default {
   mixins: [myMixin],
   data() {
     return {
-      cli_ruc: "",
-      cli_razon_social: "",
-      cli_apellido: "",
-      cli_direccion_ruc: "",
-      cli_departamento_ruc: "",
-      cli_distrito_ruc: "",
-      cli_provincia_ruc: "",
+      cli_ruc: this.$attrs.cli_ruc,
+      cli_razon_social: this.$attrs.cli_razon_social,
+      cli_apellido: this.$attrs.cli_apellido,
+      cli_direccion_ruc: this.$attrs.cli_direccion_ruc,
+      cli_departamento_ruc: this.$attrs.cli_departamento_ruc,
+      cli_distrito_ruc: this.$attrs.cli_distrito_ruc,
+      cli_provincia_ruc: this.$attrs.cli_provincia_ruc,
     };
   },
   methods: {

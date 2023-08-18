@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
+ 
 @import 'variables';
 
 .loading {
@@ -20,7 +21,9 @@
   height: 100vh;
   overflow: visible;
 }
-
+ .modal-dialog{
+  z-index: 1000 !important;
+ }
 .loading .central p {
   position: absolute;
   top: 65%;
@@ -160,7 +163,7 @@
   }
 }
 
-/* -- ******** erro validation jquery ************* -- */
+/* -- ******** error validation jquery ************* -- */
 .form-group .error {
   margin-top: 5px;
   padding: 2px;
@@ -189,10 +192,105 @@
 
 .boton-color {
   background: #171717c4;
+  box-shadow: 0 2px 6px #DF2D22;
+  border:none;
 }
 
-.input-search-by-column {
-  padding: 8px;
+.boton-color:hover {
+  background: #DF2D22 !important;
+}
+.buttons-colvis{
+  background-color: #362f30 ;
+}
+.buttons-html5 {
+  background-color: #363636;
+  box-shadow: none;
+}
+
+.buttons-html5::hover {
+  background: #DF2D22 !important;
+}
+
+.buttons-print {
+  background-color: #362f30;
+  box-shadow: none;
+}
+
+.card.card-primary{
+  border-top: 2px solid #DF2D22; 
+}
+
+a.dropdown-item:focus, a.dropdown-item:active, a.dropdown-item.active{
+  background-color: #DF2D22;
+}
+a .dropdown-item::active{
+  background-color: #DF2D22;
+}
+/* -- *********************** -- */
+
+/* -- ******** selecionar check ************* -- */
+
+.selectgroup-input:focus + .selectgroup-button, .selectgroup-input:checked + .selectgroup-button {
+  background-color: $red;
+  color: #fff;
+  z-index: 1;
+  transition: 0.4s;
+}
+/* -- *********************** -- */
+
+
+/* -- ******** range slider style ************* -- */
+
+.range{
+  width: 100%;
+}
+
+.range input{
+  background: $red;
+  height: 20px;
+  width: 100%;
+}
+
+ /* Estilos para el rango */
+ .range input[type="range"] {
+  width: 100%;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  appearance: none;
+  transition: 0.5s;
+}
+
+/* Personalizar el riel del rango */
+.range input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  background-color: #4D4D4D;
+  border-radius: 5px;
+  padding: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
+  transition: 0.5s;
+}
+
+/* Personalizar el pulgar del rango */
+.range input[type="range"]::-webkit-slider-thumb {
+  width: 7px;
+  height: 20px; 
+  background-color: $red;
+  border: 1px solid white;
+  appearance: none;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+/* Cambiar el color del riel cuando se activa el rango */
+.range input[type="range"]:active::-webkit-slider-runnable-track {
+  background-color: $red-transparent; 
+  background: rgb(252, 5, 5);
+  transition: 0.5s;
+  background: linear-gradient(180deg, rgba(252, 5, 5, 1) 0%, rgb(143, 55, 55) 100%);
 }
 
 /* -- *********************** -- */

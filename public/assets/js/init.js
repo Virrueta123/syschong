@@ -17,8 +17,7 @@ var search_input_by_column = function () {
     this.api()
         .columns()
         .every(function () {
-            let column = this;
-            let title = column.footer().textContent;
+            let column = this; 
 
             // Create input element
             let input = document.createElement('input');
@@ -34,4 +33,27 @@ var search_input_by_column = function () {
         });
 }
 
+/* -- *********************** -- */
+
+/* -- ******** form delete preguntar antes de eliminar ************* -- */
+
+function FormDelete(text,msm,event){ 
+	event.preventDefault();
+	Swal.fire({
+		title: msm,
+		text: "¡No podrás revertir esto!",
+		icon: 'warning',
+		customClass: 'swal-wide',
+		showCancelButton: true,
+    confirmButtonText:"Si, eliminar",
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Si'
+	}).then((result) => {
+		if (result.isConfirmed) { 
+			javascript:document.getElementById('formdelete' + text).submit();
+			return false; 
+		}
+	})
+}
 /* -- *********************** -- */

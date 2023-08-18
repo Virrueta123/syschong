@@ -25,9 +25,9 @@ class servicesController extends Controller
                     ->json([
                         "message" => "error al cargar los datos, porfavor ingrese los datos manualmente",
                         "error" =>  "cURL Error #:" . $err,
-                        "success" => true,
+                        "success" => false,
                         "data" => "",
-                    ]);
+                    ],500);
             } else {
                 echo $response;
             }
@@ -36,9 +36,9 @@ class servicesController extends Controller
                 ->json([
                     "message" => "error al cargar los datos, porfavor ingrese los datos manualmente",
                     "error" =>  "error Throwable",
-                    "success" => true,
+                    "success" => false,
                     "data" => "",
-                ]);
+                ],500);
         }
     }
     protected function consulta_ruc($ruc)
@@ -59,9 +59,9 @@ class servicesController extends Controller
                     ->json([
                         "message" => "error al cargar los datos, porfavor ingrese los datos manualmente",
                         "error" =>  "cURL Error #:" . $err,
-                        "success" => true,
+                        "success" => false,
                         "data" => "",
-                    ]);
+                    ],500);
             } else {
                 echo $response;
             }
@@ -70,9 +70,9 @@ class servicesController extends Controller
                 ->json([
                     "message" => "error al cargar los datos, porfavor ingrese los datos manualmente",
                     "error" =>  "error Throwable",
-                    "success" => true,
+                    "success" => false,
                     "data" => "",
-                ]);
+                ],500);
         }
     }
 

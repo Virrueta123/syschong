@@ -16,6 +16,7 @@
      <!-- Template CSS -->
      <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
      <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
      <!-- Start GA -->
      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
      <script>
@@ -39,8 +40,8 @@
                      <div
                          class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
                          <div class="login-brand">
-                             <img src="assets/img/stisla-fill.svg" alt="logo" width="100"
-                                 class="shadow-light rounded-circle">
+                             <img  src="{{ asset("images/empresa/logo.png") }}" alt="logo" width="150"
+                                 class="shadow-light p-2 rounded-circle">
                          </div>
 
                          <div class="card card-primary">
@@ -53,7 +54,7 @@
                                      class="needs-validation" novalidate="">
                                      @csrf
                                      <div class="form-group">
-                                         <label for="email">Email</label>
+                                         <label for="email">Correo Electronico</label>
                                          <input id="email" type="email" value="{{ old('email') }}"
                                              class="form-control @error('email') is-invalid @enderror" name="email"
                                              tabindex="1" required autofocus>
@@ -66,10 +67,10 @@
 
                                      <div class="form-group">
                                          <div class="d-block">
-                                             <label for="password" class="control-label">Password</label>
+                                             <label for="password" class="control-label">Contraseña</label>
                                              <div class="float-right">
                                                  <a href="auth-forgot-password.html" class="text-small">
-                                                     Forgot Password?
+                                                     ¿Has olvidado tu contraseña?
                                                  </a>
                                              </div>
                                          </div>
@@ -92,9 +93,9 @@
                                              <label class="custom-control-label" for="remember">Recuerdame</label>
                                          </div>
                                      </div>
-
+   
                                      <div class="form-group">
-                                         <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                                         <button type="submit" class="btn btn-primary boton-color btn-lg btn-block" tabindex="4">
                                              Iniciar Sesion
                                          </button>
                                      </div>

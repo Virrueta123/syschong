@@ -110,13 +110,13 @@ export default {
   mixins: [myMixin],
   data() {
     return {
-      cli_dni: "",
-      cli_nombre: "",
-      cli_apellido: "",
-      cli_direccion: "",
-      cli_departamento: "",
-      cli_distrito: "",
-      cli_provincia: "",
+      cli_dni: this.$attrs.cli_dni,
+      cli_nombre:  this.$attrs.cli_nombre,
+      cli_apellido:  this.$attrs.cli_apellido,
+      cli_direccion:  this.$attrs.cli_direccion,
+      cli_departamento:  this.$attrs.cli_departamento,
+      cli_distrito:  this.$attrs.cli_distrito,
+      cli_provincia:  this.$attrs.cli_provincia,
     };
   },
   methods: {
@@ -161,6 +161,7 @@ export default {
               title: "error del servidor",
               text: "por favor recargue la pagina",
             });
+            this.hideLoadingSpinner();
           });
       } else {
         Swal.fire({
