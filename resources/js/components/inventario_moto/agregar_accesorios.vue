@@ -64,9 +64,7 @@
             }
         },
         methods: {
-            change_checked(event, name) {
-
-               
+            change_checked(event, name) { 
 
                 var indice = this.accesorios.findIndex(
                     (elemento) => elemento.name === name

@@ -17,6 +17,15 @@ use Yajra\DataTables\Facades\DataTables;
 class inventario_moto_controller extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -246,7 +255,7 @@ class inventario_moto_controller extends Controller
         } else {
             return view('errors.404');
         }
-        return redirect()->back();
+ 
     }
 
     /* *********************** */

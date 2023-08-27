@@ -57,3 +57,5 @@ function FormDelete(text,msm,event){
 	})
 }
 /* -- *********************** -- */
+
+/* -- ******** file image  ************* -- */

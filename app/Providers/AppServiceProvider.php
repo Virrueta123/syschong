@@ -50,7 +50,14 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'name' => 'Productos',
                         'icon' => 'fa fa-boxes',
-                        'submenu' => [['name' => 'Todo los productos', 'url' => 'moto.index'], ['name' => 'Categoria', 'url' => 'moto.create'], ['name' => 'Marca Producto', 'url' => 'marca_producto.index'], ['name' => 'Categoria', 'url' => 'moto.create'], ['name' => 'Categoria', 'url' => 'moto.create']],
+                        'submenu' => [
+                            ['name' => 'Todo los productos', 'url' => 'producto.index'], 
+                            ['name' => 'Crear un producto', 'url' => 'producto.create'], 
+                            ['name' => 'Categoria', 'url' => 'moto.create'], 
+                            ['name' => 'Marca Producto', 'url' => 'marca_producto.index'], 
+                            ['name' => 'Categoria', 'url' => 'moto.create'], 
+                            ['name' => 'Categoria', 'url' => 'moto.create']
+                        ],
                     ],
                     [
                         'name' => 'Servicios',

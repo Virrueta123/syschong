@@ -18,7 +18,7 @@
                         <div class="invoice-title">
                             <h2>Detalles del Inventario N° #1 </h2>
                             <div class="invoice-number">
-                                <a href="{{ route('imprimir_inventario_moto',$id) }}" class="btn btn-primary boton-color"><i class="fa fa-coins"></i> Cotizar </a>
+                                <a href="{{ route('cotizacion.create',$id) }}" class="btn btn-primary boton-color"><i class="fa fa-coins"></i> Cotizar </a>
                                 <a href="{{ route('imprimir_inventario_moto',$id) }}" class="btn btn-primary boton-color"><i
                                         class="fa fa-print"></i> Imprimir </a>
                             </div>

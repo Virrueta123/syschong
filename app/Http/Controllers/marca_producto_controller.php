@@ -13,6 +13,15 @@ use Yajra\DataTables\Facades\DataTables;
 class marca_producto_controller extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -149,7 +158,7 @@ class marca_producto_controller extends Controller
             try {
                 $datax = $request->all();
                 $validate = $request->validate([
-                    'marca_prod_nombre' => 'required|string|max:200' 
+                    'marca_prod_nombre' => 'required|string|max:250' 
                 ]); 
                 $validate['user_id'] = Auth::user()->id; 
      
@@ -169,7 +178,7 @@ class marca_producto_controller extends Controller
                             'message' => 'se creo correctamente una marca de producto',
                             'error' => '',
                             'success' => true,
-                            'data' => ['value' => $create->marca_id, 'title' => $create->marca_nombre],
+                            'data' => ['value' => $create->marca_prod_id, 'title' => $create->marca_prod_nombre],
                         ]);
                     } else {
                         Log::error('no se pudo registrar la marca de producto');

@@ -390,18 +390,7 @@ $(function() {
     });
   });
 
-  // Dismiss function
-  $("[data-dismiss]").each(function() {
-    var me = $(this),
-        target = me.data('dismiss');
-
-    me.click(function() {
-      $(target).fadeOut(function() {
-        $(target).remove();
-      });
-      return false;
-    });
-  });
+  
 
   // Collapsable
   $("[data-collapse]").each(function() {
@@ -512,13 +501,7 @@ $(function() {
     return false;
   });
 
-  // Dismiss modal
-  $("[data-dismiss=modal]").click(function() {
-    $(this).closest('.modal').modal('hide');
-
-    return false;
-  });
-
+ 
   // Width attribute
   $('[data-width]').each(function() {
     $(this).css({

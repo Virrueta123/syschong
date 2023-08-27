@@ -8,14 +8,15 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
+    <title>{{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('images/empresa/logo.png') }}" type="image/png">
+    
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- General CSS Files -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
    
     <!-- CSS Libraries -->
@@ -39,8 +40,9 @@
         href="{{ asset('assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    
+     
 
+  <link href="https://releases.transloadit.com/uppy/v3.14.0/uppy.min.css" rel="stylesheet">
 
 
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -306,10 +308,10 @@
             <div class="main-sidebar sidebar-style-2">
                 <aside id="sidebar-wrapper">
                     <div class="sidebar-brand">
-                        <a href="index.html">Stisla</a>
+                        <a href="index.html"><img src="{{ asset('images/empresa/logo-chong.png') }}" class="img-thumbnail" width="150" alt=""></a>
                     </div>
                     <div class="sidebar-brand sidebar-brand-sm">
-                        <a href="index.html">St</a>
+                        <a href="index.html"><img src="{{ asset('images/empresa/logo.png') }}"  class="img-thumbnail" alt=""></a>
                     </div>
 
                     @include('layouts.menus')
@@ -349,11 +351,12 @@
     <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/modules/popper.js') }}"></script>
     <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
-    <script src="{{ asset('assets/modules/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script src="{{ asset('assets/modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('assets/modules/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/js/stisla.js') }}"></script>
-
+    <script src="{{ asset('assets/js/stisla.js') }}"></script>  
     <!-- JS Libraies -->
     <script src="{{ asset('assets/modules/jquery.sparkline.min.js') }}"></script>
     <script src="{{ asset('assets/modules/chart.min.js') }}"></script>
@@ -370,6 +373,8 @@
 
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script src="{{ asset("assets/modules/prism/prism.js") }}"></script> 
+ 
 
     <!-- ******** sweet alert 2 par mostrar mensajes ************* -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -399,7 +404,9 @@
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
     <script src="{{ asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('assets/modules/jquery-ui/jquery-ui.min.js') }}"></script>
- 
+  
+
+
     <!-- Librería de los botones de DataTables -->
 
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script> <!-- Librería de la extensión ColVis -->

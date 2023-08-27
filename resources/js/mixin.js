@@ -41,9 +41,17 @@ export const myMixin = {
         showLoadingSpinner() {
             console.log('showLoadingSpinner');
             this.loadingSpinner.style.display = 'block';
-        },
-
-
+        }, 
+        // Función para calcular el precio con descuento
+        calcularPrecioConDescuento(precioOriginal, porcentajeDescuento) {
+            const descuento = (precioOriginal * porcentajeDescuento) / 100;
+            const precioConDescuento = precioOriginal - descuento;
+            return precioConDescuento;
+        }, 
+        calcularPrecioDescontado(precioOriginal, porcentajeDescuento) {
+            const descuento = (precioOriginal * porcentajeDescuento) / 100; 
+            return descuento;
+        }, 
         hideLoadingSpinner() {
             this.loadingSpinner.style.display = 'none';
         }

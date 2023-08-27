@@ -42,3 +42,32 @@ function separateDigitsWithHyphen($number) {
 
     return $formattedNumber;
 }
+
+
+function mesActual(){     
+    
+    return CarbonCarbon::now()->isoFormat('MM'); 
+}
+
+function mesyanotext(){
+   return CarbonCarbon::now()->isoFormat("MMMM Y"); 
+}
+
+function mesActualtext(){ 
+    return CarbonCarbon::now()->isoFormat('MMMM');
+}
+
+function anoActual(){   
+   return CarbonCarbon::now()->format('Y');
+}
+
+function fechaactualText(){  
+   return CarbonCarbon::now()->isoFormat("D \D\E MMMM Y");
+}
+
+function fechaactual(){    
+   return CarbonCarbon::now()->format('Y-m-d');
+} 
+function moneyformat($money){
+   return number_format($money, 2, '.', ',');
+}

@@ -12,12 +12,38 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
-
+*/ 
 
 Auth::routes();
 
 include 'web/services.php';
+
+/* ******** mas rutas ************* */
+
+include 'web/cliente.php';
+
+include 'web/marca.php';
+
+include 'web/marca_producto.php';
+
+include 'web/zona.php';
+
+include 'web/moto.php';
+
+include 'web/inventario_moto.php';
+
+include 'web/cotizacion.php';
+
+include 'web/unidades.php';
+
+include 'web/categoria_producto.php';
+
+include 'web/producto.php';
+ 
+include 'web/servicios.php';
+
+/* *********************** */
+
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -38,19 +64,10 @@ Route::resource('inventario_moto', App\Http\Controllers\inventario_moto_controll
 
 Route::resource('autorizaciones', App\Http\Controllers\autorizaciones_controller::class);
 
-/* ******** mas rutas ************* */
+Route::resource('servicios', App\Http\Controllers\servicios_controller::class);
 
-include 'web/cliente.php';
+Route::resource('cotizaciones', App\Http\Controllers\cotizacion_controller::class); 
 
-include 'web/marca.php';
-
-include 'web/moto.php';
-
-include 'web/inventario_moto.php';
-
-include 'web/cotizacion.php';
-
-/* *********************** */
 
 
 Route::post('/logout', function () {
