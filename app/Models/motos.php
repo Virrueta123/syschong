@@ -16,10 +16,14 @@ class motos extends Model
     protected $guarded = [];
 
     public function marca( ){
-        return $this->belongsTo(marca::class,"marca_id");
+        return $this->belongsTo(marca::class,"marca_id")->withTrashed();
+    }
+
+    public function modelo( ){
+        return $this->belongsTo(modelo::class,"modelo_id")->withTrashed();
     }
     
     public function cliente(){
-        return $this->belongsTo(cliente::class,"cli_id");
+        return $this->belongsTo(cliente::class,"cli_id")->withTrashed();
     }
 }

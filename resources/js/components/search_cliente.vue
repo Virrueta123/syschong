@@ -2,8 +2,8 @@
 
 
 
-    <select name="cli_id" id="cliente_select" ref="cliente_select" class="form-control select2" style="width: 100"
-        data-minimum-input-length="4" tabindex="-1" aria-hidden="true" language="es" placeholder="seleccionar un cliente">
+    <select name="cli_id" id="cliente_select" ref="cliente_select" class="form-control select2" aria-hidden="true"
+        language="es" placeholder="seleccionar un cliente">
     </select>
 
 
@@ -15,10 +15,18 @@
     import Swal from "sweetalert2";
     import $ from "jquery";
     import "select2";
-    import { myMixin } from "../mixin.js";
+    import {
+        myMixin
+    } from "../mixin.js";
 
     export default {
         mixins: [myMixin],
+        data() {
+            return {
+                selected: this.$attrs.selected || '',
+                id: this.$attrs.id || 0,
+            }
+        },
         mounted() {
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -27,7 +35,22 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
-            console.log("Component mounted.");
+
+  
+            if (this.selected != "" && this.id != 0) {
+                var valor = this.selected;
+
+                console.log(this.selected)
+
+                var $select = $(this.$refs.cliente_select);
+
+                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+
+                $select.append($option).trigger('change'); 
+            }
+
+ 
+
             $(this.$refs.cliente_select).select2({
                 language: this.languajeSelect,
                 ajax: {
@@ -37,8 +60,14 @@
                     minimumInputLength: 4,
                     minimumResultsForSearch: 3,
                     data: function(params) {
+                        var search = "";
+                        if (params.term === undefined) {
+                            var search = ""
+                        } else {
+                            var search = params.term
+                        }
                         var query = {
-                            search: params.term,
+                            search: search,
                         };
                         // Query parameters will be ?search=[search]&_type=query&q=q
                         return query;

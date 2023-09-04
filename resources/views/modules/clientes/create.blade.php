@@ -78,7 +78,7 @@
             }
         });
 
-        var cli_dni = document.getElementById('cli_dni');
+        var cli_ruc = document.getElementById('cli_ruc');
 
         var zipMask = IMask(cli_ruc, {
             mask: '###########',

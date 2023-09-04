@@ -46,8 +46,8 @@ class producto_controller extends Controller
                     return Carbon::parse($Data->created_at)->format('d/m/Y');
                 })
                 ->addColumn('action', static function ($Data) {
-                    $marca_prod_id = encrypt_id($Data->marca_prod_id);
-                    return view('buttons.productos', ['marca_prod_id' => $marca_prod_id]);
+                    $prod_id = encrypt_id($Data->prod_id);
+                    return view('buttons.productos', ['prod_id' => $prod_id]);
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -113,11 +113,12 @@ class producto_controller extends Controller
                     $producto_marcas->save();
                 }
 
+                session()->flash('success', 'Producto creado correctamente');
                 return response()->json([
                     'message' => 'se creo correctamente un producto',
                     'error' => '',
                     'success' => true,
-                    'data' => '',
+                    'data' => route('producto.show', encrypt_id($producto->prod_id)),
                 ]);
             } else {
                 Log::error('no se pudo registrar el producto');
@@ -129,14 +130,6 @@ class producto_controller extends Controller
                 ]);
             }
         }
-
-        return response([], 400);
-
-        dd($request);
-        foreach ($request->file('images') as $imagefile) {
-            $path = $imagefile->store('/images/resource', ['disk' => 'my_files']);
-            dump($path);
-        }
     }
 
     /**
@@ -147,7 +140,13 @@ class producto_controller extends Controller
      */
     public function show($id)
     {
-        //
+        $get = producto::with(['marca_producto', 'unidad', 'categoria', 'marca', 'zona', 'imagen'])->find(decrypt_id($id));
+
+        if ($get) {
+            return view('modules.productos.show', ['get' => $get, 'id' => $id]);
+        } else {
+            return view('errors.404');
+        }
     }
 
     /**
@@ -158,7 +157,17 @@ class producto_controller extends Controller
      */
     public function edit($id)
     {
-        //
+        $get = producto::with(['marca_producto', 'unidad', 'categoria', 'producto_marcas' => function ($query) {$query->with(['marca']);}, 'zona', 'imagen'])->find(decrypt_id($id));
+ 
+        if ($get) {
+            $marcas_motos = marca::select('marca_id AS id', DB::raw('marca_nombre AS text'))
+                ->where('estado', 'A')
+                ->get();
+
+            return view('modules.productos.edit', ['get' => $get, 'id' => $id, 'marcas_motos' => $marcas_motos]);
+        } else {
+            return view('errors.404');
+        }
     }
 
     /**
@@ -196,33 +205,32 @@ class producto_controller extends Controller
 
     /* ******** buscando repuesto peticion via ajax ************* */
     public function search_repuesto(Request $request)
-    { 
+    {
         try {
-            $producto = producto::select(DB::raw('*'))->
-            with("unidad")
-            ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
-            ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
-            ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')
-            ->limit(7)
-            ->get();
+            $producto = producto::select(DB::raw('*'))
+                ->with('marca_producto', 'unidad', 'categoria', 'marca', 'zona', 'imagen')
+                ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
+                ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
+                ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')
+                ->limit(7)
+                ->get();
 
-                if ($producto) {
-                    return response()->json([
-                        'message' => 'datos encontrados',
-                        'error' => '',
-                        'success' => true,
-                        'data' => json_encode($producto) ,
-                    ]);
-                } else {
-                    Log::error('no se pudo registrar la zona');
-                    return response()->json([
-                        'message' => 'error al buscar los datos',
-                        'error' => '',
-                        'success' => false,
-                        'data' => '',
-                    ]);
-                }
-            
+            if ($producto) {
+                return response()->json([
+                    'message' => 'datos encontrados',
+                    'error' => '',
+                    'success' => true,
+                    'data' => json_encode($producto),
+                ]);
+            } else {
+                Log::error('no se pudo registrar la zona');
+                return response()->json([
+                    'message' => 'error al buscar los datos',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
         } catch (\Throwable $th) {
             Log::error($th);
             return response()->json([
@@ -232,7 +240,6 @@ class producto_controller extends Controller
                 'data' => '',
             ]);
         }
-
     }
     /* *********************** */
 }

@@ -16,6 +16,6 @@ class inventario_moto extends Model
     protected $guarded = [];
 
     public function moto(){
-        return $this->belongsTo(motos::class,"mtx_id");
+        return $this->belongsTo(motos::class,"mtx_id")->withTrashed();
     }
 }

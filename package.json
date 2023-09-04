@@ -47,13 +47,19 @@
         "datatables.net-bs4": "^1.11.2",
         "datatables.net-buttons-bs4": "^2.0.0",
         "datatables.net-dt": "^1.13.6",
+        "gasparesganga-jquery-loading-overlay": "^2.1.7",
         "imask": "^7.0.1",
+        "jquery-loading": "^0.2.8",
         "jquery-validation": "^1.19.5",
         "rangeslider-js": "^3.2.5",
         "rangeslider.js": "^2.3.3",
         "select2": "^4.1.0-rc.0",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^11.6.13",
-        "vue-sweetalert2": "^5.0.5"
+        "tippy.js": "^6.3.7",
+        "vue-currency-input": "^3.0.5",
+        "vue-sweetalert2": "^5.0.5",
+        "vue-the-mask": "^0.11.1",
+        "vue-tippy": "^4.16.1"
     }
 }

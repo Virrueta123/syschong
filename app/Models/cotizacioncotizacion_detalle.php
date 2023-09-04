@@ -16,12 +16,12 @@ class cotizacioncotizacion_detalle extends Model
     protected $guarded = [];
 
     public function servicio( ){
-        return $this->belongsTo(servicios::class,"servicios_id");
+        return $this->belongsTo(servicios::class,"servicios_id")->withTrashed();
     }
 
 
     public function producto( ){
-        return $this->belongsTo(producto::class,"prod_id");
+        return $this->belongsTo(producto::class,"prod_id")->withTrashed();
     }
  
 }

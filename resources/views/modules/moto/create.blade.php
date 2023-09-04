@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('historial')
-    <h1>Formulario de creacion</h1>
+    <h1>Formulario para crear una moto</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('home') }}" class="text-danger">Inicio</a></div>
-        <div class="breadcrumb-item"><a href="{{ route('cliente.index') }}" class="text-danger">Cliente</a></div>
-        <div class="breadcrumb-item">Creando cliente</div>
+        <div class="breadcrumb-item"><a href="{{ route('moto.index') }}" class="text-danger">Moto</a></div>
+        <div class="breadcrumb-item">Creando una moto</div>
     </div>
 @endsection
 @section('content')
@@ -40,8 +40,7 @@
                                     </crear-cliente>
                                 </div>
  
-                            </div>
-
+                            </div> 
                         </div>
 
                         <h2 class="section-title">Datos de la moto</h2>
@@ -67,10 +66,10 @@
                                 <label for="cli_telefono">Buscar Marca </label>
  
                                 <div class="input-group">
-                                    <search-marca >
-                                    </search-marca>
-                                    <crear-marca select_element="#marca_select">
-                                    </crear-marca>
+                                    <seleccionar-modelos >
+                                    </seleccionar-modelos>
+                                    <!-- ********  <crear-marca select_element="#marca_select">
+                                    </crear-marca>-->
                                 </div>
  
                             </div>
@@ -110,13 +109,7 @@
                             <div class="form-group col-md-6">
                                 <label for="mtx_color">Color</label>
                                 <input type="text" class="form-control" name="mtx_color" id="mtx_color">
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="mtx_cilindraje">Cilindraje</label>
-                                <input type="text" class="form-control" name="mtx_cilindraje" id="mtx_cilindraje">
-                            </div>
-
+                            </div> 
                         </div>
                     </div>
                 </div>
@@ -186,11 +179,11 @@
                     maxlength: 200,
                     required: true,
                 },
-                mtx_marca: {
+                modelo_id: {
                     maxlength: 200,
                     required: true,
                 },
-                mtx_fabricación: {
+                mtx_fabricacion: {
                     date: true,
                     required: true,
                 },
@@ -204,11 +197,7 @@
                 mtx_color: {
                     maxlength: 200,
                     required: true,
-                },
-                mtx_cilindraje: {
-                    maxlength: 200,
-                    required: true,
-                },
+                }, 
                 cli_id: {
                     required: true,
                 }

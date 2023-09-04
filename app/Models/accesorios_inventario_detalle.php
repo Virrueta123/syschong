@@ -15,7 +15,7 @@ class accesorios_inventario_detalle extends Model
     protected $guarded = [];
 
     public function accesorios( ){
-        return $this->belongsTo(accesorios::class,"accesorios_inventario_id");
+        return $this->belongsTo(accesorios::class,"accesorios_inventario_id")->withTrashed();
     }
     
 }

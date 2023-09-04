@@ -16,14 +16,14 @@ class cotizacion extends Model
     protected $guarded = [];
 
     public function inventario( ){
-        return $this->belongsTo(inventario_moto::class,"inventario_moto_id");
+        return $this->belongsTo(inventario_moto::class,"inventario_moto_id")->withTrashed();
     }
     public function mecanico( ){
-        return $this->belongsTo(User::class,"mecanico_id");
+        return $this->belongsTo(User::class,"mecanico_id")->withTrashed();
     }
 
     public function detalle( ){
-        return $this->hasMany(cotizacioncotizacion_detalle::class,"cotizacion_id");
+        return $this->hasMany(cotizacioncotizacion_detalle::class,"cotizacion_id")->withTrashed();
     }
     
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\accesorios_inventario_detalle;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
+use App\Models\cuentas;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
 use App\Models\User;
@@ -33,7 +34,6 @@ class cotizacion_controller extends Controller
      */
     public function index(Request $request)
     {
-          
         $fecha_actual = Carbon::now();
         if ($request->ajax()) {
             $cotizacion = cotizacion::with([
@@ -44,16 +44,18 @@ class cotizacion_controller extends Controller
                         },
                     ]);
                 },
-            ])->orderBy('created_at', 'desc')->get();
+            ])
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             return DataTables::of($cotizacion)
                 ->addIndexColumn()
-                ->addColumn('cliente', function ($Data) { 
-                    return $Data->inventario->moto->cliente->cli_nombre . " " . $Data->inventario->moto->cliente->cli_apellido;
+                ->addColumn('cliente', function ($Data) {
+                    return $Data->inventario->moto->cliente->cli_nombre . ' ' . $Data->inventario->moto->cliente->cli_apellido;
                 })
-                ->addColumn('moto_placa', function ($Data) { 
+                ->addColumn('moto_placa', function ($Data) {
                     return $Data->inventario->moto->mtx_placa;
-                }) 
+                })
                 ->addColumn('fecha_creacion', function ($Data) {
                     return Carbon::parse($Data->created_at)->format('d-m-Y');
                 })
@@ -180,26 +182,25 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-          
         try {
             $get = cotizacion::with([
                 'inventario' => function ($query) {
                     $query->with([
                         'moto' => function ($query) {
-                            $query->with(['cliente','marca']);
+                            $query->with(['cliente', 'marca']);
                         },
                     ]);
                 },
                 'mecanico',
-                "detalle" => function ($query) {
+                'detalle' => function ($query) {
                     $query->with([
-                        'servicio',"producto"=>function($query){
+                        'servicio',
+                        'producto' => function ($query) {
                             $query->with(['unidad']);
-                        }
+                        },
                     ]);
-                }
+                },
             ])->find(decrypt_id($id));
- 
 
             if ($get) {
                 return view('modules.cotizacion.show', ['get' => $get, 'id' => $id]);
@@ -248,41 +249,39 @@ class cotizacion_controller extends Controller
         //
     }
 
-    public function pdf($id){
-
+    public function pdf($id)
+    {
         try {
+            $cuentas = cuentas::where('estado', 'A')->get();
             $get = cotizacion::with([
                 'inventario' => function ($query) {
                     $query->with([
                         'moto' => function ($query) {
-                            $query->with(['cliente','marca']);
+                            $query->with(['cliente', 'marca']);
                         },
                     ]);
                 },
                 'mecanico',
-                "detalle" => function ($query) {
+                'detalle' => function ($query) {
                     $query->with([
-                        'servicio',"producto"=>function($query){
+                        'servicio',
+                        'producto' => function ($query) {
                             $query->with(['unidad']);
-                        }
+                        },
                     ]);
-                }
+                },
             ])->find(decrypt_id($id));
- 
 
             if ($get) {
-                $pdf = Pdf::loadView('pdf.inventario_moto', ['get' => $get, 'id' => $id]);
+                $pdf = Pdf::loadView('pdf.cotizacion', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
                 return $pdf->stream();
             } else {
                 return view('errors.404');
             }
         } catch (\Throwable $th) {
-            Log::error(json_encode($th->getMessage(), true)); 
+            Log::error($th->getMessage());
             session()->flash('error', 'error al entrar a esta ruta');
             return redirect()->back();
         }
- 
-
     }
-
 }

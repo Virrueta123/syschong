@@ -14,8 +14,14 @@
         myMixin
     } from "../../mixin.js";
 
-    export default {
+    export default { 
         mixins: [myMixin],
+        data(){
+            return {
+                selected: this.$attrs.selected || '',
+                id: this.$attrs.id || 0,
+            }
+        },
         mounted() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             $.ajaxSetup({
@@ -24,6 +30,22 @@
                 }
             });
             console.log("Component mounted.");
+
+
+
+            if (this.selected != "" && this.id != 0) {
+                var valor = this.selected;
+
+                console.log(this.selected)
+
+                var $select = $(this.$refs.select_zona);
+
+                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+
+                $select.append($option).trigger('change'); 
+            }
+
+
             $(this.$refs.select_zona).select2({
                 language: this.languajeSelect,
                 ajax: {

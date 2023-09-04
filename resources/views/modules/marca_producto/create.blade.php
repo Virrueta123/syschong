@@ -3,8 +3,8 @@
     <h1>Formulario de creacion</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('home') }}" class="text-danger">Inicio</a></div>
-        <div class="breadcrumb-item"><a href="{{ route('cliente.index') }}" class="text-danger">Cliente</a></div>
-        <div class="breadcrumb-item">Creando cliente</div>
+        <div class="breadcrumb-item"><a href="{{ route('marca_producto.index') }}" class="text-danger">Marca de producto</a></div>
+        <div class="breadcrumb-item">Creando marca de producto</div>
     </div>
 @endsection
 @section('content')
@@ -24,27 +24,21 @@
                 <div class="card-header">
                     <h2 class="section-title">Formulario para crear una marca de producto</h2>
                 </div>
-                <div class="card-body">
-                    <div id="app">
-                        <dni cli_dni="" cli_nombre="" cli_apellido="" cli_direccion="" cli_departamento="" cli_provincia="" cli_distrito="" ></dni>
-                        <ruc cli_ruc="" cli_razon_social="" cli_direccion_ruc="" cli_departamento_ruc="" cli_provincia_ruc="" cli_distrito_ruc=""></ruc>
-                    </div>
-                    <h2 class="section-title">Contactos</h2>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="cli_telefono">Celular</label>
-                            <input type="text" class="form-control" name="cli_telefono" id="cli_telefono">
-                        </div>
+                <img src="{{ asset("images/svg/editar.svg") }}" alt="My Happy SVG" />
 
-                        <div class="form-group col-md-6">
-                            <label for="cli_correo">Correo Electronico</label>
-                            <input type="email" class="form-control" name="cli_correo" id="cli_correo">
-                        </div>
-                    </div>
+                            <div class="card-body">
 
-                </div>
+                                <h2 class="section-title">Crear marca del producto</h2>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label for="marca_prod_nombre">Nombre de la categoria</label>
+                                        <input type="text"   class="form-control"
+                                            name="marca_prod_nombre" id="marca_prod_nombre">
+                                    </div>
+                                </div>
+                            </div>
                 <div class="card-footer">
-                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear Cliente</button>
+                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear Categoria</button>
                 </div>
             </form>
         </div>
@@ -59,9 +53,9 @@
 
         $("#form_cliente").validate({
             rules: {
-                cli_telefono: {
-                    maxlength: 11,
-                    minlength: 11,
+                marca_prod_nombre: {
+                    maxlength: 255,
+                    minlength: 5,
                     required: true,
                 } 
             },

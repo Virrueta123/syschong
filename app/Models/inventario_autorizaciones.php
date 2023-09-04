@@ -15,6 +15,6 @@ class inventario_autorizaciones extends Model
     protected $guarded = [];
 
     public function autorizaciones( ){
-        return $this->belongsTo(autorizaciones::class,"aut_id");
+        return $this->belongsTo(autorizaciones::class,"aut_id")->withTrashed();
     }
 }

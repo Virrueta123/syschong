@@ -36,6 +36,9 @@
                                         Marca
                                     </th>
                                     <th>
+                                        Modelo
+                                    </th>
+                                    <th>
                                         F.fabricación
                                     </th>
                                     <th>
@@ -77,6 +80,9 @@
                                     </th>
                                     <th>
                                         Marca
+                                    </th>
+                                    <th>
+                                        Modelo
                                     </th>
                                     <th>
                                         F.fabricación
@@ -138,6 +144,10 @@
                     {
                         data: 'marca',
                         name: 'marca'
+                    },
+                    {
+                        data: 'modelo',
+                        name: 'modelo'
                     },
                     {
                         data: 'mtx_fabricacion',

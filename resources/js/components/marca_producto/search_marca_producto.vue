@@ -20,8 +20,7 @@
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 }
-            }); 
-            console.log("Component mounted.");
+            });  
             $(this.$refs.marca_select_producto).select2({
                 language: this.languajeSelect,
                 ajax: {

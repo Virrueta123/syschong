@@ -126,7 +126,7 @@
                                                 class="selectgroup-input">
                                             <span class="selectgroup-button">Alternativo</span>
                                         </label>
-                                         
+
                                     </div>
                                 </div>
 
@@ -173,7 +173,7 @@
     import $ from "jquery";
     import "jquery-validation";
     import "jquery-validation/dist/localization/messages_es"
-    import Compressor from '@uppy/compressor';
+
 
 
     export default {
@@ -220,7 +220,20 @@
 
             // Handle file upload completion
             this.uppy.on('complete', (result) => {
-                console.log('Upload complete:', result.successful);
+                console.log(result.successful[0].response.body);
+
+                if (result.successful[0].response.body.success) {
+                    window.location.href = result.successful[0].response.body.data;
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Error al registrar el producto, intentelo otra vez',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+
             });
             uppy.on('error', (error) => {
                 console.error('Error de Uppy:', error);
@@ -277,6 +290,7 @@
                         prod_stock_inicial: prod_stock_inicial,
                         prod_minimo: prod_minimo,
                     });
+
                     uppy.upload();
 
                     return false;

@@ -33,6 +33,9 @@
                                         Fecha de Creacion
                                     </th> 
                                     <th>
+                                        Estado
+                                    </th> 
+                                    <th>
                                         <i class="fa fa-cogs" aria-hidden="true"></i> Acciones
                                     </th>
                                 </tr>
@@ -48,6 +51,12 @@
                                     <th>
                                         Fecha de Creacion
                                     </th> 
+                                    <th>
+                                        Estado
+                                    </th> 
+                                    <th>
+                                        <i class="fa fa-cogs" aria-hidden="true"></i> Acciones
+                                    </th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -78,6 +87,22 @@
                     {
                         data: 'fecha_creacion',
                         name: 'fecha_creacion'
+                    },
+
+                    {
+                        data: 'estado',
+                        name: 'estado',
+                        render: function(data, type, full, meta) {
+                            switch (data) {
+                                case 'A':
+                                    return '<center><div class="badge badge-pill badge-success mb-1 float-right">Activo</div></center>';
+                                    break; 
+                                case 'D':
+                                    return '<center><div class="badge badge-pill badge-danger mb-1 float-right">Desactivado</div></center>';
+                                    break;
+                            }
+                        }
+
                     },
 
                     {

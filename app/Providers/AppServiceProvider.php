@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('es');
         Carbon::setUTF8(true);
-        setlocale(LC_TIME, 'es_ES');
+        setlocale(LC_TIME,"es_ES");
 
         view()->composer('*', function ($view) {
             if (Auth::check()) {
@@ -43,6 +43,16 @@ class AppServiceProvider extends ServiceProvider
                         'submenu' => [['name' => 'todo los vehiculos', 'url' => 'moto.index'], ['name' => 'crear un vehiculos', 'url' => 'moto.create']],
                     ], 
                     [
+                        'name' => 'activaciones',
+                        'icon' => 'fa fa-handshake',
+                        'submenu' => [
+                            ['name' => 'todo las activaciones', 'url' => 'activaciones.index'], 
+                            ['name' => 'crear una activacion', 'url' => 'activaciones.create'],
+                            ['name' => 'todas las tiendas', 'url' => 'tiendas.index'],
+                            ['name' => 'crear una tienda', 'url' => 'tiendas.create']
+                        ],
+                    ], 
+                    [
                         'name' => 'Inventario de las motos',
                         'icon' => 'fa fa-cubes',
                         'submenu' => [['name' => 'tabla de los inventarios', 'url' => 'inventario_moto.index'], ['name' => 'nuevo inventario( moto )', 'url' => 'inventario_moto.create'],['name' => 'todo los accesorios', 'url' => 'accesorios.index'],['name' => 'crear accesorios', 'url' => 'accesorios.create'],['name' => 'todo las autorizaciones', 'url' => 'autorizaciones.index'],['name' => 'crear autorizacion', 'url' => 'autorizaciones.create']],
@@ -52,17 +62,41 @@ class AppServiceProvider extends ServiceProvider
                         'icon' => 'fa fa-boxes',
                         'submenu' => [
                             ['name' => 'Todo los productos', 'url' => 'producto.index'], 
-                            ['name' => 'Crear un producto', 'url' => 'producto.create'], 
-                            ['name' => 'Categoria', 'url' => 'moto.create'], 
-                            ['name' => 'Marca Producto', 'url' => 'marca_producto.index'], 
-                            ['name' => 'Categoria', 'url' => 'moto.create'], 
-                            ['name' => 'Categoria', 'url' => 'moto.create']
+                            ['name' => 'Crear un producto', 'url' => 'producto.create'],  
+                            ['name' => 'Marcas de Producto', 'url' => 'marca_producto.index'], 
+                            ['name' => 'Crear marca de producto', 'url' => 'marca_producto.create'], 
+                            ['name' => 'Categorias', 'url' => 'categorias.index'], 
+                            ['name' => 'crear categoria', 'url' => 'categorias.create']
+                        ],
+                    ],
+                    [ 
+                        'name' => 'Compras',
+                        'icon' => 'fa fa-cart-arrow-down',
+                        'submenu' => [
+                            ['name' => 'Todo los productos', 'url' => 'producto.index'], 
+                            ['name' => 'Crear un producto', 'url' => 'producto.create'],  
+                            ['name' => 'Marcas de Producto', 'url' => 'marca_producto.index'], 
+                            ['name' => 'Crear marca de producto', 'url' => 'marca_producto.create'], 
+                            ['name' => 'Categorias', 'url' => 'categorias.index'], 
+                            ['name' => 'crear categoria', 'url' => 'categorias.create']
+                        ],
+                    ],
+                     [ 
+                        'name' => 'Ventas',
+                        'icon' => 'fa fa-cart-plus',
+                        'submenu' => [
+                            ['name' => 'Todo los productos', 'url' => 'producto.index'], 
+                            ['name' => 'Crear un producto', 'url' => 'producto.create'],  
+                            ['name' => 'Marcas de Producto', 'url' => 'marca_producto.index'], 
+                            ['name' => 'Crear marca de producto', 'url' => 'marca_producto.create'], 
+                            ['name' => 'Categorias', 'url' => 'categorias.index'], 
+                            ['name' => 'crear categoria', 'url' => 'categorias.create']
                         ],
                     ],
                     [
                         'name' => 'Servicios',
                         'icon' => 'fa fa-wrench',
-                        'submenu' => [['name' => 'Todo los servicios', 'url' => 'moto.index'], ['name' => 'Nuevo Servicio', 'url' => 'moto.create']],
+                        'submenu' => [['name' => 'Todo los servicios', 'url' => 'servicios.index'], ['name' => 'Nuevo Servicio', 'url' => 'servicios.create']],
                     ],
                 ];
 

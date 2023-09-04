@@ -14,4 +14,8 @@ class producto_marcas extends Model
     public $primaryKey = 'productos_marcas_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function marca(){
+        return $this->belongsTo(marca::class, 'marca_id');
+    }
 }

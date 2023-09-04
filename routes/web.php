@@ -42,6 +42,15 @@ include 'web/producto.php';
  
 include 'web/servicios.php';
 
+include 'web/modelo.php';
+
+include 'web/activaciones.php';
+
+include 'web/tienda.php';
+
+include 'web/vendedor.php';
+ 
+
 /* *********************** */
 
 
@@ -67,6 +76,16 @@ Route::resource('autorizaciones', App\Http\Controllers\autorizaciones_controller
 Route::resource('servicios', App\Http\Controllers\servicios_controller::class);
 
 Route::resource('cotizaciones', App\Http\Controllers\cotizacion_controller::class); 
+
+Route::resource('activaciones', App\Http\Controllers\activaciones_controller::class); 
+
+Route::resource('tiendas', App\Http\Controllers\tiendas_controller::class); 
+
+Route::resource('vendedor', App\Http\Controllers\vendedor_controller::class); 
+
+Route::resource('categorias', App\Http\Controllers\categoria_producto_controller::class); 
+
+Route::resource('pos', App\Http\Controllers\pos_controller::class); 
 
 
 
