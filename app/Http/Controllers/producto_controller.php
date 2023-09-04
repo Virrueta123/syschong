@@ -75,60 +75,92 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
-        $array_marcas = explode(',', $request->input('marca_select'));
+        $array_marcas = explode(',', $request->input('marcas_moto'));
 
-        if ($request->file) {
-            $images_upload = Storage::disk('local')->put('fotos_producto', $request->file);
+        // Crear un nuevo registro
+        $producto = new producto();
+        $producto->categoria_id = $request->input('categoria_id');
+        $producto->marca_id = $request->input('marca_prod_id');
+        $producto->unidades_id = $request->input('unidades_id');
+        $producto->zona_id = $request->input('zona_id');
+        $producto->prod_nombre = $request->input('prod_nombre');
+        $producto->prod_precio_venta = $request->input('prod_precio_venta');
+        $producto->prod_precio_compra = $request->input('prod_precio_compra');
+        $producto->prod_stock_inicial = $request->input('prod_stock_inicial');
+        $producto->prod_nombre_secundario = $request->input('prod_nombre_secundario');
+        $producto->prod_codigo = $request->input('prod_codigo');
+        $producto->prod_descripcion = $request->input('prod_descripcion');
+        $producto->prod_minimo = $request->input('prod_minimo');
+        $producto->prod_calidad = $request->input('prod_calidad');
 
-            $created = true;
+        $producto->user_id = Auth::id();
 
-            // Crear un nuevo registro
-            $producto = new producto();
-            $producto->categoria_id = $request->input('select_categoria_producto');
-            $producto->marca_id = $request->input('marcas_moto');
-            $producto->unidades_id = $request->input('select_unidades');
-            $producto->zona_id = $request->input('select_zona');
-            $producto->prod_nombre = $request->input('prod_nombre');
-            $producto->prod_precio_venta = $request->input('prod_precio_venta');
-            $producto->prod_precio_compra = $request->input('prod_precio_compra');
-            $producto->prod_stock_inicial = $request->input('prod_stock_inicial');
-            $producto->prod_nombre_secundario = $request->input('prod_nombre_secundario');
-            $producto->prod_codigo = $request->input('prod_codigo');
-            $producto->prod_descripcion = $request->input('prod_descripcion');
-            $producto->prod_minimo = $request->input('prod_imnimo');
-            $producto->user_id = Auth::id();
+        $created = $producto->save();
 
-            $created = $producto->save();
+        if ($created) {
+            if ($request->files) {
+                $uploadedFiles = $request->file('files');
 
-            if ($created) {
-                $imagen_producto = new imagen_producto();
-                $imagen_producto->prod_id = $producto->prod_id;
-                $imagen_producto->url = $images_upload;
-                $created = $imagen_producto->save();
+                // Verifica si se subieron archivos
+                if ($uploadedFiles) {
+                    foreach ($uploadedFiles as $uploadedFile) {
+                        // Verifica si el archivo es válido
+                        if ($uploadedFile->isValid()) {
+                            // Define la ruta de almacenamiento (cambia 'fotos_producto/dd' según tu estructura de almacenamiento)
+                            $storagePath = 'fotos_producto';
 
-                foreach ($array_marcas as $marca) {
-                    $producto_marcas = new producto_marcas();
-                    $producto_marcas->marca_id = $marca;
-                    $producto_marcas->prod_id = $producto->prod_id;
-                    $producto_marcas->save();
+                            // Genera un nombre de archivo único
+                            $fileName = uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+
+                            // Almacena el archivo en la ubicación deseada
+
+                            $images_upload = Storage::disk('local')->put('public/fotos_producto/', $uploadedFile);
+                            $images_upload = explode('/', $images_upload);
+
+                            $imagen_producto = new imagen_producto();
+                            $imagen_producto->prod_id = $producto->prod_id;
+                            $imagen_producto->url = $images_upload[1] . '/' . $images_upload[3];
+                            $created = $imagen_producto->save();
+
+                            // Verifica si la operación de almacenamiento fue exitosa
+                            if ($images_upload) {
+                                // Aquí puedes realizar cualquier otra acción necesaria
+                                // por ejemplo, registrar la ubicación del archivo en una base de datos
+                            } else {
+                                // Manejo de error en caso de falla al almacenar el archivo
+                            }
+                        } else {
+                            // Manejo de error si el archivo no es válido
+                        }
+                    }
+                } else {
+                    // Manejo de error si no se subieron archivos
                 }
-
-                session()->flash('success', 'Producto creado correctamente');
-                return response()->json([
-                    'message' => 'se creo correctamente un producto',
-                    'error' => '',
-                    'success' => true,
-                    'data' => route('producto.show', encrypt_id($producto->prod_id)),
-                ]);
-            } else {
-                Log::error('no se pudo registrar el producto');
-                return response()->json([
-                    'message' => 'no se pudo registrar el producto',
-                    'error' => '',
-                    'success' => false,
-                    'data' => '',
-                ]);
             }
+
+            foreach ($array_marcas as $marca) {
+                $producto_marcas = new producto_marcas();
+                $producto_marcas->marca_id = $marca;
+                $producto_marcas->prod_id = $producto->prod_id;
+                $producto_marcas->save();
+            }
+
+            session()->flash('success', 'Producto creado correctamente');
+            return response()->json([
+                'message' => 'se creo correctamente un producto',
+                'error' => '',
+                'success' => true,
+                'data' => route('producto.show', encrypt_id($producto->prod_id)),
+            ]);
+        } else {
+            Log::error('no se pudo registrar el producto');
+
+            return response()->json([
+                'message' => 'no se pudo registrar el producto',
+                'error' => '',
+                'success' => false,
+                'data' => '',
+            ]);
         }
     }
 
@@ -140,7 +172,17 @@ class producto_controller extends Controller
      */
     public function show($id)
     {
-        $get = producto::with(['marca_producto', 'unidad', 'categoria', 'marca', 'zona', 'imagen'])->find(decrypt_id($id));
+        $get = producto::with([
+            'marca_producto',
+            'producto_marcas' => function ($query) {
+                $query->with(['marca']);
+            },
+            'unidad',
+            'categoria',
+            'marca',
+            'zona',
+            'imagen',
+        ])->find(decrypt_id($id));
 
         if ($get) {
             return view('modules.productos.show', ['get' => $get, 'id' => $id]);
@@ -157,8 +199,17 @@ class producto_controller extends Controller
      */
     public function edit($id)
     {
-        $get = producto::with(['marca_producto', 'unidad', 'categoria', 'producto_marcas' => function ($query) {$query->with(['marca']);}, 'zona', 'imagen'])->find(decrypt_id($id));
- 
+        $get = producto::with([
+            'marca_producto',
+            'unidad',
+            'categoria',
+            'producto_marcas' => function ($query) {
+                $query->with(['marca']);
+            },
+            'zona',
+            'imagen',
+        ])->find(decrypt_id($id));
+
         if ($get) {
             $marcas_motos = marca::select('marca_id AS id', DB::raw('marca_nombre AS text'))
                 ->where('estado', 'A')
@@ -177,9 +228,104 @@ class producto_controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function editar_producto(Request $request, $id)
     {
-        //
+        $array_marcas = explode(',', $request->input('marcas_moto'));
+ 
+        // Crear un nuevo registro
+        $update = producto::find(decrypt_id($id));
+
+        $update->categoria_id = $request->input('categoria_id');
+        $update->marca_id = $request->input('marca_prod_id');
+        $update->unidades_id = $request->input('unidades_id');
+        $update->zona_id = $request->input('zona_id');
+        $update->prod_nombre = $request->input('prod_nombre');
+        $update->prod_precio_venta = $request->input('prod_precio_venta');
+        $update->prod_precio_compra = $request->input('prod_precio_compra');
+        $update->prod_stock_inicial = $request->input('prod_stock_inicial');
+        $update->prod_nombre_secundario = $request->input('prod_nombre_secundario');
+        $update->prod_codigo = $request->input('prod_codigo');
+        $update->prod_descripcion = $request->input('prod_descripcion');
+        $update->prod_minimo = $request->input('prod_minimo');
+        $update->prod_calidad = $request->input('prod_calidad');
+
+        $update->user_id = Auth::id();
+
+        $update = $update->save();
+
+        if ($update) {
+            if ($request->files) {
+                $uploadedFiles = $request->file('files');
+
+                // Verifica si se subieron archivos
+                if ($uploadedFiles) {
+                    foreach ($uploadedFiles as $uploadedFile) {
+                        // Verifica si el archivo es válido
+                        if ($uploadedFile->isValid()) {
+                            // Define la ruta de almacenamiento (cambia 'fotos_producto/dd' según tu estructura de almacenamiento)
+                            $storagePath = 'fotos_producto';
+
+                            // Genera un nombre de archivo único
+                            $fileName = uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+
+                            // Almacena el archivo en la ubicación deseada
+
+                            $image = imagen_producto::where('prod_id', decrypt_id($id))->first();
+
+                            if ($image) {
+                                $images_upload = Storage::putFileAs('public/', $uploadedFile, $image->url);
+                            } else {
+                                $images_upload = Storage::disk('local')->put('public/fotos_producto/', $uploadedFile);
+                                $images_upload = explode('/', $images_upload);
+
+                                $imagen_producto = new imagen_producto();
+                                $imagen_producto->prod_id = decrypt_id($id);
+                                $imagen_producto->url = $images_upload[1] . '/' . $images_upload[3];
+                                $created = $imagen_producto->save();
+                            }
+
+                            // Verifica si la operación de almacenamiento fue exitosa
+                            if ($images_upload) {
+                                // Aquí puedes realizar cualquier otra acción necesaria
+                                // por ejemplo, registrar la ubicación del archivo en una base de datos
+                            } else {
+                                // Manejo de error en caso de falla al almacenar el archivo
+                            }
+                        } else {
+                            // Manejo de error si el archivo no es válido
+                        }
+                    }
+                } else {
+                    // Manejo de error si no se subieron archivos
+                }
+            }
+
+            $eliminar = producto_marcas::where('prod_id', decrypt_id($id))->delete();
+ 
+            foreach ($array_marcas as $marca) {
+                $producto_marcas = new producto_marcas();
+ 
+                $producto_marcas->marca_id = $marca;
+                $producto_marcas->prod_id = decrypt_id($id);
+                $producto_marcas->save();
+            }
+
+            session()->flash('success', 'Producto editado correctamente');
+            return response()->json([
+                'message' => 'se creo correctamente un producto',
+                'error' => '',
+                'success' => true,
+                'data' => route('producto.show', $id),
+            ]);
+        } else {
+            Log::error('no se pudo registrar el producto');
+            return response()->json([
+                'message' => 'no se pudo registrar el producto',
+                'error' => '',
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
 
     /**

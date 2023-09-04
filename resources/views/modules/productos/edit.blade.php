@@ -8,9 +8,8 @@
     </div>
 @endsection
 @section('content')
-    <div id="app">
-        
-        <editar-producto productos="{{$get}}" marcas_motos="{{$marcas_motos}}" ></editar-producto>
+    <div id="app"> 
+        <editar-producto productos="{{$get}}" id="{{$id}}" marcas_motos="{{$marcas_motos}}" ></editar-producto>
     </div>
 @endsection
 

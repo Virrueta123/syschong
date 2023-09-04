@@ -35,34 +35,45 @@
                             <tr v-for="(repuesto, index) in repuestos" :key="index">
 
                                 <!-- ******** inputs ocultos para la cotizacion ************* -->
-                                <input type="hidden" :name="'cotizacion['+index+'][prod_id]'" :value="repuesto.prod_id">
-                                <input type="hidden" :name="'cotizacion['+index+'][servicios_id]'" :value="repuesto.servicios_id">
-                                <input type="hidden" :name="'cotizacion['+index+'][tipo]'" :value="repuesto.tipo">
-                                <input type="hidden" :name="'cotizacion['+index+'][Precio]'" :value="repuesto.Precio"> 
-                                <input type="hidden" :name="'cotizacion['+index+'][Importe]'" :value="repuesto.Importe"> 
-                                <input type="hidden" :name="'cotizacion['+index+'][ImporteDescuento]'" v-model="repuesto . ImporteDescuento"> 
-                                <input type="hidden" :name="'cotizacion['+index+'][Descripcion]'" v-model="repuesto . Descripcion">
-                                <input type="hidden" :name="'cotizacion['+index+'][Codigo]'" v-model="repuesto . Codigo">
-                                <input type="hidden" :name="'cotizacion['+index+'][Cantidad]'" v-model="repuesto . Cantidad"> 
-                                <input type="hidden" :name="'cotizacion['+index+'][ValorDescuento]'" v-model="repuesto . ValorDescuento"> 
+                                <input type="hidden" :name="'cotizacion[' + index + '][prod_id]'"
+                                    :value="repuesto.prod_id">
+                                <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
+                                    :value="repuesto.servicios_id">
+                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'" :value="repuesto.tipo">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'" :value="repuesto.Precio">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
+                                    :value="repuesto.Importe">
+                                <input type="hidden" :name="'cotizacion[' + index + '][ImporteDescuento]'"
+                                    v-model="repuesto . ImporteDescuento">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Descripcion]'"
+                                    v-model="repuesto . Descripcion">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Codigo]'"
+                                    v-model="repuesto . Codigo">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Cantidad]'"
+                                    v-model="repuesto . Cantidad">
+                                <input type="hidden" :name="'cotizacion[' + index + '][ValorDescuento]'"
+                                    v-model="repuesto . ValorDescuento">
 
-                                <!-- *********************** --> 
+                                <!-- *********************** -->
 
                                 <td scope="row">{{ repuesto . Codigo }} </td>
                                 <td scope="row">{{ repuesto . Descripcion }}</td>
 
                                 <td scope="row"><input type="text" class="form-control"
-                                        v-model="repuestos[index].Detalle" :name="'cotizacion['+index+'][Detalle]'"></td>
+                                        v-model="repuestos[index].Detalle" :name="'cotizacion[' + index + '][Detalle]'">
+                                </td>
 
                                 <td scope="row">{{ repuesto . unidad }}</td>
                                 <td scope="row">{{ repuesto . Precio }}</td>
 
-                                <td scope="row"> <input :name="'cotizacion['+index+'][Descuento]'" type="number" class="form-control"
+                                <td scope="row"> <input :name="'cotizacion[' + index + '][Descuento]'" type="number"
+                                        class="form-control"
                                         v-on:change="descuento_change($event,index,repuesto . Importe)"
                                         :v-model="repuesto.Descuento"></td>
 
-                                <td scope="row"> <input :name="'cotizacion['+index+'][ValorDescuento]'" type="number" disabled class="form-control" 
-                                        :id="'valor_descuento' + index" v-model="repuesto.ValorDescuento"></td>
+                                <td scope="row"> <input :name="'cotizacion[' + index + '][ValorDescuento]'"
+                                        type="number" disabled class="form-control" :id="'valor_descuento' + index"
+                                        v-model="repuesto.ValorDescuento"></td>
 
                                 <td scope="row">{{ repuesto . Cantidad }}</td>
                                 <td scope="row">{{ repuesto . Importe }}</td>
@@ -91,7 +102,7 @@
                             </tr>
 
                         </tbody>
-                    </table> 
+                    </table>
                 </div>
 
                 <div class="row mt-4">
@@ -574,6 +585,76 @@
 
         },
         mounted() {
+
+
+            var self = this
+
+
+
+            // Coloca aquí el código que deseas ejecutar después del temporizador
+            const headers = {
+                "Content-Type": "application/json",
+            };
+            const data = {
+                search: ""
+            };
+            axios
+                .post("/search_servicios", data, {
+                    headers,
+                })
+                .then((response) => {
+
+                    if (response.data.success) {
+                        self.show_servicios = JSON.parse(response.data.data);
+
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: response.data.message,
+                            footer: "-------",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error 500",
+                        text: "Error en el servidor, vuelva a intentar",
+                        footer: "-------",
+                    });
+                    console.error(error);
+                });
+
+
+                axios
+                        .post("/search_repuesto", data, {
+                            headers,
+                        })
+                        .then((response) => {
+
+                            if (response.data.success) {
+                                self.show_productos = JSON.parse(response.data.data);
+
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.data.message,
+                                    footer: "-------",
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error 500",
+                                text: "Error en el servidor, vuelva a intentar",
+                                footer: "-------",
+                            });
+                            console.error(error);
+                        });
+
 
         }
     }

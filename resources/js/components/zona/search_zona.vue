@@ -29,23 +29,7 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
-            console.log("Component mounted.");
-
-
-
-            if (this.selected != "" && this.id != 0) {
-                var valor = this.selected;
-
-                console.log(this.selected)
-
-                var $select = $(this.$refs.select_zona);
-
-                var $option = $('<option selected>' + valor + '</option>').val(this.id );
-
-                $select.append($option).trigger('change'); 
-            }
-
-
+       
             $(this.$refs.select_zona).select2({
                 language: this.languajeSelect,
                 ajax: {
@@ -85,6 +69,22 @@
                 },
             });
 
+
+
+            if (this.selected != "" && this.id != 0) {
+                var valor = this.selected;
+
+          
+
+                var $select = $(this.$refs.select_zona);
+
+                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+
+                $select.append($option).trigger('change'); 
+            }
+
+
+          
 
         },
     };

@@ -263,35 +263,53 @@
                 },
                 submitHandler: function(form) {
 
-                    var prod_nombre = $("#prod_nombre").val();
-                    var prod_nombre_secundario = $("#prod_nombre_secundario").val();
-                    var prod_codigo = $("#prod_codigo").val();
-                    var prod_descripcion = $("#prod_descripcion").val();
-                    var marca_select = $("#marcas_moto").val()
-                    var select_zona = $("#select_zona").val();
-                    var select_unidades = $("#select_unidades").val();
-                    var select_categoria_producto = $("#select_categoria_producto").val();
-                    var marcas_moto = $("#marca_select_producto").val();
-                    var prod_precio_venta = $("#prod_precio_venta").val();
-                    var prod_stock_inicial = $("#prod_stock_inicial").val();
-                    var prod_minimo = $("#prod_minimo").val();
-
-                    uppy.setMeta({
-                        prod_nombre: prod_nombre,
-                        prod_nombre_secundario: prod_nombre_secundario,
-                        prod_codigo: prod_codigo,
-                        prod_descripcion: prod_descripcion,
-                        marca_select: marca_select,
-                        select_zona: select_zona,
-                        select_unidades: select_unidades,
-                        select_categoria_producto: select_categoria_producto,
-                        marcas_moto: marcas_moto,
-                        prod_precio_venta: prod_precio_venta,
-                        prod_stock_inicial: prod_stock_inicial,
-                        prod_minimo: prod_minimo,
-                    });
-
-                    uppy.upload();
+                    try {
+                         
+                         const fileUploadForm = document.getElementById('form_crear_producto');
+                         const formData = new FormData(fileUploadForm);
+                         uppy.getFiles().forEach((file) => {
+                             formData.append('files[]', file.data);
+                         });
+ 
+                         const headers = {
+                             "Content-Type": "application/json",
+                         };
+                         const data = formData;
+                         axios
+                             .post("/crear_producto", data,{
+                                 headers,
+                             })
+                             .then((response) => {
+                                 console.log(response.data);
+                                 console.log(response.data)
+                                 if (response.data.success) {
+ 
+                                     window.location.href = response.data.data;
+ 
+                                 } else {
+                                     Swal.fire({
+                                         position: 'center',
+                                         icon: 'error',
+                                         title: 'Error al registrar el producto, intentelo otra vez',
+                                         showConfirmButton: false,
+                                         timer: 3000
+                                     })
+                                 }
+                             })
+                             .catch((error) => {
+                                 Swal.fire({
+                                     icon: "error",
+                                     title: "Error 500",
+                                     text: "Error en el servidor, vuelva a intentar",
+                                     footer: "-------",
+                                 });
+                                 console.error(error);
+                             });
+ 
+ 
+                     } catch (error) {
+                         console.log(error)
+                     }
 
                     return false;
                 }

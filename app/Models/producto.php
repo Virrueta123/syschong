@@ -16,7 +16,7 @@ class producto extends Model
     protected $guarded = [];
   
     public function marca_producto( ){
-        return $this->belongsTo(marca_producto::class,"marca_prod_id")->withTrashed();
+        return $this->belongsTo(marca_producto::class,"marca_id")->withTrashed();
     }
 
     public function unidad( ){
@@ -36,7 +36,7 @@ class producto extends Model
     }
 
     public function producto_marcas( ){
-        return $this->hasMany(producto_marcas::class,"prod_id")->withTrashed();
+        return $this->hasMany(producto_marcas::class,"prod_id");
     }
 
     public function usuario( ){

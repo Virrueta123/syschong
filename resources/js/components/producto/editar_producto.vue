@@ -3,7 +3,7 @@
 
     <div class="section-body">
         <div class="card">
-            <form id="form_crear_producto" method="POST" action="#" enctype="multipart/form-data">
+            <form id="form_crear_producto" method="POST" action="/editar_producto" enctype="multipart/form-data">
 
                 <div id="app">
 
@@ -16,25 +16,27 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="prod_nombre">Nombre Producto</label>
-                                    <input type="text" :value="productos.prod_nombre" class="form-control" name="prod_nombre" id="prod_nombre">
+                                    <input type="text" :value="productos.prod_nombre" class="form-control"
+                                        name="prod_nombre" id="prod_nombre">
                                 </div>
 
                                 <div class="form-group col-md-4">
                                     <label for="prod_nombre_secundario">Nombre Secundario</label>
-                                    <input type="text" class="form-control"  :value="productos.prod_nombre_secundario" name="prod_nombre_secundario"
-                                        id="prod_nombre_secundario">
+                                    <input type="text" class="form-control" :value="productos.prod_nombre_secundario"
+                                        name="prod_nombre_secundario" id="prod_nombre_secundario">
                                 </div>
 
                                 <div class="form-group col-md-4">
                                     <label for="prod_codigo">Codigo</label>
-                                    <input type="text" class="form-control" :value="productos.prod_codigo" name="prod_codigo" id="prod_codigo">
+                                    <input type="text" class="form-control" :value="productos.prod_codigo"
+                                        name="prod_codigo" id="prod_codigo">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="prod_descripcion">Descripcion Producto</label>
-                                    <input type="text" class="form-control"  :value="productos.prod_descripcion" name="prod_descripcion"
-                                        id="prod_descripcion">
+                                    <input type="text" class="form-control" :value="productos.prod_descripcion"
+                                        name="prod_descripcion" id="prod_descripcion">
                                 </div>
                             </div>
 
@@ -43,7 +45,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="prod_codigo">Marca de producto</label>
                                     <div class="input-group">
-                                        <search-marca-producto></search-marca-producto>
+                                        <search-marca-producto  :selected="productos.marca_producto.marca_prod_nombre"
+                                            :id="productos.marca_producto.marca_prod_id"></search-marca-producto>
 
                                         <crear-marca-producto
                                             select_element="#marca_select_producto"></crear-marca-producto>
@@ -54,7 +57,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="prod_codigo">Zona</label>
                                     <div class="input-group">
-                                        <search-zona :selected="productos.zona.zona_nombre" :id="productos.zona.zona_id" ></search-zona>
+                                        <search-zona :selected="productos.zona.zona_nombre"
+                                            :id="productos.zona.zona_id"></search-zona>
 
                                         <crear-zona select_element="#select_zona"></crear-zona>
 
@@ -66,7 +70,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="prod_codigo">Unidades</label>
                                     <div class="input-group">
-                                        <search-unidades></search-unidades>
+                                        <search-unidades :selected_unidad="productos.unidad.unidades_nombre"
+                                            :id_unidad="productos.unidad.unidades_id"></search-unidades>
 
                                         <crear-unidades select_element="#select_unidades"></crear-unidades>
 
@@ -77,7 +82,8 @@
                                     <label for="prod_codigo">Categoria</label>
                                     <div class="input-group">
 
-                                        <search-categoria-producto></search-categoria-producto>
+                                        <search-categoria-producto :selected="productos.categoria.categoria_nombre"
+                                            :id="productos.categoria.categoria_id"></search-categoria-producto>
                                         <crear-categoria-producto
                                             select_element="#select_categoria_producto"></crear-categoria-producto>
                                     </div>
@@ -90,7 +96,8 @@
                                     <label>Seleccionar marcas de motos</label>
                                     <p>Selecciona las marcas en donde el producto funciona</p>
 
-                                    <seleccionar-marcas :selected="productos.producto_marcas" :marcas_motos="marcas_motos"></seleccionar-marcas>
+                                    <seleccionar-marcas :selected="productos.producto_marcas"
+                                        :marcas_motos="marcas_motos"></seleccionar-marcas>
                                 </div>
 
 
@@ -100,45 +107,55 @@
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="prod_precio_venta">Precio unitario</label>
-                                    <input type="number" class="form-control" name="prod_precio_venta"
-                                        id="prod_precio_venta">
+                                    <input type="number" :value="productos.prod_precio_venta" class="form-control"
+                                        name="prod_precio_venta" id="prod_precio_venta">
                                 </div>
 
                                 <div class="form-group col-md-3">
                                     <label for="prod_stock_inicial">Stock Inicial </label>
-                                    <input type="number" class="form-control" name="prod_stock_inicial"
-                                        id="prod_stock_inicial">
+                                    <input type="number" :value="productos.prod_stock_inicial" class="form-control"
+                                        name="prod_stock_inicial" id="prod_stock_inicial">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="prod_minimo">Stock Minimo </label>
-                                    <input type="number" class="form-control" name="prod_minimo" id="prod_minimo">
+                                    <input type="number" :value="productos.prod_minimo" class="form-control"
+                                        name="prod_minimo" id="prod_minimo">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label class="form-label">Calidad</label>
                                     <div class="selectgroup w-100">
                                         <label class="selectgroup-item">
                                             <input type="radio" name="prod_calidad" value="O"
-                                                class="selectgroup-input" checked="">
+                                                class="selectgroup-input" :checked="productos.prod_calidad === 'O'">
                                             <span class="selectgroup-button">Original</span>
                                         </label>
                                         <label class="selectgroup-item">
                                             <input type="radio" name="prod_calidad" value="A"
-                                                class="selectgroup-input">
+                                                class="selectgroup-input" :checked="productos.prod_calidad === 'A'">
                                             <span class="selectgroup-button">Alternativo</span>
                                         </label>
-
                                     </div>
                                 </div>
 
                             </div>
 
+                            <center class="m-2">
+                            <div id="default-image-container ">
+                                <img width="350" :src="productos.imagen == null ? '../../../../images/svg/sin_imagen.svg':'../../../../storage/' + productos.imagen.url" alt="Default Image"
+                                    id="default-image">
+                                 
+                            </div></center>
+
+                           
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="prod_precio_venta">Imagen para el producto</label>
                                     <div>
                                         <input type="file" name="images[]" style="display: none;" id="images"
                                             ref="fileInput" @change="handleFileChange" multiple />
-                                        <div ref="uppyContainer"></div>
+                                        <div ref="uppyContainer"> 
+
+                                        </div>
                                     </div>
                                 </div>
 
@@ -149,10 +166,9 @@
                     </div>
 
                     <div class="card-footer">
-                        <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear
+                        <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Editar
                             Producto</button>
                     </div>
-
                 </div>
 
             </form>
@@ -173,16 +189,23 @@
     import $ from "jquery";
     import "jquery-validation";
     import "jquery-validation/dist/localization/messages_es"
- 
+
 
     export default {
         data() {
-            return { 
-                marcas_motos : JSON.parse(this.$attrs.marcas_motos) || "",
-                productos: JSON.parse(this.$attrs.productos) || ""
+            return {
+                marcas_motos: JSON.parse(this.$attrs.marcas_motos) || "",
+                productos: JSON.parse(this.$attrs.productos) || "",
+                id: this.$attrs.id || ""
             }
         },
         mounted() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
 
             console.log(this.marcas_motos)
 
@@ -211,7 +234,7 @@
                     target: Dashboard
                 })
                 .use(XHRUpload, {
-                    endpoint: '/crear_producto', // Ruta de la API en Laravel que manejará la carga de archivos
+                    endpoint: '/editar_producto', // Ruta de la API en Laravel que manejará la carga de archivos
                     formData: true,
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -265,38 +288,59 @@
                 },
                 submitHandler: function(form) {
 
-                    var prod_nombre = $("#prod_nombre").val();
-                    var prod_nombre_secundario = $("#prod_nombre_secundario").val();
-                    var prod_codigo = $("#prod_codigo").val();
-                    var prod_descripcion = $("#prod_descripcion").val();
-                    var marca_select = $("#marcas_moto").val()
-                    var select_zona = $("#select_zona").val();
-                    var select_unidades = $("#select_unidades").val();
-                    var select_categoria_producto = $("#select_categoria_producto").val();
-                    var marcas_moto = $("#marca_select_producto").val();
-                    var prod_precio_venta = $("#prod_precio_venta").val();
-                    var prod_stock_inicial = $("#prod_stock_inicial").val();
-                    var prod_minimo = $("#prod_minimo").val();
+                    try {
+                         
+                        const fileUploadForm = document.getElementById('form_crear_producto');
+                        const formData = new FormData(fileUploadForm);
+                        uppy.getFiles().forEach((file) => {
+                            formData.append('files[]', file.data);
+                        });
 
-                    uppy.setMeta({
-                        prod_nombre: prod_nombre,
-                        prod_nombre_secundario: prod_nombre_secundario,
-                        prod_codigo: prod_codigo,
-                        prod_descripcion: prod_descripcion,
-                        marca_select: marca_select,
-                        select_zona: select_zona,
-                        select_unidades: select_unidades,
-                        select_categoria_producto: select_categoria_producto,
-                        marcas_moto: marcas_moto,
-                        prod_precio_venta: prod_precio_venta,
-                        prod_stock_inicial: prod_stock_inicial,
-                        prod_minimo: prod_minimo,
-                    });
 
-                    uppy.upload();
+
+                        //$("#crear_cliente").addClass("disabled btn-progress")
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = formData;
+                        axios
+                            .post("/editar_producto/" + this.id, data, {
+                                headers,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                console.log(response.data)
+                                if (response.data.success) {
+
+                                    window.location.href = response.data.data;
+
+                                } else {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'error',
+                                        title: 'Error al registrar el producto, intentelo otra vez',
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    })
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+
+
+                    } catch (error) {
+                        console.log(error)
+                    }
 
                     return false;
-                }
+                }.bind(this)
             });
         },
         methods: {

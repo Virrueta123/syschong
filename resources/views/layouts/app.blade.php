@@ -10,15 +10,16 @@
 
     <title>{{ config('app.name') }}</title>
     <link rel="icon" href="{{ asset('images/empresa/logo.png') }}" type="image/png">
-    
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- General CSS Files -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
-   
+
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('assets/modules/jqvmap/dist/jqvmap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/summernote/summernote-bs4.css') }}">
@@ -26,7 +27,7 @@
     <link rel="stylesheet" href="{{ asset('assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css') }}">
 
     <!-- Template CSS -->
-    
+
     <!-- Styles -->
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -35,19 +36,19 @@
     <link rel="stylesheet" href="{{ asset('assets/modules/select2/dist/css/select2.min.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
 
-    
+
     <link rel="stylesheet"
         href="{{ asset('assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-     
 
-  <link href="https://releases.transloadit.com/uppy/v3.14.0/uppy.min.css" rel="stylesheet">
+
+    <link href="https://releases.transloadit.com/uppy/v3.14.0/uppy.min.css" rel="stylesheet">
 
 
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
-    
+
 </head>
 
 <body>
@@ -55,8 +56,6 @@
         <div class="central">
 
             <span class="loader"></span>
-
-
             <p>Cargando operacion</p>
         </div>
     </div>
@@ -74,10 +73,11 @@
                                     class="fas fa-search"></i></a></li>
                     </ul>
                     <div class="search-element">
-                        <a href="{{ route("pos.create") }}" class="btn btn-icon btn-light"><i class="fa fa-plus"></i>  POS</a>
+                        <a href="{{ route('pos.create') }}" class="btn btn-icon btn-light"><i class="fa fa-plus"></i>
+                            POS</a>
                         <a href="#" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> NC</a>
                         <a href="#" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> ME</a>
-
+                        <a href="{{ route('cotizacion.index') }}" class="btn btn-icon btn-light"><i class="fa fa-file-invoice"></i></a>
                     </div>
                 </form>
                 <ul class="navbar-nav navbar-right">
@@ -248,10 +248,12 @@
             <div class="main-sidebar sidebar-style-2">
                 <aside id="sidebar-wrapper">
                     <div class="sidebar-brand">
-                        <a href="index.html"><img src="{{ asset('images/empresa/logo-chong.png') }}" class="img-thumbnail" width="150" alt=""></a>
+                        <a href="index.html"><img src="{{ asset('images/empresa/logo-chong.png') }}"
+                                class="img-thumbnail" width="150" alt=""></a>
                     </div>
                     <div class="sidebar-brand sidebar-brand-sm">
-                        <a href="index.html"><img src="{{ asset('images/empresa/logo.png') }}"  class="img-thumbnail" alt=""></a>
+                        <a href="index.html"><img src="{{ asset('images/empresa/logo.png') }}" class="img-thumbnail"
+                                alt=""></a>
                     </div>
 
                     @include('layouts.menus')
@@ -293,10 +295,10 @@
     <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script src="{{ asset('assets/modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('assets/modules/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/js/stisla.js') }}"></script>  
+    <script src="{{ asset('assets/js/stisla.js') }}"></script>
     <!-- JS Libraies -->
     <script src="{{ asset('assets/modules/jquery.sparkline.min.js') }}"></script>
     <script src="{{ asset('assets/modules/chart.min.js') }}"></script>
@@ -313,8 +315,8 @@
 
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset("assets/modules/prism/prism.js") }}"></script> 
- 
+    <script src="{{ asset('assets/modules/prism/prism.js') }}"></script>
+
 
     <!-- ******** sweet alert 2 par mostrar mensajes ************* -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -333,8 +335,8 @@
     <!-- ******** datatables ************* -->
 
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script> 
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script> 
+    <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
     <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -344,7 +346,7 @@
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
     <script src="{{ asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('assets/modules/jquery-ui/jquery-ui.min.js') }}"></script>
-  
+
 
 
     <!-- Librería de los botones de DataTables -->

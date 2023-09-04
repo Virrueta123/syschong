@@ -86,6 +86,16 @@
                             <td>{{ $get->usuario->name }} / {{ $get->usuario->last_name }} </td>
                         </tr>
 
+                        <tr>
+                            <td>Marca de motos que se usar este producto:</td>
+                            <td>
+                               
+                                @foreach ($get->producto_marcas  as $prod)
+                                    <span class="badge badge-danger">{{$prod->marca->marca_nombre}}</span>
+                                @endforeach  
+                            </td>
+                        </tr>
+
 
                     </tbody>
                 </table>

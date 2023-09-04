@@ -115,6 +115,8 @@ class cotizacion_controller extends Controller
         /*try {*/
         $Datax = $request->all();
 
+       
+
         // Crear una nueva instancia del modelo
         $cotizacion = new cotizacion();
 
@@ -158,11 +160,12 @@ class cotizacion_controller extends Controller
                 // Guardar el registro en la base de datos
                 $cotizaion_detalle->save();
             }
-
+         
             session()->flash('success', 'Registro creado correctamente');
             return redirect()->route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id));
+            
         } else {
-            Log::error('no se pudo registrar la cotizacion');
+            Log::error('no se pudo registrar la cotizacion'); 
             session()->flash('error', 'error al registrar en la base de datos');
             return redirect()->route('cotizacion.create', $Datax['id']);
         }
@@ -182,7 +185,7 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-        try {
+     
             $get = cotizacion::with([
                 'inventario' => function ($query) {
                     $query->with([
@@ -207,12 +210,7 @@ class cotizacion_controller extends Controller
             } else {
                 return view('errors.404');
             }
-        } catch (\Throwable $th) {
-            Log::error(json_encode($th->getMessage(), true));
-
-            session()->flash('error', 'error al entrar a esta ruta');
-            return redirect()->back();
-        }
+        
     }
 
     /**

@@ -5462,6 +5462,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [_mixin_js__WEBPACK_IMPORTED_MODULE_3__.myMixin],
+  data: function data() {
+    return {
+      selected: this.$attrs.selected || '',
+      id: this.$attrs.id || 0
+    };
+  },
   mounted: function mounted() {
     var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     jquery__WEBPACK_IMPORTED_MODULE_1___default().ajaxSetup({
@@ -5469,6 +5475,13 @@ __webpack_require__.r(__webpack_exports__);
         'X-CSRF-TOKEN': csrfToken
       }
     });
+    if (this.selected != "" && this.id != 0) {
+      var valor = this.selected;
+      console.log(this.selected);
+      var $select = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_categoria_producto);
+      var $option = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<option selected>' + valor + '</option>').val(this.id);
+      $select.append($option).trigger('change');
+    }
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_categoria_producto).select2({
       language: this.languajeSelect,
       ajax: {
@@ -6371,30 +6384,29 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixin_js__WEBPACK_IMPORTED_MODULE_4__.myMixin],
   data: function data() {
     return {
-      selected: this.$attrs.marcas || "",
+      selected: this.$attrs.selected || "",
       marcas_motos: this.$attrs.marcas_motos,
       array_motos: []
     };
   },
   mounted: function mounted() {
     var _this = this;
-    console.log(this.marcas_motos);
-    if (this.selected != "") {
-      console.log("dsada");
-      console.log(this.selected);
-      /*
-        var select_zona = $(this.$refs.select_zona);
-      var valores_diente = string_dientes.split(",");
-      console.log(valores_diente);
-      select_zona.val(valores_diente).trigger("change")*/
-    }
-
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marcas_moto).select2({
-      tags: true,
+      tags: false,
       placeholder: "",
       maximumSelectionLength: 60,
       data: this.marcas_motos
     });
+    if (this.selected != "") {
+      var seleccionados = [];
+      this.selected.forEach(function (element) {
+        console.log(element);
+        seleccionados.push(element.marca.marca_id);
+      });
+      var select_marca_moto = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marcas_moto);
+      select_marca_moto.val(seleccionados).trigger("change");
+      this.array_motos = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marcas_moto).val();
+    }
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marcas_moto).on("change", function () {
       _this.$emit("select", jquery__WEBPACK_IMPORTED_MODULE_1___default()(_this.$refs.marcas_moto).val());
       _this.array_motos = jquery__WEBPACK_IMPORTED_MODULE_1___default()(_this.$refs.marcas_moto).val();
@@ -6542,6 +6554,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [_mixin_js__WEBPACK_IMPORTED_MODULE_3__.myMixin],
+  data: function data() {
+    return {
+      selected: this.$attrs.selected || '',
+      id: this.$attrs.id || 0
+    };
+  },
   mounted: function mounted() {
     var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     jquery__WEBPACK_IMPORTED_MODULE_1___default().ajaxSetup({
@@ -6549,6 +6567,13 @@ __webpack_require__.r(__webpack_exports__);
         'X-CSRF-TOKEN': csrfToken
       }
     });
+    if (this.selected != "" && this.id != 0) {
+      var valor = this.selected;
+      console.log(this.selected);
+      var $select = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marca_select_producto);
+      var $option = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<option selected>' + valor + '</option>').val(this.id);
+      $select.append($option).trigger('change');
+    }
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.marca_select_producto).select2({
       language: this.languajeSelect,
       ajax: {
@@ -7227,11 +7252,18 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       marcas_motos: JSON.parse(this.$attrs.marcas_motos) || "",
-      productos: JSON.parse(this.$attrs.productos) || ""
+      productos: JSON.parse(this.$attrs.productos) || "",
+      id: this.$attrs.id || ""
     };
   },
   mounted: function mounted() {
     var _this = this;
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    jquery__WEBPACK_IMPORTED_MODULE_9___default().ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken
+      }
+    });
     console.log(this.marcas_motos);
 
     // Initialize Uppy with desired options
@@ -7255,7 +7287,7 @@ __webpack_require__.r(__webpack_exports__);
     }).use(_uppy_image_editor__WEBPACK_IMPORTED_MODULE_4__["default"], {
       target: _uppy_dashboard__WEBPACK_IMPORTED_MODULE_2__["default"]
     }).use(_uppy_xhr_upload__WEBPACK_IMPORTED_MODULE_6__["default"], {
-      endpoint: '/crear_producto',
+      endpoint: '/editar_producto',
       // Ruta de la API en Laravel que manejará la carga de archivos
       formData: true,
       headers: {
@@ -7301,36 +7333,49 @@ __webpack_require__.r(__webpack_exports__);
           required: true
         }
       },
-      submitHandler: function submitHandler(form) {
-        var prod_nombre = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_nombre").val();
-        var prod_nombre_secundario = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_nombre_secundario").val();
-        var prod_codigo = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_codigo").val();
-        var prod_descripcion = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_descripcion").val();
-        var marca_select = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#marcas_moto").val();
-        var select_zona = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_zona").val();
-        var select_unidades = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_unidades").val();
-        var select_categoria_producto = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_categoria_producto").val();
-        var marcas_moto = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#marca_select_producto").val();
-        var prod_precio_venta = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_precio_venta").val();
-        var prod_stock_inicial = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_stock_inicial").val();
-        var prod_minimo = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_minimo").val();
-        uppy.setMeta({
-          prod_nombre: prod_nombre,
-          prod_nombre_secundario: prod_nombre_secundario,
-          prod_codigo: prod_codigo,
-          prod_descripcion: prod_descripcion,
-          marca_select: marca_select,
-          select_zona: select_zona,
-          select_unidades: select_unidades,
-          select_categoria_producto: select_categoria_producto,
-          marcas_moto: marcas_moto,
-          prod_precio_venta: prod_precio_venta,
-          prod_stock_inicial: prod_stock_inicial,
-          prod_minimo: prod_minimo
-        });
-        uppy.upload();
+      submitHandler: function (form) {
+        try {
+          var fileUploadForm = document.getElementById('form_crear_producto');
+          var formData = new FormData(fileUploadForm);
+          uppy.getFiles().forEach(function (file) {
+            formData.append('files[]', file.data);
+          });
+
+          //$("#crear_cliente").addClass("disabled btn-progress")
+          var headers = {
+            "Content-Type": "application/json"
+          };
+          var data = formData;
+          axios__WEBPACK_IMPORTED_MODULE_8___default().post("/editar_producto/" + this.id, data, {
+            headers: headers
+          }).then(function (response) {
+            console.log(response.data);
+            console.log(response.data);
+            if (response.data.success) {
+              window.location.href = response.data.data;
+            } else {
+              sweetalert2__WEBPACK_IMPORTED_MODULE_7___default().fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Error al registrar el producto, intentelo otra vez',
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
+          })["catch"](function (error) {
+            sweetalert2__WEBPACK_IMPORTED_MODULE_7___default().fire({
+              icon: "error",
+              title: "Error 500",
+              text: "Error en el servidor, vuelva a intentar",
+              footer: "-------"
+            });
+            console.error(error);
+          });
+        } catch (error) {
+          console.log(error);
+        }
         return false;
-      }
+      }.bind(this)
     });
   },
   methods: {
@@ -7464,33 +7509,44 @@ __webpack_require__.r(__webpack_exports__);
         }
       },
       submitHandler: function submitHandler(form) {
-        var prod_nombre = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_nombre").val();
-        var prod_nombre_secundario = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_nombre_secundario").val();
-        var prod_codigo = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_codigo").val();
-        var prod_descripcion = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_descripcion").val();
-        var marca_select = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#marcas_moto").val();
-        var select_zona = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_zona").val();
-        var select_unidades = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_unidades").val();
-        var select_categoria_producto = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#select_categoria_producto").val();
-        var marcas_moto = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#marca_select_producto").val();
-        var prod_precio_venta = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_precio_venta").val();
-        var prod_stock_inicial = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_stock_inicial").val();
-        var prod_minimo = jquery__WEBPACK_IMPORTED_MODULE_9___default()("#prod_minimo").val();
-        uppy.setMeta({
-          prod_nombre: prod_nombre,
-          prod_nombre_secundario: prod_nombre_secundario,
-          prod_codigo: prod_codigo,
-          prod_descripcion: prod_descripcion,
-          marca_select: marca_select,
-          select_zona: select_zona,
-          select_unidades: select_unidades,
-          select_categoria_producto: select_categoria_producto,
-          marcas_moto: marcas_moto,
-          prod_precio_venta: prod_precio_venta,
-          prod_stock_inicial: prod_stock_inicial,
-          prod_minimo: prod_minimo
-        });
-        uppy.upload();
+        try {
+          var fileUploadForm = document.getElementById('form_crear_producto');
+          var formData = new FormData(fileUploadForm);
+          uppy.getFiles().forEach(function (file) {
+            formData.append('files[]', file.data);
+          });
+          var headers = {
+            "Content-Type": "application/json"
+          };
+          var data = formData;
+          axios__WEBPACK_IMPORTED_MODULE_8___default().post("/crear_producto", data, {
+            headers: headers
+          }).then(function (response) {
+            console.log(response.data);
+            console.log(response.data);
+            if (response.data.success) {
+              window.location.href = response.data.data;
+            } else {
+              sweetalert2__WEBPACK_IMPORTED_MODULE_7___default().fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Error al registrar el producto, intentelo otra vez',
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
+          })["catch"](function (error) {
+            sweetalert2__WEBPACK_IMPORTED_MODULE_7___default().fire({
+              icon: "error",
+              title: "Error 500",
+              text: "Error en el servidor, vuelva a intentar",
+              footer: "-------"
+            });
+            console.error(error);
+          });
+        } catch (error) {
+          console.log(error);
+        }
         return false;
       }
     });
@@ -7877,7 +7933,61 @@ __webpack_require__.r(__webpack_exports__);
       }, 1000);
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    var self = this;
+
+    // Coloca aquí el código que deseas ejecutar después del temporizador
+    var headers = {
+      "Content-Type": "application/json"
+    };
+    var data = {
+      search: ""
+    };
+    axios__WEBPACK_IMPORTED_MODULE_1___default().post("/search_servicios", data, {
+      headers: headers
+    }).then(function (response) {
+      if (response.data.success) {
+        self.show_servicios = JSON.parse(response.data.data);
+      } else {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          icon: "error",
+          title: "Error",
+          text: response.data.message,
+          footer: "-------"
+        });
+      }
+    })["catch"](function (error) {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+        icon: "error",
+        title: "Error 500",
+        text: "Error en el servidor, vuelva a intentar",
+        footer: "-------"
+      });
+      console.error(error);
+    });
+    axios__WEBPACK_IMPORTED_MODULE_1___default().post("/search_repuesto", data, {
+      headers: headers
+    }).then(function (response) {
+      if (response.data.success) {
+        self.show_productos = JSON.parse(response.data.data);
+      } else {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          icon: "error",
+          title: "Error",
+          text: response.data.message,
+          footer: "-------"
+        });
+      }
+    })["catch"](function (error) {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+        icon: "error",
+        title: "Error 500",
+        text: "Error en el servidor, vuelva a intentar",
+        footer: "-------"
+      });
+      console.error(error);
+    });
+  }
 });
 
 /***/ }),
@@ -8796,6 +8906,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [_mixin_js__WEBPACK_IMPORTED_MODULE_3__.myMixin],
+  data: function data() {
+    return {
+      selected: this.$attrs.selected_unidad || '',
+      id: this.$attrs.id_unidad || 0
+    };
+  },
   mounted: function mounted() {
     var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     jquery__WEBPACK_IMPORTED_MODULE_1___default().ajaxSetup({
@@ -8803,7 +8919,13 @@ __webpack_require__.r(__webpack_exports__);
         'X-CSRF-TOKEN': csrfToken
       }
     });
-    console.log("Component mounted.");
+    if (this.selected != "" && this.id != 0) {
+      var valor = this.selected;
+      console.log(this.selected);
+      var $select = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_unidades);
+      var $option = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<option selected>' + valor + '</option>').val(this.id);
+      $select.append($option).trigger('change');
+    }
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_unidades).select2({
       language: this.languajeSelect,
       ajax: {
@@ -9076,14 +9198,6 @@ __webpack_require__.r(__webpack_exports__);
         'X-CSRF-TOKEN': csrfToken
       }
     });
-    console.log("Component mounted.");
-    if (this.selected != "" && this.id != 0) {
-      var valor = this.selected;
-      console.log(this.selected);
-      var $select = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_zona);
-      var $option = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<option selected>' + valor + '</option>').val(this.id);
-      $select.append($option).trigger('change');
-    }
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_zona).select2({
       language: this.languajeSelect,
       ajax: {
@@ -9124,6 +9238,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     });
+    if (this.selected != "" && this.id != 0) {
+      var valor = this.selected;
+      var $select = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.$refs.select_zona);
+      var $option = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<option selected>' + valor + '</option>').val(this.id);
+      $select.append($option).trigger('change');
+    }
   }
 });
 
@@ -10500,8 +10620,9 @@ var render = function render() {
       expression: "array_motos"
     }],
     attrs: {
-      type: "hidden",
-      id: "marcas_moto"
+      type: "text",
+      id: "marcas_moto",
+      name: "marcas_moto"
     },
     domProps: {
       value: _vm.array_motos
@@ -11201,7 +11322,7 @@ var render = function render() {
     attrs: {
       id: "form_crear_producto",
       method: "POST",
-      action: "#",
+      action: "/editar_producto",
       enctype: "multipart/form-data"
     }
   }, [_c("div", {
@@ -11292,7 +11413,12 @@ var render = function render() {
     }
   }, [_vm._v("Marca de producto")]), _vm._v(" "), _c("div", {
     staticClass: "input-group"
-  }, [_c("search-marca-producto"), _vm._v(" "), _c("crear-marca-producto", {
+  }, [_c("search-marca-producto", {
+    attrs: {
+      selected: _vm.productos.marca_producto.marca_prod_nombre,
+      id: _vm.productos.marca_producto.marca_prod_id
+    }
+  }), _vm._v(" "), _c("crear-marca-producto", {
     attrs: {
       select_element: "#marca_select_producto"
     }
@@ -11323,7 +11449,12 @@ var render = function render() {
     }
   }, [_vm._v("Unidades")]), _vm._v(" "), _c("div", {
     staticClass: "input-group"
-  }, [_c("search-unidades"), _vm._v(" "), _c("crear-unidades", {
+  }, [_c("search-unidades", {
+    attrs: {
+      selected_unidad: _vm.productos.unidad.unidades_nombre,
+      id_unidad: _vm.productos.unidad.unidades_id
+    }
+  }), _vm._v(" "), _c("crear-unidades", {
     attrs: {
       select_element: "#select_unidades"
     }
@@ -11335,7 +11466,12 @@ var render = function render() {
     }
   }, [_vm._v("Categoria")]), _vm._v(" "), _c("div", {
     staticClass: "input-group"
-  }, [_c("search-categoria-producto"), _vm._v(" "), _c("crear-categoria-producto", {
+  }, [_c("search-categoria-producto", {
+    attrs: {
+      selected: _vm.productos.categoria.categoria_nombre,
+      id: _vm.productos.categoria.categoria_id
+    }
+  }), _vm._v(" "), _c("crear-categoria-producto", {
     attrs: {
       select_element: "#select_categoria_producto"
     }
@@ -11348,7 +11484,104 @@ var render = function render() {
       selected: _vm.productos.producto_marcas,
       marcas_motos: _vm.marcas_motos
     }
-  })], 1)]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+  })], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "form-row"
+  }, [_c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "prod_precio_venta"
+    }
+  }, [_vm._v("Precio unitario")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "number",
+      name: "prod_precio_venta",
+      id: "prod_precio_venta"
+    },
+    domProps: {
+      value: _vm.productos.prod_precio_venta
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "prod_stock_inicial"
+    }
+  }, [_vm._v("Stock Inicial ")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "number",
+      name: "prod_stock_inicial",
+      id: "prod_stock_inicial"
+    },
+    domProps: {
+      value: _vm.productos.prod_stock_inicial
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "prod_minimo"
+    }
+  }, [_vm._v("Stock Minimo ")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "number",
+      name: "prod_minimo",
+      id: "prod_minimo"
+    },
+    domProps: {
+      value: _vm.productos.prod_minimo
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Calidad")]), _vm._v(" "), _c("div", {
+    staticClass: "selectgroup w-100"
+  }, [_c("label", {
+    staticClass: "selectgroup-item"
+  }, [_c("input", {
+    staticClass: "selectgroup-input",
+    attrs: {
+      type: "radio",
+      name: "prod_calidad",
+      value: "O"
+    },
+    domProps: {
+      checked: _vm.productos.prod_calidad === "O"
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "selectgroup-button"
+  }, [_vm._v("Original")])]), _vm._v(" "), _c("label", {
+    staticClass: "selectgroup-item"
+  }, [_c("input", {
+    staticClass: "selectgroup-input",
+    attrs: {
+      type: "radio",
+      name: "prod_calidad",
+      value: "A"
+    },
+    domProps: {
+      checked: _vm.productos.prod_calidad === "A"
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "selectgroup-button"
+  }, [_vm._v("Alternativo")])])])])]), _vm._v(" "), _c("center", {
+    staticClass: "m-2"
+  }, [_c("div", {
+    attrs: {
+      id: "default-image-container "
+    }
+  }, [_c("img", {
+    attrs: {
+      width: "350",
+      src: _vm.productos.imagen == null ? "../../../../images/svg/sin_imagen.svg" : "../../../../storage/" + _vm.productos.imagen.url,
+      alt: "Default Image",
+      id: "default-image"
+    }
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-12"
@@ -11372,7 +11605,7 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("div", {
     ref: "uppyContainer"
-  })])])])])]), _vm._v(" "), _vm._m(2)])])])]);
+  })])])])], 1)]), _vm._v(" "), _vm._m(1)])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -11384,80 +11617,6 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "form-row"
-  }, [_c("div", {
-    staticClass: "form-group col-md-3"
-  }, [_c("label", {
-    attrs: {
-      "for": "prod_precio_venta"
-    }
-  }, [_vm._v("Precio unitario")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "prod_precio_venta",
-      id: "prod_precio_venta"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-3"
-  }, [_c("label", {
-    attrs: {
-      "for": "prod_stock_inicial"
-    }
-  }, [_vm._v("Stock Inicial ")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "prod_stock_inicial",
-      id: "prod_stock_inicial"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-3"
-  }, [_c("label", {
-    attrs: {
-      "for": "prod_minimo"
-    }
-  }, [_vm._v("Stock Minimo ")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "prod_minimo",
-      id: "prod_minimo"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-3"
-  }, [_c("label", {
-    staticClass: "form-label"
-  }, [_vm._v("Calidad")]), _vm._v(" "), _c("div", {
-    staticClass: "selectgroup w-100"
-  }, [_c("label", {
-    staticClass: "selectgroup-item"
-  }, [_c("input", {
-    staticClass: "selectgroup-input",
-    attrs: {
-      type: "radio",
-      name: "prod_calidad",
-      value: "O",
-      checked: ""
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "selectgroup-button"
-  }, [_vm._v("Original")])]), _vm._v(" "), _c("label", {
-    staticClass: "selectgroup-item"
-  }, [_c("input", {
-    staticClass: "selectgroup-input",
-    attrs: {
-      type: "radio",
-      name: "prod_calidad",
-      value: "A"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "selectgroup-button"
-  }, [_vm._v("Alternativo")])])])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
     staticClass: "card-footer"
   }, [_c("button", {
     staticClass: "btn btn-danger boton-color",
@@ -11465,7 +11624,7 @@ var staticRenderFns = [function () {
       type: "submit",
       id: "crear_cliente"
     }
-  }, [_vm._v("Crear\n                        Producto")])]);
+  }, [_vm._v("Editar\n                        Producto")])]);
 }];
 render._withStripped = true;
 

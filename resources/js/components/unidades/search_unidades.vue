@@ -16,6 +16,12 @@
 
     export default {
         mixins: [myMixin],
+        data(){
+            return {
+                selected: this.$attrs.selected_unidad || '',
+                id: this.$attrs.id_unidad || 0,
+            }
+        },
         mounted() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             $.ajaxSetup({
@@ -23,7 +29,20 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
-            console.log("Component mounted.");
+
+            
+            if (this.selected != "" && this.id != 0) {
+                var valor = this.selected;
+
+                console.log(this.selected)
+
+                var $select = $(this.$refs.select_unidades);
+
+                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+
+                $select.append($option).trigger('change'); 
+            }
+ 
             $(this.$refs.select_unidades).select2({
                 language: this.languajeSelect,
                 ajax: {
