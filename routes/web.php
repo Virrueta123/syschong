@@ -49,12 +49,16 @@ include 'web/activaciones.php';
 include 'web/tienda.php';
 
 include 'web/vendedor.php';
+
+include 'web/datatables_vue.php';
  
+include 'web/poveedores.php';
 
 /* *********************** */
 
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('cliente', App\Http\Controllers\clienteController::class);
@@ -86,6 +90,10 @@ Route::resource('vendedor', App\Http\Controllers\vendedor_controller::class);
 Route::resource('categorias', App\Http\Controllers\categoria_producto_controller::class); 
 
 Route::resource('pos', App\Http\Controllers\pos_controller::class); 
+
+Route::resource('compras', App\Http\Controllers\compras_controller::class); 
+
+Route::resource('proveedores', App\Http\Controllers\proveedores_controller::class); 
 
 
 

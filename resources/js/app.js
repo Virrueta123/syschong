@@ -1,7 +1,6 @@
 //require('./bootstrap');   
 
-
-
+ 
 window.Vue = require("vue").default;
 
 Vue.component('input-money', require('./components/implementaciones/input_currency.vue').default); 
@@ -21,10 +20,16 @@ Vue.component('search-cliente', require('./components/search_cliente.vue').defau
 Vue.component('crear-cliente', require('./components/crear_cliente.vue').default);
  
 
+
 /* -- ******** maraca de las motos ************* -- */
 Vue.component('search-marca', require('./components/marca/search_marca.vue').default);
 Vue.component('crear-marca', require('./components/marca/crear_marca.vue').default);
 Vue.component('seleccionar-marcas', require('./components/marca/seleccionar_marcas.vue').default);
+/* -- *********************** -- */
+
+/* -- ******** componetes para los proveedores ************* -- */
+Vue.component('tipo-documento', require('./components/proveedores/tipo_documento.vue').default); 
+Vue.component('importar-proveedores', require('./components/proveedores/importar_proveedores.vue').default); 
 /* -- *********************** -- */
 
 
@@ -83,6 +88,11 @@ Vue.component('search-categoria-producto', require('./components/categoria_produ
 Vue.component('crear-categoria-producto', require('./components/categoria_producto/crear-categoria_producto.vue').default);
 /* -- *********************** -- */
 
+/* -- ******** modulos para comprar ************* -- */
+Vue.component('create-compra', require('./components/compra/create_compra.vue').default);
+Vue.component('search-respuestos', require('./components/compra/search_respuestos.vue').default);
+/* -- *********************** -- */
+
 
 
 Vue.component('search-moto', require('./components/moto/search_moto.vue').default);
@@ -103,7 +113,20 @@ Vue.component('repuestos_add', require('./components/repuestos/add_repuesto.vue'
 
 /* -- *********************** -- */
 
+/* -- ******** todas las tablas ************* -- */ 
+Vue.component('tablas-activaciones-anterior-por-tienda', require('./components/tablas/tablas_activaciones_anterior_por_tienda.vue').default); 
+Vue.component('tablas-activaciones-actual-por-tienda', require('./components/tablas/tablas_activaciones_actual_por_tienda.vue').default); 
+Vue.component('tablas-cortesias-actual-por-tienda', require('./components/tablas/tablas_cortesias_actual_por_tienda.vue').default); 
+/* -- *********************** -- */
 
+
+
+
+ 
+ 
 const app = new Vue({
     el: '#app',
-});
+}); 
+ 
+  
+ 

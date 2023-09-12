@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\activacion_precio;
+use App\Models\activaciones;
+use App\Models\cortesias_activacion;
+use App\Models\producto;
 use App\Models\tiendas;
 use Carbon\Carbon;
+ 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
+use Yajra\DataTables\Html\Column;
 
 class tiendas_controller extends Controller
 {
@@ -107,8 +113,11 @@ class tiendas_controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id )
+    
     {
+        
+
         $get = tiendas::with([
             'precios' => function ($query) {
                 $query->with([
@@ -119,7 +128,10 @@ class tiendas_controller extends Controller
             },
         ])->find(decrypt_id($id));
 
-        return view('modules.tiendas.show', compact('get'));
+       
+
+        return view('modules.tiendas.show', compact( 'get', 'id'));
+ 
     }
 
     /**

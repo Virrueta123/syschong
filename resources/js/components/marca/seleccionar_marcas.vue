@@ -2,7 +2,7 @@
     <div>
         <select multiple="multiple" ref="marcas_moto" class="form-control select2 select2-hidden-accessible"
             style="width: 100%; height:280px;" name="marcas_moto"></select>
-        <input type="text" v-model="array_motos" id="marcas_moto" name="marcas_moto">
+        <input type="hidden" v-model="array_motos" id="marcas_moto" name="marcas_moto">
     </div>
 </template>
 

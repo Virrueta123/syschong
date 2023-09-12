@@ -4,19 +4,19 @@
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('home') }}" class="text-danger">Inicio</a></div>
         <div class="breadcrumb-item"><a href="{{ route('tiendas.index') }}" class="text-danger">Tiendas</a></div>
-        
+
     </div>
 @endsection
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h4  >Tabla de registros de las tiendas</h4>
+            <h4>Tabla de registros de las tiendas</h4>
             <div class="card-header-action">
-            
-                <a href="{{ route('tiendas.create') }}" class="btn btn-primary boton-color">Crear una tienda</a> 
-             
+
+                <a href="{{ route('tiendas.create') }}" class="btn btn-primary boton-color">Crear una tienda</a>
+
             </div>
-          
+
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -43,10 +43,10 @@
                                     </th>
                                     <th>
                                         Correo
-                                    </th> 
+                                    </th>
                                     <th>
                                         Fecha de Creacion
-                                    </th> 
+                                    </th>
                                     <th>
                                         <i class="fa fa-cogs" aria-hidden="true"></i> Acciones
                                     </th>
@@ -74,10 +74,10 @@
                                     </th>
                                     <th>
                                         Correo
-                                    </th> 
+                                    </th>
                                     <th>
                                         Fecha de Creacion
-                                    </th> 
+                                    </th>
                                     <th>
                                         <i class="fa fa-cogs" aria-hidden="true"></i> Acciones
                                     </th>
@@ -91,6 +91,8 @@
             </div>
         </div>
     </div>
+
+   
 @endsection
 
 @section('js')
@@ -104,8 +106,7 @@
                     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
                 },
                 ajax: "{{ route('tiendas.index') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'tienda_nombre',
                         name: 'tienda_nombre'
                     },
@@ -128,7 +129,7 @@
                     {
                         data: 'tienda_correo',
                         name: 'tienda_correo'
-                    }, 
+                    },
                     {
                         data: 'fecha_creacion',
                         name: 'fecha_creacion'
@@ -139,8 +140,7 @@
                         name: 'action'
                     },
 
-                ],
-
+                ], 
                 dom: 'Bfrtip',
                 "info": true,
                 fixedColumns: true,

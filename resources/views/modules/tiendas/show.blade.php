@@ -66,56 +66,112 @@
 
             </div>
         </div>
-        
+
     </div>
 
     <div class="card text-left">
-        
+
         <div class="card-body">
-          <div class="section-header">
-              <h6>Precio de los activaciones y cortesias de los modelos de las motos</h6>
-              <div class="section-header-breadcrumb">
-                <img class="" src="{{ asset('images/svg/lista.svg') }}" alt="" width="100">
-              </div>
-          </div>
+            <div class="section-header">
+                <h6>Precio de los activaciones y cortesias de los modelos de las motos</h6>
+                <div class="section-header-breadcrumb">
+                    <img class="" src="{{ asset('images/svg/lista.svg') }}" alt="" width="100">
+                </div>
+            </div>
 
-          <div class="form-row">
-              <div class="form-group col-md-12">
-                  <div class="table-responsive">
-                      <table class="table table-sm" id="table-repuestos">
-                          <thead>
-                              <tr>
-                                  <th scope="col">Marca</th>
-                                  <th scope="col">Modelo</th>
-                                  <th scope="col">Precio Activacion</th>
-                                  <th scope="col">Precio Cortesia</th> 
-                              </tr>
-                          </thead>
-                          <tbody>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-sm" id="table-repuestos">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Marca</th>
+                                    <th scope="col">Modelo</th>
+                                    <th scope="col">Precio Activacion</th>
+                                    <th scope="col">Precio Cortesia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                              @foreach ($get->precios as $precio)
-                                  <tr> 
-                                      <td scope="row">{{ $precio->modelo->marca->marca_nombre }} </td>
-                                      <td scope="row">{{ $precio->modelo->modelo_nombre }}</td>
-                                      <td scope="row">{{ $precio->precio_activacion }}</td>
-                                      <td scope="row">{{ $precio->precio_cortesia }}</td> 
-                                  </tr>
-                              @endforeach
-
-                              
-                          </tbody>
-                      </table>
-                  </div>
+                                @foreach ($get->precios as $precio)
+                                    <tr>
+                                        <td scope="row">{{ $precio->modelo->marca->marca_nombre }} </td>
+                                        <td scope="row">{{ $precio->modelo->modelo_nombre }}</td>
+                                        <td scope="row">{{ $precio->precio_activacion }}</td>
+                                        <td scope="row">{{ $precio->precio_cortesia }}</td>
+                                    </tr>
+                                @endforeach
 
 
-              </div>
+                            </tbody>
+                        </table>
+                    </div>
 
-          </div>
+
+                </div>
+
+            </div>
 
         </div>
-      </div>
+    </div>
+
+    <div id="app">
+
+        <div class="section-header">
+            <h6>Activaciones pasadas</h6>
+            <div class="section-header-breadcrumb">
+                <img class="" src="{{ asset('images/svg/lista.svg') }}" alt="" width="100">
+            </div>
+        </div>
+
+        <div class="card-body">
+            
+            <div class="table-responsive">
+                <tablas-activaciones-anterior-por-tienda id="{{ $id }}"></tablas-activaciones-anterior-por-tienda>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h6>Activaciones y cortezias actuales por cobrar  </h6>
+            <div class="section-header-breadcrumb">
+                <img class="" src="{{ asset('images/svg/table.svg') }}" alt="" width="100">
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <tablas-activaciones-actual-por-tienda id="{{ $id }}"></tablas-activaciones-actual-por-tienda>
+                </div>
+                <div class="col-6">
+                     <tablas-cortesias-actual-por-tienda id="{{ $id }}"></tablas-cortesias-actual-por-tienda>
+                </div>
+            </div>
+            <div class="table-responsive">
+                
+            </div>
+        </div>
+        
+        <div class="card-footer pt-3 d-flex justify-content-center">
+            <div class="budget-price justify-content-center">
+              <div class="budget-price-square bg-primary" data-width="20" style="width: 20px;"></div>
+              <div class="budget-price-label">Total de activaciones </div>
+            </div>
+            <div class="budget-price justify-content-center">
+              <div class="budget-price-square bg-danger" data-width="20" style="width: 20px;"></div>
+              <div class="budget-price-label">Total de cortesias</div>
+            </div>
+          </div>
+
+
+
+    </div>
+
+    
 @endsection
 
 @section('js')
-    <script></script>
+    <script>
+       
+    </script>
 @endsection

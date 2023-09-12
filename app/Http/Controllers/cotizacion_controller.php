@@ -115,8 +115,6 @@ class cotizacion_controller extends Controller
         /*try {*/
         $Datax = $request->all();
 
-       
-
         // Crear una nueva instancia del modelo
         $cotizacion = new cotizacion();
 
@@ -160,12 +158,11 @@ class cotizacion_controller extends Controller
                 // Guardar el registro en la base de datos
                 $cotizaion_detalle->save();
             }
-         
+
             session()->flash('success', 'Registro creado correctamente');
             return redirect()->route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id));
-            
         } else {
-            Log::error('no se pudo registrar la cotizacion'); 
+            Log::error('no se pudo registrar la cotizacion');
             session()->flash('error', 'error al registrar en la base de datos');
             return redirect()->route('cotizacion.create', $Datax['id']);
         }
@@ -185,32 +182,30 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-     
-            $get = cotizacion::with([
-                'inventario' => function ($query) {
-                    $query->with([
-                        'moto' => function ($query) {
-                            $query->with(['cliente', 'marca']);
-                        },
-                    ]);
-                },
-                'mecanico',
-                'detalle' => function ($query) {
-                    $query->with([
-                        'servicio',
-                        'producto' => function ($query) {
-                            $query->with(['unidad']);
-                        },
-                    ]);
-                },
-            ])->find(decrypt_id($id));
+        $get = cotizacion::with([
+            'inventario' => function ($query) {
+                $query->with([
+                    'moto' => function ($query) {
+                        $query->with(['cliente', 'marca']);
+                    },
+                ]);
+            },
+            'mecanico',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
 
-            if ($get) {
-                return view('modules.cotizacion.show', ['get' => $get, 'id' => $id]);
-            } else {
-                return view('errors.404');
-            }
-        
+        if ($get) {
+            return view('modules.cotizacion.show', ['get' => $get, 'id' => $id]);
+        } else {
+            return view('errors.404');
+        }
     }
 
     /**

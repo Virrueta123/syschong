@@ -240,6 +240,8 @@
                     title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
                 }, ]
             })
+
+            
         });
 
         

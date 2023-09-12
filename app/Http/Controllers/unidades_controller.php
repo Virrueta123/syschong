@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class unidades_controller extends Controller
 {
+    
     /**
      * Create a new controller instance.
      *

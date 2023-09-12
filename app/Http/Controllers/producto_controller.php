@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
+use Yajra\DataTables\Html\Column;
 
 class producto_controller extends Controller
 {
@@ -32,28 +34,122 @@ class producto_controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function datatables_vue()
+    {
+        $producto = producto::with(['marca_producto'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return DataTables::of($producto)
+            ->addIndexColumn()
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $prod_id = encrypt_id($Data->prod_id);
+                return view('buttons.productos', ['prod_id' => $prod_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function index(Builder $builder)
     {
         $fecha_actual = Carbon::now();
-        if ($request->ajax()) {
-            $producto = producto::with(['marca_producto'])
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            return DataTables::of($producto)
-                ->addIndexColumn()
-                ->addColumn('fecha_creacion', function ($Data) {
-                    return Carbon::parse($Data->created_at)->format('d/m/Y');
-                })
+        if (request()->ajax()) {
+            return DataTables::of(
+                producto::with([
+                    'marca_producto',
+                    'producto_marcas' => function ($query) {
+                        $query->with(['marca']);
+                    },
+                    'unidad',
+                    'categoria',
+                    'marca',
+                    'zona',
+                    'imagen',
+                ]),
+            )
                 ->addColumn('action', static function ($Data) {
                     $prod_id = encrypt_id($Data->prod_id);
                     return view('buttons.productos', ['prod_id' => $prod_id]);
                 })
-                ->rawColumns(['action'])
-                ->make(true);
-        } else {
-            return view('modules.productos.index', ['fecha_actual' => $fecha_actual]);
+                ->addColumn('calidad', static function ($Data) {
+                    switch ($Data->prod_calidad) {
+                        case 'O':
+                            return ' Original';
+                            break;
+
+                        case 'A':
+                            return ' Alternativo';
+                            break;
+                    }
+                })
+                ->toJson();
         }
+
+        $html = $builder
+            ->columns([
+                Column::make('prod_codigo')->title('Codigo'),
+                Column::make('prod_nombre')->title('Nombre'),
+                Column::make('prod_descripcion')->title('descripcion'),
+                Column::make('prod_precio_venta')->title('precio venta'),
+                Column::make('prod_stock_inicial')->title('cantidad'),
+                Column::computed('calidad')->title('Calidad'),
+                Column::make('unidad.unidades_nombre')->title('unidad'),
+                Column::make('categoria.categoria_nombre')->title('categoria'),
+                Column::make('marca.marca_prod_nombre')->title('marca'),
+                Column::make('zona.zona_nombre')->title('zona'),
+
+                Column::computed('action')
+                    ->title('Opcion')
+                    ->exportable(false)
+                    ->printable(false),
+            ])
+            ->parameters([
+                'dom' => 'Bfrtip',
+                'buttons' => [
+                    [
+                        'text' => '<i class="fa fa-bars"></i> columnas visibles',
+                        'extend' => 'colvis',
+                    ],
+                    [
+                        'text' => '<i class="fa fa-copy"></i> Copiar',
+                        'extend' => 'copy',
+                        'title' => 'tabla_cliente_fecha_' . $fecha_actual,
+                    ],
+                    [
+                        'text' => '<i class="fa fa-file-csv"></i> Csv',
+                        'extend' => 'csvHtml5',
+                        'title' => 'tabla_cliente_fecha_' . $fecha_actual,
+                    ],
+                    [
+                        'text' => '<i class="fa fa-file-excel"></i> Excel',
+                        'extend' => 'excelHtml5',
+                        'title' => 'tabla_cliente_fecha_' . $fecha_actual,
+                    ],
+                    [
+                        'text' => '<i class="fa fa-file-pdf"></i> Pdf',
+                        'extend' => 'pdfHtml5',
+                        'title' => 'tabla_cliente_fecha_' . $fecha_actual,
+                    ],
+                    [
+                        'text' => '<i class="fa fa-print"></i> Imprimir',
+                        'extend' => 'print',
+                        'title' => 'tabla_cliente_fecha_' . $fecha_actual,
+                    ],
+                ],
+                'language' => [
+                    'url' => url('//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json'),
+                ],
+                'processing' => false,
+                'serverSide' => true,
+                'responsive' => true,
+                'autoWidth' => false,
+            ]);
+        //php artisan vendor:publish --tag=datatables-buttons
+
+        return view('modules.productos.index', compact('html'));
     }
 
     /**
@@ -231,7 +327,7 @@ class producto_controller extends Controller
     public function editar_producto(Request $request, $id)
     {
         $array_marcas = explode(',', $request->input('marcas_moto'));
- 
+
         // Crear un nuevo registro
         $update = producto::find(decrypt_id($id));
 
@@ -301,10 +397,10 @@ class producto_controller extends Controller
             }
 
             $eliminar = producto_marcas::where('prod_id', decrypt_id($id))->delete();
- 
+
             foreach ($array_marcas as $marca) {
                 $producto_marcas = new producto_marcas();
- 
+
                 $producto_marcas->marca_id = $marca;
                 $producto_marcas->prod_id = decrypt_id($id);
                 $producto_marcas->save();
@@ -386,6 +482,53 @@ class producto_controller extends Controller
                 'data' => '',
             ]);
         }
+    }
+    /* *********************** */
+
+    /* ******** buscando repuesto peticion via ajax ************* */
+    public function search_repuesto_datatable()
+    {
+        $producto = producto::select(DB::raw('*'))->get();
+
+        return response()->json(['data' => $producto]);
+    }
+    /* *********************** */
+    public function get_producto(Request $request)
+    {
+        $producto = producto::with('marca_producto', 'unidad', 'categoria', 'marca', 'zona', 'imagen')->find($request->input('prod_id'));
+        if ($producto) {
+            return response()->json([
+                'message' => 'datos encontrados',
+                'error' => '',
+                'success' => true,
+                'data' => $producto,
+            ]);
+        } else {
+            Log::error('no se pudo agregar el producto');
+            return response()->json([
+                'message' => 'no se pudo agregar el producto',
+                'error' => '',
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    /* ******** ajax para buscar repuestos para las compras ************* */
+    function search_repuesto_compra(Request $request)
+    { 
+             
+            $search = $request->input('search');
+
+            $modelo = producto::
+                 select('prod_id as id', DB::raw("CONCAT('Nombre :',prod_nombre, ' | N.Secundario : ', prod_nombre_secundario, ' | Codigo : ', prod_codigo) as name"))
+                ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
+                ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
+                ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')
+                ->get();
+
+            echo json_encode($modelo);
+       
     }
     /* *********************** */
 }

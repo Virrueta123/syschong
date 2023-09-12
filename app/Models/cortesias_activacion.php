@@ -14,4 +14,9 @@ class cortesias_activacion extends Model
     public $primaryKey = 'cortesias_activacion_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function activaciones(){
+        return $this->belongsTo(activaciones::class, 'activaciones_id');
+    }
+
 }

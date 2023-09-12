@@ -585,5 +585,10 @@ div.type-zip .thumb-container:after {
 
 /* -- ********  ************* -- */
 
+.dataTables_processing {
+  /* Your custom CSS styles */
+  background-color: rgba(255, 0, 0, 0.5);
+  color: #db1818;
+}
  
 /* -- *********************** -- */

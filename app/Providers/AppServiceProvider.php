@@ -73,10 +73,10 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'Compras',
                         'icon' => 'fa fa-cart-arrow-down',
                         'submenu' => [
-                            ['name' => 'Todo los productos', 'url' => 'producto.index'], 
-                            ['name' => 'Crear un producto', 'url' => 'producto.create'],  
-                            ['name' => 'Marcas de Producto', 'url' => 'marca_producto.index'], 
-                            ['name' => 'Crear marca de producto', 'url' => 'marca_producto.create'], 
+                            ['name' => 'Todo los compras', 'url' => 'compras.index'], 
+                            ['name' => 'crear una compra', 'url' => 'compras.create'],  
+                            ['name' => 'todo los proveedores', 'url' => 'proveedores.index'], 
+                            ['name' => 'crear un proveedor', 'url' => 'proveedores.create'], 
                             ['name' => 'Categorias', 'url' => 'categorias.index'], 
                             ['name' => 'crear categoria', 'url' => 'categorias.create']
                         ],

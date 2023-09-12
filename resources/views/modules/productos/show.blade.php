@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('historial')
-    <h1>Detalles de la activacion</h1>
+    <h1>Detalles del poducto {{$get->prod_codigo}}</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('home') }}" class="text-danger">Inicio</a></div>
-        <div class="breadcrumb-item"><a href="{{ route('activaciones.index') }}" class="text-danger">Toda las activaciones</a>
+        <div class="breadcrumb-item"><a href="{{ route('producto.index') }}" class="text-danger">Todos los productos</a>
         </div>
-        <div class="breadcrumb-item">Vista de la activacion y sus cortesisas correspondiente</div>
+        <div class="breadcrumb-item">Detalles del producto  </div>
     </div>
 @endsection
 @section('content')
@@ -20,7 +20,7 @@
         </div>
         <div class="col-md-6">
             <!-- Detalles del Producto -->
-            <h2>Detallaes del Producto</h2>
+            <h2>Detalles del Producto</h2>
             <div class="card-body">
                 <table class="table table-striped table-md">
                     <tbody>
@@ -103,9 +103,11 @@
         </div>
     </div>
 </div>
+
+ 
 @endsection
 
-@section('js')
+@section('js') 
     <script></script>
 @endsection 
 

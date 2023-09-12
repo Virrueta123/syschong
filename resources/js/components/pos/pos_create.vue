@@ -1,85 +1,17 @@
 <template>
 
-
-    <div class="row">
-        <div class="col-md-8">
-            <h2 class="section-title">Buscardor productos</h2>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <input type="text" class="form-control" name="" id="" placeholder="Buscar...."
-                        v-on:keyup="buscando_repuesto($event)">
-                </div>
-
-            </div>
-            <section id="productos">
-
-                <div class="container py-5">
-                    <div class="row">
-                        <div v-for="(show, index) in show_productos" :key="index"
-                            class="col-md-12 col-lg-4 mb-4 mb-lg-0">
-                            <div class="card">
-
-                                <div v-if="parseInt(show.prod_stock_inicial) != 0"
-                                    class="d-flex justify-content-between p-3">
-                                    <p class="lead mb-0"> <input type="number" :id="'cantidad' + index"
-                                            v-on:change="cantidad_change(show.prod_stock_inicial,$event,index)"
-                                            class="form-control text-center" value="1"> </p>
-
-                                    <button type="button" :id="'button_add' + index"
-                                        v-on:click="agregar_producto(show.prod_stock_inicial,$event,index,show.prod_id)"
-                                        class="btn btn-primary boton-color"><i class="fa fa-plus"
-                                            aria-hidden="true"></i></button>
-
-                                </div>
-
-                                <div v-else class="d-flex justify-content-between p-3">
-                                    <p class="lead mb-0"> Sin Stock</p>
-                                </div>
+    <div>
 
 
 
-                                <img :src=" show.imagen === null ? '../../../../images/svg/sin_imagen.svg' :
-                                     '../../../../storage/' + show.imagen.url"
-                                    class="img-fluid mx-auto d-bloc" alt="Laptop" width="280" />
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <p class="small" :content="show.prod_nombre" v-tippy>
-                                            {{ limitarCaracteres(show . prod_nombre, 20) }}
-                                        </p>
 
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <h6 class="mb-0">
-                                            {{ parseInt(show . prod_stock_inicial) }}
-                                            uni.</h6>
-                                        <h5 class="text-dark mb-0">S/.
-                                            {{ show . prod_precio_venta }}
-                                        </h5>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-12 mb-12 mb-lg-0">
-                            <center v-if="show_productos.length == 0">
-                                <img src="../../../../public/images/svg/loading.svg" width="480" alt="">
-                                <h6 class="m-4">No hay productos con este nombre</h6>
-                            </center>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-        </div>
-        <div class="col-md-4">
-
-            <div class="section-body">
+        <div class="card text-left">
+            <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
+            </center>
+            <div class="card-body">
                 <div class="invoice">
                     <div class="invoice-print">
-                        <div class="row">           
+                        <div class="row">
                             <div class="col-lg-12">
                                 <div class="invoice-title">
                                     <h4>Informacion de la venta</h4>
@@ -87,7 +19,37 @@
                                 </div>
                                 <hr>
 
-                                <div class="form-row">
+                                <div class="form-row ">
+                                    <div class="form-group col-4">
+                                        <label>Tipo de comprobante</label>
+                                        <select v-on:change="tipo_comprobante($event)" class="form-control">
+                                            <option value="F">Factura Electronica</option>
+                                            <option value="B">Boleta Electronica</option>
+                                            <option value="N">Nota de Venta</option>
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="form-group col-2">
+                                        <label>Tipo de comprobante</label>
+                                        <select disabled ref="serie" class="form-control">
+                                            <option value="F001">F001</option>
+                                            <option value="B001">B001</option>
+                                            <option value="NV01">NV01</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-2">
+                                        <label></label>
+                                        <select disabled ref="serie" class="form-control">
+                                            <option value="F001">F001</option>
+                                            <option value="B001">B001</option>
+                                            <option value="NV01">NV01</option>
+                                        </select>
+                                    </div>
+
+
                                     <div class="form-group col-md-12">
 
                                         <label for="cli_telefono">Buscar Cliente </label>
@@ -140,48 +102,125 @@
                             </div>
                         </div>
 
-                        <div class="row mt-4">
+                        <div class="row">
+
                             <div class="col-md-12">
-                                <div class="section-title">Order Summary</div>
-                                <p class="section-lead">All items here cannot be deleted.</p>
+                                <div class="section-header">
+                                    <h1>Informacion de la venta</h1>
+                                    <div class="section-header-breadcrumb">
+
+                                        <a href="#" class="btn btn-primary boton-color" data-toggle="modal"
+                                            data-target="#modal-add-repuesto"><i class="fa fa-plus"> </i> Agregar
+                                            Repuesto</a>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover table-md">
+                                    <table class="table table-sm" id="table-repuestos">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Codigo</th>
+                                                <th scope="col">Descripcion</th>
+                                                <th scope="col">Detalle</th>
+                                                <th scope="col">unidad</th>
+                                                <th scope="col">Precio</th>
+                                                <th scope="col">Descuento</th>
+                                                <th scope="col">V.Descuento</th>
+                                                <th scope="col">Cantidad</th>
+                                                <th scope="col">Importe</th>
+                                                <th scope="col">Importe Decuento</th>
+                                                <th scope="col" class="text-center"><i class="fa fa-cog"
+                                                        aria-hidden="true"></i></th>
+                                            </tr>
+                                        </thead>
                                         <tbody>
-                                            <tr>
-                                                <th data-width="40" style="width: 40px;">#</th>
-                                                <th>Item</th>
-                                                <th class="text-center">Price</th>
-                                                <th class="text-center">Quantity</th>
-                                                <th class="text-right">Totals</th>
+
+                                            <tr v-for="(repuesto, index) in repuestos" :key="index">
+
+                                                <!-- ******** inputs ocultos para la cotizacion ************* -->
+                                                <input type="hidden" :name="'cotizacion[' + index + '][prod_id]'"
+                                                    :value="repuesto.prod_id">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
+                                                    :value="repuesto.servicios_id">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'"
+                                                    :value="repuesto.tipo">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
+                                                    :value="repuesto.Precio">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
+                                                    :value="repuesto.Importe">
+                                                <input type="hidden"
+                                                    :name="'cotizacion[' + index + '][ImporteDescuento]'"
+                                                    v-model="repuesto . ImporteDescuento">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][Descripcion]'"
+                                                    v-model="repuesto . Descripcion">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][Codigo]'"
+                                                    v-model="repuesto . Codigo">
+                                                <input type="hidden" :name="'cotizacion[' + index + '][Cantidad]'"
+                                                    v-model="repuesto . Cantidad">
+                                                <input type="hidden"
+                                                    :name="'cotizacion[' + index + '][ValorDescuento]'"
+                                                    v-model="repuesto . ValorDescuento">
+
+                                                <!-- *********************** -->
+
+                                                <td scope="row">{{ repuesto . Codigo }} </td>
+                                                <td scope="row">{{ repuesto . Descripcion }}</td>
+
+                                                <td scope="row"><input type="text" class="form-control"
+                                                        v-model="repuestos[index].Detalle"
+                                                        :name="'cotizacion[' + index + '][Detalle]'">
+                                                </td>
+
+                                                <td scope="row">{{ repuesto . unidad }}</td>
+                                                <td scope="row">{{ repuesto . Precio }}</td>
+
+                                                <td scope="row"> <input
+                                                        :name="'cotizacion[' + index + '][Descuento]'" type="number"
+                                                        class="form-control"
+                                                        v-on:change="descuento_change($event,index,repuesto . Importe)"
+                                                        :v-model="repuesto.Descuento"></td>
+
+                                                <td scope="row"> <input
+                                                        :name="'cotizacion[' + index + '][ValorDescuento]'"
+                                                        type="number" disabled class="form-control"
+                                                        :id="'valor_descuento' + index"
+                                                        v-model="repuesto.ValorDescuento">
+                                                </td>
+
+                                                <td scope="row">{{ repuesto . Cantidad }}</td>
+                                                <td scope="row">{{ repuesto . Importe }}</td>
+                                                <td scope="row">{{ repuesto . ImporteDescuento }}</td>
+                                                <td><button type="button" name="" id=""
+                                                        v-on:click="eliminar_producto(repuesto . prod_id)"
+                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                            aria-hidden="true"></i></button></td>
                                             </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Mouse Wireless</td>
-                                                <td class="text-center">$10.99</td>
-                                                <td class="text-center">1</td>
-                                                <td class="text-right">$10.99</td>
+
+                                            <input type="hidden" v-model="repuestos.length" id="cotizacion">
+
+                                            <input type="hidden" v-model="total" name="total">
+                                            <input type="hidden" v-model="total_descuento" name="total_descuento">
+
+
+                                            <tr v-if="repuestos.length == 0">
+                                                <td colspan="11">
+                                                    <center>
+                                                        <img src="../../../../public/images/svg/sin_data.svg"
+                                                            width="180" alt="">
+                                                        <h6>Agregue productos para continuar</h6>
+                                                    </center>
+
+                                                </td>
                                             </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Keyboard Wireless</td>
-                                                <td class="text-center">$20.00</td>
-                                                <td class="text-center">3</td>
-                                                <td class="text-right">$60.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Headphone Blitz TDR-3000</td>
-                                                <td class="text-center">$600.00</td>
-                                                <td class="text-center">1</td>
-                                                <td class="text-right">$600.00</td>
-                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-lg-8">
                                         <div class="section-title">Payment Method</div>
-                                        <p class="section-lead">The payment method that we provide is to make it easier
+                                        <p class="section-lead">The payment method that we provide is to make
+                                            it
+                                            easier
                                             for you to pay invoices.</p>
                                         <div class="images">
                                             <img src="assets/img/visa.png" alt="visa">
@@ -202,7 +241,8 @@
                                         <hr class="mt-2 mb-2">
                                         <div class="invoice-detail-item">
                                             <div class="invoice-detail-name">Total</div>
-                                            <div class="invoice-detail-value invoice-detail-value-lg">$685.99</div>
+                                            <div class="invoice-detail-value invoice-detail-value-lg">$685.99
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -217,12 +257,97 @@
                             <button class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i>
                                 Cancel</button>
                         </div>
-                        <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</button>
+                        <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i>
+                            Print</button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- ******** modal ************* -->
+
+        <div class="modal fade" id="modal-add-repuesto" tabindex="-1" role="dialog"
+            aria-labelledby="modal-crear-cliente-label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" tabindex="-1" role="dialog"
+                aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para buscar repuestos
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="card-body">
+
+                            <h2 class="section-title">Buscardor de repuestos</h2>
+
+
+                            <section>
+                                <div id="loading">
+                                    <table ref="miTabla" id="miTabla" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Codigo producto
+                                                </th>
+                                                <th>
+                                                    Nombre producto
+                                                </th>
+                                                <th>
+                                                    Stock
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>
+                                                    Codigo producto
+                                                </th>
+                                                <th>
+                                                    Nombre producto
+                                                </th>
+                                                <th>
+                                                    Stock
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </th>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </section>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- *********************** -->
+
     </div>
+
 
 
 
@@ -238,10 +363,18 @@
     import "imask";
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
-    import Vue from "vue";
-    import VueTippy, {
-        TippyComponent
-    } from "vue-tippy";
+
+    import DataTable from 'datatables.net-bs4';
+    import 'datatables.net-buttons-bs4';
+    import DateTime from 'datatables.net-datetime';
+    import 'datatables.net-fixedcolumns-bs4';
+    import 'datatables.net-responsive-bs4';
+    import 'datatables.net-searchbuilder-bs4';
+    import 'datatables.net-searchpanes-bs4';
+    import 'datatables.net-select-bs4';
+    import 'datatables.net-staterestore-bs4';
+
+
 
     import {
         myMixin
@@ -254,258 +387,209 @@
                 select_element: this.$attrs.select_element || "",
                 show_productos: [],
                 timeoutId: null,
+                repuestos: [],
+                total: 0,
+                porcentaje: 0,
+                total_descuento: 0,
+
             }
         },
         methods: {
-            prueba() {
-                console.log($(this.select_element).val());
+            /* -- ******** change tipo comprobante ************* -- */
+            tipo_comprobante(event) {
+                var valor = event.target.value;
+
+
+                switch (valor) {
+                    case "F":
+                        $(this.$refs.serie).val("F001")
+                        break;
+                    case "B":
+                        $(this.$refs.serie).val("B001")
+                        break;
+                    case "N":
+                        $(this.$refs.serie).val("NV01")
+                        break;
+                }
+
+                console.log(event)
             },
-            buscando_repuesto(event) {
+            /* -- *********************** -- */
+            eliminar_producto(identificador) {
+                var indice = this.repuestos.findIndex(
+                    (elemento) => elemento.prod_id === identificador
+                );
+                if (indice !== -1) {
+                    this.repuestos.splice(indice, 1);
+                    this.calcular_total();
+                }
+            },
+            calcular_total() {
+                const self = this;
+                const suma = this.repuestos.reduce((acumulador, objeto) => {
+                    return parseFloat(acumulador) + parseFloat(objeto.Importe);
+                }, 0);
 
-                var customElement = $(
-                    '<div class="loading" id="loadingSpinner"><div class="central"><span class="loader"></span><p>Cargando operacion</p></div></div>', {
-                        "css": {
-                            "border": "4px dashed gold",
-                            "font-size": "40px",
-                            "text-align": "center",
-                            "padding": "10px"
-                        },
-                        "class": "your-custom-class",
-                        "text": "Custom!"
-                    });
+                const suma_descuento = this.repuestos.reduce((acumulador, objeto) => {
+                    return parseFloat(acumulador) + parseFloat(objeto.ValorDescuento);
+                }, 0);
+
+                this.total = suma;
+                this.total_descuento = suma_descuento;
+
+            },
+            descuento_change(event, index, precio) {
+                var valor_decuento = event.target.value;
+                if (valor_decuento.value == 0) {
+                    valor_decuento.value = 1;
+                }
+                if (valor_decuento.value < 0) {
+                    valor_decuento.value = 1;
+                }
+                var descuento_valor = this.calcularPrecioDescontado(precio, valor_decuento)
+                var descuento_importe = this.calcularPrecioConDescuento(precio, valor_decuento)
+
+                this.repuestos[index].ValorDescuento = descuento_valor;
+                this.repuestos[index].ImporteDescuento = descuento_importe;
 
 
-                $('#productos').LoadingOverlay("show", {
-                    background: "#df2b2253",
-                    image: "",
-                    fontawesomeAnimation: "1.5s fadein",
-                    fontawesome: "fa fa-search"
-                });
+                this.calcular_total()
 
-                this.show_productos = [];
-
-
-                var search = event.target.value;
+            },
+            get_producto(id) {
 
                 var self = this
-                // Cancela el temporizador existente (si lo hay)
-                clearTimeout(this.timeoutId);
 
-                // Establece un nuevo temporizador de 2 segundos
-                this.timeoutId = setTimeout(function() {
-                    // Coloca aquí el código que deseas ejecutar después del temporizador
-                    const headers = {
-                        "Content-Type": "application/json",
-                    };
-                    const data = {
-                        search: search
-                    };
-                    axios
-                        .post("/search_repuesto", data, {
-                            headers,
-                        })
-                        .then((response) => {
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                const data = {
+                    prod_id: id
+                };
+                axios
+                    .post("/get_producto", data, {
+                        headers,
+                    })
+                    .then((response) => {
 
-                            if (response.data.success) {
-                                self.show_productos = JSON.parse(response.data.data);
-                                $("#productos").LoadingOverlay("hide", true);
-                            } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error",
-                                    text: response.data.message,
-                                    footer: "-------",
-                                });
-                            }
-                        })
-                        .catch((error) => {
+                        if (response.data.success) {
+                            var datos = response.data.data;
+                            console.log(response.data)
+
+                            self.repuestos.push({
+                                prod_id: datos.prod_id,
+                                tipo: "p",
+                                servicios_id: 0,
+                                Codigo: datos.prod_codigo,
+                                Descripcion: datos.prod_nombre,
+                                Detalle: "",
+                                unidad: datos.unidad.unidades_nombre,
+                                Precio: datos.prod_precio_venta,
+                                Descuento: 0,
+                                ValorDescuento: 0,
+                                Cantidad: 1,
+                                Importe: 1 * datos.prod_precio_venta,
+                                ImporteDescuento: 0
+                            })
+
+                        } else {
                             Swal.fire({
                                 icon: "error",
-                                title: "Error 500",
-                                text: "Error en el servidor, vuelva a intentar",
+                                title: "Error",
+                                text: response.data.message,
                                 footer: "-------",
                             });
-                            console.error(error);
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
                         });
-
-                }, 1000); // 2000 milisegundos = 2 segundos
+                        console.error(error);
+                    });
             },
         },
         mounted() {
             var self = this
 
-            /* -- ******** cargar datos ************* -- */
+            /* -- ******** datatable ************* -- */
 
-            // Coloca aquí el código que deseas ejecutar después del temporizador
-            const headers = {
-                "Content-Type": "application/json",
-            };
-            const data = {
-                search: ""
-            };
-            axios
-                .post("/search_repuesto", data, {
-                    headers,
-                })
-                .then((response) => {
-
-                    if (response.data.success) {
-                        self.show_productos = JSON.parse(response.data.data);
-
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: response.data.message,
-                            footer: "-------",
-                        });
-                    }
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error 500",
-                        text: "Error en el servidor, vuelva a intentar",
-                        footer: "-------",
-                    });
-                    console.error(error);
-                });
-            /* -- *********************** -- */
-
-            $("#form_cliente").validate({
-                rules: {
-                    cli_telefono: {
-                        maxlength: 11,
-                        minlength: 11,
-                        required: true,
-                    },
-                    cli_correo: {
-                        email: true,
-                    },
-                    cli_dni: {
-                        required: true,
-                        number: true,
-                        maxlength: 8,
-                        minlength: 8,
-                    },
-                    cli_nombre: {
-                        maxlength: 200,
-                        required: true,
-                    },
-                    cli_apellido: {
-                        maxlength: 200,
-                        required: true,
-                    },
-                    cli_direccion: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_departamento: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_provincia: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_distrito: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_ruc: {
-                        number: true,
-                        maxlength: 11,
-                        minlength: 11,
-                    },
-                    cli_razon_social: {
-                        maxlength: 255,
-                    },
-                    cli_direccion_ruc: {
-                        maxlength: 255,
-                    },
-                    cli_departamento_ruc: {
-                        maxlength: 255,
-                    },
-                    cli_provincia_ruc: {
-                        maxlength: 255
-                    },
-                    cli_distrito_ruc: {
-                        maxlength: 255,
-                    }
+            $("#miTabla").DataTable({
+                initComplete: search_input_by_column,
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.10/i18n/Spanish.json"
                 },
-                submitHandler: function(form) {
-                    //$("#crear_cliente").addClass("disabled btn-progress")
-                    const headers = {
-                        "Content-Type": "application/json",
-                    };
-                    const data = {
-                        cli_nombre: $("#cli_nombre").val(),
-                        cli_apellido: $("#cli_apellido").val(),
-                        cli_dni: $("#cli_dni").val(),
-                        cli_direccion: $("#cli_direccion").val(),
-                        cli_provincia: $("#cli_provincia").val(),
-                        cli_distrito: $("#cli_distrito").val(),
-                        cli_departamento: $("#cli_departamento").val(),
-                        cli_telefono: $("#cli_telefono").val(),
-                        cli_correo: $("#cli_correo").val(),
-                        cli_ruc: $("#cli_ruc").val(),
-                        cli_razon_social: $("#cli_razon_social").val(),
-                        cli_direccion_ruc: $("#cli_direccion_ruc").val(),
-                        cli_provincia_ruc: $("#cli_provincia_ruc").val(),
-                        cli_departamento_ruc: $("#cli_departamento_ruc").val(),
-                        cli_distrito_ruc: $("#cli_distrito_ruc").val(),
-                    };
-                    axios
-                        .post("/store_vue_cliente", data, {
-                            headers,
-                        })
-                        .then((response) => {
-                            console.log(response.data);
-                            console.log(response.data)
-                            if (response.data.success) {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Operacion Exitosa",
-                                    text: response.data.message,
-                                    footer: "-------",
-                                });
-
-                                var $select = $(self.select_element);
-                                console.log(self.select_element)
-
-                                var $option = $('<option selected>' + response.data.data.title +
-                                    '</option>').val(
-                                    response.data.data.value);
-                                $select.append($option).trigger('change');
-
-
-                                // Cerrar el modal 
-                                document.getElementById('modal-crear-cliente').style.display = 'none';
-                                $('body').removeClass('modal-open');
-                                $('.modal-backdrop').remove();
-
+                ajax: "/search_repuesto_datatable",
+                columns: [{
+                        data: 'prod_codigo',
+                        name: 'prod_codigo'
+                    },
+                    {
+                        data: 'prod_nombre',
+                        name: 'prod_nombre'
+                    },
+                    {
+                        data: 'prod_stock_inicial',
+                        name: 'prod_stock_inicial'
+                    },
+                    {
+                        data: 'prod_precio_venta',
+                        name: 'prod_precio_venta'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        name: 'action',
+                        render: function(data, type, row) {
+                            if (data.prod_stock_inicial != 0) {
+                                return '<button prod_id="' + data.prod_id +
+                                    '" class="btn  btn-primary btn-sm editar-btn">agregar</button>';
                             } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error",
-                                    text: response.data.message,
-                                    footer: "-------",
-                                });
+                                return "sin stock";
                             }
-                        })
-                        .catch((error) => {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error 500",
-                                text: "Error en el servidor, vuelva a intentar",
-                                footer: "-------",
-                            });
-                            console.error(error);
-                        });
-                    return false;
-                }
+
+                        }
+                    }
+
+                ],
+                initComplete: function() {
+                    // Agregar un evento clic a los botones
+                    $('#miTabla tbody').on('click', 'button', function() {
+
+                        const action = $(this);
+                        self.get_producto(action[0].attributes[0].value);
+
+
+
+
+                    });
+                },
+                dom: 'Bfrtip',
+                "info": true,
+                fixedColumns: true,
+                keys: true,
+                colReorder: true,
+                "lengthChange": true,
+                'responsive': true,
+                "autoWidth": false,
+                "ordering": true,
+                // Otras opciones y configuraciones de DataTables aquí
             });
-            /* -- *********************** -- */
+
+            // Usando jQuery para seleccionar los botones por el identificador único
+            $('.btn-agregar').on('click', (event) => {
+                const prodId = $(event.target).data('prod-id');
+                this.agregar(prodId); // Llama al método agregar con el prodId como argumento
+                console.log(prodId)
+            });
+
+
+
+
         },
     };
 </script>
