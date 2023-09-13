@@ -1,6 +1,6 @@
 <template>
 
-    <select name="zona_id" id="select_zona" ref="select_zona" class="form-control custom-select" style="width: 100"
+    <select name="zona_id" id="select_zona" ref="select_zona" class="form-control custom-select" style="width: 100%;"
         tabindex="-1" aria-hidden="true" language="es" placeholder="selecciona una zona">
     </select>
 

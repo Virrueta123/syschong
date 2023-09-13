@@ -504,9 +504,9 @@ class producto_controller extends Controller
                 'data' => $producto,
             ]);
         } else {
-            Log::error('no se pudo agregar el producto');
+            Log::error('no se encontro el producto');
             return response()->json([
-                'message' => 'no se pudo agregar el producto',
+                'message' => 'no se encontro el producto',
                 'error' => '',
                 'success' => false,
                 'data' => '',

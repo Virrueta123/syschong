@@ -126,14 +126,11 @@
                                             <tr>
                                                 <th scope="col">Codigo</th>
                                                 <th scope="col">Descripcion</th>
-                                                <th scope="col">Detalle</th>
+                                                <th scope="col">Zona</th>
                                                 <th scope="col">unidad</th>
-                                                <th scope="col">Precio</th>
-                                                <th scope="col">Descuento</th>
-                                                <th scope="col">V.Descuento</th>
+                                                <th scope="col">Precio</th>  
                                                 <th scope="col">Cantidad</th>
-                                                <th scope="col">Importe</th>
-                                                <th scope="col">Importe Decuento</th>
+                                                <th scope="col">Importe</th> 
                                                 <th scope="col" class="text-center"><i class="fa fa-cog"
                                                         aria-hidden="true"></i></th>
                                             </tr>
@@ -142,69 +139,26 @@
 
                                             <tr v-for="(repuesto, index) in repuestos" :key="index">
 
-                                                <!-- ******** inputs ocultos para la cotizacion ************* -->
-                                                <input type="hidden" :name="'cotizacion[' + index + '][prod_id]'"
-                                                    :value="repuesto.prod_id">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
-                                                    :value="repuesto.servicios_id">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'"
-                                                    :value="repuesto.tipo">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
-                                                    :value="repuesto.Precio">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
-                                                    :value="repuesto.Importe">
-                                                <input type="hidden"
-                                                    :name="'cotizacion[' + index + '][ImporteDescuento]'"
-                                                    v-model="repuesto . ImporteDescuento">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Descripcion]'"
-                                                    v-model="repuesto . Descripcion">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Codigo]'"
-                                                    v-model="repuesto . Codigo">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Cantidad]'"
-                                                    v-model="repuesto . Cantidad">
-                                                <input type="hidden"
-                                                    :name="'cotizacion[' + index + '][ValorDescuento]'"
-                                                    v-model="repuesto . ValorDescuento">
 
-                                                <!-- *********************** -->
 
                                                 <td scope="row">{{ repuesto . Codigo }} </td>
                                                 <td scope="row">{{ repuesto . Descripcion }}</td>
 
-                                                <td scope="row"><input type="text" class="form-control"
-                                                        v-model="repuestos[index].Detalle"
-                                                        :name="'cotizacion[' + index + '][Detalle]'">
-                                                </td>
 
+                                                <td scope="row">{{ repuesto . zona_nombre }}</td>
                                                 <td scope="row">{{ repuesto . unidad }}</td>
                                                 <td scope="row">{{ repuesto . Precio }}</td>
 
-                                                <td scope="row"> <input
-                                                        :name="'cotizacion[' + index + '][Descuento]'" type="number"
-                                                        class="form-control"
-                                                        v-on:change="descuento_change($event,index,repuesto . Importe)"
-                                                        :v-model="repuesto.Descuento"></td>
-
-                                                <td scope="row"> <input
-                                                        :name="'cotizacion[' + index + '][ValorDescuento]'"
-                                                        type="number" disabled class="form-control"
-                                                        :id="'valor_descuento' + index"
-                                                        v-model="repuesto.ValorDescuento">
-                                                </td>
 
                                                 <td scope="row">{{ repuesto . Cantidad }}</td>
                                                 <td scope="row">{{ repuesto . Importe }}</td>
-                                                <td scope="row">{{ repuesto . ImporteDescuento }}</td>
                                                 <td><button type="button" name="" id=""
                                                         v-on:click="eliminar_producto(repuesto . prod_id)"
                                                         class="btn btn-danger btn-sm"><i class="fa fa-trash"
                                                             aria-hidden="true"></i></button></td>
                                             </tr>
 
-                                            <input type="hidden" v-model="repuestos.length" id="cotizacion">
 
-                                            <input type="hidden" v-model="total" name="total">
-                                            <input type="hidden" v-model="total_descuento" name="total_descuento">
 
 
                                             <tr v-if="repuestos.length == 0">
@@ -212,7 +166,7 @@
                                                     <center>
                                                         <img src="../../../../public/images/svg/sin_data.svg"
                                                             width="180" alt="">
-                                                        <h6>Agregue productos para continuar</h6>
+                                                        <h6>Agregue repuestos para continuar</h6>
                                                     </center>
 
                                                 </td>
@@ -283,46 +237,94 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <form id="agregar_producto" method="POST" action="#">
+                        <div class="modal-body">
 
-                        <div class="card-body">
+                            <div class="card-body">
 
-                            <div class="form-row ">
+                                <div class="form-row ">
 
-                                <div class="form-group col-md-12">
+                                    <div class="form-group col-md-6">
 
-                                    <label for="cli_telefono">Buscar Repuesto </label>
+                                        <label for="cli_telefono">Buscar Repuesto </label>
 
-                                    <div class="input-group">
-                                        <search-respuestos>
-                                        </search-respuestos>
-                                        <!-- ********  <crear-cliente select_element="#cliente_select">
+                                        <div class="input-group">
+                                            <search-respuestos ref="prod_id" name="prod_id" id="prod_id">
+                                            </search-respuestos>
+                                            <!-- ********  <crear-cliente select_element="#cliente_select">
                                             </crear-cliente> -->
+                                        </div>
+
                                     </div>
 
+                                    <div class="form-group col-md-4">
+
+                                        <label for="cli_telefono">Buscar zona </label>
+
+                                        <div class="input-group">
+                                            <search-zona ref="zona_id" name="zona_id" id="zona_id">
+                                            </search-zona>
+                                            <!-- ********  <crear-cliente select_element="#cliente_select">
+                                            </crear-cliente> -->
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-row ">
+                                <div class="form-row ">
 
-                                <div class="form-group col-md-12">
-
-                                    <label for="cli_telefono">Buscar Repuesto </label>
-
-                                    <div class="input-group">
-                                        <search-respuestos>
-                                        </search-respuestos>
-                                        <!-- ********  <crear-cliente select_element="#cliente_select">
-            </crear-cliente> -->
+                                    <div class="form-group col-3">
+                                        <label>Cantidad</label>
+                                        <input v-model="cantidad" name="cantidad" type="number"
+                                            class="form-control" id="cantidad" required="">
                                     </div>
 
+                                    <div class="form-group col-3">
+                                        <label>Precio de compra</label>
+                                        <input v-model="precio_compra" name="precio_compra" type="text"
+                                            class="form-control" id="mounted" required="">
+                                    </div>
+
+
+                                    <div class="form-group col-3">
+                                        <label class="d-block">Opciones</label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"
+                                                v-model="is_precio_compra" @change="editar_precio_compra"
+                                                id="inlineCheckbox1" value="option1">
+                                            <label class="form-check-label" for="actualizar_precio_compra">Actualizar
+                                                precio de compra</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" v-model="is_precio_venta"
+                                                @change="editar_precio_venta" id="inlineCheckbox2" value="option2">
+                                            <label class="form-check-label" for="editar_precio_compra">Editar precio
+                                                de
+                                                venta</label>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="is_precio_venta" class="form-group col-3">
+                                        <label>Precio de venta</label>
+                                        <input v-model="precio_venta" name="precio_venta" value=""
+                                            type="text" class="form-control" id="mounted" required="">
+                                    </div>
+
+
+
                                 </div>
+
                             </div>
+
 
                         </div>
 
-
-                    </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" id="crear_cliente_cerrar" data-dismiss="modal">Cerrar
+                                Formulario</button>
+                            <button type="submit" class="btn btn-primary" id="crear_cliente">Agregar Compra</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -356,7 +358,7 @@
     import 'datatables.net-searchpanes-bs4';
     import 'datatables.net-select-bs4';
     import 'datatables.net-staterestore-bs4';
-
+    import IMask from 'imask';
 
 
     import {
@@ -374,10 +376,40 @@
                 total: 0,
                 porcentaje: 0,
                 total_descuento: 0,
-
+                /* -- ******** variables del modal para agregar productos ************* -- */
+                is_precio_venta: false,
+                is_precio_compra: false,
+                cantidad: 1,
+                precio_compra: 0,
+                precio_venta: 0,
+                prod_id: null,
+                zona_id: null
+                /* -- *********************** -- */
             }
         },
         methods: {
+            /* -- ******** onchange editar_precio_compra ************* -- */
+            editar_precio_venta() {
+
+                if (this.is_precio_venta) {
+                    this.is_precio_venta = true;
+                } else {
+                    this.is_precio_venta = false;
+                }
+
+            },
+            /* -- *********************** -- */
+
+            /* -- ******** onchange editar_precio_compra ************* -- */
+            editar_precio_compra() {
+                if (this.is_precio_compra) {
+                    this.is_precio_compra = true;
+                } else {
+                    this.is_precio_compra = false;
+                }
+            },
+            /* -- *********************** -- */
+
             /* -- ******** change tipo comprobante ************* -- */
             tipo_comprobante(event) {
                 var valor = event.target.value;
@@ -439,15 +471,15 @@
                 this.calcular_total()
 
             },
-            get_producto(id) {
-
+            agregar_producto() {
+                console.log(prod_id);
                 var self = this
 
                 const headers = {
                     "Content-Type": "application/json",
                 };
                 const data = {
-                    prod_id: id
+                    prod_id: this.prod_id
                 };
                 axios
                     .post("/get_producto", data, {
@@ -457,22 +489,21 @@
 
                         if (response.data.success) {
                             var datos = response.data.data;
-                            console.log(response.data)
+                            console.log($(this.$refs.select_zona))
 
                             self.repuestos.push({
                                 prod_id: datos.prod_id,
-                                tipo: "p",
-                                servicios_id: 0,
                                 Codigo: datos.prod_codigo,
                                 Descripcion: datos.prod_nombre,
-                                Detalle: "",
                                 unidad: datos.unidad.unidades_nombre,
-                                Precio: datos.prod_precio_venta,
-                                Descuento: 0,
-                                ValorDescuento: 0,
-                                Cantidad: 1,
-                                Importe: 1 * datos.prod_precio_venta,
-                                ImporteDescuento: 0
+                                Precio: this.precio_compra,
+                                precio_compra: this.precio_compra,
+                                precio_venta: this.precio_venta,
+                                Cantidad: this.cantidad,
+                                zona_id: this.zona_id,
+                                is_precio_venta: this.is_precio_venta,
+                                is_precio_compra: this.is_precio_compra,
+                                Importe: this.cantidad * this.precio_compra,
                             })
 
                         } else {
@@ -496,6 +527,29 @@
             },
         },
         mounted() {
+            /* -- ******** imask ************* -- */
+            const element = document.getElementById('cantidad');
+            const maskOptions = {
+                mask: Number,
+                min: 1,
+                max: 10000
+            };
+            const mask = IMask(element, maskOptions);
+            /* -- *********************** -- */
+
+            /* -- ******** Imask mounted ************* -- */
+
+            const mounted = document.getElementById('mounted');
+            const mounted_options = {
+                mask: Number,
+                scale: 2, // Dos decimales
+                thousandsSeparator: ',',
+                radix: '.',
+                mapToRadix: ['.'],
+            };
+            const mask_mounted = IMask(mounted, mounted_options);
+            /* -- *********************** -- */
+
             var self = this
 
             /* -- ******** datatable ************* -- */
@@ -546,9 +600,6 @@
                         const action = $(this);
                         self.get_producto(action[0].attributes[0].value);
 
-
-
-
                     });
                 },
                 dom: 'Bfrtip',
@@ -571,7 +622,100 @@
             });
 
 
+            try {
+                $("#agregar_producto").validate({
+                    rules: {
+                        prod_id: {
+                            required: true,
+                        },
+                        precio_venta: {
+                            required: true,
+                        },
+                        cantidad: {
+                            required: true,
+                        },
+                        precio_compra: {
+                            required: true,
+                        },
+                        zona_id: {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function(form) {
 
+                        var self = this
+
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = {
+                            prod_id: this.prod_id
+                        };
+                        console.log($("#prod_id")[0].innerText);
+                        axios
+                            .post("/get_producto", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+                                if (response.data.success) {
+                                    var datos = response.data.data;
+                                    console.log($(this.$refs.select_zona))
+
+                                    self.repuestos.push({
+                                        prod_id: datos.prod_id,
+                                        Codigo: datos.prod_codigo,
+                                        Descripcion: datos.prod_nombre,
+                                        unidad: datos.unidad.unidades_nombre,
+                                        Precio: this.precio_compra,
+                                        precio_compra: this.precio_compra,
+                                        precio_venta: this.precio_venta,
+                                        Cantidad: this.cantidad,
+                                        zona_id: this.zona_id,
+                                        zona_nombre: $("#zona_id")[0].innerText,
+                                        is_precio_venta: this.is_precio_venta,
+                                        is_precio_compra: this.is_precio_compra,
+                                        Importe: this.cantidad * this.precio_compra,
+                                    })
+
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+
+                        return false;
+                    }.bind(this)
+                });
+            } catch (error) {
+                console.log(error);
+            }
+
+
+            $("#prod_id").on("change", () => {
+                this.$emit("select", $("#prod_id").val());
+                console.log($("#prod_id").val())
+                this.prod_id = $("#prod_id").val();
+            });
+
+            $("#zona_id").on("change", () => {
+                this.$emit("select", $("#zona_id").val());
+
+                this.zona_id = $("#zona_id").val();
+            });
 
         },
     };

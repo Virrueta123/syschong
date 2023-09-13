@@ -79,7 +79,7 @@
                 </tr>
             </tfoot>
         </table>
-      
+
     </div>
 </template>
 
@@ -96,6 +96,9 @@
     import 'datatables.net-searchpanes-bs4';
     import 'datatables.net-select-bs4';
     import 'datatables.net-staterestore-bs4';
+   
+
+
 
     import {
         myMixin
@@ -112,6 +115,7 @@
 
         },
         mounted() {
+           
             var total = 0;
             var tables = $(this.$refs.miTabla).DataTable({
 
