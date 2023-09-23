@@ -54,6 +54,10 @@ include 'web/datatables_vue.php';
  
 include 'web/poveedores.php';
 
+include 'web/usuarios.php';
+
+include 'web/mantenimiento.php';
+
 /* *********************** */
 
 
@@ -94,6 +98,8 @@ Route::resource('pos', App\Http\Controllers\pos_controller::class);
 Route::resource('compras', App\Http\Controllers\compras_controller::class); 
 
 Route::resource('proveedores', App\Http\Controllers\proveedores_controller::class); 
+
+Route::resource('mantenimiento', App\Http\Controllers\mantenimiento_controller::class);
 
 
 

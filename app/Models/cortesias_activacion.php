@@ -19,4 +19,12 @@ class cortesias_activacion extends Model
         return $this->belongsTo(activaciones::class, 'activaciones_id');
     }
 
+    public function mecanico(){
+        return $this->belongsTo(User::class, 'mecanico_id');
+    }
+
+    public function cotizacion(){
+         return $this->belongsTo(cotizacion::class, 'cotizacion_id');
+    }
+
 }

@@ -1,5 +1,5 @@
 <?php 
-   function method()
+ function method()
   {
       return Config::get('app.cipher');
   }
@@ -27,8 +27,7 @@ function encrypt_id($value)
 }
 
 function decrypt_id($value)
-{
- 
+{ 
     $output = openssl_decrypt(base64_decode($value), method(), hash_key(), 0, iv());
     return (int)$output;
 }
@@ -42,11 +41,9 @@ function separateDigitsWithHyphen($number) {
 
     return $formattedNumber;
 }
-
-
+ 
 function mesActual(){     
-    
-    return CarbonCarbon::now()->isoFormat('MM'); 
+   return CarbonCarbon::now()->isoFormat('MM'); 
 }
 
 function mesyanotext(){

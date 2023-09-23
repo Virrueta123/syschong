@@ -87,15 +87,15 @@
     import Swal from "sweetalert2";
     import axios from "axios";
     import $ from "jquery";
-    import DataTable from 'datatables.net-bs4';
-    import 'datatables.net-buttons-bs4';
+    import DataTable from 'datatables.net-bs5';
+    import 'datatables.net-buttons-bs5';
     import DateTime from 'datatables.net-datetime';
-    import 'datatables.net-fixedcolumns-bs4';
-    import 'datatables.net-responsive-bs4';
-    import 'datatables.net-searchbuilder-bs4';
-    import 'datatables.net-searchpanes-bs4';
-    import 'datatables.net-select-bs4';
-    import 'datatables.net-staterestore-bs4';
+    import 'datatables.net-fixedcolumns-bs5';
+    import 'datatables.net-responsive-bs5';
+    import 'datatables.net-searchbuilder-bs5';
+    import 'datatables.net-searchpanes-bs5';
+    import 'datatables.net-select-bs5';
+    import 'datatables.net-staterestore-bs5';
    
 
 

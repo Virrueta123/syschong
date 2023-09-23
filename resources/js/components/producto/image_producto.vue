@@ -188,8 +188,7 @@
             this.uppy = new Uppy({
                     debug: true,
                     locale: es,
-                    autoProceed: false,
-
+                    autoProceed: false, 
                     restrictions: {
                         allowedFileTypes: ['image/*'],
                         maxFileSize: 5242880,

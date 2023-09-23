@@ -69,6 +69,14 @@ class AppServiceProvider extends ServiceProvider
                             ['name' => 'crear categoria', 'url' => 'categorias.create']
                         ],
                     ],
+                    [
+                        'name' => 'Mantenimientos',
+                        'icon' => 'fa fa-cogs',
+                        'submenu' => [
+                            ['name' => 'Todo los mantenimientos', 'url' => 'mantenimiento.index'], 
+                            ['name' => 'crear un mantenimiento', 'url' => 'mantenimiento.create'],  
+                        ],
+                    ],
                     [ 
                         'name' => 'Compras',
                         'icon' => 'fa fa-cart-arrow-down',

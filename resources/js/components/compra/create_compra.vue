@@ -2,225 +2,197 @@
 
     <div>
 
-
-
-
         <div class="card text-left">
             <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
             </center>
             <div class="card-body">
-                <div class="invoice">
-                    <div class="invoice-print">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="invoice-title">
-                                    <h4>Informacion de la venta</h4>
-                                    <div class="invoice-number"> </div>
-                                </div>
-                                <hr>
-
-                                <div class="form-row ">
-                                    <div class="form-group col-4">
-                                        <label>Tipo de comprobante</label>
-                                        <select v-on:change="tipo_comprobante($event)" class="form-control">
-                                            <option value="F">Factura Electronica</option>
-                                            <option value="B">Boleta Electronica</option>
-                                            <option value="N">Nota de Venta</option>
-                                        </select>
-                                    </div>
 
 
+                <div class="section-header">
+                    <h1>Información de la compra</h1>
 
-                                    <div class="form-group col-2">
-                                        <label>Tipo de comprobante</label>
-                                        <select disabled ref="serie" class="form-control">
-                                            <option value="F001">F001</option>
-                                            <option value="B001">B001</option>
-                                            <option value="NV01">NV01</option>
-                                        </select>
-                                    </div>
+                </div>
+                <hr>
 
-                                    <div class="form-group col-2">
-                                        <label></label>
-                                        <select disabled ref="serie" class="form-control">
-                                            <option value="F001">F001</option>
-                                            <option value="B001">B001</option>
-                                            <option value="NV01">NV01</option>
-                                        </select>
-                                    </div>
+                <div class="form-row ">
 
 
-                                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-12">
 
-                                        <label for="cli_telefono">Buscar Cliente </label>
+                        <label for="cli_telefono">Buscar Cliente </label>
 
-                                        <div class="input-group">
-                                            <search-cliente>
-                                            </search-cliente>
-                                            <crear-cliente select_element="#cliente_select">
-                                            </crear-cliente>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group col-md-12">
-
-
-
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <address>
-                                            <strong>Billed To:</strong><br>
-                                            Ujang Maman<br>
-                                            1234 Main<br>
-                                            Apt. 4B<br>
-                                            Bogor Barat, Indonesia
-                                        </address>
-                                    </div>
-                                    <div class="col-md-6 text-md-right">
-                                        <address>
-                                            <strong>Shipped To:</strong><br>
-                                            Muhamad Nauval Azhar<br>
-                                            1234 Main<br>
-                                            Apt. 4B<br>
-                                            Bogor Barat, Indonesia
-                                        </address>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <address>
-                                            <strong>Payment Method:</strong><br>
-                                            Visa ending **** 4242<br>
-                                            ujang@maman.com
-                                        </address>
-                                    </div>
-                                    <div class="col-md-6 text-md-right">
-                                        <address>
-                                            <strong>Order Date:</strong><br>
-                                            September 19, 2018<br><br>
-                                        </address>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="input-group">
+                            <search-cliente>
+                            </search-cliente>
+                            <crear-cliente select_element="#cliente_select">
+                            </crear-cliente>
                         </div>
 
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <div class="section-header">
-                                    <h1>Informacion de la venta</h1>
-                                    <div class="section-header-breadcrumb">
-
-                                        <a href="#" class="btn btn-primary boton-color" data-toggle="modal"
-                                            data-target="#modal-add-repuesto"><i class="fa fa-plus"> </i> Agregar
-                                            Repuesto</a>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-sm" id="table-repuestos">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Codigo</th>
-                                                <th scope="col">Descripcion</th>
-                                                <th scope="col">Zona</th>
-                                                <th scope="col">unidad</th>
-                                                <th scope="col">Precio</th>  
-                                                <th scope="col">Cantidad</th>
-                                                <th scope="col">Importe</th> 
-                                                <th scope="col" class="text-center"><i class="fa fa-cog"
-                                                        aria-hidden="true"></i></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                            <tr v-for="(repuesto, index) in repuestos" :key="index">
-
-
-
-                                                <td scope="row">{{ repuesto . Codigo }} </td>
-                                                <td scope="row">{{ repuesto . Descripcion }}</td>
-
-
-                                                <td scope="row">{{ repuesto . zona_nombre }}</td>
-                                                <td scope="row">{{ repuesto . unidad }}</td>
-                                                <td scope="row">{{ repuesto . Precio }}</td>
-
-
-                                                <td scope="row">{{ repuesto . Cantidad }}</td>
-                                                <td scope="row">{{ repuesto . Importe }}</td>
-                                                <td><button type="button" name="" id=""
-                                                        v-on:click="eliminar_producto(repuesto . prod_id)"
-                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                                                            aria-hidden="true"></i></button></td>
-                                            </tr>
-
-
-
-
-                                            <tr v-if="repuestos.length == 0">
-                                                <td colspan="11">
-                                                    <center>
-                                                        <img src="../../../../public/images/svg/sin_data.svg"
-                                                            width="180" alt="">
-                                                        <h6>Agregue repuestos para continuar</h6>
-                                                    </center>
-
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col-lg-8">
-                                        <div class="section-title">Payment Method</div>
-                                        <p class="section-lead">The payment method that we provide is to make
-                                            it
-                                            easier
-                                            for you to pay invoices.</p>
-                                        <div class="images">
-                                            <img src="assets/img/visa.png" alt="visa">
-                                            <img src="assets/img/jcb.png" alt="jcb">
-                                            <img src="assets/img/mastercard.png" alt="mastercard">
-                                            <img src="assets/img/paypal.png" alt="paypal">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 text-right">
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Subtotal</div>
-                                            <div class="invoice-detail-value">$670.99</div>
-                                        </div>
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Shipping</div>
-                                            <div class="invoice-detail-value">$15</div>
-                                        </div>
-                                        <hr class="mt-2 mb-2">
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Total</div>
-                                            <div class="invoice-detail-value invoice-detail-value-lg">$685.99
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="text-md-right">
-                        <div class="float-lg-left mb-lg-0 mb-3">
-                            <button class="btn btn-primary btn-icon icon-left"><i class="fas fa-credit-card"></i>
-                                Process Payment</button>
-                            <button class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i>
-                                Cancel</button>
-                        </div>
-                        <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i>
-                            Print</button>
                     </div>
                 </div>
+
+                <div class="form-row">
+
+                    <div class="form-group col-6">
+                        <label>Fecha creacion</label>
+                        <VueDatePicker @internal-model-change="fecha_creacion_change" emit-timezone="UTC" locale="es"
+                            v-model="fecha_creacion" placeholder="fecha creacion ..."
+                            :text-input="{
+                                format: 'dd.MM.yyyy'
+                            }" />
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label>Correlativo</label>
+                        <label>Fecha vencimiento</label>
+                        <VueDatePicker emit-timezone="UTC" locale="es" v-model="fecha_vencimiento"
+                            placeholder="fecha vencimiento ..."
+                            :text-input="{
+                                format: 'dd.MM.yyyy'
+                            }" />
+
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-8">
+                        <label>Tipo de comprobante</label>
+                        <select v-on:change="tipo_comprobante($event)" class="form-control">
+                            <option value="F">Factura Electronica</option>
+                            <option value="B">Boleta Electronica</option>
+                            <option value="N">Nota de Venta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-2">
+                        <label>Serie</label>
+                        <input type="text" class="form-control" v-model="serie">
+                    </div>
+
+                    <div class="form-group col-2">
+                        <label>Correlativo</label>
+                        <input type="text" class="form-control" v-model="serie">
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="section-header">
+                            <h1>Informacion de los respuestos</h1>
+                            <div class="section-header-breadcrumb">
+
+                                <a href="#" class="btn btn-primary boton-color" data-toggle="modal"
+                                    data-target="#modal-add-repuesto"><i class="fa fa-plus"> </i> Agregar
+                                    Repuesto</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm" id="table-repuestos">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Codigo</th>
+                                        <th scope="col">Descripcion</th>
+                                        <th scope="col">Zona</th>
+                                        <th scope="col">unidad</th>
+                                        <th scope="col">Precio</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Importe</th>
+                                        <th scope="col" class="text-center"><i class="fa fa-cog"
+                                                aria-hidden="true"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr v-for="(repuesto, index) in repuestos" :key="index">
+
+                                        <td scope="row">{{ repuesto . Codigo }} </td>
+                                        <td scope="row">{{ repuesto . Descripcion }}</td>
+
+
+                                        <td scope="row">{{ repuesto . zona_nombre }}</td>
+                                        <td scope="row">{{ repuesto . unidad }}</td>
+                                        <td scope="row">{{ repuesto . Precio }}</td>
+
+
+                                        <td scope="row">{{ repuesto . Cantidad }}</td>
+                                        <td scope="row">{{ repuesto . Importe }}</td>
+                                        <td><button type="button" name="" id=""
+                                                v-on:click="eliminar_producto(repuesto . prod_id)"
+                                                class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                    aria-hidden="true"></i></button></td>
+
+                                    </tr>
+
+                                    <tr v-if="repuestos.length == 0">
+                                        <td colspan="11">
+                                            <center>
+                                                <img src="../../../../public/images/svg/sin_data.svg" width="180"
+                                                    alt="">
+                                                <h6>Agregue repuestos para continuar</h6>
+                                            </center>
+
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-8">
+                                <div class="section-title">Payment Method</div>
+                                <p class="section-lead">The payment method that we provide is to make
+                                    it
+                                    easier
+                                    for you to pay invoices.</p>
+                                <div class="images">
+                                    <img src="assets/img/visa.png" alt="visa">
+                                    <img src="assets/img/jcb.png" alt="jcb">
+                                    <img src="assets/img/mastercard.png" alt="mastercard">
+                                    <img src="assets/img/paypal.png" alt="paypal">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 text-right">
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Subtotal</div>
+                                    <div class="invoice-detail-value">$670.99</div>
+                                </div>
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Igv</div>
+                                    <div class="invoice-detail-value">
+                                        <div class="form-group  ">
+
+                                            <div class="p-inputgroup flex-1">
+                                                <span class="p-inputgroup-addon">
+                                                    <Checkbox v-model="igv" @change="igv_change"
+                                                        :binary="true" />
+                                                </span>
+                                                <p-inputnumber v-model="igv_valor" disabled
+                                                    class="p-inputgroup flex-1" inputId="currency-us" mode="currency"
+                                                    currency="PEN" locale="es-ES" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mt-2 mb-2">
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Total</div>
+                                    <div class="invoice-detail-value invoice-detail-value-lg">$685.99
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+
             </div>
         </div>
         <!-- ******** modal ************* -->
@@ -244,7 +216,7 @@
 
                                 <div class="form-row ">
 
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-8">
 
                                         <label for="cli_telefono">Buscar Repuesto </label>
 
@@ -273,21 +245,25 @@
 
                                 <div class="form-row ">
 
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-md-6 d-flex flex-column">
                                         <label>Cantidad</label>
-                                        <input v-model="cantidad" name="cantidad" type="number"
-                                            class="form-control" id="cantidad" required="">
+                                        <p-inputnumber class="p-inputgroup flex-1" v-model="cantidad" name="cantidad"
+                                            showButtons style="width: 100%;" :useGrouping="false"
+                                            :min="1" id="cantidad" :max="1000" />
                                     </div>
 
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-md-6 d-flex flex-column">
                                         <label>Precio de compra</label>
-                                        <input v-model="precio_compra" name="precio_compra" type="text"
-                                            class="form-control" id="mounted" required="">
+
+                                        <p-inputnumber class="p-inputgroup flex-1" v-model="precio_compra"
+                                            name="precio_compra" inputId="currency-us" mode="currency"
+                                            currency="PEN" locale="es-ES" />
+
                                     </div>
 
 
-                                    <div class="form-group col-3">
-                                        <label class="d-block">Opciones</label>
+                                    <div class="form-group col-3 d-flex flex-column flex-shrink-0">
+
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox"
                                                 v-model="is_precio_compra" @change="editar_precio_compra"
@@ -295,19 +271,22 @@
                                             <label class="form-check-label" for="actualizar_precio_compra">Actualizar
                                                 precio de compra</label>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" v-model="is_precio_venta"
-                                                @change="editar_precio_venta" id="inlineCheckbox2" value="option2">
-                                            <label class="form-check-label" for="editar_precio_compra">Editar precio
-                                                de
-                                                venta</label>
-                                        </div>
+
                                     </div>
 
-                                    <div v-if="is_precio_venta" class="form-group col-3">
+                                    <div class="form-group col-3">
                                         <label>Precio de venta</label>
-                                        <input v-model="precio_venta" name="precio_venta" value=""
-                                            type="text" class="form-control" id="mounted" required="">
+                                        <div class="p-inputgroup flex-1">
+                                            <span class="p-inputgroup-addon">
+                                                <Checkbox v-model="is_precio_venta" @change="editar_precio_venta"
+                                                    :binary="true" />
+                                            </span>
+
+                                            <p-inputnumber class="p-inputgroup flex-1" v-model="precio_compra"
+                                                name="precio_compra" inputId="currency-us" mode="currency"
+                                                currency="PEN" locale="es-ES" />
+                                        </div>
+
                                     </div>
 
 
@@ -349,16 +328,29 @@
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
 
-    import DataTable from 'datatables.net-bs4';
-    import 'datatables.net-buttons-bs4';
+    import DataTable from 'datatables.net-bs5';
+    import 'datatables.net-buttons-bs5';
     import DateTime from 'datatables.net-datetime';
-    import 'datatables.net-fixedcolumns-bs4';
-    import 'datatables.net-responsive-bs4';
-    import 'datatables.net-searchbuilder-bs4';
-    import 'datatables.net-searchpanes-bs4';
-    import 'datatables.net-select-bs4';
-    import 'datatables.net-staterestore-bs4';
+    import 'datatables.net-fixedcolumns-bs5';
+    import 'datatables.net-responsive-bs5';
+    import 'datatables.net-searchbuilder-bs5';
+    import 'datatables.net-searchpanes-bs5';
+    import 'datatables.net-select-bs5';
+    import 'datatables.net-staterestore-bs5';
     import IMask from 'imask';
+
+
+
+    import 'primevue/resources/themes/saga-blue/theme.css';
+
+    import "primeicons/primeicons.css"
+    import InputNumber from "primevue/inputnumber";
+    import Checkbox from 'primevue/checkbox';
+    import Calendar from 'primevue/calendar';
+
+
+    import VueDatePicker from '@vuepic/vue-datepicker';
+    import '@vuepic/vue-datepicker/dist/main.css'
 
 
     import {
@@ -366,6 +358,12 @@
     } from "../../mixin.js";
 
     export default {
+        components: {
+            "p-inputnumber": InputNumber,
+            "Checkbox": Checkbox,
+            "Calendar": Calendar,
+            VueDatePicker
+        },
         mixins: [myMixin],
         data() {
             return {
@@ -380,14 +378,37 @@
                 is_precio_venta: false,
                 is_precio_compra: false,
                 cantidad: 1,
-                precio_compra: 0,
+                precio_compra: "",
                 precio_venta: 0,
                 prod_id: null,
-                zona_id: null
+                zona_id: null,
+                fecha_creacion: null,
+                fecha_vencimiento: null,
+                igv: false,
+                igv_valor: 0
                 /* -- *********************** -- */
             }
         },
         methods: {
+            /* -- ******** cargar los totales ************* -- */
+            load_total() {
+                const suma = this.data_presupuesto_editar.reduce((acumulador, objeto) => {
+                    return  acumulador  +  objeto.Importe;
+                }, 0);
+                
+            },
+            /* -- *********************** -- */
+            /* -- ******** evento change para igv ************* -- */
+            igv_change() {
+                
+            },
+            /* -- *********************** -- */
+            /* -- ******** evento change para creacion fecha ************* -- */
+            fecha_creacion_change(date) {
+                console.log(date);
+                this.fecha_vencimiento = this.fecha_creacion
+            },
+            /* -- *********************** -- */
             /* -- ******** onchange editar_precio_compra ************* -- */
             editar_precio_venta() {
 
@@ -472,15 +493,13 @@
 
             },
             agregar_producto() {
-                console.log(prod_id);
-                var self = this
-
                 const headers = {
                     "Content-Type": "application/json",
                 };
                 const data = {
                     prod_id: this.prod_id
                 };
+                console.log($("#prod_id")[0].innerText);
                 axios
                     .post("/get_producto", data, {
                         headers,
@@ -491,7 +510,7 @@
                             var datos = response.data.data;
                             console.log($(this.$refs.select_zona))
 
-                            self.repuestos.push({
+                            this.repuestos.push({
                                 prod_id: datos.prod_id,
                                 Codigo: datos.prod_codigo,
                                 Descripcion: datos.prod_nombre,
@@ -501,10 +520,12 @@
                                 precio_venta: this.precio_venta,
                                 Cantidad: this.cantidad,
                                 zona_id: this.zona_id,
+                                zona_nombre: $("#zona_id")[0].innerText,
                                 is_precio_venta: this.is_precio_venta,
                                 is_precio_compra: this.is_precio_compra,
                                 Importe: this.cantidad * this.precio_compra,
                             })
+
 
                         } else {
                             Swal.fire({
@@ -527,28 +548,7 @@
             },
         },
         mounted() {
-            /* -- ******** imask ************* -- */
-            const element = document.getElementById('cantidad');
-            const maskOptions = {
-                mask: Number,
-                min: 1,
-                max: 10000
-            };
-            const mask = IMask(element, maskOptions);
-            /* -- *********************** -- */
 
-            /* -- ******** Imask mounted ************* -- */
-
-            const mounted = document.getElementById('mounted');
-            const mounted_options = {
-                mask: Number,
-                scale: 2, // Dos decimales
-                thousandsSeparator: ',',
-                radix: '.',
-                mapToRadix: ['.'],
-            };
-            const mask_mounted = IMask(mounted, mounted_options);
-            /* -- *********************** -- */
 
             var self = this
 
@@ -643,59 +643,24 @@
                     },
                     submitHandler: function(form) {
 
-                        var self = this
+                        const elementoExiste = this.repuestos.some((elemento) => {
+                            return elemento.prod_id == this
+                            .prod_id; // Supongo que prod_id es un identificador único
+                        });
 
-                        const headers = {
-                            "Content-Type": "application/json",
-                        };
-                        const data = {
-                            prod_id: this.prod_id
-                        };
-                        console.log($("#prod_id")[0].innerText);
-                        axios
-                            .post("/get_producto", data, {
-                                headers,
-                            })
-                            .then((response) => {
 
-                                if (response.data.success) {
-                                    var datos = response.data.data;
-                                    console.log($(this.$refs.select_zona))
 
-                                    self.repuestos.push({
-                                        prod_id: datos.prod_id,
-                                        Codigo: datos.prod_codigo,
-                                        Descripcion: datos.prod_nombre,
-                                        unidad: datos.unidad.unidades_nombre,
-                                        Precio: this.precio_compra,
-                                        precio_compra: this.precio_compra,
-                                        precio_venta: this.precio_venta,
-                                        Cantidad: this.cantidad,
-                                        zona_id: this.zona_id,
-                                        zona_nombre: $("#zona_id")[0].innerText,
-                                        is_precio_venta: this.is_precio_venta,
-                                        is_precio_compra: this.is_precio_compra,
-                                        Importe: this.cantidad * this.precio_compra,
-                                    })
-
-                                } else {
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "Error",
-                                        text: response.data.message,
-                                        footer: "-------",
-                                    });
-                                }
-                            })
-                            .catch((error) => {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error 500",
-                                    text: "Error en el servidor, vuelva a intentar",
-                                    footer: "-------",
-                                });
-                                console.error(error);
+                        if (elementoExiste) {
+                            Swal.fire({
+                                icon: "info",
+                                title: "Producto existente",
+                                text: "Este producto ya esta en la compra",
+                                footer: "-------",
                             });
+                        } else {
+                            this.agregar_producto();
+                        }
+
 
                         return false;
                     }.bind(this)

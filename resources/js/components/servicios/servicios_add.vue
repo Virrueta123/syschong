@@ -165,9 +165,7 @@
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
     import "imask";
-    import "bootstrap"
-    import DataTable from 'datatables.net-dt';
-    import 'datatables.net-dt/css/jquery.dataTables.css';
+    import "bootstrap" 
 
     import {
         myMixin

@@ -1,7 +1,7 @@
 <template>
  
-    <select name="moto_id" id="select_moto" ref="select_moto" class="form-control custom-select" style="width: 100%"
-         tabindex="-1" aria-hidden="true" language="es" placeholder="selecciona una marca de producto">
+    <select name="moto_id" id="select_moto" ref="select_moto" class="form-control " style="width: 100%;"
+         language="es" placeholder="selecciona una marca de producto">
     </select>
  
 </template>

@@ -30,10 +30,10 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="prod_codigo">Buscar Tienda</label>
-                                <div class="input-group">
+                               
                                     <search-tienda></search-tienda>
 
-                                </div>
+                                 
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="prod_codigo">Buscar la moto</label>

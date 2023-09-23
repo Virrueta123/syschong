@@ -43,7 +43,7 @@ class activaciones_controller extends Controller
                 },
                 'vendedor',
                 'tienda',
-            ])
+            ])->where('activado_taller', 'A')
                 ->orderBy('created_at', 'desc')
                 ->get();
 

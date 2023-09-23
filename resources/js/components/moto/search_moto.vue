@@ -2,8 +2,8 @@
     <div class="content">
         <div class="input-group">
 
-            <select name="mtx_id" id="moto_select" ref="moto_select" class="form-control select2" style="width: 100"
-                data-minimum-input-length="4" tabindex="-1" aria-hidden="true" language="es"
+            <select name="mtx_id" id="moto_select" ref="moto_select" class="form-control select2" style="width: 100%;"
+                 tabindex="-1" aria-hidden="true" language="es"
                 placeholder="seleccionar un cliente">
             </select>
 
@@ -198,12 +198,16 @@
                 ajax: {
                     type: 'POST',
                     url: "/moto_search", // Replace with your API endpoint URL
-                    dataType: "json",
-                    minimumInputLength: 4,
-                    minimumResultsForSearch: 3,
+                    dataType: "json", 
                     data: function(params) {
+                         var search = "";
+                        if (params.term === undefined) {
+                            var search = ""
+                        }else{
+                            var search = params.term
+                        }
                         var query = {
-                            search: params.term,
+                            search: search,
                         };
                         // Query parameters will be ?search=[search]&_type=query&q=q
                         return query;
