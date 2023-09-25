@@ -182,6 +182,7 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
+     
         $get = cotizacion::with([
             'inventario' => function ($query) {
                 $query->with([

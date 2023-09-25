@@ -21,6 +21,9 @@ app.component('search-tienda', require('./components/tienda/search_tienda.vue').
 app.component('search-cliente', require('./components/search_cliente.vue').default); 
 app.component('crear-cliente', require('./components/crear_cliente.vue').default);
  
+/* -- ******** cotizacion ************* -- */
+app.component('cotizacion-mantenimiento',require('./components/cotizacion/cotizacion_mantenimiento.vue').default);
+/* -- *********************** -- */
 
 
 /* -- ******** maraca de las marca ************* -- */

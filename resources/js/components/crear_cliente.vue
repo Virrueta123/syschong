@@ -18,8 +18,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-
-
+ 
                             <img src="../../../public/images/svg/crear_formulario.svg" alt="My Happy SVG" />
 
                             <div class="card-body">

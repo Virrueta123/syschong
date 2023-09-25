@@ -24,6 +24,9 @@
                     </div>
                 @endif
 
+                <div id="app">
+                    <cotizacion-mantenimiento></cotizacion-mantenimiento>
+                </div>
 
                 <div class="card text-left">
                     <div class="card-body">
@@ -184,7 +187,7 @@
 @section('js')
     <script>
         /* -- ******** filtro para el dni ************* -- */
-        console.log("dsadads")
+   
 
 
         /* -- *********************** -- */
@@ -197,13 +200,7 @@
             rules: {
                 observacion_sta: {
                     required: true,
-                },
-                id: {
-                    required: true,
-                }
-                cotizacion: {
-                    required: true,
-                },
+                }, 
                 mecanico_id: {
                     required: true,
                 },

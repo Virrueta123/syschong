@@ -7,8 +7,11 @@ use App\Models\accesorios_inventario_detalle;
 use App\Models\activaciones;
 use App\Models\autorizaciones;
 use App\Models\cortesias_activacion;
+use App\Models\cotizacion;
+use App\Models\cotizacioncotizacion_detalle;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -277,7 +280,7 @@ class mantenimiento_controller extends Controller
 
     function view_mantenimiento($id)
     {
-        $cortesia = cortesias_activacion::with(['cotizacion', 'mecanico'])->find(decrypt_id($id));
+        $cortesia = cortesias_activacion::with(['cotizacion', 'mecanico', 'usuario'])->find(decrypt_id($id));
 
         $inventario = inventario_moto::with([
             'moto' => function ($query) {
@@ -286,11 +289,11 @@ class mantenimiento_controller extends Controller
         ])->find($cortesia->inventario_moto_id);
 
         $inventario_moto_id = encrypt_id($inventario->inventario_moto_id);
- 
+
         $accesorios = accesorios_inventario_detalle::with('accesorios')
             ->where('inventario_moto_id', $inventario->inventario_moto_id)
             ->get();
-            
+
         $autorizaciones = inventario_autorizaciones::with('autorizaciones')
             ->where('inventario_moto_id', $inventario->inventario_moto_id)
             ->get();
@@ -330,6 +333,129 @@ class mantenimiento_controller extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /* ******** vista para crear la cotiazacion del mantenimiento ************* */
+
+    public function cotizacion_mantenimiento($id)
+    {
+        $cortesia = cortesias_activacion::with([
+            'activaciones' => function ($query) {
+                return $query->with([
+                    'moto' => function ($query) {
+                        return $query->with('cliente');
+                    },
+                ]);
+            },
+            'cotizacion',
+            'mecanico',
+            'usuario',
+        ])->find(decrypt_id($id));
+
+        $inventario = inventario_moto::with([
+            'moto' => function ($query) {
+                $query->with('cliente');
+            },
+        ])->find($cortesia->inventario_moto_id);
+
+        $inventario_moto_id = encrypt_id($inventario->inventario_moto_id);
+
+        $accesorios = accesorios_inventario_detalle::with('accesorios')
+            ->where('inventario_moto_id', $inventario->inventario_moto_id)
+            ->get();
+
+        $autorizaciones = inventario_autorizaciones::with('autorizaciones')
+            ->where('inventario_moto_id', $inventario->inventario_moto_id)
+            ->get();
+
+        $mecanicos = $mecanicos = User::where('roles_id', 2)->get();
+
+        return view('modules.mantenimiento.cotizacion_mantenimiento', compact('cortesia', 'mecanicos', 'inventario', 'inventario_moto_id', 'accesorios', 'autorizaciones'));
+    }
+
+    /* *********************** */
+
+    /* crear una cotizacion para un mantenimiento */
+
+    public function cotizacion_mantenimiento_store($id, Request $request)
+    {
+        $Datax = $request->all();
+
+        // Crear una nueva instancia del modelo
+        $cotizacion = new cotizacion();
+
+        $correlativo = cotizacion::max('cotizacion_correlativo');
+        if (is_null($correlativo)) {
+            $correlativo = 1;
+        } else {
+            $correlativo++;
+        }
+        
+
+        $cortesias = cortesias_activacion::with([
+            'activaciones' => function ($query) {
+                return $query->with([
+                    'moto' => function ($query) {
+                        return $query->with('cliente');
+                    },
+                ]);
+            },
+            'cotizacion',
+            'mecanico',
+            'usuario',
+        ])->find(decrypt_id($id));
+ 
+
+        // Asignar valores a los campos
+        $cotizacion->inventario_moto_id =  $cortesias->inventario_moto_id;
+        $cotizacion->observacion_sta = $Datax['observacion_sta'];
+        $cotizacion->total = $Datax['total'];
+        $cotizacion->cotizacion_correlativo = $correlativo;
+        $cotizacion->total_descuento = $Datax['total_descuento'];
+        $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
+        $cotizacion->mecanico_id = $Datax['mecanico_id']; // ID del mecánico relacionado
+        $cotizacion->trabajo_realizar = $Datax['trabajo_realizar'];
+
+        if ($cotizacion->save()) {
+            foreach ($Datax['cotizacion'] as $ps) {
+                // Crear una nueva instancia del modelo
+                $cotizaion_detalle = new cotizacioncotizacion_detalle();
+
+                // Asignar valores a los campos
+                $cotizaion_detalle->cotizacion_id = $cotizacion->cotizacion_id; // ID de la cotización relacionada
+                $cotizaion_detalle->prod_id = $ps['prod_id']; // ID del producto relacionado
+                $cotizaion_detalle->servicios_id = $ps['servicios_id']; // ID del servicio relacionado
+                $cotizaion_detalle->tipo = $ps['tipo']; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
+                $cotizaion_detalle->Precio = $ps['Precio'];
+                $cotizaion_detalle->Importe = $ps['Importe'];
+                $cotizaion_detalle->ImporteDescuento = $ps['ImporteDescuento'];
+                $cotizaion_detalle->Descuento = $ps['Descuento'];
+                $cotizaion_detalle->Descripcion = $ps['Descripcion'];
+                $cotizaion_detalle->Codigo = $ps['Codigo'];
+                $cotizaion_detalle->Cantidad = $ps['Cantidad'];
+                $cotizaion_detalle->ValorDescuento = $ps['ValorDescuento'];
+                $cotizaion_detalle->Detalle = $ps['Detalle'];
+
+                // Guardar el registro en la base de datos
+                $cotizaion_detalle->save();
+            }
+
+            // Encontrar el registro por su ID
+            $cortesias_activacion = cortesias_activacion::findOrFail(decrypt_id($id));
+
+            // Actualizar el registro con los nuevos datos
+            $cortesias_activacion->update(['cotizacion_id'=>$cotizacion->cotizacion_id]);
+
+           
+
+            session()->flash('success', 'Registro creado correctamente');
+            return redirect()->route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id));
+        } else {
+            dd("dsad");
+            Log::error('no se pudo registrar la cotizacion');
+            session()->flash('error', 'error al registrar en la base de datos');
+            return redirect()->route('cotizacion.create', $Datax['id']);
+        }
     }
 
     /* ******** axios vue ************* */
@@ -390,8 +516,9 @@ class mantenimiento_controller extends Controller
             $cortesias_activacion->inventario_moto_id = $create->inventario_moto_id; // Reemplaza con el valor deseado
             $cortesias_activacion->mecanico_id = $datax['mecanico_id']; // Reemplaza con el valor deseado
             $cortesias_activacion->mtx_id = $datax['mtx_id']; // Reemplaza con el valor deseado
-            $cortesias_activacion->is_aviso = 'A';
+            $cortesias_activacion->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
             $cortesias_activacion->dias = $datax['dias'];
+            $cortesias_activacion->date_aviso = Carbon::now()->addDays($datax['dias']);
             $cortesias_activacion->save();
 
             foreach ($select_autorizacion as $autorizacion) {
