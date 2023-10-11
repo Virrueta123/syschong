@@ -5,12 +5,9 @@
         <div class="card text-left">
             <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
             </center>
-            <div class="card-body">
-
-
+            <div class="card-body"> 
                 <div class="section-header">
-                    <h1>Información de la compra</h1>
-
+                    <h1>Información de la compra</h1> 
                 </div>
                 <hr>
 
@@ -19,13 +16,14 @@
 
                     <div class="form-group col-md-12">
 
-                        <label for="cli_telefono">Buscar Cliente </label>
+                        <label for="cli_telefono">Buscar Proveedor </label>
 
                         <div class="input-group">
-                            <search-cliente>
-                            </search-cliente>
-                            <crear-cliente select_element="#cliente_select">
-                            </crear-cliente>
+                            <search-proveedor>
+                            </search-proveedor>
+                            <!-- ******** <crear-cliente select_element="#cliente_select">
+                            </crear-cliente> -->
+                           
                         </div>
 
                     </div>

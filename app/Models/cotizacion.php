@@ -12,8 +12,10 @@ class cotizacion extends Model
     protected $table = 'cotizacion';
     public $timestamps = true;
     public $primaryKey = 'cotizacion_id';
-    protected $fillable = [];
+    protected $fillable = [ ];
     protected $guarded = [];
+    
+    protected $appends = ['url'];
 
     public function inventario( ){
         return $this->belongsTo(inventario_moto::class,"inventario_moto_id")->withTrashed();
@@ -23,7 +25,12 @@ class cotizacion extends Model
     }
 
     public function detalle( ){
+     
         return $this->hasMany(cotizacioncotizacion_detalle::class,"cotizacion_id")->withTrashed();
+    }
+
+    public function getUrlAttribute(  ){
+        return encrypt_id($this->cotizacion_id);
     }
     
 }

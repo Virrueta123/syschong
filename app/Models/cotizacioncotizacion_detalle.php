@@ -19,6 +19,19 @@ class cotizacioncotizacion_detalle extends Model
         return $this->belongsTo(servicios::class,"servicios_id")->withTrashed();
     }
 
+    public function getAprobarAttribute($value)
+    {
+        
+        // Modifica el valor del atributo 'name' antes de que se retorne
+        if ($value == "Y") {
+            return true;
+        } else { 
+            return false;
+        }
+        
+         // En este ejemplo, se convierte a mayúsculas
+    }
+
 
     public function producto( ){
         return $this->belongsTo(producto::class,"prod_id")->withTrashed();

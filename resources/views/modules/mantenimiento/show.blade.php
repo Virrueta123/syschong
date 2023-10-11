@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('historial')
-    <h1>Detalles de la activacion</h1>
+    <h1>Detalles del Mantimiento</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="{{ route('home') }}" class="text-danger">Inicio</a></div>
-        <div class="breadcrumb-item"><a href="{{ route('activaciones.index') }}" class="text-danger">Toda las activaciones</a>
+        <div class="breadcrumb-item"><a href="{{ route('mantenimiento.index') }}" class="text-danger">Todos los mantenimiento</a>
         </div>
-        <div class="breadcrumb-item">Vista de la activacion y sus cortesisas correspondiente</div>
+        <div class="breadcrumb-item">Detalles del Mantimiento</div>
     </div>
 @endsection
 @section('content')
@@ -129,10 +129,10 @@
     </div>
 
     <div class="section-header">
-        <h2 class="section-title">Fecha de activacion {{ \Carbon\Carbon::parse($get->created_at)->format('d/m/Y') }}</h2>
+        <h2 class="section-title">Fecha de del mantenimiento {{ \Carbon\Carbon::parse($get->created_at)->format('d/m/Y') }}</h2>
         <div class="section-header-breadcrumb">
             <a href="{{ route('activaciones.cortesia', $id) }}" class="btn btn-primary boton-color m-2"><i
-                    class="fa fa-plus"> </i> Agregar Cortesia</a>
+                    class="fa fa-plus"> </i> Agregar otro mantenimiento</a>
         </div>
     </div>
     <div class="section-body">

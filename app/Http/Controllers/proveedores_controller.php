@@ -8,6 +8,7 @@ use App\Models\proveedores;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -84,14 +85,16 @@ class proveedores_controller extends Controller
                 Column::make('proveedor_distrito')->title('proveedor_distrito'),
                 Column::make('usuario.name')->title('usuario'),
                 Column::computed('estado')->title('estado'),
-                Column::computed('fecha_creacion')->title('F. creacion')->exportFormat('mm/dd/yyyy'),
+                Column::computed('fecha_creacion')
+                    ->title('F. creacion')
+                    ->exportFormat('mm/dd/yyyy'),
                 Column::computed('action')
                     ->title('Opcion')
                     ->exportable(false)
                     ->printable(true),
             ])
-            
-            ->selectStyleSingle()  
+
+            ->selectStyleSingle()
             ->parameters([
                 'dom' => 'Bfrtip',
                 'buttons' => [
@@ -156,86 +159,82 @@ class proveedores_controller extends Controller
      */
     public function store(Request $request)
     {
-       
-            $datax = $request->all();
-           
-           
-            $request->merge([
-                'proveedor_contacto2' => $request->input('proveedor_contacto2', 'no tiene'),
-                'proveedor_direccion' => $request->input('proveedor_direccion', 'no tiene'),
-                'proveedor_departamento' => $request->input('proveedor_departamento', 'no tiene'),
-                'proveedor_provincia' => $request->input('proveedor_provincia', 'no tiene'),
-                'proveedor_distrito' => $request->input('proveedor_distrito', 'no tiene'),
-                'proveedor_email' => $request->input('proveedor_email', 'no tiene'),
-                'proveedor_nombre_comercial' => $request->input('proveedor_nombre_comercial', 'no tiene'),
-            ]);
-         
-            if (isset($datax['proveedor_dni'])) {
-                $validate = $request->validate(
-                    [
-                        'proveedor_dni' => 'required|string|max:11|unique:proveedor,proveedor_dni',
-                        'proveedor_nombre' => 'required|string|max:255|unique:proveedor,proveedor_nombre',
-                        'proveedor_contacto1' => 'required|string|max:45',
-                        'proveedor_contacto2' => 'nullable|string|max:45',
-                        'proveedor_direccion' => 'nullable|string|max:255',
-                        'proveedor_departamento' => 'nullable|string|max:255',
-                        'proveedor_provincia' => 'nullable|string|max:255',
-                        'proveedor_distrito' => 'nullable|string|max:255',
-                        'proveedor_email' => 'nullable|string|max:255', 
-                    ],
-                    [
-                        'proveedor_dni.required' => 'El campo DNI del proveedor es obligatorio.',
-                        'proveedor_dni.max' => 'El DNI del proveedor no puede tener más de 11 caracteres.',
-                        'proveedor_dni.unique' => 'El DNI del proveedor ya existe en la base de datos.',
-                        'proveedor_nombre.required' => 'El campo Nombre del proveedor es obligatorio.',
-                        'proveedor_nombre.max' => 'El Nombre del proveedor no puede tener más de 255 caracteres.',
-                        // Add custom error messages for other fields as needed
-                    ],
-                );
-            } else {
-                $validate = $request->validate(
-                    [
-                        'proveedor_ruc' => 'required|string|max:11|unique:proveedor,proveedor_ruc',
-                        'proveedor_razon_social' => 'required|string|max:255|unique:proveedor,proveedor_razon_social',
-                        'proveedor_nombre_comercial' => 'nullable|string|max:45',
-                        'proveedor_contacto1' => 'required|string|max:45',
-                        'proveedor_contacto2' => 'nullable|string|max:45',
-                        'proveedor_direccion' => 'nullable|string|max:255',
-                        'proveedor_departamento' => 'nullable|string|max:255',
-                        'proveedor_provincia' => 'nullable|string|max:255',
-                        'proveedor_distrito' => 'nullable|string|max:255',
-                        'proveedor_email' => 'nullable|string|max:255', 
-                    ],
-                    [
-                        'proveedor_ruc.required' => 'El campo RUC del proveedor es obligatorio.',
-                        'proveedor_ruc.max' => 'El RUC del proveedor no puede tener más de 11 caracteres.',
-                        'proveedor_ruc.unique' => 'El RUC del proveedor ya existe en la base de datos.',
-                        'proveedor_razon_social.required' => 'El campo Razón Social del proveedor es obligatorio.',
-                        'proveedor_razon_social.max' => 'La Razón Social del proveedor no puede tener más de 255 caracteres.',
-                        // Add custom error messages for other fields as needed
-                    ],
-                );
-               
-            }
+        $datax = $request->all();
 
-            $validate['proveedor_contacto1'] = str_replace('-', '', $validate['proveedor_contacto1']);
-            if(isset($validate['proveedor_contacto2'])){
-                $validate['proveedor_contacto2'] = str_replace('-', '', $validate['proveedor_contacto2']);
-            }
+        $request->merge([
+            'proveedor_contacto2' => $request->input('proveedor_contacto2', 'no tiene'),
+            'proveedor_direccion' => $request->input('proveedor_direccion', 'no tiene'),
+            'proveedor_departamento' => $request->input('proveedor_departamento', 'no tiene'),
+            'proveedor_provincia' => $request->input('proveedor_provincia', 'no tiene'),
+            'proveedor_distrito' => $request->input('proveedor_distrito', 'no tiene'),
+            'proveedor_email' => $request->input('proveedor_email', 'no tiene'),
+            'proveedor_nombre_comercial' => $request->input('proveedor_nombre_comercial', 'no tiene'),
+        ]);
 
-            $validate['user_id'] = Auth::user()->id;
+        if (isset($datax['proveedor_dni'])) {
+            $validate = $request->validate(
+                [
+                    'proveedor_dni' => 'required|string|max:11|unique:proveedor,proveedor_dni',
+                    'proveedor_nombre' => 'required|string|max:255|unique:proveedor,proveedor_nombre',
+                    'proveedor_contacto1' => 'required|string|max:45',
+                    'proveedor_contacto2' => 'nullable|string|max:45',
+                    'proveedor_direccion' => 'nullable|string|max:255',
+                    'proveedor_departamento' => 'nullable|string|max:255',
+                    'proveedor_provincia' => 'nullable|string|max:255',
+                    'proveedor_distrito' => 'nullable|string|max:255',
+                    'proveedor_email' => 'nullable|string|max:255',
+                ],
+                [
+                    'proveedor_dni.required' => 'El campo DNI del proveedor es obligatorio.',
+                    'proveedor_dni.max' => 'El DNI del proveedor no puede tener más de 11 caracteres.',
+                    'proveedor_dni.unique' => 'El DNI del proveedor ya existe en la base de datos.',
+                    'proveedor_nombre.required' => 'El campo Nombre del proveedor es obligatorio.',
+                    'proveedor_nombre.max' => 'El Nombre del proveedor no puede tener más de 255 caracteres.',
+                    // Add custom error messages for other fields as needed
+                ],
+            );
+        } else {
+            $validate = $request->validate(
+                [
+                    'proveedor_ruc' => 'required|string|max:11|unique:proveedor,proveedor_ruc',
+                    'proveedor_razon_social' => 'required|string|max:255|unique:proveedor,proveedor_razon_social',
+                    'proveedor_nombre_comercial' => 'nullable|string|max:45',
+                    'proveedor_contacto1' => 'required|string|max:45',
+                    'proveedor_contacto2' => 'nullable|string|max:45',
+                    'proveedor_direccion' => 'nullable|string|max:255',
+                    'proveedor_departamento' => 'nullable|string|max:255',
+                    'proveedor_provincia' => 'nullable|string|max:255',
+                    'proveedor_distrito' => 'nullable|string|max:255',
+                    'proveedor_email' => 'nullable|string|max:255',
+                ],
+                [
+                    'proveedor_ruc.required' => 'El campo RUC del proveedor es obligatorio.',
+                    'proveedor_ruc.max' => 'El RUC del proveedor no puede tener más de 11 caracteres.',
+                    'proveedor_ruc.unique' => 'El RUC del proveedor ya existe en la base de datos.',
+                    'proveedor_razon_social.required' => 'El campo Razón Social del proveedor es obligatorio.',
+                    'proveedor_razon_social.max' => 'La Razón Social del proveedor no puede tener más de 255 caracteres.',
+                    // Add custom error messages for other fields as needed
+                ],
+            );
+        }
 
-            $create = proveedores::create($validate);
+        $validate['proveedor_contacto1'] = str_replace('-', '', $validate['proveedor_contacto1']);
+        if (isset($validate['proveedor_contacto2'])) {
+            $validate['proveedor_contacto2'] = str_replace('-', '', $validate['proveedor_contacto2']);
+        }
 
-            if ($create) {
-                session()->flash('success', 'Registro creado correctamente');
-                return redirect()->route('proveedores.index');
-            } else {
-                Log::error('no se pudo registrar el proveedores');
-                session()->flash('error', 'error al registrar en la base de datos');
-                return redirect()->route('proveedores.index');
-            }
-        
+        $validate['user_id'] = Auth::user()->id;
+
+        $create = proveedores::create($validate);
+
+        if ($create) {
+            session()->flash('success', 'Registro creado correctamente');
+            return redirect()->route('proveedores.index');
+        } else {
+            Log::error('no se pudo registrar el proveedores');
+            session()->flash('error', 'error al registrar en la base de datos');
+            return redirect()->route('proveedores.index');
+        }
     }
 
     /**
@@ -282,6 +281,19 @@ class proveedores_controller extends Controller
     {
         //
     }
+
+    /* ******** funciones para consumir en vue ************* */
+    function proveedor_search(Request $req)
+    {
+        $cliente = proveedores::select(DB::raw('proveedor_id AS id'), DB::raw("CONCAT(proveedor_nombre,' ', proveedor_razon_social) AS name"))
+            ->where('proveedor_nombre', 'like', '%' . $req->all()['search'] . '%')
+            ->orWhere('proveedor_razon_social', 'like', '%' . $req->all()['search'] . '%') 
+            ->orWhere('proveedor_ruc', 'like', '%' . $req->all()['search'] . '%') 
+            ->limit(17)
+            ->get();
+        echo json_encode($cliente);
+    }
+    /* *********************** */
 
     public function importar()
     {

@@ -55,7 +55,15 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'name' => 'Inventario de las motos',
                         'icon' => 'fa fa-cubes',
-                        'submenu' => [['name' => 'tabla de los inventarios', 'url' => 'inventario_moto.index'], ['name' => 'nuevo inventario( moto )', 'url' => 'inventario_moto.create'],['name' => 'todo los accesorios', 'url' => 'accesorios.index'],['name' => 'crear accesorios', 'url' => 'accesorios.create'],['name' => 'todo las autorizaciones', 'url' => 'autorizaciones.index'],['name' => 'crear autorizacion', 'url' => 'autorizaciones.create']],
+                        'submenu' => [
+                            ['name' => 'tabla de los inventarios', 'url' => 'inventario_moto.index'], 
+                            ['name' => 'nuevo inventario( moto )', 'url' => 'inventario_moto.create'],
+                            ['name' => 'Cotizaciones', 'url' => 'cotizaciones.index'],
+                            ['name' => 'todo los accesorios', 'url' => 'accesorios.index'],
+                            ['name' => 'crear accesorios', 'url' => 'accesorios.create'],
+                            ['name' => 'todo las autorizaciones', 'url' => 'autorizaciones.index'], 
+                            ['name' => 'crear autorizacion', 'url' => 'autorizaciones.create'], 
+                        ],
                     ],
                     [
                         'name' => 'Productos',
@@ -101,10 +109,16 @@ class AppServiceProvider extends ServiceProvider
                             ['name' => 'crear categoria', 'url' => 'categorias.create']
                         ],
                     ],
+                    
                     [
                         'name' => 'Servicios',
                         'icon' => 'fa fa-wrench',
                         'submenu' => [['name' => 'Todo los servicios', 'url' => 'servicios.index'], ['name' => 'Nuevo Servicio', 'url' => 'servicios.create']],
+                    ],
+                    [
+                        'name' => 'Usuarios',
+                        'icon' => 'fa fa-users',
+                        'submenu' => [['name' => 'Todo los usuarios', 'url' => 'users.index'], ['name' => 'Nuevo Usuario', 'url' => 'users.create']],
                     ],
                 ];
 

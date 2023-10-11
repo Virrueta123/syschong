@@ -20,7 +20,7 @@ class activaciones extends Model
     }
 
     public function cortesias(){
-        return $this->hasMany(cortesias_activacion::class,'activaciones_id')->withTrashed();
+        return $this->hasMany(cortesias_activacion::class,'activaciones_id') ;
     }
 
     public function tienda(){

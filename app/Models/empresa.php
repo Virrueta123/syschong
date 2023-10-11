@@ -39,4 +39,8 @@ class empresa extends Model
         return $this::where('active', "A")->first()->declaracion;
     } 
 
+    public function token_whatsapps_api(){
+        return $this::where('active', "A")->first()->token_whatsapps_api;
+    }
+
 }

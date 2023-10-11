@@ -521,7 +521,7 @@ class producto_controller extends Controller
             $search = $request->input('search');
 
             $modelo = producto::
-                 select('prod_id as id', DB::raw("CONCAT('Nombre :',prod_nombre, ' | N.Secundario : ', prod_nombre_secundario, ' | Codigo : ', prod_codigo) as name"))
+                 select('prod_id as id', DB::raw("CONCAT('Nombre :',prod_nombre, ' | Codigo : ', prod_codigo) as name"))
                 ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
                 ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
                 ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')

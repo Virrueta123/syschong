@@ -58,6 +58,8 @@ include 'web/usuarios.php';
 
 include 'web/mantenimiento.php';
 
+include 'web/calendario.php';
+
 /* *********************** */
 
 
@@ -101,7 +103,9 @@ Route::resource('proveedores', App\Http\Controllers\proveedores_controller::clas
 
 Route::resource('mantenimiento', App\Http\Controllers\mantenimiento_controller::class);
 
+Route::resource('calendario', App\Http\Controllers\calendario_controller::class);
 
+Route::resource('users', App\Http\Controllers\user_controller::class);
 
 Route::post('/logout', function () {
     Auth::logout();

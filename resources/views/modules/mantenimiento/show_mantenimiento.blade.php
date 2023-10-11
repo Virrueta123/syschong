@@ -10,18 +10,18 @@
 @endsection
 
 @section('content')
-<div class="section-body">
+    <div class="section-body">
         <div class="invoice">
             <div class="invoice-print">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="invoice-title">
-                            <h2>Datos del mantenimiento </h2> 
+                            <h2>Datos del mantenimiento </h2>
                         </div>
-                       
+
                         <hr>
                         <div class="row">
-                            <div class="col-md-6"> 
+                            <div class="col-md-6">
                                 <table class="table table-striped table-md">
                                     <tbody>
                                         <tr class="m-0 p-0">
@@ -38,7 +38,7 @@
                                         </tr>
                                         <tr>
                                             <td>Fecha de creacion:</td>
-                                            <td>{{ \Carbon\Carbon::parse($cortesia->created_at)->format("d/m/Y") }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($cortesia->created_at)->format('d/m/Y') }}</td>
                                         </tr>
                                         <tr>
                                             <td>Precio:</td>
@@ -46,12 +46,13 @@
                                         </tr>
                                         <tr>
                                             <td>Aviso:</td>
-                                            @if ( $cortesia->is_aviso == "S" )
-                                            <td> se avisa en {{ $cortesia->dias }}dias  |  Fecha de aviso => {{ \Carbon\Carbon::parse($cortesia->date_aviso)->format("d/m/Y") }}</td>
+                                            @if ($cortesia->is_aviso == 'S')
+                                                <td> se avisa en {{ $cortesia->dias }}dias | Fecha de aviso =>
+                                                    {{ \Carbon\Carbon::parse($cortesia->date_aviso)->format('d/m/Y') }}</td>
                                             @else
                                                 <td>No se avisara</td>
                                             @endif
-                                           
+
                                         </tr>
                                         <tr>
                                             <td>Usuario que creo:</td>
@@ -61,17 +62,17 @@
                                 </table>
 
                             </div>
- 
+
 
                         </div>
-                        
+
                     </div>
                 </div>
 
-             
+
             </div>
             <hr>
-            
+
         </div>
     </div>
 
@@ -84,14 +85,21 @@
                         <div class="invoice-title">
                             <h2>Detalles del Inventario N° #{{ $inventario->inventario_numero }} </h2>
                             <div class="invoice-number">
-                               
-                                <a href="{{ route("cotizacion_mantenimiento",encrypt_id($cortesia->cortesias_activacion_id)) }}" class="btn btn-primary boton-color"><i class="fa fa-coins"></i> Cotizar </a>
-                                <a target="_blank" href="{{ route('imprimir_inventario_moto',$inventario_moto_id) }}" class="btn btn-primary boton-color"><i
-                                        class="fa fa-print"></i> Imprimir </a>
+
+                                @if ( is_null($cortesia->cotizacion))
+                                    <a href="{{ route('cotizacion_mantenimiento', encrypt_id($cortesia->cortesias_activacion_id)) }}"
+                                        class="btn btn-primary boton-color"><i class="fa fa-coins"></i> Cotizar </a>
+                                @else
+                                    <a href="{{ route('cotizacion_mantenimiento', encrypt_id($cortesia->cortesias_activacion_id)) }}"
+                                        class="btn btn-primary boton-color"><i class="fa fa-coins"></i> Cotizar </a>
+                                @endif
+
+                                <a target="_blank" href="{{ route('imprimir_inventario_moto', $inventario_moto_id) }}"
+                                    class="btn btn-primary boton-color"><i class="fa fa-print"></i> Imprimir </a>
                             </div>
 
                         </div>
-                       
+
                         <hr>
                         <div class="row">
                             <div class="col-md-6">
@@ -243,18 +251,18 @@
                                 </tbody>
                             </table>
                         </div>
-                       
+
                         <div class="section-title">Autorizaciones</div>
                         <p class="section-lead">Todo las autorizacion que el cliente debe firmar.</p>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover table-md">
-                                <tbody> 
+                                <tbody>
                                     <tr>
-                                        <th>Nombre de la autorización</th> 
+                                        <th>Nombre de la autorización</th>
                                     </tr>
                                     @foreach ($autorizaciones as $autorizacion)
                                         <tr>
-                                            <td>{{ $autorizacion->autorizaciones->aut_nombre }}</td> 
+                                            <td>{{ $autorizacion->autorizaciones->aut_nombre }}</td>
                                         </tr>
                                     @endforeach
 
@@ -264,10 +272,10 @@
                     </div>
                 </div>
 
-                
+
             </div>
             <hr>
-            
+
         </div>
     </div>
 @endsection

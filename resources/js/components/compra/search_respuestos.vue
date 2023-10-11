@@ -1,6 +1,6 @@
 <template>
  
-    <select   name="prod_id" id="repuesto" ref="repuesto" class="form-control custom-select" style="width: 100%; z-index: 150000;"
+    <select name="prod_id" id="repuesto" ref="repuesto" class="form-control custom-select" style="width: 100%; z-index: 150000;"
            placeholder="selecciona una marca de producto">
     </select>
  
@@ -67,7 +67,7 @@
                     },
                     processResults: (data) => {
                         // Tranforms the top-level key of the response object from 'items' to 'results'
-
+                        
                         return {
                             results: $.map(data, function(item) {
                                 return {

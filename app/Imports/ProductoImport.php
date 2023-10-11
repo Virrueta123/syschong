@@ -25,8 +25,10 @@ class ProductoImport implements ToCollection
                             $marca_producto->marca_prod_nombre = $valores[3];
                             $marca_producto->save();
                             $valor_marca = $marca_producto->marca_prod_id;
+                            $cod_marca = substr(str_replace(' ', '', $valores[3]), 0, 3);
                         } else {
                             $valor_marca = $marca->marca_prod_id;
+                            $cod_marca = substr(str_replace(' ', '',$marca->marca_prod_nombre), 0, 3);
                         }
 
                         $categoria = categoria_producto::where('categoria_nombre', $valores[2])->first();
@@ -36,24 +38,24 @@ class ProductoImport implements ToCollection
                             $categoria_producto->categoria_nombre = $valores[2];
                             $categoria_producto->save();
                             $valor_categoria = $categoria_producto->categoria_id;
+                            $cod_categoria = substr(str_replace(' ', '',$valores[2]), 0, 3);
                         } else {
                             $valor_categoria = $categoria->categoria_id;
+                            $cod_categoria = substr(str_replace(' ', '',$categoria->categoria_nombre), 0, 3);
                         }
-                        if (is_null($valores[1])) {
-                            
-                            do {
-                                
-                                $codigo = rand(1000000000,999999999);  
-                       
-                            } while (self::existeCodigoEnLaBaseDeDatos($valores[1]));
-                            
+                        
+                        if (is_null($valores[1]) == true || $valores[1] == "") {
+
+                            $codigo = substr(str_replace(' ', '',$valores[0]), 0, 3) . '' . $cod_marca . '' . $cod_categoria;
+                           
                         } else {
+                            
                             $codigo = $valores[1];
-                        }
- 
+                            
+                        } 
                         $productos = producto::create([
                             'prod_nombre' => $valores[0],
-                            'prod_codigo' =>  $codigo,
+                            'prod_codigo' => $codigo,
                             'categoria_id' => $valor_categoria,
                             'marca_id' => $valor_marca,
                             'prod_precio_venta' => $valores[4],
@@ -61,7 +63,6 @@ class ProductoImport implements ToCollection
                             'unidades_id' => 1,
                             'zona_id' => 1,
                         ]);
-                         
                     }
                 }
             }
@@ -83,14 +84,14 @@ class ProductoImport implements ToCollection
         }
     }
 
-    function existeCodigoEnLaBaseDeDatos($codigo){
+    function existeCodigoEnLaBaseDeDatos($codigo)
+    {
         $producto = producto::where('prod_codigo', $codigo)->first();
- 
-        if($producto){
+
+        if ($producto) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-
 }

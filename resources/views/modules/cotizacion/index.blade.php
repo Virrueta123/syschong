@@ -10,74 +10,16 @@
 @endsection
 
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4>Toda las cotizaciones</h4>
-
-
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <table class="table table-striped dataTable table-bordered table-hover " id="accesorios_table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Cliente
-                                    </th>
-                                    <th>
-                                        Moto placa
-                                    </th>
-                                    <th>
-                                        Estado
-                                    </th>
-                                    <th>
-                                        Fecha Creacion
-                                    </th>
-
-                                    <th>
-                                        <i class="fa fa-cogs" aria-hidden="true"></i> acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>
-                                        Cliente
-                                    </th>
-                                    <th>
-                                        Moto placa
-                                    </th>
-                                    <th>
-                                        Estado
-                                    </th>
-                                    <th>
-                                        Fecha Creacion
-                                    </th>
-
-                                    <th>
-                                        <i class="fa fa-cogs" aria-hidden="true"></i> acciones
-                                    </th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
+    <div id="app">
+        <cotizacion-table></cotizacion-table>
     </div>
+ 
 @endsection
 
 @section('js')
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
-    <script>
+
+    <!-- ******** <script>
         $(function() {
 
             var table = $('#accesorios_table').DataTable({
@@ -162,5 +104,6 @@
                 ]
             })
         });
-    </script>
+    </script>  -->
+    
 @endsection

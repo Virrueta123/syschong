@@ -40,10 +40,11 @@
     <link rel="stylesheet"
         href="{{ asset('assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css"> 
 
 
-    <link href="https://releases.transloadit.com/uppy/v3.14.0/uppy.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
+
 
 
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -78,6 +79,7 @@
                         <a href="#" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> NC</a>
                         <a href="#" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> ME</a>
                         <a href="{{ route('cotizacion.index') }}" class="btn btn-icon btn-light"><i class="fa fa-file-invoice"></i></a>
+                        <a href="{{ route('calendario.index') }}" class="btn btn-icon btn-light"><i class="fa fa-calendar"></i></a>
                     </div>
                 </form>
                 <ul class="navbar-nav navbar-right">
@@ -347,12 +349,14 @@
     <script src="{{ asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('assets/modules/jquery-ui/jquery-ui.min.js') }}"></script>
 
+ 
 
 
     <!-- Librería de los botones de DataTables -->
 
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script> <!-- Librería de la extensión ColVis -->
 
+    <script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
 
     <!-- *********************** -->
     <script src="{{ mix('js/app.js') }}"></script>

@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Html\Column;
@@ -38,6 +39,11 @@ class mantenimiento_controller extends Controller
      */
     public function index(Builder $builder)
     {
+        //$whatsapp = new whatsapp_api();
+        //$whatsapp->sendMessage();
+
+        //dd($whatsapp);
+
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
             return DataTables::of(
@@ -288,6 +294,8 @@ class mantenimiento_controller extends Controller
             },
         ])->find($cortesia->inventario_moto_id);
 
+         dd($cortesia);
+
         $inventario_moto_id = encrypt_id($inventario->inventario_moto_id);
 
         $accesorios = accesorios_inventario_detalle::with('accesorios')
@@ -352,6 +360,8 @@ class mantenimiento_controller extends Controller
             'usuario',
         ])->find(decrypt_id($id));
 
+       
+
         $inventario = inventario_moto::with([
             'moto' => function ($query) {
                 $query->with('cliente');
@@ -390,7 +400,6 @@ class mantenimiento_controller extends Controller
         } else {
             $correlativo++;
         }
-        
 
         $cortesias = cortesias_activacion::with([
             'activaciones' => function ($query) {
@@ -404,10 +413,9 @@ class mantenimiento_controller extends Controller
             'mecanico',
             'usuario',
         ])->find(decrypt_id($id));
- 
 
         // Asignar valores a los campos
-        $cotizacion->inventario_moto_id =  $cortesias->inventario_moto_id;
+        $cotizacion->inventario_moto_id = $cortesias->inventario_moto_id;
         $cotizacion->observacion_sta = $Datax['observacion_sta'];
         $cotizacion->total = $Datax['total'];
         $cotizacion->cotizacion_correlativo = $correlativo;
@@ -422,7 +430,7 @@ class mantenimiento_controller extends Controller
                 $cotizaion_detalle = new cotizacioncotizacion_detalle();
 
                 // Asignar valores a los campos
-                $cotizaion_detalle->cotizacion_id = $cotizacion->cotizacion_id; // ID de la cotización relacionada
+                $cotizaion_detalle->cotizacion_id =  $cotizacion->cotizacion_id ; // ID de la cotización relacionada
                 $cotizaion_detalle->prod_id = $ps['prod_id']; // ID del producto relacionado
                 $cotizaion_detalle->servicios_id = $ps['servicios_id']; // ID del servicio relacionado
                 $cotizaion_detalle->tipo = $ps['tipo']; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
@@ -444,14 +452,12 @@ class mantenimiento_controller extends Controller
             $cortesias_activacion = cortesias_activacion::findOrFail(decrypt_id($id));
 
             // Actualizar el registro con los nuevos datos
-            $cortesias_activacion->update(['cotizacion_id'=>$cotizacion->cotizacion_id]);
-
-           
+            $cortesias_activacion->update(['cotizacion_id' => $cotizacion->cotizacion_id]);
 
             session()->flash('success', 'Registro creado correctamente');
-            return redirect()->route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id));
+            return redirect()->route('cotizaciones.show',  encrypt_id($cotizacion->cotizacion_id ));
         } else {
-            dd("dsad");
+            dd('dsad');
             Log::error('no se pudo registrar la cotizacion');
             session()->flash('error', 'error al registrar en la base de datos');
             return redirect()->route('cotizacion.create', $Datax['id']);
@@ -541,7 +547,7 @@ class mantenimiento_controller extends Controller
                 'message' => 'se creo correctamente el mantenimiento',
                 'error' => '',
                 'success' => true,
-                'data' => route('mantenimiento.show', encrypt_id($cortesias_activacion->cortesias_activacion_id)),
+                'data' => route('mantenimiento.show', encrypt_id($activaciones->activaciones_id)),
             ]);
         } else {
             Log::error('no se pudo registrar el inventario de la moto');

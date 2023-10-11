@@ -10,3 +10,12 @@ Route::get('/cotizacion/{cotizacion}/pdf', [App\Http\Controllers\cotizacion_cont
 
 Route::post('/cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'store'])->name('cotizacion.store'); 
 
+Route::post('/cotizacion_enviada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada'])->name('cotizacion_enviada'); 
+
+Route::post('/cotizacion_aprobada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_aprobada'])->name('cotizacion_aprobada'); 
+
+Route::get('/cotizacion_table_vue/{progreso}', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_table_vue'])->name('cotizacion_table_vue'); 
+
+Route::post('/moto_aprobada', [App\Http\Controllers\cotizacion_controller::class, 'moto_aprobada'])->name('moto_aprobada'); 
+
+Route::post('/badge_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'badge'])->name('badge'); 

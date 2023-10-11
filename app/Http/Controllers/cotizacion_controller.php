@@ -11,9 +11,13 @@ use App\Models\inventario_moto;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use LengthException;
 use Yajra\DataTables\Facades\DataTables;
 
 class cotizacion_controller extends Controller
@@ -34,6 +38,8 @@ class cotizacion_controller extends Controller
      */
     public function index(Request $request)
     {
+        
+        
         $fecha_actual = Carbon::now();
         if ($request->ajax()) {
             $cotizacion = cotizacion::with([
@@ -182,7 +188,7 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-     
+       
         $get = cotizacion::with([
             'inventario' => function ($query) {
                 $query->with([
@@ -201,6 +207,9 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
+
+         
+    
 
         if ($get) {
             return view('modules.cotizacion.show', ['get' => $get, 'id' => $id]);
@@ -245,7 +254,7 @@ class cotizacion_controller extends Controller
 
     public function pdf($id)
     {
-        try {
+        
             $cuentas = cuentas::where('estado', 'A')->get();
             $get = cotizacion::with([
                 'inventario' => function ($query) {
@@ -268,14 +277,207 @@ class cotizacion_controller extends Controller
 
             if ($get) {
                 $pdf = Pdf::loadView('pdf.cotizacion', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
+                
                 return $pdf->stream();
             } else {
                 return view('errors.404');
             }
+       
+    }
+
+    /* ******** cambiar estado de cotizacion ************* */
+
+    public function cotizacion_enviada(Request $request)
+    {
+ 
+        try {
+
+            $now = Carbon::now(); 
+            $saludo = "Buenos días";
+ 
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $cotizacion = cotizacion::
+            with(["inventario"=>function($query){
+                $query->with(["moto"=>function($query){
+                    $query->with(["cliente"]);
+                }]); 
+            }])->
+            find($cotizacion_id);
+
+            $update = cotizacion:: 
+            find($cotizacion_id);
+
+            $update->progreso = 1;
+            if ($update->save()) {
+
+                $whatsapp = new whatsapp_api();
+                $whatsapp->nombre_cliente = $cotizacion->inventario->moto->cliente->cli_nombre;
+                $whatsapp->saludo = $saludo;
+                $whatsapp->numero_cotizacion = "C".$cotizacion->cotizacion_serie ."-".$cotizacion->cotizacion_correlativo;
+                $whatsapp->link_pdf = "https://ocw.uca.es/pluginfile.php/1491/mod_resource/content/1/El_principe_Maquiavelo.pdf" ;
+                $whatsapp->link_aprobacion = "cotizacion/" . encrypt_id($cotizacion_id)."/pdf"; 
+                 
+                
+               
+                return response()->json([
+                    'message' =>  $whatsapp->sendMessage( ),
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se pudo registrar la marca de producto');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            session()->flash('error', 'error al entrar a esta ruta');
-            return redirect()->back();
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
         }
     }
+
+    public function cotizacion_aprobada(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+            $detalle = $request->all()['detalle'];
+            $contador = 0;
+            foreach ($detalle as $dt) {
+                $contador++;
+                $updated = cotizacioncotizacion_detalle::find($dt['cotizacion_detalle_id']);
+                $updated->aprobar = $dt['aprobar'];
+                $updated->save();
+            }
+
+            if (count($detalle) == $contador) {
+                $cotizacion_id = $request->all()['cotizacion_id'];
+                $update = cotizacion::find($cotizacion_id);
+                $update->progreso = 2;
+                $update->save();
+                return response()->json([
+                    'message' => 'se actualizo la cotizacion a aprobada',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se puedo actualizar la cotizacion a aprobada');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a aprobada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+    /* *********************** */
+
+    /* ******** trabajo realizado ************* */
+
+    public function moto_aprobada(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+            $update = cotizacion::find($cotizacion_id);
+            $update->progreso = 3;
+            if ($update->save()) {
+                return response()->json([
+                    'message' => 'Trabajo finalizado',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se pudo registrar Trabajo finalizado');
+                return response()->json([
+                    'message' => 'no se pudo terminar el trabajo',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    /* *********************** */
+
+    /* ******** cotizacion datatables by progreso ************* */
+    public function cotizacion_table_vue($progreso)
+    {
+        $cotizacion = cotizacion::select(DB::raw('*'))
+            ->with([
+                'inventario' => function ($query) {
+                    $query->with([
+                        'moto' => function ($query) {
+                            $query->with(['cliente']);
+                        },
+                    ]);
+                },
+            ])
+            ->where('progreso', $progreso)
+            ->get();
+
+        return response()->json(['data' => $cotizacion]);
+    }
+    /* *********************** */
+
+    /* ******** badge ************* */
+    public function badge()
+    {
+        $emitidos = cotizacion::where('progreso', 0)
+            ->get()
+            ->count();
+        $enviados = cotizacion::where('progreso', 1)
+            ->get()
+            ->count();
+        $aprobados = cotizacion::where('progreso', 2)
+            ->get()
+            ->count();
+        $trabajo_terminado = cotizacion::where('progreso', 3)
+            ->get()
+            ->count();
+        $finalizados = cotizacion::where('progreso', 4)
+            ->get()
+            ->count();
+
+        
+
+        $responseData = [
+            'emitidos' => $emitidos,
+            'enviados' => $enviados,
+            'aprobados' => $aprobados,
+            'trabajo_terminado' => $trabajo_terminado,
+            'finalizados' => $finalizados,
+        ]; 
+
+        return response()->json($responseData);
+    }
+    /* *********************** */
 }
