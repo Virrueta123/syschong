@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\cliente;
 use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -87,7 +88,7 @@ class clienteController extends Controller
             $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? 'N' : $datax['cli_provincia_ruc'];
             $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? 'N' : $datax['cli_departamento_ruc'];
             $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? 'N' : $datax['cli_distrito_ruc'];
-            $validate['user_id'] = Auth::user()->id; 
+            $validate['user_id'] = Auth::user()->id;
 
             $create = cliente::create($validate);
 
@@ -122,12 +123,8 @@ class clienteController extends Controller
             $validate = $request->validate([
                 'cli_nombre' => 'required|string|max:255',
                 'cli_apellido' => 'required|string|max:255',
-                'cli_dni' => 'required|numeric',
-                'cli_direccion' => 'required|string|max:255',
-                'cli_provincia' => 'required|string|max:255',
-                'cli_distrito' => 'required|string|max:255',
-                'cli_departamento' => 'required|string|max:255',
-                'cli_telefono' => 'required|string|max:11',
+                'cli_dni' => 'required|numeric', 
+                'cli_telefono' => 'nullable|string|max:11',
                 'cli_correo' => 'nullable|string|max:255|email',
             ]);
 
@@ -139,34 +136,43 @@ class clienteController extends Controller
             $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? 'N' : $datax['cli_provincia_ruc'];
             $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? 'N' : $datax['cli_departamento_ruc'];
             $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? 'N' : $datax['cli_distrito_ruc'];
-            $validate['user_id'] = Auth::user()->id; 
+            $validate['user_id'] = Auth::user()->id;
 
             $create = cliente::create($validate);
 
             if ($create) {
-                return response()->json([
-                    'message' => 'se creo correctamente un cliente',
-                    'error' => '',
-                    'success' => true,
-                    'data' => ['value' => $create->cli_id, 'title' => $create->cli_nombre . ' ' . $create->cli_apellido . ' - ' . $create->cli_dni],
-                ],200);
+                return response()->json(
+                    [
+                        'message' => 'se creo correctamente un cliente',
+                        'error' => '',
+                        'success' => true,
+                        'data' => ['value' => $create->cli_id, 'title' => $create->cli_nombre . ' ' . $create->cli_apellido . ' - ' . $create->cli_dni],
+                    ],
+                    200,
+                );
             } else {
                 Log::error('no se pudo registrar el cliente');
-                return response()->json([
-                    'message' => 'no se pudo registrar el cliente',
-                    'error' => '',
-                    'success' => false,
-                    'data' => '',
-                ],500);
+                return response()->json(
+                    [
+                        'message' => 'no se pudo registrar el cliente',
+                        'error' => '',
+                        'success' => false,
+                        'data' => '',
+                    ],
+                    500,
+                );
             }
         } catch (\Throwable $th) {
             Log::error($th);
-            return response()->json([
-                'message' => 'error del servidor'.$th,
-                'error' => $th,
-                'success' => false,
-                'data' => '',
-            ],500);
+            return response()->json(
+                [
+                    'message' => 'error del servidor' . $th,
+                    'error' => $th,
+                    'success' => false,
+                    'data' => '',
+                ],
+                500,
+            );
         }
     }
 
@@ -286,13 +292,68 @@ class clienteController extends Controller
     /* ******** funciones para consumir en vue ************* */
     function cliente_search(Request $req)
     {
-        $cliente = cliente::select(DB::raw('cli_id AS id'), DB::raw("CONCAT(cli_nombre,' ', cli_apellido,'-',cli_dni) AS name")) 
+        $cliente = cliente::select(DB::raw('cli_id AS id'), DB::raw("CONCAT(cli_nombre,' ', cli_apellido,'-',cli_dni) AS name"))
             ->where('cli_nombre', 'like', '%' . $req->all()['search'] . '%')
             ->orWhere('cli_apellido', 'like', '%' . $req->all()['search'] . '%')
-            ->orWhere('cli_dni', 'like', '%' . $req->all()['search'] . '%') 
+            ->orWhere('cli_dni', 'like', '%' . $req->all()['search'] . '%')
             ->limit(7)
-            ->get(); 
+            ->get();
         echo json_encode($cliente);
+    }
+    /* *********************** */
+
+    /* ******** actualizar ruc ************* */
+    function editar_ruc(Request $req)
+    {
+        try {
+
+            $datax = $req->all(); 
+ 
+
+            $cliente = cliente::find($datax["cli_id"]);
+            $cliente->cli_ruc = $datax["cli_form"][0]["value"];
+            $cliente->cli_razon_social = $datax["cli_form"][1]["value"];
+            $cliente->cli_departamento_ruc = $datax["cli_form"][3]["value"];
+            $cliente->cli_provincia_ruc = $datax["cli_form"][4]["value"];
+            $cliente->cli_distrito_ruc = $datax["cli_form"][5]["value"];
+            $cliente->cli_direccion_ruc = $datax["cli_form"][2]["value"];
+
+            /*
+            $update = cliente::update([
+                'cli_ruc' => $datax["cli_ruc"],
+                'cli_razon_social' => $datax["cli_razon_social"],
+                'cli_departamento_ruc' => $datax["cli_departamento_ruc"],
+                'cli_provincia_ruc' => $datax["cli_provincia_ruc"],
+                'cli_distrito_ruc' => $datax["cli_distrito_ruc"],
+                'cli_direccion_ruc' => $datax["cli_direccion_ruc"], 
+            ], [$datax["cli_id"]]); */
+           
+
+            if ( $cliente->update()) {
+                return response()->json([
+                    'message' => 'se actualizo correctamente el ruc',
+                    'error' => '',
+                    'success' => true,
+                    'data' =>"",
+                ]);
+            } else {
+                Log::error('error al actualizar el ruc');
+                return response()->json([
+                    'message' => 'error al actualizar el ruc',
+                    'error' => '',
+                    'success' => false,
+                    'data' =>"",
+                ]); 
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error al actualizar el ruc',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' =>"",
+            ]);
+        }
     }
     /* *********************** */
 }

@@ -6,9 +6,12 @@ use App\Models\accesorios_inventario_detalle;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
+use App\Models\empresa;
+use App\Models\forma_pago;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
 use App\Models\User;
+use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -29,7 +32,11 @@ class cotizacion_controller extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware("auth")->except([
+            'cotizacion_show_cliente',
+            "cotizacion_aprobada"
+            // Adicione aqui o nome das rotas que você deseja excluir do middleware "auth"
+        ]); 
     }
     /**
      * Display a listing of the resource.
@@ -38,8 +45,6 @@ class cotizacion_controller extends Controller
      */
     public function index(Request $request)
     {
-        
-        
         $fecha_actual = Carbon::now();
         if ($request->ajax()) {
             $cotizacion = cotizacion::with([
@@ -188,7 +193,6 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-       
         $get = cotizacion::with([
             'inventario' => function ($query) {
                 $query->with([
@@ -208,11 +212,28 @@ class cotizacion_controller extends Controller
             },
         ])->find(decrypt_id($id));
 
-         
-    
+        $correlativo_factura = ventas::where('tipo_comprobante', 'F')->max('venta_correlativo');
+
+        if (is_null($correlativo_factura)) {
+            $correlativo_factura = 1;
+        } else {
+            $correlativo_factura++;
+        }
+
+        $correlativo_boleta = ventas::where('tipo_comprobante', 'B')->max('venta_correlativo');
+
+        if (is_null($correlativo_boleta)) {
+            $correlativo_boleta = 1;
+        } else {
+            $correlativo_boleta++;
+        }
+
+        $forma_pago = forma_pago::where('estado', 'A')->get();
+
+        $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
 
         if ($get) {
-            return view('modules.cotizacion.show', ['get' => $get, 'id' => $id]);
+            return view('modules.cotizacion.show', ['get' => $get, 'id' => $id, 'empresa' => $empresa, 'correlativo_factura' => $correlativo_factura, 'correlativo_boleta' => $correlativo_boleta, 'forma_pago' => $forma_pago]);
         } else {
             return view('errors.404');
         }
@@ -252,76 +273,187 @@ class cotizacion_controller extends Controller
         //
     }
 
+    // crear factura
+
+    public function emitir_factura_cotizacion(Request $request)
+    {
+        $Datax = $request->all();
+        dd($Datax);
+
+        $detalle = cotizacioncotizacion_detalle::with([
+            'inventario' => function ($query) {
+                $query->with([
+                    'moto' => function ($query) {
+                        $query->with(['cliente', 'marca']);
+                    },
+                ]);
+            },
+            'mecanico',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])
+            ->where('cotizacion_id', $Datax['cotizacion_id'])
+            ->first();
+
+        try {
+            $Datax = $request->all();
+            if (true) {
+                return response()->json([
+                    'message' => '',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se pudo registrar la marca de producto');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
     public function pdf($id)
     {
-        
-            $cuentas = cuentas::where('estado', 'A')->get();
-            $get = cotizacion::with([
+        $cuentas = cuentas::where('estado', 'A')->get();
+        $get = cotizacion::with([
+            'inventario' => function ($query) {
+                $query->with([
+                    'moto' => function ($query) {
+                        $query->with(['cliente', 'marca']);
+                    },
+                ]);
+            },
+            'mecanico',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.cotizacion', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
+
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
+    }
+
+    public function cotizacion_show_cliente($id)
+    {
+        $get = cotizacion::with([
+            'inventario' => function ($query) {
+                $query->with([
+                    'moto' => function ($query) {
+                        $query->with(['cliente', 'marca']);
+                    },
+                ]);
+            },
+            'mecanico',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+        return view('modules.cotizacion.show_cliente', ['get' => $get]);
+    }
+    /* ******** cotizacion aprobada whatsapp ************* */
+    public function cotizacion_enviada_whatsapp(Request $request)
+    {
+        try {
+            $now = Carbon::now();
+            $saludo = 'Buenos días';
+
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $cotizacion = cotizacion::with([
                 'inventario' => function ($query) {
                     $query->with([
                         'moto' => function ($query) {
-                            $query->with(['cliente', 'marca']);
+                            $query->with(['cliente']);
                         },
                     ]);
                 },
-                'mecanico',
-                'detalle' => function ($query) {
-                    $query->with([
-                        'servicio',
-                        'producto' => function ($query) {
-                            $query->with(['unidad']);
-                        },
-                    ]);
-                },
-            ])->find(decrypt_id($id));
+            ])->find($cotizacion_id);
 
-            if ($get) {
-                $pdf = Pdf::loadView('pdf.cotizacion', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
-                
-                return $pdf->stream();
+            $update = cotizacion::find($cotizacion_id);
+
+            $update->progreso = 1;
+            if ($update->save()) {
+                $whatsapp = new whatsapp_api();
+                $whatsapp->nombre_cliente = $cotizacion->inventario->moto->cliente->cli_nombre;
+                $whatsapp->saludo = $saludo;
+                $whatsapp->celular_cliente = $cotizacion->inventario->moto->cliente->cli_telefono;
+                $whatsapp->numero_cotizacion = 'C' . $cotizacion->cotizacion_serie . '-' . $cotizacion->cotizacion_correlativo;
+                $whatsapp->link_pdf = 'https://ocw.uca.es/pluginfile.php/1491/mod_resource/content/1/El_principe_Maquiavelo.pdf';
+                $whatsapp->link_aprobacion = 'cotizacion/' . encrypt_id($cotizacion_id) . '/cliente';
+
+                return response()->json([
+                    'message' => $whatsapp->sendMessage(),
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
             } else {
-                return view('errors.404');
+                Log::error('no se pudo registrar la marca de producto');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
             }
-       
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
-
+    /* *********************** */
     /* ******** cambiar estado de cotizacion ************* */
 
     public function cotizacion_enviada(Request $request)
     {
- 
         try {
-
-            $now = Carbon::now(); 
-            $saludo = "Buenos días";
- 
             $cotizacion_id = $request->all()['cotizacion_id'];
 
-            $cotizacion = cotizacion::
-            with(["inventario"=>function($query){
-                $query->with(["moto"=>function($query){
-                    $query->with(["cliente"]);
-                }]); 
-            }])->
-            find($cotizacion_id);
-
-            $update = cotizacion:: 
-            find($cotizacion_id);
+            
+            $update = cotizacion::find($cotizacion_id);
 
             $update->progreso = 1;
             if ($update->save()) {
-
-                $whatsapp = new whatsapp_api();
-                $whatsapp->nombre_cliente = $cotizacion->inventario->moto->cliente->cli_nombre;
-                $whatsapp->saludo = $saludo;
-                $whatsapp->numero_cotizacion = "C".$cotizacion->cotizacion_serie ."-".$cotizacion->cotizacion_correlativo;
-                $whatsapp->link_pdf = "https://ocw.uca.es/pluginfile.php/1491/mod_resource/content/1/El_principe_Maquiavelo.pdf" ;
-                $whatsapp->link_aprobacion = "cotizacion/" . encrypt_id($cotizacion_id)."/pdf"; 
-                 
-                
-               
                 return response()->json([
-                    'message' =>  $whatsapp->sendMessage( ),
+                    'message' => 'actualizacion exitosa',
                     'error' => '',
                     'success' => true,
                     'data' => '',
@@ -467,15 +599,13 @@ class cotizacion_controller extends Controller
             ->get()
             ->count();
 
-        
-
         $responseData = [
             'emitidos' => $emitidos,
             'enviados' => $enviados,
             'aprobados' => $aprobados,
             'trabajo_terminado' => $trabajo_terminado,
             'finalizados' => $finalizados,
-        ]; 
+        ];
 
         return response()->json($responseData);
     }

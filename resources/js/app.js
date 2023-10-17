@@ -16,12 +16,15 @@ app.component('ruc', require('./components/ruc.vue').default);
 app.component('ruc-tienda', require('./components/tienda/ruc_tienda.vue').default);
 app.component('agregar-precios', require('./components/tienda/agregar_precio.vue').default);
 app.component('search-tienda', require('./components/tienda/search_tienda.vue').default);
+app.component('search-tienda-cobrar', require('./components/tienda/cobrar_tienda.vue').default);
+
 /* -- *********************** -- */
 
 app.component('search-cliente', require('./components/search_cliente.vue').default);
 app.component('crear-cliente', require('./components/crear_cliente.vue').default);
 
 /* -- ******** cotizacion ************* -- */
+app.component('cotizacion-cliente-show',require('./components/cotizacion/cotizacion_cliente_show.vue').default);
 app.component('cotizacion-mantenimiento', require('./components/cotizacion/cotizacion_mantenimiento.vue').default);
 app.component('cotizacion-table', require('./components/cotizacion/cotizacion_table.vue').default);
 /* -- *********************** -- */

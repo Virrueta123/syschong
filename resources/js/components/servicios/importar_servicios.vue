@@ -47,13 +47,10 @@
     import es from '@uppy/locales/src/es_ES';
     import ImageEditor from '@uppy/image-editor';
     import '@uppy/image-editor/dist/style.min.css';
-    import XHRUpload from '@uppy/xhr-upload';
-    import Swal from "sweetalert2";
-    import axios from "axios";
+    import XHRUpload from '@uppy/xhr-upload'; 
     import $ from "jquery";
     import "jquery-validation";
-    import "jquery-validation/dist/localization/messages_es"
-    import FileInput from '@uppy/file-input'
+    import "jquery-validation/dist/localization/messages_es" 
 
 
     export default {

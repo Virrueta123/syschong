@@ -1,7 +1,7 @@
 import 'gasparesganga-jquery-loading-overlay';
 
 import 'gasparesganga-jquery-loading-overlay';
-
+import axios from 'axios';
 export const myMixin = {
     data() {
         return {
@@ -49,6 +49,60 @@ export const myMixin = {
               return cadena.substring(0, limite) + '...'; // Agrega puntos suspensivos al final
             }
           },
+
+         send_axios(title_question,question,data,url){
+          Swal.fire({
+            title: title_question,
+            text: "--",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: question
+        }).then((result) => {
+            if (result.isConfirmed) { 
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                
+                axios
+                    .post(url, data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        console.log(response.data);
+
+                        if (response.data.success) {
+
+                          return true;
+
+                        } else {
+                          
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            console.error(response.data);
+                            return false;
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                        return false;
+                    });
+            }
+        })
+        return false;
+         },
 
   currency(name){
     console.log(name)

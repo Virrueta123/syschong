@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class whatsapp_api extends Controller
 {
     public $nombre_cliente;
+    public $celular_cliente;
     public $saludo;
     public $numero_cotizacion;
     public $link_pdf;
@@ -17,7 +18,7 @@ class whatsapp_api extends Controller
     {
         $client = new Client();
 
-        $url = 'https://graph.facebook.com/v17.0/139753709218160/messages';
+        $url = 'https://graph.facebook.com/v17.0/'.app('empresa')->codigo_telefono().'/messages';
 
         $headers = [
             'Authorization' => 'Bearer ' . app('empresa')->token_whatsapps_api(),
@@ -26,10 +27,10 @@ class whatsapp_api extends Controller
 
         $data = [
             'messaging_product' => 'whatsapp',
-            'to' => '51900968831',
+            'to' => "51{$this->celular_cliente}",
             'type' => 'template',
             'template' => [
-                'name' => 'send_cotizacion',
+                'name' => 'send_coti',
                 'language' => [
                     'code' => 'es_ES',
                     "policy"=>"deterministic"

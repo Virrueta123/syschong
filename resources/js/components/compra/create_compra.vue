@@ -27,7 +27,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div> 
 
                 <div class="form-row">
 
@@ -35,19 +35,14 @@
                         <label>Fecha creacion</label>
                         <VueDatePicker @internal-model-change="fecha_creacion_change" emit-timezone="UTC" locale="es"
                             v-model="fecha_creacion" placeholder="fecha creacion ..."
-                            :text-input="{
-                                format: 'dd.MM.yyyy'
-                            }" />
+                            format="dd/MM/yyyy HH:mm"  />
                     </div>
 
-                    <div class="form-group col-6">
-                        <label>Correlativo</label>
+                    <div class="form-group col-6"> 
                         <label>Fecha vencimiento</label>
                         <VueDatePicker emit-timezone="UTC" locale="es" v-model="fecha_vencimiento"
                             placeholder="fecha vencimiento ..."
-                            :text-input="{
-                                format: 'dd.MM.yyyy'
-                            }" />
+                            format="dd/MM/yyyy HH:mm" />
 
                     </div>
                 </div>
@@ -71,8 +66,7 @@
                         <label>Correlativo</label>
                         <input type="text" class="form-control" v-model="serie">
                     </div>
-
-
+ 
                 </div>
 
 
@@ -325,20 +319,15 @@
     import "imask";
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
-
-    import DataTable from 'datatables.net-bs5';
-    import 'datatables.net-buttons-bs5';
-    import DateTime from 'datatables.net-datetime';
+ 
+    import 'datatables.net-buttons-bs5'; 
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';
     import 'datatables.net-searchpanes-bs5';
     import 'datatables.net-select-bs5';
     import 'datatables.net-staterestore-bs5';
-    import IMask from 'imask';
-
-
-
+   
     import 'primevue/resources/themes/saga-blue/theme.css';
 
     import "primeicons/primeicons.css"
@@ -349,21 +338,23 @@
 
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
+    import moment from 'moment';
+    import 'moment-timezone';
 
 
-    import {
-        myMixin
-    } from "../../mixin.js";
+import {
+    myMixin
+} from "../../mixin.js";
 
-    export default {
-        components: {
-            "p-inputnumber": InputNumber,
-            "Checkbox": Checkbox,
-            "Calendar": Calendar,
-            VueDatePicker
-        },
-        mixins: [myMixin],
-        data() {
+export default {
+    components: {
+        "p-inputnumber": InputNumber,
+        "Checkbox": Checkbox,
+        "Calendar": Calendar,
+        VueDatePicker
+    },
+    mixins: [myMixin],
+    data() {
             return {
                 select_element: this.$attrs.select_element || "",
                 show_productos: [],
@@ -546,6 +537,10 @@
             },
         },
         mounted() {
+ 
+            console.log(moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss'))
+
+            this.fecha_creacion =  moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
 
 
             var self = this

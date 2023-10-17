@@ -22,13 +22,9 @@
     </div>
 </template>
 
-<script>
-    import Swal from "sweetalert2";
-    import $ from "jquery";
-    import "select2";
-    import axios from 'axios';
-
-
+<script> 
+    import "select2"; 
+ 
     import {
         myMixin
     } from "../../mixin.js";

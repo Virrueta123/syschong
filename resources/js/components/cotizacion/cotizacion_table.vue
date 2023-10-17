@@ -104,10 +104,8 @@
      import "imask";
      import "bootstrap"
      import 'gasparesganga-jquery-loading-overlay';
-
-     import DataTable from 'datatables.net-bs5';
-     import 'datatables.net-buttons-bs5';
-     import DateTime from 'datatables.net-datetime';
+ 
+     import 'datatables.net-buttons-bs5'; 
      import 'datatables.net-fixedcolumns-bs5';
      import 'datatables.net-responsive-bs5';
      import 'datatables.net-searchbuilder-bs5';

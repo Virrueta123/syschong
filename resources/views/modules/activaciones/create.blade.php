@@ -30,22 +30,18 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="prod_codigo">Buscar Tienda</label>
-                               
+                                <div class="input-group">
                                     <search-tienda></search-tienda>
-
-                                 
+                                </div>  
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="prod_codigo">Buscar la moto</label>
                                 <div class="input-group">
-                                    <search-moto-modelo></search-moto-modelo>
-
+                                    <search-moto-modelo></search-moto-modelo> 
                                 </div>
                             </div>
                         </div>
-
-                        <activado-taller></activado-taller>
-
+ 
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="prod_codigo">Precio Activacion</label>
@@ -65,8 +61,16 @@
                                 <div class="input-group">
                                     <search-vendedor></search-vendedor>
                                 </div>
-                            </div>
+                            </div> 
+                        </div>
 
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="prod_codigo">Tienda donde se cobrara esta cortesia</label>
+                                <div class="input-group">
+                                    <search-tienda-cobrar></search-tienda-cobrar> 
+                                </div>
+                            </div> 
                         </div>
 
                     </div>
@@ -98,8 +102,8 @@
                 precio: { 
                     required: true,
                 },
-                start_cortesia: { 
-                    required: true,
+                tienda_cobrar:{
+                    required:true
                 }
             },
             submitHandler: function(form) {

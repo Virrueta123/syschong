@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\empresa;
+use App\Models\forma_pago;
+use App\Models\ventas;
 use Illuminate\Http\Request;
 
 class pos_controller extends Controller
@@ -32,7 +35,27 @@ class pos_controller extends Controller
      */
     public function create()
     {
-        return view('modules.pos.create');
+        $correlativo_factura = ventas::where("tipo_comprobante","F")->max("venta_correlativo");
+    
+        if (is_null($correlativo_factura)) {
+            $correlativo_factura = 1;
+        } else {
+            $correlativo_factura++;
+        }
+
+        $correlativo_boleta = ventas::where("tipo_comprobante","B")->max("venta_correlativo");
+    
+        if (is_null($correlativo_boleta)) {
+            $correlativo_boleta = 1;
+        } else {
+            $correlativo_boleta++;
+        }
+
+        $forma_pago = forma_pago::where("estado","A")->get();
+ 
+        $empresa = empresa::select("ruc","celular","razon_social","direccion","ruc")->first(); 
+        
+        return view('modules.pos.create',["empresa"=>$empresa,"correlativo_factura"=>$correlativo_factura,"correlativo_boleta"=>$correlativo_boleta,"forma_pago"=>$forma_pago]);
     }
 
     /**

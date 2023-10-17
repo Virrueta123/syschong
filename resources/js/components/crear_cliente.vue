@@ -132,15 +132,7 @@
             const self = this;
 
             $("#form_cliente").validate({
-                rules: {
-                    cli_telefono: {
-                        maxlength: 11,
-                        minlength: 11,
-                        required: true,
-                    },
-                    cli_correo: {
-                        email: true,
-                    },
+                rules: { 
                     cli_dni: {
                         required: true,
                         number: true,
@@ -154,23 +146,7 @@
                     cli_apellido: {
                         maxlength: 200,
                         required: true,
-                    },
-                    cli_direccion: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_departamento: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_provincia: {
-                        maxlength: 255,
-                        required: true,
-                    },
-                    cli_distrito: {
-                        maxlength: 255,
-                        required: true,
-                    },
+                    }, 
                     cli_ruc: {
                         number: true,
                         maxlength: 11,

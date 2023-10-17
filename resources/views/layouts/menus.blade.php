@@ -1,6 +1,6 @@
 <ul class="sidebar-menu">
     <li class="menu-header">Dashboard</li>
-    <li><a class="nav-link" href="credits.html"><i class="fa fa-home"></i>
+    <li><a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i>
             <span>Inicio</span></a></li>
 
     @if (Auth::check())
@@ -17,9 +17,13 @@
         @endforeach
     @else
     @endif
-
-
-
-    <li><a class="dropdown-item has-icon text-danger" href="credits.html"><i class="fas fa-sign-out-alt"></i>
-            <span>Cerrar sesion</span></a></li>
+ 
+    <li> <a href="{{ route('logout') }}"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <span>Cerrar sesion</span>
+        </a></li>
+ 
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
 </ul>

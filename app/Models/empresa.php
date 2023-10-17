@@ -43,4 +43,7 @@ class empresa extends Model
         return $this::where('active', "A")->first()->token_whatsapps_api;
     }
 
+    public function codigo_telefono(){
+        return $this::where('active', "A")->first()->codigo_telefono;
+    }
 }

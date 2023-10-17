@@ -160,8 +160,7 @@
 </template>
 
 <script>
-    import Swal from "sweetalert2";
-    import axios from "axios";
+    import Swal from "sweetalert2"; 
     import $ from "jquery";
     import "jquery-validation";
     import "jquery-validation/dist/localization/messages_es"

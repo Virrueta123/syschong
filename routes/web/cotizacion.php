@@ -8,9 +8,13 @@ Route::get('/cotizacion/{inventario_moto_id}', [App\Http\Controllers\cotizacion_
 
 Route::get('/cotizacion/{cotizacion}/pdf', [App\Http\Controllers\cotizacion_controller::class, 'pdf'])->name('cotizacion.pdf'); 
 
+Route::get('/cotizacion/{cotizacion}/cliente', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_show_cliente'])->name('cotizacion.cliente'); 
+ 
 Route::post('/cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'store'])->name('cotizacion.store'); 
 
-Route::post('/cotizacion_enviada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada'])->name('cotizacion_enviada'); 
+Route::post('/cotizacion_enviada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada'])->name('cotizacion_enviada');
+
+Route::post('/cotizacion_enviada_whatsapp', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada_whatsapp'])->name('cotizacion_enviada_whatsapp');  
 
 Route::post('/cotizacion_aprobada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_aprobada'])->name('cotizacion_aprobada'); 
 
@@ -19,3 +23,6 @@ Route::get('/cotizacion_table_vue/{progreso}', [App\Http\Controllers\cotizacion_
 Route::post('/moto_aprobada', [App\Http\Controllers\cotizacion_controller::class, 'moto_aprobada'])->name('moto_aprobada'); 
 
 Route::post('/badge_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'badge'])->name('badge'); 
+
+Route::post('/emitir_factura_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'emitir_factura_cotizacion'])->name('emitir_factura_cotizacion'); 
+

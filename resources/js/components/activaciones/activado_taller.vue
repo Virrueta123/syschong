@@ -24,9 +24,7 @@
 
 </template>
 
-<script>
-    import Swal from "sweetalert2";
-    import $ from "jquery";
+<script> 
     import "select2";
     import {
         myMixin

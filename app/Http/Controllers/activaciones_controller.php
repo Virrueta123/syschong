@@ -119,10 +119,9 @@ class activaciones_controller extends Controller
         $activaciones->tienda_id = $datax['tienda_id'];
         $activaciones->vendedor_id = $datax['vendedor_id'];
         $activaciones->moto_id = $datax['moto_id'];
-        $activaciones->activado_taller = $datax['activado_taller'];
+        $activaciones->tienda_cobrar = $datax['tienda_cobrar'];
         $activaciones->precio = $datax['precio'];
-        $activaciones->user_id = auth()->user()->id;
-        $activaciones->start_cortesia = isset($datax['start_cortesia']) ? $datax['start_cortesia'] : 1;
+        $activaciones->user_id = auth()->user()->id; 
 
         // Guardar el registro en la base de datos
 

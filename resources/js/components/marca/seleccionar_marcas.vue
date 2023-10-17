@@ -6,8 +6,7 @@
     </div>
 </template>
 
-<script>
-    import Swal from "sweetalert2";
+<script> 
     import $ from "jquery";
     import "select2";
     import "select2/dist/css/select2.css";

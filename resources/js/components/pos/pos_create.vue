@@ -2,267 +2,352 @@
 
     <div>
 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h2 class="section-title">Buscardor de repuestos</h2>
 
 
-
-        <div class="card text-left">
-            <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
-            </center>
-            <div class="card-body">
-                <div class="invoice">
-                    <div class="invoice-print">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="invoice-title">
-                                    <h4>Informacion de la venta</h4>
-                                    <div class="invoice-number"> </div>
-                                </div>
-                                <hr>
-
-                                <div class="form-row ">
-                                    <div class="form-group col-4">
-                                        <label>Tipo de comprobante</label>
-                                        <select v-on:change="tipo_comprobante($event)" class="form-control">
-                                            <option value="F">Factura Electronica</option>
-                                            <option value="B">Boleta Electronica</option>
-                                            <option value="N">Nota de Venta</option>
-                                        </select>
-                                    </div>
-
-
-
-                                    <div class="form-group col-2">
-                                        <label>Tipo de comprobante</label>
-                                        <select disabled ref="serie" class="form-control">
-                                            <option value="F001">F001</option>
-                                            <option value="B001">B001</option>
-                                            <option value="NV01">NV01</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group col-2">
-                                        <label></label>
-                                        <select disabled ref="serie" class="form-control">
-                                            <option value="F001">F001</option>
-                                            <option value="B001">B001</option>
-                                            <option value="NV01">NV01</option>
-                                        </select>
-                                    </div>
-
-
-                                    <div class="form-group col-md-12">
-
-                                        <label for="cli_telefono">Buscar Cliente </label>
-
-                                        <div class="input-group">
-                                            <search-cliente>
-                                            </search-cliente>
-                                            <crear-cliente select_element="#cliente_select">
-                                            </crear-cliente>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <address>
-                                            <strong>Billed To:</strong><br>
-                                            Ujang Maman<br>
-                                            1234 Main<br>
-                                            Apt. 4B<br>
-                                            Bogor Barat, Indonesia
-                                        </address>
-                                    </div>
-                                    <div class="col-md-6 text-md-right">
-                                        <address>
-                                            <strong>Shipped To:</strong><br>
-                                            Muhamad Nauval Azhar<br>
-                                            1234 Main<br>
-                                            Apt. 4B<br>
-                                            Bogor Barat, Indonesia
-                                        </address>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <address>
-                                            <strong>Payment Method:</strong><br>
-                                            Visa ending **** 4242<br>
-                                            ujang@maman.com
-                                        </address>
-                                    </div>
-                                    <div class="col-md-6 text-md-right">
-                                        <address>
-                                            <strong>Order Date:</strong><br>
-                                            September 19, 2018<br><br>
-                                        </address>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <div class="section-header">
-                                    <h1>Informacion de la venta</h1>
-                                    <div class="section-header-breadcrumb">
-
-                                        <a href="#" class="btn btn-primary boton-color" data-toggle="modal"
-                                            data-target="#modal-add-repuesto"><i class="fa fa-plus"> </i> Agregar
-                                            Repuesto</a>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-sm" id="table-repuestos">
+                            <section>
+                                <div id="loading">
+                                    <table ref="miTabla" class="table display cell-border row-border" id="miTabla"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Codigo</th>
-                                                <th scope="col">Descripcion</th>
-                                                <th scope="col">Detalle</th>
-                                                <th scope="col">unidad</th>
-                                                <th scope="col">Precio</th>
-                                                <th scope="col">Descuento</th>
-                                                <th scope="col">V.Descuento</th>
-                                                <th scope="col">Cantidad</th>
-                                                <th scope="col">Importe</th>
-                                                <th scope="col">Importe Decuento</th>
-                                                <th scope="col" class="text-center"><i class="fa fa-cog"
-                                                        aria-hidden="true"></i></th>
+                                                <th>
+                                                    Codigo producto
+                                                </th>
+                                                <th>
+                                                    Nombre producto
+                                                </th>
+                                                <th>
+                                                    Stock
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
 
-                                            <tr v-for="(repuesto, index) in repuestos" :key="index">
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>
+                                                    Codigo producto
+                                                </th>
+                                                <th>
+                                                    Nombre producto
+                                                </th>
+                                                <th>
+                                                    Stock
+                                                </th>
+                                                <th>
+                                                    Precio
+                                                </th>
+                                                <th>
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </th>
 
-                                                <!-- ******** inputs ocultos para la cotizacion ************* -->
-                                                <input type="hidden" :name="'cotizacion[' + index + '][prod_id]'"
-                                                    :value="repuesto.prod_id">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
-                                                    :value="repuesto.servicios_id">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'"
-                                                    :value="repuesto.tipo">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
-                                                    :value="repuesto.Precio">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
-                                                    :value="repuesto.Importe">
-                                                <input type="hidden"
-                                                    :name="'cotizacion[' + index + '][ImporteDescuento]'"
-                                                    v-model="repuesto . ImporteDescuento">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Descripcion]'"
-                                                    v-model="repuesto . Descripcion">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Codigo]'"
-                                                    v-model="repuesto . Codigo">
-                                                <input type="hidden" :name="'cotizacion[' + index + '][Cantidad]'"
-                                                    v-model="repuesto . Cantidad">
-                                                <input type="hidden"
-                                                    :name="'cotizacion[' + index + '][ValorDescuento]'"
-                                                    v-model="repuesto . ValorDescuento">
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </section>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card text-left">
+                        <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150"
+                                alt="">
+                        </center>
+                        <div class="card-body col-lg-12">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="invoice-title">
+                                        <h4>Informacion de la venta</h4>
+                                        <div class="invoice-number"> </div>
+                                    </div>
+                                    <hr>
+
+                                    <div class="form-row ">
+                                        <div class="form-group col-md-4">
+                                            <label>Tipo de comprobante</label>
+                                            <select v-on:change="tipo_comprobante($event)" class="form-control">
+                                                <option value="F">Factura Electronica</option>
+                                                <option value="B">Boleta Electronica</option>
+                                                <!--  <option value="N">Nota de Venta</option>-->
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label>Serie</label>
+                                            <div class="form-group">
+                                                <input disabled ref="serie" v-model="serie" type="text"
+                                                    class="form-control" name="" id=""
+                                                    aria-describedby="helpId" placeholder="">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label>Correlativo</label>
+                                            <input disabled ref="correlativo" v-model="correlativo" type="text"
+                                                class="form-control" name="" id=""
+                                                aria-describedby="helpId" placeholder="">
+
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+
+                                            <label for="cli_telefono">Buscar Cliente </label>
+
+                                            <div class="input-group">
+                                                <search-cliente>
+                                                </search-cliente>
+                                                <crear-cliente select_element="#cliente_select">
+                                                </crear-cliente>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="section-header">
+                                        <h1>Informacion de la venta</h1>
+                                        <div class="section-header-breadcrumb">
+
+                                            <a href="#" class="btn btn-primary boton-color" data-toggle="modal"
+                                                data-target="#modal-add-repuesto"><i class="fa fa-plus"> </i> Agregar
+                                                Repuesto</a>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm" id="table-repuestos">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Codigo</th>
+                                                    <th scope="col">Descripcion</th>
+                                                    <th scope="col">unidad</th>
+                                                    <th scope="col">Precio</th>
+                                                    <th scope="col">Descuento</th>
+                                                    <th scope="col">Cantidad</th>
+                                                    <th scope="col">Importe</th>
+                                                    <th scope="col" class="text-center"><i class="fa fa-cog"
+                                                            aria-hidden="true"></i></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <tr v-for="(repuesto, index) in repuestos" :key="index">
+
+                                                    <!-- ******** inputs ocultos para la cotizacion ************* -->
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][prod_id]'"
+                                                        :value="repuesto.prod_id">
+                                                    <input type="hidden"
+                                                        :name="'cotizacion[' + index + '][servicios_id]'"
+                                                        :value="repuesto.servicios_id">
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][tipo]'"
+                                                        :value="repuesto.tipo">
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
+                                                        :value="repuesto.Precio">
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
+                                                        :value="repuesto.Importe">
+                                                    <input type="hidden"
+                                                        :name="'cotizacion[' + index + '][Descripcion]'"
+                                                        v-model="repuesto . Descripcion">
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][Codigo]'"
+                                                        v-model="repuesto . Codigo">
+                                                    <input type="hidden" :name="'cotizacion[' + index + '][Cantidad]'"
+                                                        v-model="repuesto . Cantidad">
+
+                                                    <!-- *********************** -->
+
+                                                    <td scope="row">{{ repuesto . Codigo }} </td>
+                                                    <td scope="row">{{ repuesto . Descripcion }}</td>
+
+
+                                                    <td scope="row">{{ repuesto . unidad }}</td>
+                                                    <td scope="row">{{ repuesto . Precio }}</td>
+
+
+
+                                                    <td scope="row">{{ repuesto . Cantidad }}</td>
+                                                    <td scope="row">{{ repuesto . Importe }}</td>
+                                                    <td><button type="button" name="" id=""
+                                                            v-on:click="eliminar_producto(repuesto . prod_id)"
+                                                            class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                                aria-hidden="true"></i></button></td>
+                                                </tr>
+
+                                                <input type="hidden" v-model="repuestos.length" id="cotizacion">
+
+                                                <input type="hidden" v-model="total" name="total">
+                                                <input type="hidden" v-model="total_descuento"
+                                                    name="total_descuento">
+
+
+                                                <tr v-if="repuestos.length == 0">
+                                                    <td colspan="7">
+                                                        <center>
+                                                            <img src="../../../../public/images/svg/sin_data.svg"
+                                                                width="180" alt="">
+                                                            <h6>Agregue productos para continuar</h6>
+                                                        </center>
+
+                                                    </td>
+                                                </tr>
+
+                                                <!-- ******** - ************* -->
+
+                                                <tr>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row" colspan="2">OP.EXONERADAS: </td>
+                                                    <td scope="row" colspan="2">
+                                                        {{ total }} </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row" colspan="2">TOTAL A PAGAR: </td>
+                                                    <td scope="row" colspan="2">
+                                                        {{ total }} </td>
+                                                </tr>
+
+
+
+
+                                                <tr>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <th scope="row">Método de pago </th>
+                                                    <th scope="row">Referencia
+                                                    </th>
+                                                    <th scope="row">Monto
+
+                                                    </th>
+                                                </tr>
+
+
+                                                <tr v-for="(pago, pg) in pagos" :key="pg">
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row">
+                                                        <div class="form-group">
+                                                            <select class="custom-select">
+
+                                                                <option v-for="(f_g, fg) in forma_pago"
+                                                                    :key="fg"
+                                                                    :selected="f_g.forma_pago_id == pago.forma_pago_id"
+                                                                    value="f_g.forma_pago_id">
+                                                                    {{ f_g . forma_pago_nombre }}</option>
+
+                                                            </select>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="form-group">
+
+                                                            <input type="text" class="form-control"
+                                                                v-model="pagos[pg].referencia">
+
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+
+                                                            <input type="text" class="form-control"
+                                                                :value="pagos[pg].monto"
+                                                                v-on:keyup="monto_change($event,pg)">
+
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <button type="button" name=""
+                                                                @click="delete_forma_pago(pg)" id=""
+                                                                class="btn btn-info boton-color"><i
+                                                                    class="fa fa-trash"
+                                                                    aria-hidden="true"></i></button>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+
+                                                <tr v-if="is_complete_pago">
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row"> </td>
+                                                    <td scope="row" colspan="3">
+                                                        <button type="button" name=""
+                                                            @click="add_forma_pago()" id=""
+                                                            class="btn btn-info boton-color"><i class="fa fa-plus"
+                                                                aria-hidden="true"></i></button>
+                                                    </td>
+
+                                                </tr>
+
+
+
+
 
                                                 <!-- *********************** -->
 
-                                                <td scope="row">{{ repuesto . Codigo }} </td>
-                                                <td scope="row">{{ repuesto . Descripcion }}</td>
-
-                                                <td scope="row"><input type="text" class="form-control"
-                                                        v-model="repuestos[index].Detalle"
-                                                        :name="'cotizacion[' + index + '][Detalle]'">
-                                                </td>
-
-                                                <td scope="row">{{ repuesto . unidad }}</td>
-                                                <td scope="row">{{ repuesto . Precio }}</td>
-
-                                                <td scope="row"> <input
-                                                        :name="'cotizacion[' + index + '][Descuento]'" type="number"
-                                                        class="form-control"
-                                                        v-on:change="descuento_change($event,index,repuesto . Importe)"
-                                                        :v-model="repuesto.Descuento"></td>
-
-                                                <td scope="row"> <input
-                                                        :name="'cotizacion[' + index + '][ValorDescuento]'"
-                                                        type="number" disabled class="form-control"
-                                                        :id="'valor_descuento' + index"
-                                                        v-model="repuesto.ValorDescuento">
-                                                </td>
-
-                                                <td scope="row">{{ repuesto . Cantidad }}</td>
-                                                <td scope="row">{{ repuesto . Importe }}</td>
-                                                <td scope="row">{{ repuesto . ImporteDescuento }}</td>
-                                                <td><button type="button" name="" id=""
-                                                        v-on:click="eliminar_producto(repuesto . prod_id)"
-                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                                                            aria-hidden="true"></i></button></td>
-                                            </tr>
-
-                                            <input type="hidden" v-model="repuestos.length" id="cotizacion">
-
-                                            <input type="hidden" v-model="total" name="total">
-                                            <input type="hidden" v-model="total_descuento" name="total_descuento">
-
-
-                                            <tr v-if="repuestos.length == 0">
-                                                <td colspan="11">
-                                                    <center>
-                                                        <img src="../../../../public/images/svg/sin_data.svg"
-                                                            width="180" alt="">
-                                                        <h6>Agregue productos para continuar</h6>
-                                                    </center>
-
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col-lg-8">
-                                        <div class="section-title">Payment Method</div>
-                                        <p class="section-lead">The payment method that we provide is to make
-                                            it
-                                            easier
-                                            for you to pay invoices.</p>
-                                        <div class="images">
-                                            <img src="assets/img/visa.png" alt="visa">
-                                            <img src="assets/img/jcb.png" alt="jcb">
-                                            <img src="assets/img/mastercard.png" alt="mastercard">
-                                            <img src="assets/img/paypal.png" alt="paypal">
-                                        </div>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="col-lg-4 text-right">
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Subtotal</div>
-                                            <div class="invoice-detail-value">$670.99</div>
-                                        </div>
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Shipping</div>
-                                            <div class="invoice-detail-value">$15</div>
-                                        </div>
-                                        <hr class="mt-2 mb-2">
-                                        <div class="invoice-detail-item">
-                                            <div class="invoice-detail-name">Total</div>
-                                            <div class="invoice-detail-value invoice-detail-value-lg">$685.99
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
+
+                            <hr>
+                            <div class="text-md-right">
+                                <div class="float-lg-left mb-lg-0 mb-3">
+
+                                </div>
+                                <button v-if="is_complete_pago" v-on:click="crear_comprobante()"
+                                    class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i>
+                                    Emitir Comprobante</button>
+                            </div>
+
                         </div>
-                    </div>
-                    <hr>
-                    <div class="text-md-right">
-                        <div class="float-lg-left mb-lg-0 mb-3">
-                            <button class="btn btn-primary btn-icon icon-left"><i class="fas fa-credit-card"></i>
-                                Process Payment</button>
-                            <button class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i>
-                                Cancel</button>
-                        </div>
-                        <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i>
-                            Print</button>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
+
         <!-- ******** modal ************* -->
 
         <div class="modal fade" id="modal-add-repuesto" tabindex="-1" role="dialog"
@@ -364,9 +449,7 @@
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
 
-    import DataTable from 'datatables.net-bs5';
     import 'datatables.net-buttons-bs5';
-    import DateTime from 'datatables.net-datetime';
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';
@@ -391,10 +474,92 @@
                 total: 0,
                 porcentaje: 0,
                 total_descuento: 0,
-
+                forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
+                empresa: JSON.parse(this.$attrs.empresa) || '',
+                /* -- ******** fecha actual ************* -- */
+                fecha_creacion_factura: null,
+                fecha_vencimiento_factura: null,
+                /* -- *********************** -- */
+                /* -- ******** pagos ************* -- */
+                condicion_pago: "Co",
+                pagos: [],
+                suma_pago: 0,
+                is_complete_pago: false,
+                serie: "F001",
+                correlativo: 0,
+                /* -- *********************** -- */
+                /* -- ******** correlativos ************* -- */
+                correlativo_factura: this.$attrs.correlativo_factura,
+                correlativo_boleta: this.$attrs.correlativo_boleta
+                /* -- *********************** -- */
             }
         },
         methods: {
+            /* -- ******** crear comprobante ************* -- */
+            crear_comprobante() {
+
+                this.send_axios(
+                    "Desear Emitir esta Factura?",
+                    "Si,Emitir la factura", {
+                        serie: "F001",
+                        correlativo: this.correlativo_factura,
+                        cotizaccion_id: this.cotizacion.cotizacion_id,
+
+                    },
+                    "/emitir_factura_cotizacion"
+                )
+            },
+            /* -- *********************** -- */
+            /* -- ******** sumar moto pagos ************* -- */
+
+            pago_moto_total() {
+                var suma = this.pagos.reduce(function(acumulador, valorActual) {
+                    return acumulador + valorActual.monto;
+                }, 0);
+                this.suma_pago = suma;
+                console.log("suma" + suma);
+                console.log(this.total);
+                if (this.total != 0) {
+                    if (suma == this.total) {
+                        this.is_complete_pago = true;
+                    } else {
+                        this.is_complete_pago = false;
+                    }
+                }
+
+            },
+            /* -- *********************** -- */
+            /* -- ******** change monto ************* -- */
+            monto_change(e, index) {
+                console.log(e.target.value)
+                this.pagos[index].monto = e.target.value;
+                this.pago_moto_total();
+            },
+            /* -- *********************** -- */
+            /* -- ******** change condiciones de pago ************* -- */
+            condicion_pago_change() {
+                this.condicion_pago = event.target.value;
+            },
+            /* -- *********************** -- */
+            /* -- ******** evento change para creacion fecha ************* -- */
+            fecha_creacion_change(date) {
+
+            },
+            /* -- *********************** -- */
+            /* -- ******** change condiciones de pago ************* -- */
+            add_forma_pago() {
+                this.pagos.push({
+                    monto: 0,
+                    forma_pago_id: 1,
+                    referencia: ""
+                });
+            },
+            /* -- *********************** -- */
+            /* -- ******** delete forma de pago ************* -- */
+            delete_forma_pago(index) {
+                this.pagos.splice(index, 1)
+            },
+            /* -- *********************** -- */
             /* -- ******** change tipo comprobante ************* -- */
             tipo_comprobante(event) {
                 var valor = event.target.value;
@@ -403,9 +568,11 @@
                 switch (valor) {
                     case "F":
                         $(this.$refs.serie).val("F001")
+                        this.correlativo = this.correlativo_factura;
                         break;
                     case "B":
                         $(this.$refs.serie).val("B001")
+                        this.correlativo = this.correlativo_boleta;
                         break;
                     case "N":
                         $(this.$refs.serie).val("NV01")
@@ -492,6 +659,14 @@
                                 ImporteDescuento: 0
                             })
 
+                            self.total = this.total + parseFloat(datos.prod_precio_venta);
+                            if (self.pagos.length == 1) {
+                                self.pagos[0].monto = self.total;
+                            }
+                            self.pago_moto_total();
+
+
+
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -514,15 +689,26 @@
         },
         mounted() {
             var self = this
-
+            this.correlativo = this.correlativo_factura;
+            this.pagos.push({
+                monto: this.total,
+                forma_pago_id: 1,
+                referencia: ""
+            });
+            this.pago_moto_total()
             /* -- ******** datatable ************* -- */
 
             $("#miTabla").DataTable({
                 initComplete: search_input_by_column,
                 language: {
-                    "url": "//cdn.datatables.net/plug-ins/1.11.10/i18n/Spanish.json"
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 },
                 ajax: "/search_repuesto_datatable",
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    [25, 50, 100, "All"]
+                ],
+                pageLength: 25,
                 columns: [{
                         data: 'prod_codigo',
                         name: 'prod_codigo'
@@ -562,9 +748,6 @@
 
                         const action = $(this);
                         self.get_producto(action[0].attributes[0].value);
-
-
-
 
                     });
                 },

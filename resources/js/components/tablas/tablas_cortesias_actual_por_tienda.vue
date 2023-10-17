@@ -83,13 +83,9 @@
     </div>
 </template>
 
-<script>
-    import Swal from "sweetalert2";
-    import axios from "axios";
-    import $ from "jquery";
-    import DataTable from 'datatables.net-bs5';
-    import 'datatables.net-buttons-bs5';
-    import DateTime from 'datatables.net-datetime';
+<script> 
+    import $ from "jquery"; 
+    import 'datatables.net-buttons-bs5'; 
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';

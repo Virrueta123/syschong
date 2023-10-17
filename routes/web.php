@@ -60,6 +60,8 @@ include 'web/mantenimiento.php';
 
 include 'web/calendario.php';
 
+
+
 /* *********************** */
 
 
@@ -106,6 +108,8 @@ Route::resource('mantenimiento', App\Http\Controllers\mantenimiento_controller::
 Route::resource('calendario', App\Http\Controllers\calendario_controller::class);
 
 Route::resource('users', App\Http\Controllers\user_controller::class);
+
+include 'web/empresa.php';
 
 Route::post('/logout', function () {
     Auth::logout();

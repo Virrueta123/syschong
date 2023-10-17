@@ -11,7 +11,7 @@
 @section('content')
     <div id="app">
 
-        <cotizacion-mantenimiento cotizacion="{{ $get }}" />
+        <cotizacion-mantenimiento forma_pago="{{$forma_pago}}" correlativo_factura="{{$correlativo_factura}}" correlativo_boleta="{{$correlativo_boleta}}" empresa="{{$empresa}}" cotizacion="{{ $get }}" />
 
     </div>
 @endsection
@@ -29,9 +29,7 @@
             },
             submitHandler: function(form) {
                 var cotizacion = $("#cotizacion");
-
-
-
+ 
                 if (cotizacion.val() == 0) {
                     Swal.fire({
                         icon: "info",

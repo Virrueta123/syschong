@@ -36,8 +36,7 @@
 
 </template>
 
-<script>
-    import rangesliderJs from 'rangeslider-js'
+<script> 
     export default {
 
         data() {
