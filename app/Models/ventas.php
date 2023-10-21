@@ -12,6 +12,6 @@ class ventas extends Model
     protected $table = 'ventas';
     public $timestamps = true;
     public $primaryKey = 'venta_id';
-    protected $fillable = [ ];
+    protected $fillable = [];
     protected $guarded = [];
 }

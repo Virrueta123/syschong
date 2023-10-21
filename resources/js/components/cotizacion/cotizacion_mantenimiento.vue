@@ -39,14 +39,17 @@
 
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
-                        <button type="button" class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado()">Has
+                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
+                            v-on:click="enviado()">Has
                             sido enviado</button>
 
-                        <button type="button" class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp_api()">
-                            <i class="fa fa-whatsapp" aria-hidden="true"></i>  enviar por Whatsapp Api</button>
-                            <button type="button" class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp()">
+                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
+                            v-on:click="enviado_whatsapp_api()">
+                            <i class="fa fa-whatsapp" aria-hidden="true"></i> enviar por Whatsapp Api</button>
+                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
+                            v-on:click="enviado_whatsapp()">
                             enviar whatsapp normal</button>
-                            
+
                     </div>
                 </div>
 
@@ -140,12 +143,12 @@
                                                 <td scope="row">{{ detalle . Descripcion }}</td>
 
                                                 <td scope="row"> {{ detalle . Detalle }} </td>
- 
+
                                                 <td v-if="detalle.tipo=='p'" scope="row">
                                                     {{ detalle . producto . unidad . unidades_nombre }}</td>
 
                                                 <td v-else scope="row">servicio</td>
- 
+
                                                 <td scope="row">{{ detalle . Precio }}</td>
 
                                                 <td scope="row"> {{ detalle . Descuento }} </td>
@@ -168,7 +171,7 @@
 
                                 <div class="row mt-4">
                                     <div class="col-lg-8">
-                                        <div class="section-title">Detalle de lo seleccionado</div> 
+                                        <div class="section-title">Detalle de lo seleccionado</div>
                                     </div>
                                     <div class="col-lg-4 text-right">
                                         <div class="invoice-detail-item">
@@ -290,6 +293,7 @@
                                         <tbody>
 
                                             <tr v-for="(detalle, index) in cotizacion.detalle" :key="index">
+
 
                                                 <td>
                                                     <Checkbox v-model="detalle.aprobar" :binary="true" />
@@ -434,7 +438,7 @@
                                     <input type="radio" name="value" value="150" class="selectgroup-input"
                                         v-on:click="boleta()">
                                     <span class="selectgroup-button">Boleta electronica</span>
-                                </label> 
+                                </label>
                             </div>
                         </div>
 
@@ -533,38 +537,23 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
-                                                    <tr v-for="(detalle, index) in cotizacion.detalle"
+                                                    <tr v-for="(detalle, index) in detallesAprobados"
                                                         :key="index">
 
                                                         <td scope="row">{{ detalle . Codigo }} </td>
                                                         <td scope="row">{{ detalle . Descripcion }}</td>
-
                                                         <td scope="row"> {{ detalle . Detalle }} </td>
-
-
 
                                                         <td v-if="detalle.tipo=='p'" scope="row">
                                                             {{ detalle . producto . unidad . unidades_nombre }}</td>
 
-                                                        <td v-else scope="row">servicio</td>
-
-
-
+                                                        <td scope="row">servicio</td>
                                                         <td scope="row">{{ detalle . Precio }}</td>
-
                                                         <td scope="row"> {{ detalle . Descuento }} </td>
-
                                                         <td scope="row"> {{ detalle . ValorDescuento }} </td>
-
                                                         <td scope="row">{{ detalle . Cantidad }}</td>
                                                         <td scope="row">{{ detalle . Importe }}</td>
                                                         <td scope="row">{{ detalle . ImporteDescuento }}</td>
-                                                        <!-- ********
-                                                            <td><button type="button" name="" id=""
-                                                                    
-                                                                    class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                                                                        aria-hidden="true"></i></button></td>-->
                                                     </tr>
 
                                                     <tr>
@@ -576,7 +565,7 @@
                                                         <td scope="row"> </td>
                                                         <td scope="row" colspan="2">OP.EXONERADAS: </td>
                                                         <td scope="row" colspan="2">
-                                                            {{ cotizacion . total }} </td>
+                                                            {{ sumar_total }} </td>
                                                     </tr>
 
                                                     <tr>
@@ -588,7 +577,7 @@
                                                         <td scope="row"> </td>
                                                         <td scope="row" colspan="2">TOTAL A PAGAR: </td>
                                                         <td scope="row" colspan="2">
-                                                            {{ cotizacion . total }} </td>
+                                                            {{ sumar_total }} </td>
                                                     </tr>
 
                                                     <tr>
@@ -598,27 +587,7 @@
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row" colspan="2">CONDICIÓN DE PAGO: </td>
-                                                        <td scope="row" colspan="2">
-                                                            <div class="form-group">
-                                                                <select class="custom-select"
-                                                                    v-on:change="condicion_pago_change()"
-                                                                    name="" id="">
-                                                                    <option value="CO" selected>Contado</option>
-                                                                    <option value="CR">Credito</option>
-                                                                </select>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td scope="row"> </td>
-                                                        <td scope="row"> </td>
-                                                        <td scope="row"> </td>
-                                                        <td scope="row"> </td>
-                                                        <td scope="row"> </td>
-                                                        <td scope="row"> </td>
+                                                        <th scope="row"> Imagen </th>
                                                         <th scope="row">Método de pago </th>
                                                         <th scope="row">Referencia
                                                         </th>
@@ -633,6 +602,21 @@
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <button v-if="!pagos[pg].url" type="button"
+                                                                    name="" @click="addImage(pg)"
+                                                                    id="" class="btn btn-info boton-color"
+                                                                    style="width: 100%; height: 100%;"><i
+                                                                        class="fa fa-camera"
+                                                                        aria-hidden="true"></i></button>
+                                                                <img @click="addImage(pg)"
+                                                                    style="width: 100%; height: 100%;" v-else
+                                                                    :src="pagos[pg].src" class="img-fluid"
+                                                                    alt="Responsive image">
+
+                                                            </div>
+                                                        </td>
                                                         <td scope="row">
                                                             <div class="form-group">
                                                                 <select class="custom-select">
@@ -641,16 +625,15 @@
                                                                         :key="fg"
                                                                         :selected="f_g.forma_pago_id == pago.forma_pago_id"
                                                                         value="f_g.forma_pago_id">
-                                                                        {{ f_g . forma_pago_nombre }}</option> 
+                                                                        {{ f_g . forma_pago_nombre }}</option>
                                                                 </select>
                                                             </div>
                                                         </td>
 
                                                         <td>
                                                             <div class="form-group">
-
                                                                 <input type="text" class="form-control"
-                                                                    :value="pago.referencia"> 
+                                                                    :value="pago.referencia">
                                                             </div>
                                                         </td>
                                                         <td>
@@ -659,13 +642,14 @@
                                                                 <input type="text" class="form-control"
                                                                     :value="pago.monto"
                                                                     v-on:keyup="monto_change($event,pg)">
-
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
+
                                                                 <button type="button" name=""
-                                                                    @click="delete_forma_pago(pg)" id=""
+                                                                    @click="delete_forma_pago(pg)"
+                                                                    style="width: 100%; height: 100%;" id=""
                                                                     class="btn btn-info boton-color"><i
                                                                         class="fa fa-trash"
                                                                         aria-hidden="true"></i></button>
@@ -681,9 +665,10 @@
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row" colspan="3">
+                                                        <td scope="row" colspan="4">
                                                             <button type="button" name=""
-                                                                @click="add_forma_pago()" id=""
+                                                                @click="add_forma_pago()"
+                                                                style="width: 100%; height: 100%;" id=""
                                                                 class="btn btn-info boton-color"><i class="fa fa-plus"
                                                                     aria-hidden="true"></i></button>
                                                         </td>
@@ -720,35 +705,48 @@
             </div>
             <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                 <div class="section-header">
-                    
+
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-prev">Anterior</button>
 
                     </div>
 
                     <div class="container mt-5">
-                    <div class="row justify-content-center">
-                        <div class="col-md-12">
-                            <!-- Imagen centrada -->
-                            <img src="../../../../public/images/svg/finalizado.svg" class="img-fluid mx-auto d-block"
-                                alt="Imagen Centrada">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12">
+                                <!-- Imagen centrada -->
+                                <img src="../../../../public/images/svg/finalizado.svg"
+                                    class="img-fluid mx-auto d-block" alt="Imagen Centrada">
 
-                            <!-- Título centrado debajo de la imagen -->
-                            <h2 class="titulo-centrado mt-3 text-center">Trabajado terminado</h2>
+                                <!-- Título centrado debajo de la imagen -->
+                                <h2 class="titulo-centrado mt-3 text-center">Trabajado terminado</h2>
+                            </div>
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
-
 
 
         <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
 
             <CModalBody>
 
-                forma pago
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Agregar la iamgen del pago</h2>
+                        <div>
+                            <input type="file" name="images[]" style="display: none;" id="images"
+                                ref="fileInput" @change="handleFileChange" multiple />
+                            <div ref="uppyContainer"></div>
+
+                        </div>
+                    </div>
+                    <button type="button" v-on:click="insert_img()"
+                        class="btn btn-info boton-color custom-prev">Agregar Foto</button>
+
+                </div>
 
             </CModalBody>
         </CModal>
@@ -790,13 +788,26 @@
     import {
         myMixin
     } from "../../mixin.js";
- 
+
     import "jquery-validation";
     import "jquery-validation/dist/localization/messages_es"
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
     import moment from 'moment';
     import 'moment-timezone';
+
+    import Uppy from '@uppy/core';
+    import Webcam from '@uppy/webcam';
+    import Dashboard from '@uppy/dashboard';
+    import es from '@uppy/locales/src/es_ES';
+    import ImageEditor from '@uppy/image-editor';
+    import '@uppy/image-editor/dist/style.min.css';
+    import XHRUpload from '@uppy/xhr-upload';
+
+    import "@uppy/core/dist/style.css";
+    import "@uppy/dashboard/dist/style.css";
+    import "@uppy/image-editor/dist/style.css";
+
 
     import axios from 'axios';
 
@@ -832,8 +843,10 @@
                 /* -- ******** pagos ************* -- */
                 condicion_pago: "Co",
                 pagos: [],
-                suma_pago : 0,
-                is_complete_pago:true,
+                suma_pago: 0,
+                is_complete_pago: true,
+                modalVisible: true,
+                index_pago: 0,
                 /* -- *********************** -- */
                 /* -- ******** correlativos ************* -- */
                 correlativo_factura: JSON.parse(this.$attrs.correlativo_factura),
@@ -841,12 +854,27 @@
                 /* -- *********************** -- */
             }
         },
+        computed: {
+            detallesAprobados() {
+                return this.cotizacion.detalle.filter(detalle => detalle.aprobar);
+            },
+            sumar_total() {
+                const importeTotal = this.cotizacion.detalle.filter(detalle => detalle.aprobar).reduce((total,
+                    detalle) => {
+                    return parseFloat(total) + parseFloat(detalle.Importe);
+                }, 0);
+                this.pagos[0].monto = importeTotal;
+                return importeTotal;
+            }
+        },
         mounted() {
+
 
             this.pagos.push({
                 monto: this.cotizacion.total,
                 forma_pago_id: 1,
-                referencia: ""
+                referencia: "",
+                url: false
             });
             this.pago_moto_total()
             this.fecha_creacion_factura = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
@@ -884,11 +912,11 @@
                     bckHideCss: '', // Only used if animation is 'css'. Step hide Animation CSS on backward direction
                 },
             };
- 
+
             $('#smartwizard').smartWizard(smartwizardOptions);
-  
+
             $('#smartwizard').smartWizard('goToStep', this.cotizacion.progreso);
- 
+
             $('.custom-prev').on('click', function() {
                 $('#smartwizard').smartWizard('prev');
             });
@@ -896,7 +924,10 @@
             $('.custom-finish').on('click', function() {
                 // Aquí puedes agregar lógica para finalizar el proceso si es necesario
                 alert('Proceso finalizado');
-            }); 
+            });
+
+
+
         },
         watch: {
             is_ruc(newValue, oldValue) {
@@ -907,25 +938,88 @@
             },
         },
         methods: {
-            
+            /* -- ******** add imagen ************* -- */
+            addImage(index) {
+                console.log(index)
+                this.xlDemo = true;
+                this.index_pago = index;
+
+                /* -- ******** add image ************* -- */
+                this.$nextTick(() => {
+                    this.uppy = new Uppy({
+                            debug: true,
+                            locale: es,
+                            autoProceed: false,
+                            restrictions: {
+                                allowedFileTypes: ['image/*'],
+                                maxFileSize: 5242880,
+                                maxNumberOfFiles: 1
+                            },
+                        })
+                        .use(Dashboard, {
+                            target: this.$refs.uppyContainer,
+                            inline: true,
+                            width: '100%',
+                            proudlyDisplayPoweredByUppy: false,
+                            hideUploadButton: true,
+                        }).use(Webcam, {
+                            target: Dashboard
+                        })
+                        .use(ImageEditor, {
+                            target: Dashboard
+                        }).on('fileAdded', (file) => {
+                            // Obtener el contenido del archivo en forma de string
+                            const fileData = file.getData();
+
+                            // Imprimir el contenido del archivo
+                            console.log(fileData);
+                        });
+                });
+
+                /* -- *********************** -- */
+            },
+            insert_img() {
+                console.log(this.index_pago);
+                console.log(this.uppy);
+                this.uppy.getFiles().forEach((file) => {
+                   
+                    this.pagos[this.index_pago].src = file.preview;
+                   
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                        const base64Data = reader.result.split(',')[1];
+
+                        this.pagos[this.index_pago].url = base64Data;
+                        // Haz lo que necesites con el objeto de archivo codificado en base64
+                        console.log(fileObject);
+                    };
+
+                    reader.readAsDataURL(file.data);
+                });
+
+                this.xlDemo = false;
+            },
+            /* -- *********************** -- */
             /* -- ******** sumar moto pagos ************* -- */
             pago_moto_total() {
                 var suma = this.pagos.reduce(function(acumulador, valorActual) {
                     return acumulador + valorActual.monto;
                 }, 0);
                 this.suma_pago = suma;
-                if(this.suma_pago == this.cotizacion.total){
+                if (this.suma_pago == this.cotizacion.total) {
                     this.is_complete_pago = false;
-                }else{
+                } else {
                     this.is_complete_pago = true;
                 }
             },
             /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
-            monto_change(e,index) {
-                console.log( e.target.value)
+            monto_change(e, index) {
+                console.log(e.target.value)
                 this.pagos[index].monto = e.target.value;
-                this.pago_moto_total(); 
+                this.pago_moto_total();
+
             },
             /* -- *********************** -- */
             /* -- ******** change condiciones de pago ************* -- */
@@ -941,16 +1035,29 @@
             /* -- *********************** -- */
             /* -- ******** change condiciones de pago ************* -- */
             add_forma_pago() {
-                this.pagos.push({
-                    monto: this.cotizacion.total,
-                    forma_pago_id: 1,
-                    referencia: ""
-                });
+                if (this.pagos.length == 4) {
+                    Swal.fire('solo se permite 3 metodos de pago!')
+                } else {
+                    this.pagos.push({
+                        monto: this.cotizacion.total,
+                        forma_pago_id: 1,
+                        referencia: "",
+                        url: false,
+                    });
+                }
+
             },
             /* -- *********************** -- */
             /* -- ******** delete forma de pago ************* -- */
             delete_forma_pago(index) {
-                this.pagos.splice(index, 1)
+                if (this.pagos.length != 1) {
+
+                    this.pagos.splice(index, 1);
+
+                } else {
+                    Swal.fire('al menos tiene que haber un metodo de pago!')
+                }
+
             },
             /* -- *********************** -- */
             boleta() {
@@ -961,18 +1068,47 @@
             },
             /* -- ******** crear factura ************* -- */
             crear_factura() {
-                
+                console.log(this.pagos);
                 this.send_axios(
-                    "Desear Emitir esta Factura?",
-                    "Si,Emitir la factura", {
-                        serie: "F001",
-                        correlativo: this.correlativo_factura,
-                        cotizaccion_id: this.cotizacion.cotizacion_id,
-
-                    },
-                    "/emitir_factura_cotizacion"
-                )
-
+                        "Desear Emitir esta Factura?",
+                        "Si,Emitir la factura", {
+                            serie: "F001",
+                            fecha_creacion_factura:this.fecha_creacion_factura,
+                            fecha_vencimiento_factura:this.fecha_vencimiento_factura,
+                            correlativo: this.correlativo_factura,
+                            cotizacion_id: this.cotizacion.cotizacion_id,
+                            pagos: this.pagos,
+                            total: this.sumar_total
+                        },
+                        "/emitir_factura_cotizacion"
+                    ).then((result) => {
+                        if (result) {
+                            // La solicitud se completó exitosamente
+                            Swal.fire({
+                                icon: "success",
+                                title: "factura emitida correctamente",
+                                text: "se correctamente el mensaje de whatsapp",
+                                footer: "-------",
+                            });
+                            $('#smartwizard').smartWizard('next');
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al crear la factura",
+                                text: "recarga la pagina",
+                                footer: "-------",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        // El usuario canceló la operación o hubo un error
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error al crear la factura",
+                            text: "recarga la pagina",
+                            footer: "-------",
+                        });
+                    });
             },
             /* -- *********************** -- */
             factura() {
@@ -994,6 +1130,7 @@
 
 
                 this.$nextTick(() => {
+
                     $("#form_add_ruc_cliente").validate({
                         rules: {
                             cli_ruc: {
@@ -1031,39 +1168,77 @@
                 });
 
             },
-            enviado_whatsapp_api(){
-              var send =  this.send_axios(
-                    "deseas enviar al cliente su cotizacion a su whasapp?",
-                    "Si,deseo enviale", { 
-                        cotizacion_id: this.cotizacion.cotizacion_id, 
-                    },
-                    "/cotizacion_enviada_whatsapp"
-                )
-                if(send){
-                    Swal.fire({
+            enviado_whatsapp_api() {
+
+                this.send_axios(
+                        "deseas enviar al cliente su cotizacion a su whasapp?",
+                        "Si,deseo enviale", {
+                            cotizacion_id: this.cotizacion.cotizacion_id,
+                        },
+                        "/cotizacion_enviada_whatsapp")
+                    .then((result) => {
+                        if (result) {
+                            // La solicitud se completó exitosamente
+                            Swal.fire({
                                 icon: "success",
                                 title: "mensaje enviado con exito",
-                                text: response.data.message,
+                                text: "se correctamente el mensaje de whatsapp",
                                 footer: "-------",
                             });
                             $('#smartwizard').smartWizard('next');
-                }
+                        } else {
+                            // Hubo un error en la solicitud
+                            console.log("Operación fallida");
+                        }
+                    })
+                    .catch((error) => {
+                        // El usuario canceló la operación o hubo un error
+                        console.log("Error: " + error);
+                    });
+
             },
-            enviado_whatsapp(){
+            enviado_whatsapp() {
 
             },
             enviado() {
-                var send =  this.send_axios(
-                    "Enviaste el presupuesto al cliente?",
-                    "Si, lo envie", { 
-                        cotizacion_id: this.cotizacion.cotizacion_id, 
-                    },
-                    "/cotizacion_enviada"
-                )
-                if(send){
-                    $('#smartwizard').smartWizard('next');
-                } 
-               
+
+
+                this.send_axios("Enviaste el presupuesto al cliente?",
+                        "Si, lo envie", {
+                            cotizacion_id: this.cotizacion.cotizacion_id,
+                        },
+                        "/cotizacion_enviada")
+                    .then((result) => {
+                        if (result) {
+                            // La solicitud se completó exitosamente
+                            Swal.fire({
+                                icon: "success",
+                                title: "mensaje enviado con exito",
+                                text: "se envio la cotizacion al cliente",
+                                footer: "-------",
+                            });
+                            $('#smartwizard').smartWizard('next');
+                        } else {
+                            // Hubo un error en la solicitud
+                            console.log("Operación fallida");
+                        }
+                    })
+                    .catch((error) => {
+                        // El usuario canceló la operación o hubo un error
+                        console.log("Error: " + error);
+                    });
+
+
+            },
+            handleFileChange() {
+                const files = this.$refs.fileInput.files;
+
+                this.uppy.addFile({
+                    source: 'file input',
+                    name: files[0].name,
+                    type: files[0].type,
+                    data: files[0],
+                });
             },
             validate_factura() {},
             handleSubmit() {},

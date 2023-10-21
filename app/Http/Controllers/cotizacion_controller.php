@@ -6,8 +6,10 @@ use App\Models\accesorios_inventario_detalle;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
+use App\Models\detalle_venta;
 use App\Models\empresa;
 use App\Models\forma_pago;
+use App\Models\image_pago;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
 use App\Models\User;
@@ -15,6 +17,7 @@ use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,11 +35,11 @@ class cotizacion_controller extends Controller
      */
     public function __construct()
     {
-        $this->middleware("auth")->except([
+        $this->middleware('auth')->except([
             'cotizacion_show_cliente',
-            "cotizacion_aprobada"
+            'cotizacion_aprobada',
             // Adicione aqui o nome das rotas que você deseja excluir do middleware "auth"
-        ]); 
+        ]);
     }
     /**
      * Display a listing of the resource.
@@ -277,10 +280,11 @@ class cotizacion_controller extends Controller
 
     public function emitir_factura_cotizacion(Request $request)
     {
+        
         $Datax = $request->all();
         dd($Datax);
-
-        $detalle = cotizacioncotizacion_detalle::with([
+        
+        $cotizacion = cotizacion::with([
             'inventario' => function ($query) {
                 $query->with([
                     'moto' => function ($query) {
@@ -300,6 +304,142 @@ class cotizacion_controller extends Controller
         ])
             ->where('cotizacion_id', $Datax['cotizacion_id'])
             ->first();
+
+        dd($cotizacion);
+
+        /* ******** insertar ventas ************* */
+
+                // Cliente
+                $client = (new Client())
+                ->setTipoDoc('6')
+                ->setNumDoc($this->ruc)
+                ->setRznSocial($this->razonSocial);
+        
+                
+                // Venta
+                $invoice = (new Invoice())
+                ->setUblVersion('2.1')
+                ->setTipoOperacion('0101') // Venta - Catalog. 51
+                ->setTipoDoc('01') // Factura - Catalog. 01 
+                ->setSerie($this->serie)
+                ->setCorrelativo($this->correlativo)
+                ->setFechaEmision(new \DateTime()) // Zona horaria: Lima
+                ->setFormaPago(new FormaPagoContado()) // FormaPago: Contado
+                ->setTipoMoneda('PEN') // Sol - Catalog. 02
+                ->setCompany($company)
+                ->setClient($client)
+                ->setMtoOperExoneradas($this->importe_total)
+                ->setMtoIGV(0)
+                ->setTotalImpuestos(0)
+                ->setValorVenta($this->importe_total)
+                ->setSubTotal($this->importe_total)
+                ->setMtoImpVenta($this->importe_total);
+        
+        
+                $SaleDetail = []; 
+                 
+                $detalle_servicio = array();
+                
+                foreach ($this->dataFactura as $df ) {   
+                    array_push($SaleDetail,
+                    (new SaleDetail())
+                    ->setCodProducto('P001')
+                    ->setUnidad('ZZ') 
+                    ->setDescripcion($df["Descripcion"]) 
+                    ->setCantidad($df["Cantidad"])
+                    ->setMtoValorUnitario($df["Precio"])
+                    ->setMtoValorVenta($df["Total"])
+                    ->setMtoBaseIgv($df["Total"])
+                    ->setPorcentajeIgv(0) // 18%
+                    ->setIgv(0)
+                    ->setTipAfeIgv('20') // Gravado Op. Onerosa - Catalog. 07
+                    ->setTotalImpuestos(0) 
+                    ->setMtoPrecioUnitario($df["Precio"])
+                    );
+         
+                }
+
+        $venta = new ventas();
+        $venta->venta_serie = $request->input('venta_serie');//-
+        $venta->venta_correlativo = $request->input('venta_correlativo');//-
+        $venta->venta_estado = $request->input('venta_estado');//-
+        $venta->venta_total = $request->input('venta_total');//-
+        $venta->tipo_comprobante = "F";//-
+        $venta->estado = "A";//-
+        $venta->MtoOperGravadas = 0;
+        $venta->MtoOperExoneradas = $request->input('MtoOperExoneradas');//importe total
+        $venta->MtoIGV = 0;
+        $venta->TotalImpuestos = 0;
+        $venta->setValorVenta = //importe total;
+        $venta->SubTotal = $request->input('SubTotal');//importe total
+        $venta->MtoImpVenta = $request->input('MtoImpVenta');//importe total
+        $venta->Dni = 0; 
+        $venta->Nombre = "sin data";
+        $venta->Apellido = "sin data";
+        $venta->ruc = $request->input('ruc');
+        $venta->departamento = $request->input('departamento');
+        $venta->distrito = $request->input('distrito');
+        $venta->provincia = $request->input('provincia');
+        $venta->direccion = $request->input('direccion');
+        $venta->razon_social = $request->input('razon_social');
+        $venta->fecha_creacion = $request->input('fecha_creacion');
+        $venta->fecha_vencimiento = $request->input('fecha_vencimiento');  
+        $venta->tipo_venta = "FM";
+        $venta->forma_pago = "CO";
+        
+        
+        foreach ($variable as $key => $value) {
+            # code...
+        }
+       
+        $detalleVenta = new detalle_venta();
+
+        // Set the values for the columns
+        $detalleVenta->Cantidad = 10.5;
+        $detalleVenta->PorcentajeIgv = 18;
+        $detalleVenta->Igv = 189;
+        $detalleVenta->TotalImpuestos = 189.00;
+        $detalleVenta->MtoValorVenta = 1000.00;
+        $detalleVenta->MtoValorUnitario = 95.24;
+        $detalleVenta->MtoPrecioUnitario = 100.00;
+        $detalleVenta->venta_id = 1;
+        $detalleVenta->CodProducto = 'ABC123';
+        $detalleVenta->Unidad = 'pcs';
+        $detalleVenta->Descripcion = 'Product description';
+        $detalleVenta->prod_id = 123;
+        $detalleVenta->servicios_id = 456;
+        $detalleVenta->TipAfeIgv = 'XYZ';
+        
+        // Save the record to the database
+        $detalleVenta->save();
+         
+        
+       
+        $venta->save();
+        
+        /* *********************** */
+
+        foreach ($Datax['pagos'] as $pago) {
+
+            $imagePago = new image_pago();
+            $imagePago->image_pago_id = $request->input('image_pago_id');
+            $imagePago->url = $request->input('url');
+            $imagePago->pagos_ventas_id = $request->input('pagos_ventas_id');
+            $imagePago->save();
+
+            /* ******** insertar imagen al pago ************* */ 
+            $base64Data = $pago['url'] ; 
+            $decodedData = base64_decode($base64Data); 
+            $filename = Carbon::now()->format("Ymdhis").'.jpg'; // Set the desired filename here
+            $path = 'fotos_pagos/' . $filename; 
+            $add = Storage::disk('local')->put($path, $decodedData);
+                   
+            /* *********************** */ 
+          
+        }
+
+        //Storage::put($destinationPath, $imageData);
+
 
         try {
             $Datax = $request->all();
@@ -447,7 +587,6 @@ class cotizacion_controller extends Controller
         try {
             $cotizacion_id = $request->all()['cotizacion_id'];
 
-            
             $update = cotizacion::find($cotizacion_id);
 
             $update->progreso = 1;
@@ -484,10 +623,11 @@ class cotizacion_controller extends Controller
             $cotizacion_id = $request->all()['cotizacion_id'];
             $detalle = $request->all()['detalle'];
             $contador = 0;
+
             foreach ($detalle as $dt) {
                 $contador++;
                 $updated = cotizacioncotizacion_detalle::find($dt['cotizacion_detalle_id']);
-                $updated->aprobar = $dt['aprobar'];
+                $updated->aprobar = $dt['aprobar'] ? 'Y' : 'N';
                 $updated->save();
             }
 

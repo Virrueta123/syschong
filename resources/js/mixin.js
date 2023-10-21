@@ -50,59 +50,57 @@ export const myMixin = {
             }
           },
 
-         send_axios(title_question,question,data,url){
-          Swal.fire({
-            title: title_question,
-            text: "--",
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: question
-        }).then((result) => {
-            if (result.isConfirmed) { 
-                const headers = {
+          send_axios(title_question, question, data, url) {
+            return new Promise((resolve, reject) => {
+              Swal.fire({
+                title: title_question,
+                text: "--",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: question,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const headers = {
                     "Content-Type": "application/json",
-                };
-                
-                axios
+                  };
+          
+                  axios
                     .post(url, data, {
-                        headers,
+                      headers,
                     })
                     .then((response) => {
-
-                        console.log(response.data);
-
-                        if (response.data.success) {
-
-                          return true;
-
-                        } else {
-                          
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error",
-                                text: response.data.message,
-                                footer: "-------",
-                            });
-                            console.error(response.data);
-                            return false;
-                        }
+                      console.log(response.data);
+                      if (response.data.success) {
+                        resolve(true); // Resuelve la promesa con "true" si la solicitud fue exitosa
+                      } else {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: response.data.message,
+                          footer: "-------",
+                        });
+                        console.error(response.data);
+                        reject(response.data.message); // Rechaza la promesa con el mensaje de error
+                      }
                     })
                     .catch((error) => {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error 500",
-                            text: "Error en el servidor, vuelva a intentar",
-                            footer: "-------",
-                        });
-                        console.error(error);
-                        return false;
+                      Swal.fire({
+                        icon: "error",
+                        title: "Error 500",
+                        text: "Error en el servidor, vuelva a intentar",
+                        footer: "-------",
+                      });
+                      console.error(error);
+                      reject("Error en el servidor"); // Rechaza la promesa con un mensaje de error genérico
                     });
-            }
-        })
-        return false;
-         },
+                } else {
+                  reject("Operación cancelada"); // Rechaza la promesa si el usuario cancela la operación
+                }
+              });
+            });
+          },
 
   currency(name){
     console.log(name)

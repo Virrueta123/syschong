@@ -171,6 +171,7 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
+        dd( $request);
         $array_marcas = explode(',', $request->input('marcas_moto'));
 
         // Crear un nuevo registro
