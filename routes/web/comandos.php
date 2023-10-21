@@ -10,5 +10,8 @@ Route::get('/generate-key', function () {
 
 Route::get('/cache', function () {
     Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('config:cache');
+ 
     return 'cache limpio.';
 });
