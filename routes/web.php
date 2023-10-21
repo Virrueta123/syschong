@@ -59,7 +59,8 @@ include 'web/usuarios.php';
 include 'web/mantenimiento.php';
 
 include 'web/calendario.php';
-
+ 
+include 'web/comandos.php';
 
 
 /* *********************** */

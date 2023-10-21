@@ -385,38 +385,37 @@ class cotizacion_controller extends Controller
         $venta->fecha_creacion = $request->input('fecha_creacion');
         $venta->fecha_vencimiento = $request->input('fecha_vencimiento');  
         $venta->tipo_venta = "FM";
-        $venta->forma_pago = "CO";
-        
-        
-        foreach ($variable as $key => $value) {
-            # code...
-        }
-       
-        $detalleVenta = new detalle_venta();
-
-        // Set the values for the columns
-        $detalleVenta->Cantidad = 10.5;
-        $detalleVenta->PorcentajeIgv = 18;
-        $detalleVenta->Igv = 189;
-        $detalleVenta->TotalImpuestos = 189.00;
-        $detalleVenta->MtoValorVenta = 1000.00;
-        $detalleVenta->MtoValorUnitario = 95.24;
-        $detalleVenta->MtoPrecioUnitario = 100.00;
-        $detalleVenta->venta_id = 1;
-        $detalleVenta->CodProducto = 'ABC123';
-        $detalleVenta->Unidad = 'pcs';
-        $detalleVenta->Descripcion = 'Product description';
-        $detalleVenta->prod_id = 123;
-        $detalleVenta->servicios_id = 456;
-        $detalleVenta->TipAfeIgv = 'XYZ';
-        
-        // Save the record to the database
-        $detalleVenta->save();
-         
-        
-       
+        $venta->forma_pago = "CO"; 
         $venta->save();
         
+     
+        foreach ($cotizacion->detalle as $cd) {
+            $detalleVenta = new detalle_venta();
+
+            // Set the values for the columns
+            $detalleVenta->Cantidad = 10.5;
+            $detalleVenta->PorcentajeIgv = 18;
+            $detalleVenta->Igv = 189;
+            $detalleVenta->TotalImpuestos = 189.00;
+            $detalleVenta->MtoValorVenta = 1000.00;
+            $detalleVenta->MtoValorUnitario = 95.24;
+            $detalleVenta->MtoPrecioUnitario = 100.00;
+            $detalleVenta->venta_id =  $venta->;
+            $detalleVenta->CodProducto = 'ABC123';
+            $detalleVenta->Unidad = 'pcs';
+            $detalleVenta->Descripcion = 'Product description';
+            $detalleVenta->prod_id = 123;
+            $detalleVenta->servicios_id = 456;
+            $detalleVenta->TipAfeIgv = 'XYZ';
+            
+            // Save the record to the database
+            $detalleVenta->save();
+        }
+       
+       
+         
+        
+     
         /* *********************** */
 
         foreach ($Datax['pagos'] as $pago) {
