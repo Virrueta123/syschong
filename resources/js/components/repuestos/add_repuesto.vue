@@ -26,7 +26,6 @@
                                 <th scope="col">V.Descuento</th>
                                 <th scope="col">Cantidad</th>
                                 <th scope="col">Importe</th>
-                                <th scope="col">Importe Decuento</th>
                                 <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>
                             </tr>
                         </thead>
@@ -40,7 +39,8 @@
                                 <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
                                     :value="repuesto.servicios_id">
                                 <input type="hidden" :name="'cotizacion[' + index + '][tipo]'" :value="repuesto.tipo">
-                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'" :value="repuesto.Precio">
+                                <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
+                                    :value="repuesto.Precio">
                                 <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
                                     :value="repuesto.Importe">
                                 <input type="hidden" :name="'cotizacion[' + index + '][ImporteDescuento]'"
@@ -60,14 +60,15 @@
                                 <td scope="row">{{ repuesto . Descripcion }}</td>
 
                                 <td scope="row"><input type="text" class="form-control"
-                                        v-model="repuestos[index].Detalle" :name="'cotizacion[' + index + '][Detalle]'">
+                                        v-model="repuestos[index].Detalle"
+                                        :name="'cotizacion[' + index + '][Detalle]'">
                                 </td>
 
                                 <td scope="row">{{ repuesto . unidad }}</td>
                                 <td scope="row">{{ repuesto . Precio }}</td>
 
-                                <td scope="row"> <input :name="'cotizacion[' + index + '][Descuento]'" type="number"
-                                        class="form-control"
+                                <td scope="row"> <input :name="'cotizacion[' + index + '][Descuento]'"
+                                        type="number" class="form-control"
                                         v-on:change="descuento_change($event,index,repuesto . Importe)"
                                         :v-model="repuesto.Descuento"></td>
 
@@ -162,64 +163,54 @@
                                 </div>
 
 
-                                <section style="background-color: #eee;">
-                                    <div class="container py-5">
-                                        <div class="row">
-                                            <div v-for="(show, index) in show_productos" :key="index"
-                                                class="col-md-12 col-lg-4 mb-4 mb-lg-0">
-                                                <div class="card">
-
-                                                    <div v-if="parseInt(show.prod_stock_inicial) != 0"
-                                                        class="d-flex justify-content-between p-3">
-                                                        <p class="lead mb-0"> <input type="number"
-                                                                :id="'cantidad' + index"
-                                                                v-on:change="cantidad_change(show.prod_stock_inicial,$event,index)"
-                                                                class="form-control text-center" value="1"> </p>
-
-                                                        <button type="button" :id="'button_add' + index"
-                                                            v-on:click="agregar_producto(show.prod_stock_inicial,$event,index,show.prod_id)"
-                                                            class="btn btn-primary boton-color"><i class="fa fa-plus"
-                                                                aria-hidden="true"></i></button>
-
-                                                    </div>
-
-                                                    <div v-else class="d-flex justify-content-between p-3">
-                                                        <p class="lead mb-0"> Sin Stock</p>
-                                                    </div>
-                                                    <img src="../../../../public/images/svg/sin_imagen.svg"
-                                                        class="img-fluid mx-auto d-bloc" alt="Laptop"
-                                                        width="280" />
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class="small"><a href="#!"
-                                                                    class="text-muted">{{ show . prod_nombre }}</a>
-                                                            </p>
+                               
+                                            <div class="card-body m-0">
+                                                <ul
+                                                    class="list-unstyled m-0 user-details list-unstyled-border list-unstyled-noborder">
+                                                    <li v-for="(show, index) in show_productos" :key="index"
+                                                        class="media p-4 " style="background-color: #eee;">
+                                                        <img alt="image" class="mr-3  " width="60"
+                                                            src="../../../../public/images/svg/servicios.svg">
+                                                        <div class="media-body">
+                                                            <div class="media-title">{{ show . prod_codigo }}</div>
+                                                            <div class="text-job text-muted">{{ show . prod_nombre }}
+                                                            </div>
                                                         </div>
-
-                                                        <div class="d-flex justify-content-between mb-3">
-                                                            <h5 class="mb-0">
-                                                                {{ parseInt(show . prod_stock_inicial) }}
-                                                                unidades</h5>
-                                                            <h5 class="text-dark mb-0">S/.
-                                                                {{ show . prod_precio_venta }}
-                                                            </h5>
+                                                        <div class="media-items">
+                                                            <div class="media-item">
+                                                                <div class="media-value">Stock</div>
+                                                                <div class="media-label">
+                                                                    {{ show . stock }}
+                                                                </div>
+                                                            </div> 
+                                                            <div class="media-item">
+                                                                <div class="media-value">Precio</div>
+                                                                <div class="media-label">
+                                                                    {{ show . prod_precio_venta }}</div>
+                                                            </div>
+                                                            <div v-if="parseInt(show.stock) != 0" >
+                                                                 
+                                                                    <div class="media-value"><input type="number"
+                                                                            :id="'cantidad' + index"
+                                                                            v-on:change="cantidad_change(show.stock,$event,index)"
+                                                                            class="form-control text-center"
+                                                                            value="1"></div>
+                                                                    <div class="media-label">cantidad</div>
+                                                               
+                                                                <div class="media-item">
+                                                                    <button type="button" :id="'button_add' + index"
+                                                                        v-on:click="agregar_producto(show.stock,$event,index,show.prod_id)"
+                                                                        class="btn btn-primary boton-color"><i
+                                                                            class="fa fa-plus"
+                                                                            aria-hidden="true"></i></button>
+                                                                </div>
+                                                            </div>
                                                         </div>
+                                                    </li>
 
-                                                    </div>
-                                                </div>
+                                                </ul>
                                             </div>
-
-                                            <div class="col-md-12 col-lg-12 mb-12 mb-lg-0">
-                                                <center v-if="show_productos.length == 0">
-                                                    <img src="../../../../public/images/svg/sin_data.svg"
-                                                        width="480" alt="">
-                                                    <h6 class="m-4">Escriba en el campo buscar para mostrar los
-                                                        productos</h6>
-                                                </center>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
+                                           
 
 
                             </div>
@@ -337,7 +328,7 @@
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
     import "imask";
-    import "bootstrap" 
+    import "bootstrap"
 
     import {
         myMixin
@@ -347,6 +338,7 @@
         mixins: [myMixin],
         data() {
             return {
+                aceite_id: this.$attrs.aceite_id,
                 repuestos: [],
                 show_productos: [],
                 servicios: [],
@@ -583,10 +575,62 @@
 
         },
         mounted() {
-
-
             var self = this
- 
+            // Coloca aquí el código que deseas ejecutar después del temporizador
+            const headers_aceite = {
+                "Content-Type": "application/json",
+            };
+            const data_aceite = {
+                prod_id: this.aceite_id
+            };
+
+            axios
+                .post("/get_producto", data_aceite, {
+                    headers_aceite,
+                })
+                .then((response) => {
+
+                    if (response.data.success) {
+                        var data = response.data.data;
+
+                        console.log(response.data.data);
+
+                        this.repuestos.push({
+                            prod_id: data.prod_id,
+                            tipo: "p",
+                            servicios_id: 0,
+                            Codigo: data.prod_codigo,
+                            Descripcion: data.prod_nombre,
+                            Detalle: "",
+                            unidad: data.unidad.unidades_nombre,
+                            Precio: data.prod_precio_venta,
+                            Descuento: 0,
+                            ValorDescuento: 0,
+                            Cantidad: 1,
+                            Importe: 1 * data.prod_precio_venta,
+                            ImporteDescuento: 0
+                        })
+
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: response.data.message,
+                            footer: "-------",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error 500",
+                        text: "Error en el servidor, vuelva a intentar",
+                        footer: "-------",
+                    });
+                    console.error(error);
+                });
+
+
             // Coloca aquí el código que deseas ejecutar después del temporizador
             const headers = {
                 "Content-Type": "application/json",
@@ -623,33 +667,33 @@
                 });
 
 
-                axios
-                        .post("/search_repuesto", data, {
-                            headers,
-                        })
-                        .then((response) => {
+            axios
+                .post("/search_repuesto", data, {
+                    headers,
+                })
+                .then((response) => {
 
-                            if (response.data.success) {
-                                self.show_productos = JSON.parse(response.data.data);
+                    if (response.data.success) {
+                        self.show_productos = JSON.parse(response.data.data);
 
-                            } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error",
-                                    text: response.data.message,
-                                    footer: "-------",
-                                });
-                            }
-                        })
-                        .catch((error) => {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error 500",
-                                text: "Error en el servidor, vuelva a intentar",
-                                footer: "-------",
-                            });
-                            console.error(error);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: response.data.message,
+                            footer: "-------",
                         });
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error 500",
+                        text: "Error en el servidor, vuelva a intentar",
+                        footer: "-------",
+                    });
+                    console.error(error);
+                });
 
 
         }

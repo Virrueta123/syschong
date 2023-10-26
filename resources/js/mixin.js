@@ -102,6 +102,48 @@ export const myMixin = {
             });
           },
 
+          send_axios_reponse(title_question, question, data, url) {
+            return new Promise((resolve, reject) => {
+              Swal.fire({
+                title: title_question,
+                text: "--",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: question,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const headers = {
+                    "Content-Type": "application/json",
+                  };
+          
+                  axios
+                    .post(url, data, {
+                      headers,
+                    })
+                    .then((response) => { 
+                      
+                        resolve(response.data); // Rechaza la promesa con el mensaje de error
+                     
+                    })
+                    .catch((error) => {
+                      
+                      resolve({
+                        'message' : 'error del servidor',
+                        'error' : 'Codigo Error: 500',
+                        'success' : false,
+                        'data' : '',
+                      });
+                       // Rechaza la promesa con un mensaje de error genérico
+                    });
+                } else {
+                  // Rechaza la promesa si el usuario cancela la operación
+                }
+              });
+            });
+          },
+
   currency(name){
     console.log(name)
     $("input[data-type='"+name+"']").on({

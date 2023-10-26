@@ -9,7 +9,7 @@
 @endsection
 @section('content')
     <div id="app">
-        <create-compra></create-compra>
+        <create-compra forma_pago="{{$forma_pago}}"></create-compra>
     </div>
 @endsection
 

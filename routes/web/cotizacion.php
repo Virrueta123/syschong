@@ -26,3 +26,5 @@ Route::post('/badge_cotizacion', [App\Http\Controllers\cotizacion_controller::cl
 
 Route::post('/emitir_factura_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'emitir_factura_cotizacion'])->name('emitir_factura_cotizacion'); 
 
+Route::post('/emitir_boleta_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'emitir_boleta_cotizacion'])->name('emitir_boleta_cotizacion'); 
+

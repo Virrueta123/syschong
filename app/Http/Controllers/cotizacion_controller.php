@@ -12,12 +12,14 @@ use App\Models\forma_pago;
 use App\Models\image_pago;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
+use App\Models\pagos_ventas;
+use App\Models\producto;
+use App\Models\servicios;
 use App\Models\User;
 use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +27,25 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use LengthException;
 use Yajra\DataTables\Facades\DataTables;
+use Greenter\Model\Client\Client;
+use Greenter\See;
+use Greenter\Model\Company\Company;
+use Greenter\Model\Company\Address;
+use Greenter\Model\Sale\FormaPagos\FormaPagoContado;
+use Greenter\Model\Sale\Invoice;
+use Greenter\Model\Sale\SaleDetail;
+use Greenter\Model\Sale\Legend;
+use Greenter\XMLSecLibs\Certificate\X509Certificate;
+use Greenter\XMLSecLibs\Certificate\X509ContentType;
+use Luecano\NumeroALetras\NumeroALetras;
+use Greenter\Ws\Services\SunatEndpoints;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
+use Greenter\Model\Voided\Voided;
+use Greenter\Model\Voided\VoidedDetail;
+use Greenter\Model\Summary\Summary;
+use Greenter\Model\Summary\SummaryDetail;
+use Greenter\Model\Sale\Document;
 
 class cotizacion_controller extends Controller
 {
@@ -236,7 +257,14 @@ class cotizacion_controller extends Controller
         $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
 
         if ($get) {
-            return view('modules.cotizacion.show', ['get' => $get, 'id' => $id, 'empresa' => $empresa, 'correlativo_factura' => $correlativo_factura, 'correlativo_boleta' => $correlativo_boleta, 'forma_pago' => $forma_pago]);
+            return view('modules.cotizacion.show', [
+                'get' => $get,
+                'id' => $id,
+                'empresa' => $empresa,
+                'correlativo_factura' => $correlativo_factura,
+                'correlativo_boleta' => $correlativo_boleta,
+                'forma_pago' => $forma_pago,
+            ]);
         } else {
             return view('errors.404');
         }
@@ -275,185 +303,586 @@ class cotizacion_controller extends Controller
     {
         //
     }
+    //crear boleta
+    public function emitir_boleta_cotizacion(Request $request)
+    {
+        try {
+            $Datax = $request->all();
+
+            $cotizacion = cotizacion::with([
+                'inventario' => function ($query) {
+                    $query->with([
+                        'moto' => function ($query) {
+                            $query->with(['cliente', 'marca']);
+                        },
+                    ]);
+                },
+                'mecanico',
+                'detalle' => function ($query) {
+                    $query->with([
+                        'servicio',
+                        'producto' => function ($query) {
+                            $query->with(['unidad']);
+                        },
+                    ]);
+                },
+            ])
+                ->where('cotizacion_id', $Datax['cotizacion_id'])
+                ->first();
+
+            /* ******** insertar ventas ************* */
+
+            //firma sunat
+            $firma = new firma_sunat_controller();
+
+            $venta = new ventas();
+            $venta->venta_serie = $request->input('serie'); //-
+            $venta->venta_correlativo = $request->input('correlativo'); //-
+            $venta->venta_estado = 'A'; //-
+            $venta->venta_total = $request->input('total'); //-
+            $venta->tipo_comprobante = 'B'; //-
+            $venta->estado = 'A'; //-
+            $venta->MtoOperGravadas = 0;
+            $venta->MtoOperExoneradas = $Datax['total']; //importe total
+            $venta->MtoIGV = 0;
+            $venta->TotalImpuestos = 0;
+            $venta->setValorVenta = $Datax['total']; //importe total;
+            $venta->SubTotal = $Datax['total']; //importe total
+            $venta->MtoImpVenta = $Datax['total']; //importe total
+            $venta->Dni = $cotizacion->inventario->moto->cliente->cli_dni;
+            $venta->Nombre = $cotizacion->inventario->moto->cliente->cli_nombre;
+            $venta->Apellido = $cotizacion->inventario->moto->cliente->cli_apellido;
+            $venta->ruc = 'no tiene';
+            $venta->departamento = 'no tiene';
+            $venta->distrito = 'no tiene';
+            $venta->provincia = 'no tiene';
+            $venta->direccion = $cotizacion->inventario->moto->cliente->cli_direccion;
+            $venta->razon_social = 'no tiene';
+            $venta->fecha_creacion = $Datax['fecha_creacion_boleta'];
+            $venta->fecha_vencimiento = $Datax['fecha_creacion_boleta'];
+            $venta->tipo_venta = 'BM';
+            $venta->forma_pago = 'CO';
+            $venta->cli_id = $cotizacion->inventario->moto->cliente->cli_id;
+            $created_venta = $venta->save();
+
+            foreach ($cotizacion->detalle as $cd) {
+                if ($cd->aprobar == 'Y') {
+                    $detalleVenta = new detalle_venta();
+                    if ($cd->tipo == 'p') {
+                        $producto = producto::with(['unidad'])
+                            ->where('prod_id', $cd->prod_id)
+                            ->first();
+                        $detalleVenta->CodProducto = $producto->prod_codigo;
+                        $detalleVenta->Unidad = $producto->unidad->codigo_unidad;
+                        $detalleVenta->tipo = 'p';
+                        $detalleVenta->prod_id = $cd->prod_id;
+                        $detalleVenta->servicios_id = 0;
+                    }
+
+                    if ($cd->tipo == 's') {
+                        $servicio = servicios::where('servicios_id', $cd->servicios_id)->first();
+                        $detalleVenta->CodProducto = 'SER' . $servicio->servicios_id;
+                        $detalleVenta->Unidad = 'ZZ';
+                        $detalleVenta->tipo = 's';
+                        $detalleVenta->prod_id = 0;
+                        $detalleVenta->servicios_id = $cd->servicios_id;
+                    }
+
+                    // Set the values for the columns
+                    $detalleVenta->Cantidad = (int) $cd->Cantidad;
+                    $detalleVenta->PorcentajeIgv = 0;
+                    $detalleVenta->Igv = 0;
+                    $detalleVenta->BaseIgv = $cd->Importe;
+                    $detalleVenta->TotalImpuestos = 0;
+                    $detalleVenta->MtoValorVenta = $cd->Importe;
+                    $detalleVenta->MtoValorUnitario = $cd->Precio;
+                    $detalleVenta->MtoPrecioUnitario = $cd->Precio;
+                    $detalleVenta->venta_id = $venta->venta_id;
+                    $detalleVenta->Descripcion = $cd->Descripcion;
+                    $detalleVenta->TipAfeIgv = 20;
+                    $detalleVenta->save();
+                }
+            }
+
+            if ($created_venta) {
+                /* *********************** */
+
+                foreach ($Datax['pagos'] as $pago) {
+                    if ($pago['url'] != false) {
+                        $pagosVentas = new pagos_ventas();
+                        $pagosVentas->ventas_id = $venta->venta_id;
+                        $pagosVentas->fecha_pago = $Datax['fecha_creacion_boleta'];
+                        $pagosVentas->monto = $pago['monto'];
+                        $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
+                        $pagosVentas->referencia = $pago['referencia'];
+                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->save();
+
+                        /* ******** insertar imagen al pago ************* */
+                        $base64Data = $pago['url'];
+                        $decodedData = base64_decode($base64Data);
+                        $filename = Carbon::now()->format('Ymdhis') . '.jpg'; // Set the desired filename here
+                        $path = 'fotos_pagos/' . $filename;
+                        $add = Storage::disk('local')->put('public/' . $path, $decodedData);
+
+                        if ($add) {
+                            $imagePago = new image_pago();
+                            $imagePago->url = $path;
+                            $imagePago->pagos_ventas_id = $pagosVentas->pagos_ventas_id;
+                            $imagePago->save();
+                        }
+                        /* *********************** */
+                    } else {
+                        $pagosVentas = new pagos_ventas();
+                        $pagosVentas->ventas_id = $venta->ventas_id;
+                        $pagosVentas->fecha_pago = $Datax['fecha_creacion_boleta'];
+                        $pagosVentas->monto = $pago['monto'];
+                        $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
+                        $pagosVentas->referencia = $pago['referencia'];
+                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->save();
+                    }
+                }
+
+                // Cliente
+                $client = new Client();
+                $client
+                    ->setTipoDoc('1')
+                    ->setNumDoc($venta->dni)
+                    ->setRznSocial($venta->Nombre . ' ' . $venta->Apellido);
+
+                // Venta
+                $invoice = (new Invoice())
+                    ->setUblVersion('2.1')
+                    ->setTipoOperacion('0101') // Venta - Catalog. 51
+                    ->setTipoDoc('03') // Factura - Catalog. 01
+                    ->setSerie($request->input('serie'))
+                    ->setCorrelativo($request->input('correlativo'))
+                    ->setFechaEmision(new \DateTime()) // Zona horaria: Lima
+                    ->setTipoMoneda('PEN') // Sol - Catalog. 02
+                    ->setClient($client)
+                    ->setMtoOperExoneradas($Datax['total'])
+                    ->setMtoIGV(0.0)
+                    ->setTotalImpuestos(0.0)
+                    ->setValorVenta($Datax['total'])
+                    ->setSubTotal($Datax['total'])
+                    ->setMtoImpVenta($Datax['total'])
+                    ->setCompany($firma->company());
+
+                $SaleDetail = [];
+
+                $detalle_servicio = [];
+
+                foreach ($cotizacion->detalle as $cd) {
+                    if ($cd->aprobar == 'Y') {
+                        $setCodProducto = '';
+                        $setUnidad = '';
+
+                        if ($cd->tipo == 'p') {
+                            $producto = producto::with(['unidad'])
+                                ->where('prod_id', $cd->prod_id)
+                                ->first();
+                            $setCodProducto = $producto->prod_codigo;
+                            $setUnidad = $producto->unidad->codigo_unidad;
+                        }
+
+                        if ($cd->tipo == 's') {
+                            $servicio = servicios::where('servicios_id', $cd->servicios_id)->first();
+                            $setCodProducto = 'SER' . $servicio->servicios_id;
+                            $setUnidad = 'ZZ';
+                        }
+
+                        array_push(
+                            $SaleDetail,
+                            (new SaleDetail())
+                                ->setCodProducto($setCodProducto)
+                                ->setUnidad($setUnidad)
+                                ->setCantidad(intval($cd->Cantidad))
+                                ->setDescripcion($cd->Descripcion)
+                                ->setMtoBaseIgv($cd->Importe)
+                                ->setPorcentajeIgv(0)
+                                ->setIgv(0)
+                                ->setTipAfeIgv('20')
+                                ->setTotalImpuestos(0)
+                                ->setMtoValorVenta($cd->Importe)
+                                ->setMtoValorUnitario($cd->Precio)
+                                ->setMtoPrecioUnitario($cd->Precio),
+                        );
+                    }
+                }
+
+                $formatter = new NumeroALetras();
+
+                $deletreo = 'SON: ' . $formatter->toWords($Datax['total']) . ' Y 00/100 SOLES';
+
+                $legend = (new Legend())
+                    ->setCode('1000') // Monto en letras - Catalog. 52
+                    ->setValue($deletreo);
+
+                $invoice->setDetails($SaleDetail)->setLegends([$legend]);
+
+                $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+
+                //guardar en los archivos
+                $result = $see->send($invoice);
+
+                // Guardar XML firmado digitalmente.
+                Storage::disk('local')->put('public/comprobantes/boletas/' . $invoice->getName() . '.xml', $see->getFactory()->getLastXml());
+
+                // Verificamos que la conexión con SUNAT fue exitosa.
+                if (!$result->isSuccess()) {
+                    // Mostrar error al conectarse a SUNAT.
+
+                    $factura = ventas::find($venta->venta_id);
+                    $factura->venta_estado = 'R';
+                    $factura->estado = 'R';
+                    $factura->codigo_error = $result->getError()->getCode();
+                    $factura->error = $result->getError()->getMessage();
+                    $factura->save();
+
+                    return response()->json([
+                        'message' => 'error la boleta no se pudo enviar a sunat',
+                        'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
+                        'success' => false,
+                        'data' => '',
+                    ]);
+                    exit();
+                }
+
+                // Guardamos el CDR
+                Storage::disk('local')->put('public/comprobantes/boletas/R-' . $invoice->getName() . '.zip', $result->getCdrZip());
+
+                $cdr = $result->getCdrResponse();
+
+                $code = (int) $cdr->getCode();
+
+                if ($code === 0) {
+                    $factura = ventas::find($venta->venta_id);
+                    $factura->venta_estado = 'A';
+                    $factura->estado = 'A';
+                    $factura->save();
+
+                    return response()->json([
+                        'message' => $cdr->getDescription(),
+                        'error' => '',
+                        'success' => true,
+                        'data' => '',
+                    ]);
+
+                    if (count($cdr->getNotes()) > 0) {
+                        dump('OBSERVACIONES:' . PHP_EOL);
+                        // Corregir estas observaciones en siguientes emisiones.
+                        dump($cdr->getNotes());
+                    }
+                } elseif ($code >= 2000 && $code <= 3999) {
+                    $this->dispatchBrowserEvent('error_mensaje', 'ESTADO: RECHAZADA');
+                } else {
+                    /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
+                    /*code: 0100 a 1999 */
+                    dump('Excepción');
+                }
+            } else {
+                return response()->json([
+                    'message' => 'error del servidor',
+                    'error' => 'error al registrar la BOLETA',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
 
     // crear factura
 
     public function emitir_factura_cotizacion(Request $request)
     {
-        
-        $Datax = $request->all();
-        dd($Datax);
-        
-        $cotizacion = cotizacion::with([
-            'inventario' => function ($query) {
-                $query->with([
-                    'moto' => function ($query) {
-                        $query->with(['cliente', 'marca']);
-                    },
-                ]);
-            },
-            'mecanico',
-            'detalle' => function ($query) {
-                $query->with([
-                    'servicio',
-                    'producto' => function ($query) {
-                        $query->with(['unidad']);
-                    },
-                ]);
-            },
-        ])
-            ->where('cotizacion_id', $Datax['cotizacion_id'])
-            ->first();
+        try {
+            $Datax = $request->all();
 
-        dd($cotizacion);
+            $cotizacion = cotizacion::with([
+                'inventario' => function ($query) {
+                    $query->with([
+                        'moto' => function ($query) {
+                            $query->with(['cliente', 'marca']);
+                        },
+                    ]);
+                },
+                'mecanico',
+                'detalle' => function ($query) {
+                    $query->with([
+                        'servicio',
+                        'producto' => function ($query) {
+                            $query->with(['unidad']);
+                        },
+                    ]);
+                },
+            ])
+                ->where('cotizacion_id', $Datax['cotizacion_id'])
+                ->first();
 
-        /* ******** insertar ventas ************* */
+            /* ******** insertar ventas ************* */
+
+            //firma sunat
+            $firma = new firma_sunat_controller();
+
+            $venta = new ventas();
+            $venta->venta_serie = $request->input('serie'); //-
+            $venta->venta_correlativo = $request->input('correlativo'); //-
+            $venta->venta_estado = 'A'; //-
+            $venta->venta_total = $request->input('total'); //-
+            $venta->tipo_comprobante = 'F'; //-
+            $venta->estado = 'A'; //-
+            $venta->MtoOperGravadas = 0;
+            $venta->MtoOperExoneradas = $Datax['total']; //importe total
+            $venta->MtoIGV = 0;
+            $venta->TotalImpuestos = 0;
+            $venta->setValorVenta = $Datax['total']; //importe total;
+            $venta->SubTotal = $Datax['total']; //importe total
+            $venta->MtoImpVenta = $Datax['total']; //importe total
+            $venta->Dni = 0;
+            $venta->Nombre = 'sin data';
+            $venta->Apellido = 'sin data';
+            $venta->ruc = $cotizacion->inventario->moto->cliente->cli_ruc;
+            $venta->departamento = $cotizacion->inventario->moto->cliente->cli_departamento_ruc;
+            $venta->distrito = $cotizacion->inventario->moto->cliente->cli_distrito_ruc;
+            $venta->provincia = $cotizacion->inventario->moto->cliente->cli_provincia_ruc;
+            $venta->direccion = $cotizacion->inventario->moto->cliente->cli_direccion_ruc;
+            $venta->razon_social = $cotizacion->inventario->moto->cliente->cli_razon_social;
+            $venta->fecha_creacion = $Datax['fecha_creacion_factura'];
+            $venta->fecha_vencimiento = $Datax['fecha_vencimiento_factura'];
+            $venta->tipo_venta = 'FM';
+            $venta->forma_pago = 'CO';
+            $venta->cli_id = $cotizacion->inventario->moto->cliente->cli_id;
+            $venta->save();
+
+            foreach ($cotizacion->detalle as $cd) {
+                if ($cd->aprobar == 'Y') {
+                    $detalleVenta = new detalle_venta();
+                    if ($cd->tipo == 'p') {
+                        $producto = producto::with(['unidad'])
+                            ->where('prod_id', $cd->prod_id)
+                            ->first();
+                        $detalleVenta->CodProducto = $producto->prod_codigo;
+                        $detalleVenta->Unidad = $producto->unidad->codigo_unidad;
+                        $detalleVenta->tipo = 'p';
+                        $detalleVenta->prod_id = $cd->prod_id;
+                        $detalleVenta->servicios_id = 0;
+                    }
+
+                    if ($cd->tipo == 's') {
+                        $servicio = servicios::where('servicios_id', $cd->servicios_id)->first();
+                        $detalleVenta->CodProducto = 'SER' . $servicio->servicios_id;
+                        $detalleVenta->Unidad = 'ZZ';
+                        $detalleVenta->tipo = 's';
+                        $detalleVenta->prod_id = 0;
+                        $detalleVenta->servicios_id = $cd->servicios_id;
+                    }
+
+                    // Set the values for the columns
+                    $detalleVenta->Cantidad = (int) $cd->Cantidad;
+                    $detalleVenta->PorcentajeIgv = 0;
+                    $detalleVenta->Igv = 0;
+                    $detalleVenta->BaseIgv = $cd->Importe;
+                    $detalleVenta->TotalImpuestos = 0;
+                    $detalleVenta->MtoValorVenta = $cd->Importe;
+                    $detalleVenta->MtoValorUnitario = $cd->Precio;
+                    $detalleVenta->MtoPrecioUnitario = $cd->Precio;
+                    $detalleVenta->venta_id = $venta->venta_id;
+                    $detalleVenta->Descripcion = $cd->Descripcion;
+                    $detalleVenta->TipAfeIgv = 20;
+                    $detalleVenta->save();
+                }
+            }
+
+            if ($venta->save()) {
+                /* *********************** */
+
+                foreach ($Datax['pagos'] as $pago) {
+                    if ($pago['url'] != false) {
+                        $pagosVentas = new pagos_ventas();
+                        $pagosVentas->ventas_id = $venta->ventas_id;
+                        $pagosVentas->fecha_pago = $Datax['fecha_creacion_factura'];
+                        $pagosVentas->monto = $pago['monto'];
+                        $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
+                        $pagosVentas->referencia = $pago['referencia'];
+                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->save();
+
+                        /* ******** insertar imagen al pago ************* */
+                        $base64Data = $pago['url'];
+                        $decodedData = base64_decode($base64Data);
+                        $filename = Carbon::now()->format('Ymdhis') . '.jpg'; // Set the desired filename here
+                        $path = 'fotos_pagos/' . $filename;
+                        $add = Storage::disk('local')->put('public/' . $path, $decodedData);
+
+                        if ($add) {
+                            $imagePago = new image_pago();
+                            $imagePago->url = $path;
+                            $imagePago->pagos_ventas_id = $pagosVentas->pagos_ventas_id;
+                            $imagePago->save();
+                        }
+                        /* *********************** */
+                    } else {
+                        $pagosVentas = new pagos_ventas();
+                        $pagosVentas->ventas_id = $venta->ventas_id;
+                        $pagosVentas->fecha_pago = $Datax['fecha_creacion_factura'];
+                        $pagosVentas->monto = $pago['monto'];
+                        $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
+                        $pagosVentas->referencia = $pago['referencia'];
+                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->save();
+                    }
+                }
 
                 // Cliente
                 $client = (new Client())
-                ->setTipoDoc('6')
-                ->setNumDoc($this->ruc)
-                ->setRznSocial($this->razonSocial);
-        
-                
+                    ->setTipoDoc('6')
+                    ->setNumDoc($venta->ruc)
+                    ->setRznSocial($venta->razon_social);
+
                 // Venta
                 $invoice = (new Invoice())
-                ->setUblVersion('2.1')
-                ->setTipoOperacion('0101') // Venta - Catalog. 51
-                ->setTipoDoc('01') // Factura - Catalog. 01 
-                ->setSerie($this->serie)
-                ->setCorrelativo($this->correlativo)
-                ->setFechaEmision(new \DateTime()) // Zona horaria: Lima
-                ->setFormaPago(new FormaPagoContado()) // FormaPago: Contado
-                ->setTipoMoneda('PEN') // Sol - Catalog. 02
-                ->setCompany($company)
-                ->setClient($client)
-                ->setMtoOperExoneradas($this->importe_total)
-                ->setMtoIGV(0)
-                ->setTotalImpuestos(0)
-                ->setValorVenta($this->importe_total)
-                ->setSubTotal($this->importe_total)
-                ->setMtoImpVenta($this->importe_total);
-        
-        
-                $SaleDetail = []; 
-                 
-                $detalle_servicio = array();
-                
-                foreach ($this->dataFactura as $df ) {   
-                    array_push($SaleDetail,
-                    (new SaleDetail())
-                    ->setCodProducto('P001')
-                    ->setUnidad('ZZ') 
-                    ->setDescripcion($df["Descripcion"]) 
-                    ->setCantidad($df["Cantidad"])
-                    ->setMtoValorUnitario($df["Precio"])
-                    ->setMtoValorVenta($df["Total"])
-                    ->setMtoBaseIgv($df["Total"])
-                    ->setPorcentajeIgv(0) // 18%
-                    ->setIgv(0)
-                    ->setTipAfeIgv('20') // Gravado Op. Onerosa - Catalog. 07
-                    ->setTotalImpuestos(0) 
-                    ->setMtoPrecioUnitario($df["Precio"])
-                    );
-         
+                    ->setUblVersion('2.1')
+                    ->setTipoOperacion('0101') // Venta - Catalog. 51
+                    ->setTipoDoc('01') // Factura - Catalog. 01
+                    ->setSerie($request->input('serie'))
+                    ->setCorrelativo($request->input('correlativo'))
+                    ->setFechaEmision(new \DateTime()) // Zona horaria: Lima
+                    ->setFormaPago(new FormaPagoContado()) // FormaPago: Contado
+                    ->setTipoMoneda('PEN') // Sol - Catalog. 02
+                    ->setCompany($firma->company())
+                    ->setClient($client)
+                    ->setMtoOperExoneradas($Datax['total'])
+                    ->setMtoIGV(0)
+                    ->setTotalImpuestos(0)
+                    ->setValorVenta($Datax['total'])
+                    ->setSubTotal($Datax['total'])
+                    ->setMtoImpVenta($Datax['total']);
+
+                $SaleDetail = [];
+
+                $detalle_servicio = [];
+
+                foreach ($cotizacion->detalle as $cd) {
+                    if ($cd->aprobar == 'Y') {
+                        $setCodProducto = '';
+                        $setUnidad = '';
+
+                        if ($cd->tipo == 'p') {
+                            $producto = producto::with(['unidad'])
+                                ->where('prod_id', $cd->prod_id)
+                                ->first();
+                            $setCodProducto = $producto->prod_codigo;
+                            $setUnidad = $producto->unidad->codigo_unidad;
+                        }
+
+                        if ($cd->tipo == 's') {
+                            $servicio = servicios::where('servicios_id', $cd->servicios_id)->first();
+                            $setCodProducto = 'SER' . $servicio->servicios_id;
+                            $setUnidad = 'ZZ';
+                        }
+
+                        array_push(
+                            $SaleDetail,
+                            (new SaleDetail())
+                                ->setCodProducto($setCodProducto)
+                                ->setUnidad($setUnidad)
+                                ->setDescripcion($cd->Descripcion)
+                                ->setCantidad(intval($cd->Cantidad))
+                                ->setMtoValorUnitario($cd->Precio)
+                                ->setMtoValorVenta($cd->Importe)
+                                ->setMtoBaseIgv($cd->Importe)
+                                ->setPorcentajeIgv(0) // 18%
+                                ->setIgv(0)
+                                ->setTipAfeIgv('20') // Gravado Op. Onerosa - Catalog. 07
+                                ->setTotalImpuestos(0)
+                                ->setMtoPrecioUnitario($cd->Precio),
+                        );
+                    }
                 }
 
-        $venta = new ventas();
-        $venta->venta_serie = $request->input('venta_serie');//-
-        $venta->venta_correlativo = $request->input('venta_correlativo');//-
-        $venta->venta_estado = $request->input('venta_estado');//-
-        $venta->venta_total = $request->input('venta_total');//-
-        $venta->tipo_comprobante = "F";//-
-        $venta->estado = "A";//-
-        $venta->MtoOperGravadas = 0;
-        $venta->MtoOperExoneradas = $request->input('MtoOperExoneradas');//importe total
-        $venta->MtoIGV = 0;
-        $venta->TotalImpuestos = 0;
-        $venta->setValorVenta = //importe total;
-        $venta->SubTotal = $request->input('SubTotal');//importe total
-        $venta->MtoImpVenta = $request->input('MtoImpVenta');//importe total
-        $venta->Dni = 0; 
-        $venta->Nombre = "sin data";
-        $venta->Apellido = "sin data";
-        $venta->ruc = $request->input('ruc');
-        $venta->departamento = $request->input('departamento');
-        $venta->distrito = $request->input('distrito');
-        $venta->provincia = $request->input('provincia');
-        $venta->direccion = $request->input('direccion');
-        $venta->razon_social = $request->input('razon_social');
-        $venta->fecha_creacion = $request->input('fecha_creacion');
-        $venta->fecha_vencimiento = $request->input('fecha_vencimiento');  
-        $venta->tipo_venta = "FM";
-        $venta->forma_pago = "CO"; 
-        $venta->save();
-        
-     
-        foreach ($cotizacion->detalle as $cd) {
-            $detalleVenta = new detalle_venta();
+                $formatter = new NumeroALetras();
 
-            // Set the values for the columns
-            $detalleVenta->Cantidad = 10.5;
-            $detalleVenta->PorcentajeIgv = 18;
-            $detalleVenta->Igv = 189;
-            $detalleVenta->TotalImpuestos = 189.00;
-            $detalleVenta->MtoValorVenta = 1000.00;
-            $detalleVenta->MtoValorUnitario = 95.24;
-            $detalleVenta->MtoPrecioUnitario = 100.00;
-            $detalleVenta->venta_id =  $venta->;
-            $detalleVenta->CodProducto = 'ABC123';
-            $detalleVenta->Unidad = 'pcs';
-            $detalleVenta->Descripcion = 'Product description';
-            $detalleVenta->prod_id = 123;
-            $detalleVenta->servicios_id = 456;
-            $detalleVenta->TipAfeIgv = 'XYZ';
-            
-            // Save the record to the database
-            $detalleVenta->save();
-        }
-       
-       
-         
-        
-     
-        /* *********************** */
+                $deletreo = 'SON: ' . $formatter->toWords($Datax['total']) . ' Y 00/100 SOLES';
 
-        foreach ($Datax['pagos'] as $pago) {
+                $legend = (new Legend())
+                    ->setCode('1000') // Monto en letras - Catalog. 52
+                    ->setValue($deletreo);
 
-            $imagePago = new image_pago();
-            $imagePago->image_pago_id = $request->input('image_pago_id');
-            $imagePago->url = $request->input('url');
-            $imagePago->pagos_ventas_id = $request->input('pagos_ventas_id');
-            $imagePago->save();
+                $invoice->setDetails($SaleDetail)->setLegends([$legend]);
 
-            /* ******** insertar imagen al pago ************* */ 
-            $base64Data = $pago['url'] ; 
-            $decodedData = base64_decode($base64Data); 
-            $filename = Carbon::now()->format("Ymdhis").'.jpg'; // Set the desired filename here
-            $path = 'fotos_pagos/' . $filename; 
-            $add = Storage::disk('local')->put($path, $decodedData);
-                   
-            /* *********************** */ 
-          
-        }
+                $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
 
-        //Storage::put($destinationPath, $imageData);
+                //guardar en los archivos
+                $result = $see->send($invoice);
 
+                // Guardar XML firmado digitalmente.
+                Storage::disk('local')->put('public/comprobantes/facturas/' . $invoice->getName() . '.xml', $see->getFactory()->getLastXml());
 
-        try {
-            $Datax = $request->all();
-            if (true) {
-                return response()->json([
-                    'message' => '',
-                    'error' => '',
-                    'success' => true,
-                    'data' => '',
-                ]);
+                // Verificamos que la conexión con SUNAT fue exitosa.
+                if (!$result->isSuccess()) {
+                    // Mostrar error al conectarse a SUNAT.
+
+                    $factura = ventas::find($venta->venta_id);
+                    $factura->venta_estado = 'R';
+                    $factura->estado = 'R';
+                    $factura->codigo_error = $result->getError()->getCode();
+                    $factura->error = $result->getError()->getMessage();
+                    $factura->save();
+
+                    return response()->json([
+                        'message' => 'error del servidor',
+                        'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
+                        'success' => false,
+                        'data' => '',
+                    ]);
+                    exit();
+                }
+
+                // Guardamos el CDR
+                Storage::disk('local')->put('public/comprobantes/facturas/R-' . $invoice->getName() . '.zip', $result->getCdrZip());
+
+                $cdr = $result->getCdrResponse();
+
+                $code = (int) $cdr->getCode();
+
+                if ($code === 0) {
+                    $factura = ventas::find($venta->venta_id);
+                    $factura->venta_estado = 'A';
+                    $factura->estado = 'A';
+                    $factura->save();
+
+                    return response()->json([
+                        'message' => $cdr->getDescription(),
+                        'error' => '',
+                        'success' => true,
+                        'data' => '',
+                    ]);
+
+                    if (count($cdr->getNotes()) > 0) {
+                        dump('OBSERVACIONES:' . PHP_EOL);
+                        // Corregir estas observaciones en siguientes emisiones.
+                        dump($cdr->getNotes());
+                    }
+                } elseif ($code >= 2000 && $code <= 3999) {
+                    $this->dispatchBrowserEvent('error_mensaje', 'ESTADO: RECHAZADA');
+                } else {
+                    /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
+                    /*code: 0100 a 1999 */
+                    dump('Excepción');
+                }
             } else {
-                Log::error('no se pudo registrar la marca de producto');
                 return response()->json([
-                    'message' => 'no se puedo actualizar la cotizacion a enviada',
-                    'error' => '',
+                    'message' => 'error del servidor',
+                    'error' => 'error al registrar la factura',
                     'success' => false,
                     'data' => '',
                 ]);
@@ -522,6 +951,7 @@ class cotizacion_controller extends Controller
         ])->find(decrypt_id($id));
         return view('modules.cotizacion.show_cliente', ['get' => $get]);
     }
+
     /* ******** cotizacion aprobada whatsapp ************* */
     public function cotizacion_enviada_whatsapp(Request $request)
     {

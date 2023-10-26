@@ -294,7 +294,7 @@ class mantenimiento_controller extends Controller
             },
         ])->find($cortesia->inventario_moto_id);
 
-         dd($cortesia);
+     
 
         $inventario_moto_id = encrypt_id($inventario->inventario_moto_id);
 
@@ -457,7 +457,7 @@ class mantenimiento_controller extends Controller
             session()->flash('success', 'Registro creado correctamente');
             return redirect()->route('cotizaciones.show',  encrypt_id($cotizacion->cotizacion_id ));
         } else {
-            dd('dsad');
+           
             Log::error('no se pudo registrar la cotizacion');
             session()->flash('error', 'error al registrar en la base de datos');
             return redirect()->route('cotizacion.create', $Datax['id']);
@@ -525,6 +525,7 @@ class mantenimiento_controller extends Controller
             $cortesias_activacion->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
             $cortesias_activacion->dias = $datax['dias'];
             $cortesias_activacion->date_aviso = Carbon::now()->addDays($datax['dias']);
+            $cortesias_activacion->aceite_id = $datax['aceite_id'];
             $cortesias_activacion->save();
 
             foreach ($select_autorizacion as $autorizacion) {

@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             if (Auth::check()) {
                 $menu = [
+
                     [
                         'name' => 'Clientes',
                         'icon' => 'fa fa-user',
@@ -101,12 +102,8 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'Ventas',
                         'icon' => 'fa fa-cart-plus',
                         'submenu' => [
-                            ['name' => 'Todo los productos', 'url' => 'producto.index'], 
-                            ['name' => 'Crear un producto', 'url' => 'producto.create'],  
-                            ['name' => 'Marcas de Producto', 'url' => 'marca_producto.index'], 
-                            ['name' => 'Crear marca de producto', 'url' => 'marca_producto.create'], 
-                            ['name' => 'Categorias', 'url' => 'categorias.index'], 
-                            ['name' => 'crear categoria', 'url' => 'categorias.create']
+                            ['name' => 'Toda las ventas', 'url' => 'ventas.index'], 
+                            ['name' => 'Crear un venta', 'url' => 'pos.create'],   
                         ],
                     ],
                     

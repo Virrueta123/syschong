@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\forma_pago;
 use Illuminate\Http\Request;
 
 class compras_controller extends Controller
@@ -32,7 +33,8 @@ class compras_controller extends Controller
      */
     public function create()
     {
-       return view('modules.compras.create');
+       $forma_pago = forma_pago::where('estado', 'A')->get();
+       return view('modules.compras.create',compact('forma_pago'));
     }
 
     /**

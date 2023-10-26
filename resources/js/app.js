@@ -123,7 +123,7 @@ app.component('search-moto-modelo', require('./components/moto/search_moto_model
 
 
 
-
+app.component('add-aceites', require('./components/inventario_moto/aceite.vue').default);
 app.component('accesorios_inventario', require('./components/inventario_moto/agregar_accesorios.vue').default);
 app.component('gasolina_inventario', require('./components/inventario_moto/gasolina.vue').default);
 

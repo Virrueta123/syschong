@@ -252,7 +252,7 @@ class moto_controller extends Controller
             ->join('marca', 'marca.marca_id', '=', 'modelo.marca_id')
             ->where(function ($query) use ($search) {
                 $query
-                    ->where('cliente.cli_nombre', 'like', '%' . $search . '%')
+                    ->whereRaw('CONCAT(cliente.cli_nombre," ",cliente.cli_apellido) LIKE ?', '%' . $search . '%')
                     ->orWhere('cliente.cli_apellido', 'like', '%' . $search . '%')
                     ->orWhere('modelo.modelo_nombre', 'like', '%' . $search . '%')
                     ->orWhere('motos.mtx_motor', 'like', '%' . $search . '%');
@@ -266,9 +266,11 @@ class moto_controller extends Controller
     public function moto_search(Request $req)
     {
         $moto = motos::select(DB::raw('mtx_id AS id'), DB::raw("CONCAT(mtx_placa,' ', mtx_vin,' ',mtx_motor) AS name"))
+            ->with("modelo")
             ->where('mtx_placa', 'like', '%' . $req->all()['search'] . '%')
             ->orWhere('mtx_vin', 'like', '%' . $req->all()['search'] . '%')
-            ->limit(7)
+            ->orWhere('modelo.modelo_nombre', 'like', '%' . $req->all()['search'] . '%')
+            ->limit(15)
             ->get();
 
         echo json_encode($moto);

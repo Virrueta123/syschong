@@ -14,6 +14,7 @@ class producto extends Model
     public $primaryKey = 'prod_id';
     protected $fillable = [];
     protected $guarded = [];
+    protected $appends = ['stock'];
   
     public function marca_producto( ){
         return $this->belongsTo(marca_producto::class,"marca_id")->withTrashed();
@@ -45,5 +46,12 @@ class producto extends Model
 
     public function imagen( ){
         return $this->hasOne(imagen_producto::class,"prod_id")->withTrashed();
+    }
+
+    public function getStockAttribute(  ){
+        $compras = detalle_compra::where('prod_id', $this->prod_id)->sum('cantidad');
+        $ventas = detalle_venta::where('prod_id', $this->prod_id)->sum('Cantidad');
+        $stock = $this->prod_stock_inicial + $ventas + $compras;
+        return $stock; 
     }
 }

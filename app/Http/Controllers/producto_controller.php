@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ProductoImport;
+use App\Models\detalle_compra;
+use App\Models\detalle_venta;
 use App\Models\imagen_producto;
 use App\Models\marca;
 use App\Models\producto;
@@ -44,6 +46,32 @@ class producto_controller extends Controller
             ->addIndexColumn()
             ->addColumn('fecha_creacion', function ($Data) {
                 return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $prod_id = encrypt_id($Data->prod_id);
+                return view('buttons.productos', ['prod_id' => $prod_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function search_aceites()
+    {
+        $producto = producto::with(['marca_producto',"unidad"])
+            ->where('unidades_id',65)
+            ->orderBy('created_at', 'desc') 
+            ->get();
+
+        return DataTables::of($producto)
+            ->addIndexColumn()
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('stock_actual', function ($Data) {
+                $compras = detalle_compra::where('prod_id', $Data->prod_id)->sum('cantidad');
+                $ventas = detalle_venta::where('prod_id', $Data->prod_id)->sum('Cantidad');
+                $stock = $Data->prod_stock_inicial + $ventas + $compras;
+                return $stock;
             })
             ->addColumn('action', static function ($Data) {
                 $prod_id = encrypt_id($Data->prod_id);
@@ -171,7 +199,7 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
-        dd( $request);
+        dd($request);
         $array_marcas = explode(',', $request->input('marcas_moto'));
 
         // Crear un nuevo registro
@@ -517,19 +545,16 @@ class producto_controller extends Controller
 
     /* ******** ajax para buscar repuestos para las compras ************* */
     function search_repuesto_compra(Request $request)
-    { 
-             
-            $search = $request->input('search');
+    {
+        $search = $request->input('search');
 
-            $modelo = producto::
-                 select('prod_id as id', DB::raw("CONCAT('Nombre :',prod_nombre, ' | Codigo : ', prod_codigo) as name"))
-                ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
-                ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
-                ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')
-                ->get();
+        $modelo = producto::select('prod_id as id', DB::raw("CONCAT('Nombre :',prod_nombre, ' | Codigo : ', prod_codigo) as name"))
+            ->where('prod_nombre', 'like', '%' . $request->all()['search'] . '%')
+            ->orWhere('prod_nombre_secundario', 'like', '%' . $request->all()['search'] . '%')
+            ->orWhere('prod_codigo', 'like', '%' . $request->all()['search'] . '%')
+            ->get();
 
-            echo json_encode($modelo);
-       
+        echo json_encode($modelo);
     }
     /* *********************** */
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Greenter\Model\Client\Client;
 use Greenter\See;
@@ -27,25 +26,45 @@ use Greenter\Model\Sale\Document;
 
 class firma_sunat_controller extends Controller
 {
-    public function firma_digital_produccion(){ 
-  
+    public function firma_digital_produccion()
+    {
         $see = new See();
         $see->setCertificate(file_get_contents('keys/certificate.pem'));
-        $see->setService(SunatEndpoints::FE_PRODUCCION); 
+        $see->setService(SunatEndpoints::FE_PRODUCCION);
         $see->setClaveSOL('10464579481', 'LEXVIRRU', 'Sicope456123');
 
         return $see;
-
     }
-    
-    public function firma_digital_beta(){
-        $pfx = file_get_contents('keys/certificate.pem');
-        $password = 'dentaluzfacturacion2022'; 
+
+    public function firma_digital_beta()
+    {
+        $pfx = file_get_contents('keys/certificate.pem'); 
 
         $see = new See();
         $see->setCertificate($pfx);
         $see->setService(SunatEndpoints::FE_BETA);
-        $see->setClaveSOL('20000000001', 'MODDATOS', 'moddatos'); 
+        $see->setClaveSOL('20000000001', 'MODDATOS', 'moddatos');
         return $see;
+    }
+
+    public function company()
+    {
+        // Emisor
+        $address = (new Address())
+            ->setUbigueo('210601')
+            ->setDepartamento('SAN MARTIN')
+            ->setProvincia('SAN MARTIN')
+            ->setDistrito('TARAPOTO')
+            ->setUrbanizacion('-')
+            ->setDireccion('PJ. UNION 126B LOZA BELAUNDE')
+            ->setCodLocal('0000'); // Codigo de establecimiento asignado por SUNAT, 0000 por defecto.
+
+        $company = (new Company())
+            ->setRuc('10464579481')
+            ->setRazonSocial('ROSA LUZ INGA TORRES')
+            ->setNombreComercial('ROSA LUZ INGA TORRES')
+            ->setAddress($address);
+
+        return $company;
     }
 }

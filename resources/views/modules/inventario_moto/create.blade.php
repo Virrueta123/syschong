@@ -53,9 +53,10 @@
                                         <div class="input-group-text">KM</div>
                                     </div>
                                 </div>
-                            </div>
-
+                            </div> 
                         </div>
+
+                        <add-aceites></add-aceites>
 
                         <h2 class="section-title">Condiciones</h2>
                         <div class="form-row">

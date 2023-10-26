@@ -5,9 +5,9 @@
         <div class="card text-left">
             <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
             </center>
-            <div class="card-body"> 
+            <div class="card-body">
                 <div class="section-header">
-                    <h1>Información de la compra</h1> 
+                    <h1>Información de la compra</h1>
                 </div>
                 <hr>
 
@@ -23,26 +23,24 @@
                             </search-proveedor>
                             <!-- ******** <crear-cliente select_element="#cliente_select">
                             </crear-cliente> -->
-                           
+
                         </div>
 
                     </div>
-                </div> 
+                </div>
 
                 <div class="form-row">
 
                     <div class="form-group col-6">
                         <label>Fecha creacion</label>
                         <VueDatePicker @internal-model-change="fecha_creacion_change" emit-timezone="UTC" locale="es"
-                            v-model="fecha_creacion" placeholder="fecha creacion ..."
-                            format="dd/MM/yyyy HH:mm"  />
+                            v-model="fecha_creacion" placeholder="fecha creacion ..." format="dd/MM/yyyy HH:mm" />
                     </div>
 
-                    <div class="form-group col-6"> 
+                    <div class="form-group col-6">
                         <label>Fecha vencimiento</label>
                         <VueDatePicker emit-timezone="UTC" locale="es" v-model="fecha_vencimiento"
-                            placeholder="fecha vencimiento ..."
-                            format="dd/MM/yyyy HH:mm" />
+                            placeholder="fecha vencimiento ..." format="dd/MM/yyyy HH:mm" />
 
                     </div>
                 </div>
@@ -66,7 +64,7 @@
                         <label>Correlativo</label>
                         <input type="text" class="form-control" v-model="serie">
                     </div>
- 
+
                 </div>
 
 
@@ -119,7 +117,6 @@
                                                     aria-hidden="true"></i></button></td>
 
                                     </tr>
-
                                     <tr v-if="repuestos.length == 0">
                                         <td colspan="11">
                                             <center>
@@ -131,54 +128,109 @@
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row" colspan="2">OP.EXONERADAS: </td>
+                                        <td scope="row" class="text-right" colspan="2">
+                                            {{ sumar_total }} </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row" colspan="2">TOTAL A PAGAR: </td>
+                                        <td scope="row" class="text-right" colspan="2">
+                                            {{ sumar_total }} </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <th scope="row"> Imagen </th>
+                                        <th scope="row">Método de pago </th>
+                                        <th scope="row">Referencia
+                                        </th>
+                                        <th scope="row">Monto</th>
+                                    </tr>
+
+
+                                    <tr v-for="(pagob, pgb) in pagos_boletas" :key="pgb">
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <button v-if="!pagos_boletas[pgb].url" type="button" name=""
+                                                    @click="addImage_boleta(pgb)" id=""
+                                                    class="btn btn-info boton-color"
+                                                    style="width: 100%; height: 100%;"><i class="fa fa-camera"
+                                                        aria-hidden="true"></i></button>
+                                                <img @click="addImage(pgb)" style="width: 100%; height: 100%;" v-else
+                                                    :src="pagos_boletas[pgb].src" class="img-fluid"
+                                                    alt="Responsive image">
+
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div class="form-group">
+                                                <select class="custom-select" v-on:change="forma_pago_boleta(pgb)">
+
+                                                    <option v-for="(f_g, fg) in forma_pago" :key="fg"
+                                                        :selected="f_g.forma_pago_id == pagob.forma_pago_id"
+                                                        :value="f_g.forma_pago_id">
+                                                        {{ f_g . forma_pago_nombre }}</option>
+
+                                                </select>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control"
+                                                    v-model="pagos_boletas[pgb].referencia">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+
+                                                <input type="text" class="form-control" :value="pagob.monto"
+                                                    v-on:keyup="monto_change($event,pgb)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+
+                                                <button type="button" name=""
+                                                    @click="delete_forma_pago_boleta(pgb)"
+                                                    style="width: 100%; height: 100%;" id=""
+                                                    class="btn btn-info boton-color"><i class="fa fa-trash"
+                                                        aria-hidden="true"></i></button>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+
+                                    <tr v-if="is_complete_pago">
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row"> </td>
+                                        <td scope="row" colspan="4">
+                                            <button type="button" name="" @click="add_forma_pago_boleta()"
+                                                style="width: 100%; height: 100%;" id=""
+                                                class="btn btn-info boton-color"><i class="fa fa-plus"
+                                                    aria-hidden="true"></i></button>
+                                        </td>
+                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
-                        <div class="row mt-4">
-                            <div class="col-lg-8">
-                                <div class="section-title">Payment Method</div>
-                                <p class="section-lead">The payment method that we provide is to make
-                                    it
-                                    easier
-                                    for you to pay invoices.</p>
-                                <div class="images">
-                                    <img src="assets/img/visa.png" alt="visa">
-                                    <img src="assets/img/jcb.png" alt="jcb">
-                                    <img src="assets/img/mastercard.png" alt="mastercard">
-                                    <img src="assets/img/paypal.png" alt="paypal">
-                                </div>
-                            </div>
-                            <div class="col-lg-4 text-right">
-                                <div class="invoice-detail-item">
-                                    <div class="invoice-detail-name">Subtotal</div>
-                                    <div class="invoice-detail-value">$670.99</div>
-                                </div>
-                                <div class="invoice-detail-item">
-                                    <div class="invoice-detail-name">Igv</div>
-                                    <div class="invoice-detail-value">
-                                        <div class="form-group  ">
 
-                                            <div class="p-inputgroup flex-1">
-                                                <span class="p-inputgroup-addon">
-                                                    <Checkbox v-model="igv" @change="igv_change"
-                                                        :binary="true" />
-                                                </span>
-                                                <p-inputnumber v-model="igv_valor" disabled
-                                                    class="p-inputgroup flex-1" inputId="currency-us" mode="currency"
-                                                    currency="PEN" locale="es-ES" />
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="mt-2 mb-2">
-                                <div class="invoice-detail-item">
-                                    <div class="invoice-detail-name">Total</div>
-                                    <div class="invoice-detail-value invoice-detail-value-lg">$685.99
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -237,14 +289,14 @@
 
                                 <div class="form-row ">
 
-                                    <div class="form-group col-md-6 d-flex flex-column">
+                                    <div class="form-group col-md-2 d-flex flex-column">
                                         <label>Cantidad</label>
                                         <p-inputnumber class="p-inputgroup flex-1" v-model="cantidad" name="cantidad"
                                             showButtons style="width: 100%;" :useGrouping="false"
                                             :min="1" id="cantidad" :max="1000" />
                                     </div>
 
-                                    <div class="form-group col-md-6 d-flex flex-column">
+                                    <div class="form-group col-md-5 d-flex flex-column">
                                         <label>Precio de compra</label>
 
                                         <p-inputnumber class="p-inputgroup flex-1" v-model="precio_compra"
@@ -254,29 +306,18 @@
                                     </div>
 
 
-                                    <div class="form-group col-3 d-flex flex-column flex-shrink-0">
-
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox"
-                                                v-model="is_precio_compra" @change="editar_precio_compra"
-                                                id="inlineCheckbox1" value="option1">
-                                            <label class="form-check-label" for="actualizar_precio_compra">Actualizar
-                                                precio de compra</label>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group col-3">
-                                        <label>Precio de venta</label>
+                                    <div class="form-group col-5">
+                                        <label>Actualizar precio de compra</label>
                                         <div class="p-inputgroup flex-1">
                                             <span class="p-inputgroup-addon">
                                                 <Checkbox v-model="is_precio_venta" @change="editar_precio_venta"
                                                     :binary="true" />
                                             </span>
 
-                                            <p-inputnumber class="p-inputgroup flex-1" v-model="precio_compra"
-                                                name="precio_compra" inputId="currency-us" mode="currency"
-                                                currency="PEN" locale="es-ES" />
+                                            <p-inputnumber v-if="is_precio_venta" class="p-inputgroup flex-1"
+                                                v-model="precio_venta" name="precio_compra" inputId="currency-us"
+                                                mode="currency" currency="PEN" locale="es-ES" />
+
                                         </div>
 
                                     </div>
@@ -319,15 +360,15 @@
     import "imask";
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
- 
-    import 'datatables.net-buttons-bs5'; 
+
+    import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';
     import 'datatables.net-searchpanes-bs5';
     import 'datatables.net-select-bs5';
     import 'datatables.net-staterestore-bs5';
-   
+
     import 'primevue/resources/themes/saga-blue/theme.css';
 
     import "primeicons/primeicons.css"
@@ -342,20 +383,21 @@
     import 'moment-timezone';
 
 
-import {
-    myMixin
-} from "../../mixin.js";
+    import {
+        myMixin
+    } from "../../mixin.js";
 
-export default {
-    components: {
-        "p-inputnumber": InputNumber,
-        "Checkbox": Checkbox,
-        "Calendar": Calendar,
-        VueDatePicker
-    },
-    mixins: [myMixin],
-    data() {
+    export default {
+        components: {
+            "p-inputnumber": InputNumber,
+            "Checkbox": Checkbox,
+            "Calendar": Calendar,
+            VueDatePicker
+        },
+        mixins: [myMixin],
+        data() {
             return {
+                forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
                 select_element: this.$attrs.select_element || "",
                 show_productos: [],
                 timeoutId: null,
@@ -374,22 +416,36 @@ export default {
                 fecha_creacion: null,
                 fecha_vencimiento: null,
                 igv: false,
-                igv_valor: 0
+                igv_valor: 0,
+                proveedor_id: null,
                 /* -- *********************** -- */
+                pagos: [],
+                pagos_boletas: [],
+            }
+        },
+        computed: {
+            sumar_total() {
+
+                const importeTotal = this.repuestos.reduce((acumulador, res) => {
+                    return acumulador + res.Importe;
+                }, 0);
+
+                this.pagos[0].monto = importeTotal;
+                this.pagos_boletas[0].monto = importeTotal;
+                return importeTotal;
             }
         },
         methods: {
             /* -- ******** cargar los totales ************* -- */
             load_total() {
                 const suma = this.data_presupuesto_editar.reduce((acumulador, objeto) => {
-                    return  acumulador  +  objeto.Importe;
+                    return acumulador + objeto.Importe;
                 }, 0);
-                
             },
             /* -- *********************** -- */
             /* -- ******** evento change para igv ************* -- */
             igv_change() {
-                
+
             },
             /* -- *********************** -- */
             /* -- ******** evento change para creacion fecha ************* -- */
@@ -401,11 +457,7 @@ export default {
             /* -- ******** onchange editar_precio_compra ************* -- */
             editar_precio_venta() {
 
-                if (this.is_precio_venta) {
-                    this.is_precio_venta = true;
-                } else {
-                    this.is_precio_venta = false;
-                }
+                if (this.is_precio_venta) {} else {}
 
             },
             /* -- *********************** -- */
@@ -423,8 +475,6 @@ export default {
             /* -- ******** change tipo comprobante ************* -- */
             tipo_comprobante(event) {
                 var valor = event.target.value;
-
-
                 switch (valor) {
                     case "F":
                         $(this.$refs.serie).val("F001")
@@ -436,8 +486,6 @@ export default {
                         $(this.$refs.serie).val("NV01")
                         break;
                 }
-
-                console.log(event)
             },
             /* -- *********************** -- */
             eliminar_producto(identificador) {
@@ -537,10 +585,10 @@ export default {
             },
         },
         mounted() {
- 
+
             console.log(moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss'))
 
-            this.fecha_creacion =  moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
+            this.fecha_creacion = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
 
 
             var self = this
@@ -638,7 +686,7 @@ export default {
 
                         const elementoExiste = this.repuestos.some((elemento) => {
                             return elemento.prod_id == this
-                            .prod_id; // Supongo que prod_id es un identificador único
+                                .prod_id; // Supongo que prod_id es un identificador único
                         });
 
 

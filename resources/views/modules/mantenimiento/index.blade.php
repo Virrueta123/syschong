@@ -15,7 +15,7 @@
             <h4>Tabla de registros de los Mantenimientos</h4>
             <div class="card-header-action">
                 
-                <a href="{{ route('producto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                <a href="{{ route('mantenimiento.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
                         aria-hidden="true"></i> Crear un Mantenimiento</a>
 
             </div>

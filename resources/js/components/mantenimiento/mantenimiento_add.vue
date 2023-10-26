@@ -92,6 +92,9 @@
                             <mantenimientoAutorizaciones @childAutorizacion="add_Autorizacion" :autorizaciones="autorizaciones"></mantenimientoAutorizaciones>
                         </div>
 
+                        
+                        <add-aceites></add-aceites>
+
                         <h2 class="section-title">Observaciones del cliente</h2>
                         <div class="form-row">
                             <div class="form-group col-md-12">
@@ -99,10 +102,7 @@
                                 <textarea class="form-control" name="inventario_moto_obs_cliente" id="" cols="30" rows="10"></textarea>
                             </div>
                         </div>
- 
- 
-
-
+  
                 </div>
                 <div class="card-footer">
                     <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear
@@ -178,11 +178,25 @@
         },
         mounted() {
 
+
             $("#form_crear_mantenimiento").validate({
                 rules: {
-                    unidades_id: {
+                    mtx_id: {
+                        required: true,
+                    },
+                    mecanico_id: {
+                        required: true,
+                    },
+                    precio: {
+                        required: true,
+                    },
+                    km: {
+                        required: true,
+                    },
+                    inventario_moto_obs_cliente:{
                         required: true,
                     }
+                    
                 },
                 submitHandler: function(form) {
 
@@ -194,6 +208,7 @@
 
                         formData.append('is_aviso',  this.is_aviso );       
                         formData.append('dias',  this.dias ); 
+                        formData.append('aceite_id',  $("#aceite_id").val() ); 
                         formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
                         formData.append('select_autorizacion', JSON.stringify(this.select_autorizacion));
 

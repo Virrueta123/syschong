@@ -12,7 +12,8 @@
 
     <div class="section-body">
         <div class="card">
-            <form id="form_cotizacion_mantenimiento" method="POST" action="{{ route('cotizacion_mantenimiento_store', encrypt_id($cortesia->cortesias_activacion_id)) }}">
+            <form id="form_cotizacion_mantenimiento" method="POST"
+                action="{{ route('cotizacion_mantenimiento_store', encrypt_id($cortesia->cortesias_activacion_id)) }}">
                 @csrf
                 @if ($errors->any())
                     <div class="alert alert-danger">
@@ -23,131 +24,132 @@
                         </ul>
                     </div>
                 @endif
-
-                <div class="card text-left">
-                    <div class="card-body">
-                        <div class="section-header">
-                            <h1>Crear Cotizacion del mantenimiento</h1>
-                            <div class="section-header-breadcrumb">
-                                <a href="#" data-toggle="modal"
-                                data-target="#modal-visualizar-inventario" class="btn btn-primary boton-color"><i class="fa fa-search"> </i>
-                                    Visualizar mas detalles del inventario</a>
+               <div id="app">
+                    <div class="card text-left">
+                        <div class="card-body">
+                            <div class="section-header">
+                                <h1>Crear Cotizacion del mantenimiento</h1>
+                                <div class="section-header-breadcrumb">
+                                    <a href="#" data-toggle="modal" data-target="#modal-visualizar-inventario"
+                                        class="btn btn-primary boton-color"><i class="fa fa-search"> </i>
+                                        Visualizar mas detalles del inventario</a>
+                                </div>
                             </div>
-                        </div>
-                        <h2 class="section-title">Informacion</h2>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card">
-                                    <div class="card-body  ">
-                                        <h6 class=" p-0">Datos del Cliente</h6>
-                                        <table class="table table-striped table-md">
-                                            <tbody>
-                                                <tr class="m-0 p-0">
-                                                    <td>Nombres:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->cliente->cli_nombre }}</td>
-                                                </tr>
+                            <h2 class="section-title">Informacion</h2>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="card">
+                                        <div class="card-body  ">
+                                            <h6 class=" p-0">Datos del Cliente</h6>
+                                            <table class="table table-striped table-md">
+                                                <tbody>
+                                                    <tr class="m-0 p-0">
+                                                        <td>Nombres:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->cliente->cli_nombre }}</td>
+                                                    </tr>
 
-                                                <tr class="m-0 p-0">
-                                                    <td>Apellidos:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->cliente->cli_apellido }}</td>
-                                                </tr>
-                                                <tr class="m-0 p-0">
-                                                    <td>Dni:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->cliente->cli_dni }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Direccion:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->cliente->cli_direccion }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Contacto:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->cliente->cli_telefono }}</td>
-                                                </tr>
+                                                    <tr class="m-0 p-0">
+                                                        <td>Apellidos:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->cliente->cli_apellido }}</td>
+                                                    </tr>
+                                                    <tr class="m-0 p-0">
+                                                        <td>Dni:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->cliente->cli_dni }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Direccion:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->cliente->cli_direccion }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Contacto:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->cliente->cli_telefono }}</td>
+                                                    </tr>
 
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="card" class="p-0">
+                                        <div class="card-body p-0">
+                                            <h6 class=" p-0">Datos de la moto</h6>
+                                            <table class="table table-striped table-md">
+                                                <tbody>
+                                                    <tr class="m-0  ">
+                                                        <td>Placa:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_placa }}</td>
+                                                    </tr>
+                                                    <tr class="m-0 p-0">
+                                                        <td>Vin:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_vin }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Motor:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_motor }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Fecha de Fabricacion:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_fabricacion }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Estado de la moto:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_estado }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Chasis:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_chasis }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Color:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_color }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cilindraje:</td>
+                                                        <td>{{ $cortesia->activaciones->moto->mtx_cilindraje }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="card" class="p-0">
-                                    <div class="card-body p-0">
-                                        <h6 class=" p-0">Datos de la moto</h6>
-                                        <table class="table table-striped table-md">
-                                            <tbody>
-                                                <tr class="m-0  ">
-                                                    <td>Placa:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_placa }}</td>
-                                                </tr>
-                                                <tr class="m-0 p-0">
-                                                    <td>Vin:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_vin }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Motor:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_motor }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Fecha de Fabricacion:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_fabricacion }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Estado de la moto:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_estado }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Chasis:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_chasis }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Color:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_color }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Cilindraje:</td>
-                                                    <td>{{ $cortesia->activaciones->moto->mtx_cilindraje }}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+
+
+                            <repuestos_add aceite_id="{{ $cortesia->aceite_id }}" ></repuestos_add>
+
+
+                            <div class="section-header">
+                                <h1>Otros Datos</h1>
+                            </div>
+                            <div class="form-row">
+                                <label for="observacion_sta">Mecanico</label>
+                                <div class="form-group col-md-12">
+                                    <select name="mecanico_id" class="form-control">
+                                        <option value="">Seleccionar mecanico</option>
+                                        @foreach ($mecanicos as $mecanico)
+                                            <option value="{{ $mecanico->id }}">{{ $mecanico->name }} |
+                                                {{ $mecanico->last_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="app">
-                            <repuestos_add></repuestos_add>
-                        </div>
-
-                        <div class="section-header">
-                            <h1>Otros Datos</h1>
-                        </div>
-                        <div class="form-row">
-                            <label for="observacion_sta">Mecanico</label>
-                            <div class="form-group col-md-12">
-                                <select name="mecanico_id" class="form-control">
-                                    <option value="">Seleccionar mecanico</option>
-                                    @foreach ($mecanicos as $mecanico)
-                                        <option value="{{ $mecanico->id }}">{{ $mecanico->name }} |
-                                            {{ $mecanico->last_name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-row">
+                                <label for="observacion_sta">Observacion del Sta</label>
+                                <div class="form-group col-md-12">
+                                    <textarea name="observacion_sta" class="form-control" id="" cols="30" rows="10"></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-row">
-                            <label for="observacion_sta">Observacion del Sta</label>
-                            <div class="form-group col-md-12">
-                                <textarea name="observacion_sta" class="form-control" id="" cols="30" rows="10"></textarea>
+                            <div class="form-row">
+                                <label for="trabajo_realizar">Trabajos a realiza</label>
+                                <div class="form-group col-md-12">
+                                    <textarea name="trabajo_realizar" class="form-control" id="" cols="30" rows="10"></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-row">
-                            <label for="trabajo_realizar">Trabajos a realiza</label>
-                            <div class="form-group col-md-12">
-                                <textarea name="trabajo_realizar" class="form-control" id="" cols="30" rows="10"></textarea>
-                            </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -166,7 +168,8 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modal-visualizar-inventario-label">Detalles del Inventario N° #{{ $inventario->inventario_numero }} </h5>
+                    <h5 class="modal-title" id="modal-visualizar-inventario-label">Detalles del Inventario N°
+                        #{{ $inventario->inventario_numero }} </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -178,7 +181,7 @@
                             <div class="invoice-print">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                          
+
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <strong>Datos de la Moto:</strong>
@@ -283,7 +286,6 @@
                                                             <td>{{ $inventario->inventario_moto_obs_cliente }}</td>
                                                         </tr>
 
-
                                                     </tbody>
                                                 </table>
 
@@ -291,6 +293,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
+
+
 
                                 <div class="row mt-4">
                                     <div class="col-md-12">
@@ -330,6 +336,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
+
 
                                         <div class="section-title">Autorizaciones</div>
                                         <p class="section-lead">Todo las autorizacion que el cliente debe firmar.</p>
@@ -386,7 +393,7 @@
             rules: {
                 observacion_sta: {
                     required: true,
-                }, 
+                },
                 cotizacion: {
                     required: true,
                 },
