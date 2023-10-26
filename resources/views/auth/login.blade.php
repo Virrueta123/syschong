@@ -52,7 +52,9 @@
                              <div class="card-body">
                                  <form method="POST" action="#" method="POST" action="{{ route('login') }}"
                                      class="needs-validation" novalidate="">
-                                     @csrf
+                                     <input type="hidden" name="_token" value="{{ @csrf }}" />
+
+
                                      <div class="form-group">
                                          <label for="email">Correo Electronico</label>
                                          <input id="email" type="email" value="{{ old('email') }}"
