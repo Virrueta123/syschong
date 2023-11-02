@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Total Admin</h4>
+                        <h4>Total Ventas</h4>
                     </div>
                     <div class="card-body">
                         20
@@ -31,7 +31,8 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>News</h4>
+                        <h4>Monto total
+                            comprobantes</h4>
                     </div>
                     <div class="card-body">
                         42
@@ -46,7 +47,7 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Reports</h4>
+                        <h4>Monto Compras</h4>
                     </div>
                     <div class="card-body">
                         1,201
@@ -61,7 +62,7 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Online Users</h4>
+                        <h4>Total Ventas</h4>
                     </div>
                     <div class="card-body">
                         47
@@ -70,6 +71,51 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card card-statistic-2">
+              <div class="card-stats">
+                <div class="card-stats-title">Cotizaciones 
+                </div>
+                <div class="card-stats-items row">
+                  <div class="card-stats-item col-sm">
+                    <div class="card-stats-item-count">24</div>
+                    <div class="card-stats-item-label">Emitidos</div>
+                  </div>
+                  <div class="card-stats-item col-sm">
+                    <div class="card-stats-item-count">12</div>
+                    <div class="card-stats-item-label">Enviados</div>
+                  </div>
+                  <div class="card-stats-item col-sm">
+                    <div class="card-stats-item-count">23</div>
+                    <div class="card-stats-item-label">Aprobados</div>
+                  </div>
+                  <div class="card-stats-item col-sm">
+                    <div class="card-stats-item-count">23</div>
+                    <div class="card-stats-item-label">Trabajo Terminado</div>
+                  </div>
+                  <div class="card-stats-item col-sm">
+                    <div class="card-stats-item-count">23</div>
+                    <div class="card-stats-item-label">Finalizado</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-icon shadow-primary bg-primary">
+                <i class="fa fa-check text-white"></i>
+              </div>
+              <div class="card-wrap">
+                <div class="card-header">
+                  <h4>Trabajos Terminado </h4> 
+                </div>
+                <div class="card-body">
+                  59
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-8 col-md-12 col-12 col-sm-12">
             <div class="card">

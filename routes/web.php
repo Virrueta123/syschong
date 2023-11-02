@@ -62,6 +62,10 @@ include 'web/calendario.php';
  
 include 'web/comandos.php';
 
+include 'web/compras.php';
+
+include 'web/ventas.php';
+
 
 /* *********************** */
 
@@ -111,6 +115,8 @@ Route::resource('calendario', App\Http\Controllers\calendario_controller::class)
 Route::resource('users', App\Http\Controllers\user_controller::class);
 
 Route::resource('ventas', App\Http\Controllers\ventas_controller::class);
+
+Route::resource('caja', App\Http\Controllers\caja_chica_controller::class);
 
 include 'web/empresa.php';
 

@@ -85,10 +85,11 @@
                                     <div class="form-row ">
                                         <div class="form-group col-md-4">
                                             <label>Tipo de comprobante</label>
-                                            <select v-on:change="tipo_comprobante($event)" class="form-control">
+                                            <select id="tipo_comprobante" v-on:change="tipo_comprobante($event)"
+                                                class="form-control">
                                                 <option value="F">Factura Electronica</option>
                                                 <option value="B">Boleta Electronica</option>
-                                                <!--  <option value="N">Nota de Venta</option>-->
+                                                <option value="N">Nota de Venta</option>
                                             </select>
                                         </div>
 
@@ -114,8 +115,16 @@
 
                                             <label for="cli_telefono">Buscar Cliente </label>
 
-                                            <div class="input-group">
-                                                <search-cliente>
+                                            <div v-if="is_ruc" class="input-group">
+                                                <search-cliente_pos name="cli_id"  >
+                                                </search-cliente_pos>
+                                                <crear-cliente_pos select_element="#cliente_select">
+                                                </crear-cliente_pos>
+                                                
+                                            </div>
+
+                                            <div v-else class="input-group">
+                                                <search-cliente name="cli_id"  >
                                                 </search-cliente>
                                                 <crear-cliente select_element="#cliente_select">
                                                 </crear-cliente>
@@ -147,7 +156,6 @@
                                                     <th scope="col">Descripcion</th>
                                                     <th scope="col">unidad</th>
                                                     <th scope="col">Precio</th>
-                                                    <th scope="col">Descuento</th>
                                                     <th scope="col">Cantidad</th>
                                                     <th scope="col">Importe</th>
                                                     <th scope="col" class="text-center"><i class="fa fa-cog"
@@ -187,11 +195,13 @@
                                                     <td scope="row">{{ repuesto . unidad }}</td>
                                                     <td scope="row">{{ repuesto . Precio }}</td>
 
-
-
-                                                    <td scope="row">{{ repuesto . Cantidad }}</td>
+                                                    <td scope="row"><input type="number" class="form-control"
+                                                            v-on:change="cantidad_change(index)"
+                                                            v-on:keyup="cantidad_change(index)"
+                                                            :value="repuesto.Cantidad"> </td>
                                                     <td scope="row">{{ repuesto . Importe }}</td>
-                                                    <td><button type="button" name="" id=""
+                                                    <td class="text-center"><button type="button" name=""
+                                                            id=""
                                                             v-on:click="eliminar_producto(repuesto . prod_id)"
                                                             class="btn btn-danger btn-sm"><i class="fa fa-trash"
                                                                 aria-hidden="true"></i></button></td>
@@ -224,7 +234,7 @@
                                                     <td scope="row"> </td>
                                                     <td scope="row" colspan="2">OP.EXONERADAS: </td>
                                                     <td scope="row" colspan="2">
-                                                        {{ total }} </td>
+                                                        {{ sumar_total }} </td>
                                                 </tr>
 
                                                 <tr>
@@ -234,11 +244,8 @@
                                                     <td scope="row"> </td>
                                                     <td scope="row" colspan="2">TOTAL A PAGAR: </td>
                                                     <td scope="row" colspan="2">
-                                                        {{ total }} </td>
+                                                        {{ sumar_total }} </td>
                                                 </tr>
-
-
-
 
                                                 <tr>
                                                     <td scope="row"> </td>
@@ -258,7 +265,16 @@
                                                     <td scope="row"> </td>
                                                     <td scope="row"> </td>
                                                     <td scope="row"> </td>
-                                                    <td scope="row"> </td>
+                                                    <td scope="row">
+                                                        <button v-if="!pagos[pg].url" type="button" name=""
+                                                            @click="addImage(pg)" id=""
+                                                            class="btn btn-info boton-color"
+                                                            style="width: 100%; height: 100%;"><i class="fa fa-camera"
+                                                                aria-hidden="true"></i></button>
+                                                        <img @click="addImage(pg)" style="width: 60px; height: 60px;"
+                                                            v-else :src="pagos[pg].src" class="img-fluid"
+                                                            alt="Responsive image">
+                                                    </td>
                                                     <td scope="row">
                                                         <div class="form-group">
                                                             <select class="custom-select">
@@ -316,10 +332,6 @@
 
                                                 </tr>
 
-
-
-
-
                                                 <!-- *********************** -->
 
                                             </tbody>
@@ -365,13 +377,11 @@
                     <div class="modal-body">
 
                         <div class="card-body">
-
                             <h2 class="section-title">Buscardor de repuestos</h2>
-
-
                             <section>
                                 <div id="loading">
-                                    <table ref="miTabla" id="miTabla" class="display" style="width:100%">
+                                    <table ref="repuestos_table" id="repuestos_table" class="display"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>
@@ -412,7 +422,6 @@
                                                 <th>
                                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                                 </th>
-
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -431,6 +440,47 @@
 
         <!-- *********************** -->
 
+
+        <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
+
+            <CModalBody>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Agregar la iamgen del pago</h2>
+                        <div>
+                            <input type="file" name="images[]" style="display: none;" id="images"
+                                ref="fileInput" @change="handleFileChange" multiple />
+                            <div ref="uppyContainer"></div>
+
+                        </div>
+                    </div>
+                    <button type="button" v-on:click="insert_img()"
+                        class="btn btn-info boton-color custom-prev">Agregar Foto</button>
+
+                </div>
+
+            </CModalBody>
+        </CModal>
+
+        <CModal size="xl" :visible="print_comprobante" @close="() => { print_comprobante = false }">
+
+            <CModalBody>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Imprimir comprobante</h2>
+                        <iframe :src="rutaPDF" width="100%" height="600px" ></iframe>
+
+                    </div>
+                     
+                </div>
+
+            </CModalBody>
+        </CModal>
+
     </div>
 
 
@@ -448,6 +498,7 @@
     import "imask";
     import "bootstrap"
     import 'gasparesganga-jquery-loading-overlay';
+ 
 
     import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
@@ -457,6 +508,26 @@
     import 'datatables.net-select-bs5';
     import 'datatables.net-staterestore-bs5';
 
+    import Uppy from '@uppy/core';
+    import Webcam from '@uppy/webcam';
+    import Dashboard from '@uppy/dashboard';
+    import es from '@uppy/locales/src/es_ES';
+    import ImageEditor from '@uppy/image-editor';
+    import '@uppy/image-editor/dist/style.min.css';
+
+    import "@uppy/core/dist/style.css";
+    import "@uppy/dashboard/dist/style.css";
+    import "@uppy/image-editor/dist/style.css";
+
+    import {
+        CModal,
+        CForm,
+        CFormInput,
+        CInputGroup,
+        CFormSelect,
+        CFormCheck,
+        CButton
+    } from '@coreui/vue';
 
 
     import {
@@ -464,9 +535,21 @@
     } from "../../mixin.js";
 
     export default {
+        components: {
+            CModal,
+            CForm,
+            CFormInput,
+            CInputGroup,
+            CFormSelect,
+            CFormCheck,
+            CButton,
+        },
         mixins: [myMixin],
         data() {
             return {
+                rutaPDF:"",
+                is_ruc:true,
+                print_comprobante:false,
                 select_element: this.$attrs.select_element || "",
                 show_productos: [],
                 timeoutId: null,
@@ -487,53 +570,211 @@
                 is_complete_pago: false,
                 serie: "F001",
                 correlativo: 0,
+                index_pago: 0,
+                xlDemo: false,
                 /* -- *********************** -- */
                 /* -- ******** correlativos ************* -- */
                 correlativo_factura: this.$attrs.correlativo_factura,
-                correlativo_boleta: this.$attrs.correlativo_boleta
+                correlativo_boleta: this.$attrs.correlativo_boleta,
+                correlativo_nota_venta: this.$attrs.correlativo_nota_venta
                 /* -- *********************** -- */
             }
         },
+        computed: {
+            sumar_pagos() {
+
+                if (this.pagos.length != 0) {
+                    const importe_pagos = this.pagos.reduce((acumulador, res) => {
+                        return acumulador + res.monto;
+                    }, 0);
+                    this.is_complete_pago = true;
+                    console.log(this.is_complete_pago);
+                    return importe_pagos;
+
+                } else {
+                    this.is_complete_pago = false;
+                    return 0;
+                }
+            },
+            sumar_total() {
+                if (this.repuestos.length != 0) {
+                    const importeTotal = this.repuestos.reduce((acumulador, res) => {
+                        return acumulador + res.Importe;
+                    }, 0);
+                    this.is_complete_pago = true;
+                    this.pagos[0].monto = importeTotal;
+                    return importeTotal;
+
+                } else {
+                    this.is_complete_pago = false;
+                    return 0;
+                }
+            },
+            pagos_filtered() {
+                return this.pagos.filter(pagob => this.is_pago);
+            },
+        },
         methods: {
+            addImage(index) {
+                console.log(index)
+                this.xlDemo = true;
+                this.index_pago = index;
+
+                this.index_factura = true;
+                this.index_boleta = false;
+                this.index_nota_venta = false;
+
+                /* -- ******** add image ************* -- */
+                this.$nextTick(() => {
+                    this.uppy = new Uppy({
+                            debug: true,
+                            locale: es,
+                            autoProceed: false,
+                            restrictions: {
+                                allowedFileTypes: ['image/*'],
+                                maxFileSize: 5242880,
+                                maxNumberOfFiles: 1
+                            },
+                        })
+                        .use(Dashboard, {
+                            target: this.$refs.uppyContainer,
+                            inline: true,
+                            width: '100%',
+                            proudlyDisplayPoweredByUppy: false,
+                            hideUploadButton: true,
+                        }).use(Webcam, {
+                            target: Dashboard
+                        })
+                        .use(ImageEditor, {
+                            target: Dashboard
+                        }).on('fileAdded', (file) => {
+                            // Obtener el contenido del archivo en forma de string
+                            const fileData = file.getData();
+
+                            // Imprimir el contenido del archivo
+                            console.log(fileData);
+                        });
+                });
+
+                /* -- *********************** -- */
+            },
+            insert_img() {
+                console.log(this.index_pago);
+                console.log(this.uppy);
+                this.uppy.getFiles().forEach((file) => {
+
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                        const base64Data = reader.result.split(',')[1];
+
+                        if (this.index_factura) {
+                            console.log("factura");
+                            this.pagos[this.index_pago].src = file.preview;
+                            this.pagos[this.index_pago].url = base64Data;
+                        }
+                        if (this.index_boleta) {
+                            console.log("boleta");
+                            this.pagos_boletas[this.index_pago_boleta].src = file.preview;
+                            this.pagos_boletas[this.index_pago_boleta].url = base64Data;
+                        }
+
+                    };
+
+                    reader.readAsDataURL(file.data);
+                });
+
+                this.xlDemo = false;
+            },
+            cantidad_change(index) {
+                if (this.repuestos[index].stock < event.target.value) {
+                    this.repuestos[index].Cantidad = this.repuestos[index].stock
+                    Swal.fire('No hay mas de ' + event.target.value + " productos")
+
+                } else {
+                    this.repuestos[index].Cantidad = event.target.value
+                    this.repuestos[index].Importe = this.repuestos[index].Precio * event.target.value;
+                }
+
+            },
             /* -- ******** crear comprobante ************* -- */
             crear_comprobante() {
+                var igualdad_forma_de_pago = true;
+                console.log(this.sumar_pagos + "--" + this.sumar_total);
+                if (igualdad_forma_de_pago) {
+                    if (this.sumar_pagos == this.sumar_total) {
 
-                this.send_axios(
-                    "Desear Emitir esta Factura?",
-                    "Si,Emitir la factura", {
-                        serie: "F001",
-                        correlativo: this.correlativo_factura,
-                        cotizaccion_id: this.cotizacion.cotizacion_id,
+                        console.log($("#cliente_select").val());
 
-                    },
-                    "/emitir_factura_cotizacion"
-                )
+                        if ($("#cliente_select").val() !== null) {
+
+
+                            if (this.repuestos.length != 0) {
+                                this.send_axios_reponse(
+                                        "Estas segur@ que deseas emitir este comprobante?",
+                                        "Si, emitir", {
+                                            cli_id: $("#cliente_select").val(),
+                                            tipo_comprobante: $("#tipo_comprobante").val(),
+                                            serie: this.serie,
+                                            correlativo: this.correlativo,
+                                            pagos: this.pagos,
+                                            total: this.sumar_total,
+                                            repuestos: this.repuestos,
+                                        },
+                                        "/pos"
+                                    ).then((result) => {
+                                        console.log(result);
+                                        if (result.success) {
+                                            // La solicitud se completó exitosamente 
+                                            this.print_comprobante = true;
+                                            this.rutaPDF = "/ventas_pdf/"+result.data;
+                                        } else {
+                                            Swal.fire({
+                                                icon: "warning",
+                                                title: "Error al crear la venta",
+                                                text: result.message,
+                                                footer: "-------",
+                                            });
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.log(error)
+                                        // El usuario canceló la operación o hubo un error
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Error al crear el comprobante",
+                                            text: "recarga la pagina",
+                                            footer: "-------",
+                                        });
+                                    });
+                            } else {
+                                Swal.fire('tiene que haber productos en la venta para poder emitir el comprobante')
+                            }
+ 
+                        } else {
+                            Swal.fire('primero tiene que agregar un cliente para continuar')
+                        }
+ 
+                    } else {
+                        Swal.fire('Los pagos no coinciden con el total de la boleta')
+                    }
+                } else {
+                    Swal.fire('la forma de pagos son iguales elije forma de pagos diferentes')
+                }
+
+
+
             },
             /* -- *********************** -- */
             /* -- ******** sumar moto pagos ************* -- */
 
-            pago_moto_total() {
-                var suma = this.pagos.reduce(function(acumulador, valorActual) {
-                    return acumulador + valorActual.monto;
-                }, 0);
-                this.suma_pago = suma;
-                console.log("suma" + suma);
-                console.log(this.total);
-                if (this.total != 0) {
-                    if (suma == this.total) {
-                        this.is_complete_pago = true;
-                    } else {
-                        this.is_complete_pago = false;
-                    }
-                }
 
-            },
             /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
             monto_change(e, index) {
-                console.log(e.target.value)
+
                 this.pagos[index].monto = e.target.value;
-                this.pago_moto_total();
+
             },
             /* -- *********************** -- */
             /* -- ******** change condiciones de pago ************* -- */
@@ -564,22 +805,25 @@
             tipo_comprobante(event) {
                 var valor = event.target.value;
 
-
                 switch (valor) {
                     case "F":
-                        $(this.$refs.serie).val("F001")
+                        this.serie = "F001";
+                        this.is_ruc = true;
                         this.correlativo = this.correlativo_factura;
                         break;
                     case "B":
-                        $(this.$refs.serie).val("B001")
+                    this.is_ruc = false;
+                        this.serie = "B001";
                         this.correlativo = this.correlativo_boleta;
                         break;
                     case "N":
-                        $(this.$refs.serie).val("NV01")
+                    this.is_ruc = false;
+                        this.correlativo = this.correlativo_nota_venta;
+                        this.serie = "NV01";
                         break;
                 }
 
-                console.log(event)
+                console.log(this.correlativo_nota_venta)
             },
             /* -- *********************** -- */
             eliminar_producto(identificador) {
@@ -618,84 +862,140 @@
 
                 this.repuestos[index].ValorDescuento = descuento_valor;
                 this.repuestos[index].ImporteDescuento = descuento_importe;
-
-
                 this.calcular_total()
-
             },
             get_producto(id) {
+                var self = this;
+                const elementoExiste = self.repuestos.some((elemento) => {
+                    return elemento.prod_id == id; // Supongo que prod_id es un identificador único
+                });
 
-                var self = this
+                console.log(elementoExiste);
 
-                const headers = {
-                    "Content-Type": "application/json",
-                };
-                const data = {
-                    prod_id: id
-                };
-                axios
-                    .post("/get_producto", data, {
-                        headers,
-                    })
-                    .then((response) => {
+                if (elementoExiste) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Producto existente",
+                        text: "Este producto ya esta en la compra",
+                        footer: "-------",
+                    });
+                } else {
+                    const headers = {
+                        "Content-Type": "application/json",
+                    };
+                    const data = {
+                        prod_id: id
+                    };
+                    axios
+                        .post("/get_producto", data, {
+                            headers,
+                        })
+                        .then((response) => {
 
-                        if (response.data.success) {
-                            var datos = response.data.data;
-                            console.log(response.data)
+                            if (response.data.success) {
+                                var datos = response.data.data;
+                                console.log(response.data)
 
-                            self.repuestos.push({
-                                prod_id: datos.prod_id,
-                                tipo: "p",
-                                servicios_id: 0,
-                                Codigo: datos.prod_codigo,
-                                Descripcion: datos.prod_nombre,
-                                Detalle: "",
-                                unidad: datos.unidad.unidades_nombre,
-                                Precio: datos.prod_precio_venta,
-                                Descuento: 0,
-                                ValorDescuento: 0,
-                                Cantidad: 1,
-                                Importe: 1 * datos.prod_precio_venta,
-                                ImporteDescuento: 0
-                            })
+                                self.repuestos.push({
+                                    prod_id: datos.prod_id,
+                                    tipo: "p",
+                                    servicios_id: 0,
+                                    Codigo: datos.prod_codigo,
+                                    Descripcion: datos.prod_nombre,
+                                    Detalle: "",
+                                    stock: datos.stock,
+                                    unidad: datos.unidad.unidades_nombre,
+                                    Precio: datos.prod_precio_venta,
+                                    Cantidad: 1,
+                                    Importe: 1 * datos.prod_precio_venta
+                                })
 
-                            self.total = this.total + parseFloat(datos.prod_precio_venta);
-                            if (self.pagos.length == 1) {
-                                self.pagos[0].monto = self.total;
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: response.data.message,
+                                    footer: "-------",
+                                });
                             }
-                            self.pago_moto_total();
-
-
-
-                        } else {
+                        })
+                        .catch((error) => {
                             Swal.fire({
                                 icon: "error",
-                                title: "Error",
-                                text: response.data.message,
+                                title: "Error 500",
+                                text: "Error en el servidor, vuelva a intentar",
                                 footer: "-------",
                             });
-                        }
-                    })
-                    .catch((error) => {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error 500",
-                            text: "Error en el servidor, vuelva a intentar",
-                            footer: "-------",
+                            console.error(error);
                         });
-                        console.error(error);
-                    });
+                }
             },
         },
         mounted() {
             var self = this
+
+            $("#form_venta").validate({
+                rules: {
+                    cli_id: {
+                        required: true,
+                    }
+                },
+                submitHandler: function(form) {
+
+                    this.send_axios_reponse(
+                            "Desear Emitir la compra?",
+                            "Si,Emitir la compra", {
+                                proveedor_id: this.proveedor_id,
+                                fecha_creacion: this.fecha_creacion,
+                                fecha_vencimiento: this.fecha_vencimiento,
+                                tipo_comprobante: this.tipo_comprobante,
+                                serie: this.serie,
+                                correlativo: this.correlativo,
+                                pagos: this.pagos,
+                                total: this.sumar_total,
+                                repuestos: this.repuestos,
+                                is_pago: this.is_pago
+                            },
+                            "/emitir_compra"
+                        ).then((result) => {
+                            console.log(result);
+                            if (result.success) {
+                                // La solicitud se completó exitosamente
+                                window.location.href = "/compras";
+                            } else {
+                                Swal.fire({
+                                    icon: "warning",
+                                    title: "Error al crear la compra",
+                                    text: result.message,
+                                    footer: "-------",
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            // El usuario canceló la operación o hubo un error
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al crear la factura",
+                                text: "recarga la pagina",
+                                footer: "-------",
+                            });
+                        });
+
+                    return false;
+                }.bind(this)
+            });
+
+
+
+
             this.correlativo = this.correlativo_factura;
             this.pagos.push({
                 monto: this.total,
                 forma_pago_id: 1,
-                referencia: ""
+                referencia: "",
+                url: false
             });
-            this.pago_moto_total()
             /* -- ******** datatable ************* -- */
 
             $("#miTabla").DataTable({
@@ -708,7 +1008,7 @@
                     [25, 50, 100, -1],
                     [25, 50, 100, "All"]
                 ],
-                pageLength: 25,
+                pageLength: 10,
                 columns: [{
                         data: 'prod_codigo',
                         name: 'prod_codigo'
@@ -718,8 +1018,8 @@
                         name: 'prod_nombre'
                     },
                     {
-                        data: 'prod_stock_inicial',
-                        name: 'prod_stock_inicial'
+                        data: 'stock',
+                        name: 'stock'
                     },
                     {
                         data: 'prod_precio_venta',
@@ -731,7 +1031,7 @@
                         searchable: false,
                         name: 'action',
                         render: function(data, type, row) {
-                            if (data.prod_stock_inicial != 0) {
+                            if (data.stock != 0) {
                                 return '<button prod_id="' + data.prod_id +
                                     '" class="btn  btn-primary btn-sm editar-btn">agregar</button>';
                             } else {
@@ -763,11 +1063,70 @@
                 // Otras opciones y configuraciones de DataTables aquí
             });
 
-            // Usando jQuery para seleccionar los botones por el identificador único
-            $('.btn-agregar').on('click', (event) => {
-                const prodId = $(event.target).data('prod-id');
-                this.agregar(prodId); // Llama al método agregar con el prodId como argumento
-                console.log(prodId)
+
+            $("#repuestos_table").DataTable({
+                initComplete: search_input_by_column,
+                language: {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                },
+                ajax: "/search_repuesto_datatable",
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    [25, 50, 100, "All"]
+                ],
+                pageLength: 10,
+                columns: [{
+                        data: 'prod_codigo',
+                        name: 'prod_codigo'
+                    },
+                    {
+                        data: 'prod_nombre',
+                        name: 'prod_nombre'
+                    },
+                    {
+                        data: 'stock',
+                        name: 'stock'
+                    },
+                    {
+                        data: 'prod_precio_venta',
+                        name: 'prod_precio_venta'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        name: 'action',
+                        render: function(data, type, row) {
+                            if (data.stock != 0) {
+                                return '<button prod_id="' + data.prod_id +
+                                    '" class="btn  btn-primary btn-sm editar-btn">agregar</button>';
+                            } else {
+                                return "sin stock";
+                            }
+
+                        }
+                    }
+
+                ],
+                initComplete: function() {
+                    // Agregar un evento clic a los botones
+                    $('#repuestos_table tbody').on('click', 'button', function() {
+
+                        const action = $(this);
+                        self.get_producto(action[0].attributes[0].value);
+
+                    });
+                },
+                dom: 'Bfrtip',
+                "info": true,
+                fixedColumns: true,
+                keys: true,
+                colReorder: true,
+                "lengthChange": true,
+                'responsive': true,
+                "autoWidth": false,
+                "ordering": true,
+                // Otras opciones y configuraciones de DataTables aquí
             });
 
 

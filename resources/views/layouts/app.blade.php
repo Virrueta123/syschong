@@ -49,6 +49,8 @@
 
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
+    @yield('css')
+
 
 </head>
 
@@ -379,6 +381,15 @@
                 position: 'center',
                 icon: 'error',
                 title: '{{ session('error') }}',
+                showConfirmButton: false,
+                timer: 2500
+            })
+        @endif
+        @if (session()->has('warning'))
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: '{{ session('warning') }}',
                 showConfirmButton: false,
                 timer: 2500
             })

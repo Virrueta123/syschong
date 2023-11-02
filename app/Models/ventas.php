@@ -14,4 +14,23 @@ class ventas extends Model
     public $primaryKey = 'venta_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    protected $appends = ['url'];
+
+    public function vendedor( ){
+        return $this->belongsTo(User::class,"user_id")->withTrashed();
+    }
+
+    public function cliente( ){
+        return $this->belongsTo(cliente::class,"cli_id")->withTrashed();
+    }
+
+    public function detalle(){ 
+        return $this->hasMany(detalle_venta::class,"venta_id");
+    }
+
+    public function getUrlAttribute(){
+        return encrypt_id($this->cotizacion_id);
+    }
+    
 }

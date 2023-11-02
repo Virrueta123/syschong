@@ -48,10 +48,10 @@ class producto extends Model
         return $this->hasOne(imagen_producto::class,"prod_id")->withTrashed();
     }
 
-    public function getStockAttribute(  ){
+    public function getStockAttribute( ){
         $compras = detalle_compra::where('prod_id', $this->prod_id)->sum('cantidad');
-        $ventas = detalle_venta::where('prod_id', $this->prod_id)->sum('Cantidad');
-        $stock = $this->prod_stock_inicial + $ventas + $compras;
+        $ventas = detalle_venta::where('prod_id', $this->prod_id)->where('tipo', "p")->sum('Cantidad');
+        $stock = $this->prod_stock_inicial + $compras - $ventas   ;
         return $stock; 
     }
 }

@@ -52,7 +52,9 @@
                              <div class="card-body">
                                  <form method="POST" action="#" method="POST" action="{{ route('login') }}"
                                      class="needs-validation" novalidate="">
-                                     <input type="hidden" name="_token" value="{{ @csrf }}" />
+
+                                     
+                                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
 
                                      <div class="form-group">

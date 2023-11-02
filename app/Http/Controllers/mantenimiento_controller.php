@@ -501,6 +501,7 @@ class mantenimiento_controller extends Controller
             $activaciones->precio = $datax['precio'];
             $activaciones->user_id = auth()->user()->id;
             $activaciones->start_cortesia = 1;
+            $activaciones->tienda_cobrar = 0;
             $activaciones->save();
 
             $numero_corterisa = cortesias_activacion::where('activaciones_id', $activaciones->activaciones_id)

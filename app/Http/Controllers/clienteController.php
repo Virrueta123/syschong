@@ -116,6 +116,65 @@ class clienteController extends Controller
         }
     }
 
+    public function store_vue_cliente_ruc(Request $request)
+    {
+        try {
+            $datax = $request->all();
+             
+            $validate = $request->validate([
+                'cli_ruc' => 'required|string|max:255',
+                'cli_razon_social' => 'required|string|max:255',
+                'cli_direccion_ruc' => 'required|string',
+            ]);
+
+            $validate['cli_telefono'] = str_replace('-', '', $datax['cli_telefono']);
+            $datax['cli_correo'] = is_null($datax['cli_correo']) ? 'N' : $datax['cli_correo'];
+            $validate['cli_ruc'] = is_null($datax['cli_ruc']) ? 'N' : $datax['cli_ruc'];
+            $validate['cli_razon_social'] = is_null($datax['cli_razon_social']) ? 'N' : $datax['cli_razon_social'];
+            $validate['cli_direccion_ruc'] = is_null($datax['cli_direccion_ruc']) ? 'N' : $datax['cli_direccion_ruc'];
+            $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? 'N' : $datax['cli_provincia_ruc'];
+            $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? 'N' : $datax['cli_departamento_ruc'];
+            $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? 'N' : $datax['cli_distrito_ruc'];
+            $validate['user_id'] = Auth::user()->id;
+
+            $create = cliente::create($validate);
+
+            if ($create) {
+                return response()->json(
+                    [
+                        'message' => 'se creo correctamente un cliente',
+                        'error' => '',
+                        'success' => true,
+                        'data' => ['value' => $create->cli_id, 'title' => $create->cli_razon_social . ' - ' . $create->cli_ruc],
+                    ],
+                    200,
+                );
+            } else {
+                Log::error('no se pudo registrar el cliente');
+                return response()->json(
+                    [
+                        'message' => 'no se pudo registrar el cliente',
+                        'error' => '',
+                        'success' => false,
+                        'data' => '',
+                    ],
+                    500,
+                );
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(
+                [
+                    'message' => 'error del servidor' . $th,
+                    'error' => $th,
+                    'success' => false,
+                    'data' => '',
+                ],
+                500,
+            );
+        }
+    }
+
     public function store_vue(Request $request)
     {
         try {
@@ -123,7 +182,7 @@ class clienteController extends Controller
             $validate = $request->validate([
                 'cli_nombre' => 'required|string|max:255',
                 'cli_apellido' => 'required|string|max:255',
-                'cli_dni' => 'required|numeric', 
+                'cli_dni' => 'required|numeric',
                 'cli_telefono' => 'nullable|string|max:11',
                 'cli_correo' => 'nullable|string|max:255|email',
             ]);
@@ -300,23 +359,31 @@ class clienteController extends Controller
             ->get();
         echo json_encode($cliente);
     }
+
+    function cliente_search_pos(Request $req)
+    {
+        $cliente = cliente::select(DB::raw('cli_id AS id'), DB::raw("CONCAT(cli_razon_social,'-',cli_ruc) AS name"))
+            ->where('cli_razon_social', 'like', '%' . $req->all()['search'] . '%')
+            ->orWhere('cli_ruc', 'like', '%' . $req->all()['search'] . '%')
+            ->limit(7)
+            ->get();
+        echo json_encode($cliente);
+    }
     /* *********************** */
 
     /* ******** actualizar ruc ************* */
     function editar_ruc(Request $req)
     {
         try {
+            $datax = $req->all();
 
-            $datax = $req->all(); 
- 
-
-            $cliente = cliente::find($datax["cli_id"]);
-            $cliente->cli_ruc = $datax["cli_form"][0]["value"];
-            $cliente->cli_razon_social = $datax["cli_form"][1]["value"];
-            $cliente->cli_departamento_ruc = $datax["cli_form"][3]["value"];
-            $cliente->cli_provincia_ruc = $datax["cli_form"][4]["value"];
-            $cliente->cli_distrito_ruc = $datax["cli_form"][5]["value"];
-            $cliente->cli_direccion_ruc = $datax["cli_form"][2]["value"];
+            $cliente = cliente::find($datax['cli_id']);
+            $cliente->cli_ruc = $datax['cli_form'][0]['value'];
+            $cliente->cli_razon_social = $datax['cli_form'][1]['value'];
+            $cliente->cli_departamento_ruc = $datax['cli_form'][3]['value'];
+            $cliente->cli_provincia_ruc = $datax['cli_form'][4]['value'];
+            $cliente->cli_distrito_ruc = $datax['cli_form'][5]['value'];
+            $cliente->cli_direccion_ruc = $datax['cli_form'][2]['value'];
 
             /*
             $update = cliente::update([
@@ -325,16 +392,15 @@ class clienteController extends Controller
                 'cli_departamento_ruc' => $datax["cli_departamento_ruc"],
                 'cli_provincia_ruc' => $datax["cli_provincia_ruc"],
                 'cli_distrito_ruc' => $datax["cli_distrito_ruc"],
-                'cli_direccion_ruc' => $datax["cli_direccion_ruc"], 
+                'cli_direccion_ruc' => $datax["cli_direccion_ruc"],
             ], [$datax["cli_id"]]); */
-           
 
-            if ( $cliente->update()) {
+            if ($cliente->update()) {
                 return response()->json([
                     'message' => 'se actualizo correctamente el ruc',
                     'error' => '',
                     'success' => true,
-                    'data' =>"",
+                    'data' => '',
                 ]);
             } else {
                 Log::error('error al actualizar el ruc');
@@ -342,8 +408,8 @@ class clienteController extends Controller
                     'message' => 'error al actualizar el ruc',
                     'error' => '',
                     'success' => false,
-                    'data' =>"",
-                ]); 
+                    'data' => '',
+                ]);
             }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -351,7 +417,7 @@ class clienteController extends Controller
                 'message' => 'error al actualizar el ruc',
                 'error' => $th->getMessage(),
                 'success' => false,
-                'data' =>"",
+                'data' => '',
             ]);
         }
     }

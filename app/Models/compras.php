@@ -14,4 +14,13 @@ class compras extends Model
     public $primaryKey = 'compra_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function usuario(){
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function proveedor(){
+        return $this->belongsTo(proveedores::class,'proveedor_id');
+    
+    }
 }

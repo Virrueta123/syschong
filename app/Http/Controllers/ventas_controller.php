@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\cotizacion;
+use App\Models\cotizacioncotizacion_detalle;
+use App\Models\cuentas;
 use App\Models\ventas;
-use Carbon\Carbon; 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -21,9 +25,7 @@ class ventas_controller extends Controller
     {
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
-            return DataTables::of(
-                ventas::orderBy('created_at', 'asc')
-            )
+            return DataTables::of(ventas::orderBy('created_at', 'asc'))
                 ->addColumn('action', static function ($Data) {
                     $venta_id = encrypt_id($Data->venta_id);
                     return view('buttons.venta', ['venta_id' => $venta_id]);
@@ -40,7 +42,7 @@ class ventas_controller extends Controller
                     }
                 })
                 ->addColumn('numero', static function ($Data) {
-                    return $Data->venta_serie."-".$Data->venta_correlativo;
+                    return $Data->venta_serie . '-' . $Data->venta_correlativo;
                 })
                 ->addColumn('venta_estado', static function ($Data) {
                     switch ($Data->venta_estado) {
@@ -54,17 +56,17 @@ class ventas_controller extends Controller
                     }
                 })
                 ->addColumn('cliente', static function ($Data) {
-                    if($Data->tipo_comprobante=="B"){
-                        return $Data->Nombre . " " . $Data->Apellido; 
-                    }else{
-                        return $Data->razon_social; 
+                    if ($Data->tipo_comprobante == 'B') {
+                        return $Data->Nombre . ' ' . $Data->Apellido;
+                    } else {
+                        return $Data->razon_social;
                     }
                 })
                 ->addColumn('documento', static function ($Data) {
-                    if($Data->tipo_comprobante=="B"){
-                        return $Data->Dni; 
-                    }else{
-                        return $Data->ruc; 
+                    if ($Data->tipo_comprobante == 'B') {
+                        return $Data->Dni;
+                    } else {
+                        return $Data->ruc;
                     }
                 })
                 ->addColumn('forma_pago', static function ($Data) {
@@ -82,20 +84,22 @@ class ventas_controller extends Controller
         }
 
         $html = $builder
-            ->columns([ 
+            ->columns([
                 Column::make('fecha_creacion')->title('Emision'),
                 Column::computed('tipo_venta')->title('Tipo Comprobante'),
-                Column::computed('cliente')->title('Cliente')->searchable(true)
-                ->orderable(true)  
-                ->exportable(false)
-                ->printable(false),
+                Column::computed('cliente')
+                    ->title('Cliente')
+                    ->searchable(true)
+                    ->orderable(true)
+                    ->exportable(false)
+                    ->printable(false),
                 Column::computed('documento')->title('Documento'),
-                Column::computed('numero')->title('numero'), 
+                Column::computed('numero')->title('numero'),
                 Column::make('venta_estado')->title('Estado'),
                 Column::make('venta_total')->title('Venta Total'),
-                Column::make('MtoOperGravadas')->title('MtoOperGravadas'), 
+                Column::make('MtoOperGravadas')->title('MtoOperGravadas'),
                 Column::make('SubTotal')->title('SubTotal'),
-                Column::computed('forma_pago')->title('forma pago'), 
+                Column::computed('forma_pago')->title('forma pago'),
                 Column::computed('action')
                     ->title('Opcion')
                     ->exportable(false)
@@ -176,7 +180,24 @@ class ventas_controller extends Controller
      */
     public function show($id)
     {
-        //
+        $cuentas = cuentas::where('estado', 'A')->get();
+        $get = ventas::with([
+            'vendedor',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+
+        if ($get) {
+            return view('modules.ventas.show', compact('get', 'cuentas',"id"));
+        } else {
+            return view('errors.404');
+        }
     }
 
     /**
@@ -213,7 +234,7 @@ class ventas_controller extends Controller
         //
     }
 
-    /* ******** registrar la venta con vue ************* */ 
+    /* ******** registrar la venta con vue ************* */
     /**
      * Store a newly created resource in storage.
      *
@@ -223,11 +244,10 @@ class ventas_controller extends Controller
     public function store_vue(Request $request)
     {
         try {
-            
             $cotizacion_id = $request->all()['cotizacion_id'];
             $detalle = $request->all()['detalle'];
             $contador = 0;
-            
+
             foreach ($detalle as $dt) {
                 $contador++;
                 $updated = cotizacioncotizacion_detalle::find($dt['cotizacion_detalle_id']);
@@ -266,4 +286,28 @@ class ventas_controller extends Controller
         }
     }
     /* *********************** */
+    public function ventas_pdf( $id)
+    {
+        $cuentas = cuentas::where('estado', 'A')->get();
+
+        $get = ventas::with([
+            'vendedor',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.comprobante', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
+
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
+    }
 }

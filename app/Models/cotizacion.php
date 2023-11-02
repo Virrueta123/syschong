@@ -29,7 +29,7 @@ class cotizacion extends Model
         return $this->hasMany(cotizacioncotizacion_detalle::class,"cotizacion_id")->withTrashed();
     }
 
-    public function getUrlAttribute(  ){
+    public function getUrlAttribute(){
         return encrypt_id($this->cotizacion_id);
     }
     

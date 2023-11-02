@@ -41,7 +41,20 @@ export const myMixin = {
         }
     },
     methods: {
+      async sendUrl(url, phone) {
+        var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text=Buenas tardes tu presupuesto esta en esta url='+url;
 
+        // Abre la URL en una nueva ventana o pestaña del navegador
+        window.open(ruta, '_blank');
+      },
+         esIgualFormaPago(arreglo){
+              for (let i = 0; i < arreglo.length; i++) {
+                  if (arreglo[i].forma_pago_id !== arreglo[i+1].forma_pago_id) {
+                      return false;
+                  }
+              }
+              return true;
+         }, 
          limitarCaracteres(cadena, limite) {
             if (cadena.length <= limite) {
               return cadena;

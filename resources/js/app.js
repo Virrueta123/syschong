@@ -12,6 +12,7 @@ app.component('example-component', require('./components/ExampleComponent.vue').
 app.component('dni', require('./components/dni.vue').default);
 app.component('ruc', require('./components/ruc.vue').default);
 
+
 /* -- ********  componentes tienda ************* -- */
 app.component('ruc-tienda', require('./components/tienda/ruc_tienda.vue').default);
 app.component('agregar-precios', require('./components/tienda/agregar_precio.vue').default);
@@ -22,6 +23,11 @@ app.component('search-tienda-cobrar', require('./components/tienda/cobrar_tienda
 
 app.component('search-cliente', require('./components/search_cliente.vue').default);
 app.component('crear-cliente', require('./components/crear_cliente.vue').default);
+
+
+app.component('search-cliente_pos', require('./components/search_cliente_pos.vue').default);
+app.component('crear-cliente_pos', require('./components/crear_cliente_pos.vue').default);
+
 
 /* -- ******** cotizacion ************* -- */
 app.component('cotizacion-cliente-show',require('./components/cotizacion/cotizacion_cliente_show.vue').default);

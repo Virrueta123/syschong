@@ -42,6 +42,14 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'vehiculos',
                         'icon' => 'fa fa-motorcycle',
                         'submenu' => [['name' => 'todo los vehiculos', 'url' => 'moto.index'], ['name' => 'crear un vehiculos', 'url' => 'moto.create']],
+                    ],  
+                    [ 
+                        'name' => 'Pos',
+                        'icon' => 'fa fa-store',
+                        'submenu' => [
+                            ['name' => 'punto de venta', 'url' => 'pos.create'], 
+                            ['name' => 'cajas', 'url' => 'caja.index'], 
+                        ],
                     ], 
                     [
                         'name' => 'activaciones',

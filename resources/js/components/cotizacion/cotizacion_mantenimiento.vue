@@ -1024,7 +1024,7 @@
     import es from '@uppy/locales/src/es_ES';
     import ImageEditor from '@uppy/image-editor';
     import '@uppy/image-editor/dist/style.min.css';
-    import XHRUpload from '@uppy/xhr-upload';
+   
 
     import "@uppy/core/dist/style.css";
     import "@uppy/dashboard/dist/style.css";
@@ -1107,7 +1107,6 @@
                 referencia: "",
                 url: false
             });
-
  
             this.pagos.push({
                 monto: this.cotizacion.total,
@@ -1584,7 +1583,7 @@
 
             },
             enviado_whatsapp() {
-
+                this.sendUrl("https://www.google.com","+51"+this.cotizacion.inventario.moto.cliente.cli_telefono)
             },
             enviado() {
 

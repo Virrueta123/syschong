@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\accesorios_inventario_detalle;
+use App\Models\caja_chica;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
@@ -307,6 +308,9 @@ class cotizacion_controller extends Controller
     public function emitir_boleta_cotizacion(Request $request)
     {
         try {
+            $caja_chica = caja_chica::where('user_id', auth()->user()->id)
+                ->where('is_abierto', 'Y')
+                ->first()->caja_chica_id;
             $Datax = $request->all();
 
             $cotizacion = cotizacion::with([
@@ -363,6 +367,8 @@ class cotizacion_controller extends Controller
             $venta->tipo_venta = 'BM';
             $venta->forma_pago = 'CO';
             $venta->cli_id = $cotizacion->inventario->moto->cliente->cli_id;
+            $venta->caja_chica_id = $caja_chica;
+            $venta->user_id = Auth::id();
             $created_venta = $venta->save();
 
             foreach ($cotizacion->detalle as $cd) {
@@ -416,6 +422,8 @@ class cotizacion_controller extends Controller
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
                         $pagosVentas->imagen = 'Y';
+                        $pagosVentas->caja_chica_id = $caja_chica;
+                        $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();
 
                         /* ******** insertar imagen al pago ************* */
@@ -440,6 +448,8 @@ class cotizacion_controller extends Controller
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
                         $pagosVentas->imagen = 'Y';
+                        $pagosVentas->caja_chica_id = $caja_chica;
+                        $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();
                     }
                 }
@@ -540,6 +550,10 @@ class cotizacion_controller extends Controller
                     $factura->error = $result->getError()->getMessage();
                     $factura->save();
 
+                    $update = cotizacion::find($cotizacion->cotizacion_id);
+                    $update->progreso = 4;
+                    $update->save();
+
                     return response()->json([
                         'message' => 'error la boleta no se pudo enviar a sunat',
                         'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
@@ -561,6 +575,10 @@ class cotizacion_controller extends Controller
                     $factura->venta_estado = 'A';
                     $factura->estado = 'A';
                     $factura->save();
+
+                    $update = cotizacion::find($cotizacion->cotizacion_id);
+                    $update->progreso = 4;
+                    $update->save();
 
                     return response()->json([
                         'message' => $cdr->getDescription(),
@@ -605,6 +623,9 @@ class cotizacion_controller extends Controller
     public function emitir_factura_cotizacion(Request $request)
     {
         try {
+            $caja_chica = caja_chica::where('user_id', auth()->user()->id)
+                ->where('is_abierto', 'Y')
+                ->first()->caja_chica_id;
             $Datax = $request->all();
 
             $cotizacion = cotizacion::with([
@@ -661,7 +682,9 @@ class cotizacion_controller extends Controller
             $venta->tipo_venta = 'FM';
             $venta->forma_pago = 'CO';
             $venta->cli_id = $cotizacion->inventario->moto->cliente->cli_id;
-            $venta->save();
+            $venta->caja_chica_id = $caja_chica;
+            $venta->user_id = Auth::id();
+            $created_venta = $venta->save();
 
             foreach ($cotizacion->detalle as $cd) {
                 if ($cd->aprobar == 'Y') {
@@ -702,7 +725,7 @@ class cotizacion_controller extends Controller
                 }
             }
 
-            if ($venta->save()) {
+            if ($created_venta) {
                 /* *********************** */
 
                 foreach ($Datax['pagos'] as $pago) {
@@ -714,6 +737,8 @@ class cotizacion_controller extends Controller
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
                         $pagosVentas->imagen = 'Y';
+                        $pagosVentas->caja_chica_id = $caja_chica;
+                        $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();
 
                         /* ******** insertar imagen al pago ************* */
@@ -738,6 +763,8 @@ class cotizacion_controller extends Controller
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
                         $pagosVentas->imagen = 'Y';
+                        $pagosVentas->caja_chica_id = $caja_chica;
+                        $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();
                     }
                 }
@@ -838,6 +865,10 @@ class cotizacion_controller extends Controller
                     $factura->error = $result->getError()->getMessage();
                     $factura->save();
 
+                    $update = cotizacion::find($cotizacion->cotizacion_id);
+                    $update->progreso = 4;
+                    $update->save();
+
                     return response()->json([
                         'message' => 'error del servidor',
                         'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
@@ -859,6 +890,10 @@ class cotizacion_controller extends Controller
                     $factura->venta_estado = 'A';
                     $factura->estado = 'A';
                     $factura->save();
+
+                    $update = cotizacion::find($cotizacion->cotizacion_id);
+                    $update->progreso = 4;
+                    $update->save();
 
                     return response()->json([
                         'message' => $cdr->getDescription(),

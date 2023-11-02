@@ -10,7 +10,7 @@
 @endsection
 @section('content')
     <div id="app">
-        <pos-create forma_pago="{{$forma_pago}}" correlativo_factura="{{$correlativo_factura}}" correlativo_boleta="{{$correlativo_boleta}}" empresa="{{$empresa}}"></pos-create>
+        <pos-create  forma_pago="{{$forma_pago}}" correlativo_nota_venta="{{$correlativo_nota_venta}}" correlativo_factura="{{$correlativo_factura}}" correlativo_boleta="{{$correlativo_boleta}}" empresa="{{$empresa}}"></pos-create>
     </div>
 @endsection
 
