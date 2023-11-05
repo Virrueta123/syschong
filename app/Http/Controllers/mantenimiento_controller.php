@@ -149,6 +149,11 @@ class mantenimiento_controller extends Controller
         return view('modules.mantenimiento.index', compact('html'));
     }
 
+    public function sub_mantenimiento($id){
+        dd($id);
+        
+    }
+
     /**
      * Show the form for creating a new resource.
      *

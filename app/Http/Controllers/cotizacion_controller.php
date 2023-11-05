@@ -558,7 +558,7 @@ class cotizacion_controller extends Controller
                         'message' => 'error la boleta no se pudo enviar a sunat',
                         'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
                         'success' => false,
-                        'data' => '',
+                        'data' => encrypt_id($venta->venta_id),
                     ]);
                     exit();
                 }
@@ -584,7 +584,7 @@ class cotizacion_controller extends Controller
                         'message' => $cdr->getDescription(),
                         'error' => '',
                         'success' => true,
-                        'data' => '',
+                        'data' => encrypt_id($venta->venta_id),
                     ]);
 
                     if (count($cdr->getNotes()) > 0) {
@@ -873,7 +873,7 @@ class cotizacion_controller extends Controller
                         'message' => 'error del servidor',
                         'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
                         'success' => false,
-                        'data' => '',
+                        'data' => encrypt_id($venta->venta_id),
                     ]);
                     exit();
                 }
@@ -899,7 +899,7 @@ class cotizacion_controller extends Controller
                         'message' => $cdr->getDescription(),
                         'error' => '',
                         'success' => true,
-                        'data' => '',
+                        'data' => encrypt_id($venta->venta_id),
                     ]);
 
                     if (count($cdr->getNotes()) > 0) {

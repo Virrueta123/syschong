@@ -103,8 +103,7 @@ class compras_controller extends Controller
                 Column::make('fecha_emision')->title('F.emision'),
                 Column::make('forma_pago')->title('Forma de pago'),
                 Column::make('total')->title('Total'),
-                Column::make('is_pago')->title('Pagos'),
-                Column::make('total')->title('Total'),
+                Column::make('is_pago')->title('Pagos'), 
                 Column::computed('action')
                     ->title('Opcion')
                     ->exportable(false)

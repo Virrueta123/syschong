@@ -22,4 +22,9 @@ class caja_chica extends Model
     {
         return $this->hasMany(pagos_ventas::class,"caja_id");
     }
+
+    public function ventas()
+    {
+        return $this->hasMany(ventas::class,"caja_chica_id");
+    }
 }

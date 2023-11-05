@@ -21,7 +21,7 @@
                             <label for="cli_telefono">Buscar Proveedor </label>
 
                             <div class="input-group">
-                                <search-proveedor v-model="proveedor_id">
+                                <search-proveedor id="proveedor_id">
                                 </search-proveedor>
                                 <!-- ******** <crear-cliente select_element="#cliente_select">
                             </crear-cliente> -->
@@ -436,8 +436,7 @@
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
     import "imask";
-    import "bootstrap"
-    import 'gasparesganga-jquery-loading-overlay';
+    import "bootstrap" 
 
     import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
@@ -889,7 +888,7 @@
                     this.send_axios_reponse(
                             "Desear Emitir la compra?",
                             "Si,Emitir la compra", {
-                                proveedor_id:this.proveedor_id, 
+                                proveedor_id:$("#proveedor_id").val(), 
                                 fecha_creacion:this.fecha_creacion,
                                 fecha_vencimiento:this.fecha_vencimiento,
                                 tipo_comprobante:this.tipo_comprobante,

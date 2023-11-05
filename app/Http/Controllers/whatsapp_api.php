@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class whatsapp_api extends Controller
 {
@@ -18,7 +20,7 @@ class whatsapp_api extends Controller
     {
         $client = new Client();
 
-        $url = 'https://graph.facebook.com/v17.0/'.app('empresa')->codigo_telefono().'/messages';
+        $url = 'https://graph.facebook.com/v17.0/' . app('empresa')->codigo_telefono() . '/messages';
 
         $headers = [
             'Authorization' => 'Bearer ' . app('empresa')->token_whatsapps_api(),
@@ -33,7 +35,7 @@ class whatsapp_api extends Controller
                 'name' => 'send_coti',
                 'language' => [
                     'code' => 'es_ES',
-                    "policy"=>"deterministic"
+                    'policy' => 'deterministic',
                 ],
                 'components' => [
                     [
@@ -64,18 +66,18 @@ class whatsapp_api extends Controller
                                 'text' => $this->saludo,
                             ],
                         ],
-                    ] ,
+                    ],
                     [
                         'type' => 'button',
-                        'sub_type'=> 'url',
-                        "index" => "0",
+                        'sub_type' => 'url',
+                        'index' => '0',
                         'parameters' => [
                             [
                                 'type' => 'text',
                                 'text' => $this->link_aprobacion,
                             ],
                         ],
-                    ]     
+                    ],
                 ],
             ],
         ];
@@ -105,6 +107,41 @@ class whatsapp_api extends Controller
     public function create()
     {
         //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handle(Request $request)
+    {
+        try {
+            $verifyToken = "1321658136546965426935dsadsads";
+            $query = $request->query();
+
+            $mode = $query['hub.mode'];
+            $token = $query['hub.verify_token'];
+            $challenge = $query['hub.challenge'];
+
+            if($mode && $token){
+                if($mode == "subscribe" && $token == $verifyToken){
+                    return response($challenge,200)->header('Content-Type','text/plain');
+                } 
+            }
+
+            throw new Exception("invalid request");
+            
+            //code...
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
 
     /**

@@ -49,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
                         'submenu' => [
                             ['name' => 'punto de venta', 'url' => 'pos.create'], 
                             ['name' => 'cajas', 'url' => 'caja.index'], 
+                            ['name' => 'Tabla forma de pago', 'url' => 'forma_pago.index'], 
+                            ['name' => 'crear forma de pago', 'url' => 'forma_pago.create'], 
                         ],
                     ], 
                     [

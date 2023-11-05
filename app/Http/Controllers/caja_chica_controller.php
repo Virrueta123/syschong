@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\caja_chica;
+use App\Models\forma_pago;
 use App\Models\pagos_ventas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,6 +15,15 @@ use Yajra\DataTables\Html\Column;
 
 class caja_chica_controller extends Controller
 {
+     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -172,8 +182,10 @@ class caja_chica_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    {   
+        
+        $show = caja_chica::find(decrypt_id($id));
+        return view("modules.caja.show",compact("show","id")); 
     }
 
     /**

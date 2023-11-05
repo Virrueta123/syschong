@@ -283,9 +283,9 @@
                                                 <th scope="col">Detalle</th>
                                                 <th scope="col">unidad</th>
                                                 <th scope="col">Precio</th>
-                                                <th scope="col">Descuento</th> 
+                                                <th scope="col">Descuento</th>
                                                 <th scope="col">Cantidad</th>
-                                                <th scope="col">Importe</th> 
+                                                <th scope="col">Importe</th>
                                                 <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
                                             </tr>
                                         </thead>
@@ -309,15 +309,15 @@
                                                     {{ detalle . producto . unidad . unidades_nombre }}</td>
 
                                                 <td v-else scope="row">servicio</td>
- 
+
 
                                                 <td scope="row">{{ detalle . Precio }}</td>
-  
+
 
                                                 <td scope="row"> {{ detalle . ValorDescuento }} </td>
 
                                                 <td scope="row">{{ detalle . Cantidad }}</td>
-                                                <td scope="row">{{ detalle . Importe }}</td> 
+                                                <td scope="row">{{ detalle . Importe }}</td>
                                                 <!-- ********
                                                             <td><button type="button" name="" id=""
                                                                     
@@ -447,7 +447,7 @@
                         <form v-if="is_dni" id="form_add_dni_cliente" method="POST" action="#">
                             <dni></dni>
                             <button type="submit" class="btn btn-primary" id="crear_cliente">Actualizar
-                                Ruc</button>
+                                Dni</button>
                         </form>
 
                         <!-- ******** factura electronica ************* -->
@@ -635,14 +635,14 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <input type="text" class="form-control"
-                                                                     v-model="pagos[pg].referencia">
+                                                                    v-model="pagos[pg].referencia">
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
 
                                                                 <input type="text" class="form-control"
-                                                                    :value="pago.monto" 
+                                                                    :value="pago.monto"
                                                                     v-on:keyup="monto_change($event,pg)">
                                                             </div>
                                                         </td>
@@ -765,7 +765,7 @@
                                                         <th scope="col">Descripcion</th>
                                                         <th scope="col">Detalle</th>
                                                         <th scope="col">unidad</th>
-                                                        <th scope="col">Precio</th> 
+                                                        <th scope="col">Precio</th>
                                                         <th scope="col">Cantidad</th>
                                                         <th scope="col">Importe</th>
                                                         <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
@@ -783,7 +783,7 @@
                                                             {{ detalle . producto . unidad . unidades_nombre }}</td>
 
                                                         <td scope="row">servicio</td>
-                                                        <td scope="row">{{ detalle . Precio }}</td> 
+                                                        <td scope="row">{{ detalle . Precio }}</td>
                                                         <td scope="row">{{ detalle . Cantidad }}</td>
                                                         <td scope="row" class="text-right">{{ detalle . Importe }}
                                                         </td>
@@ -792,7 +792,7 @@
                                                     <tr>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row"> </td> 
+                                                        <td scope="row"> </td>
                                                         <td scope="row"> </td>
                                                         <td scope="row" colspan="2">OP.EXONERADAS: </td>
                                                         <td scope="row" class="text-right" colspan="2">
@@ -802,7 +802,7 @@
                                                     <tr>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row"> </td> 
+                                                        <td scope="row"> </td>
                                                         <td scope="row"> </td>
                                                         <td scope="row" colspan="2">TOTAL A PAGAR: </td>
                                                         <td scope="row" class="text-right" colspan="2">
@@ -812,7 +812,7 @@
                                                     <tr>
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row"> </td> 
+                                                        <td scope="row"> </td>
                                                         <th scope="row"> Imagen </th>
                                                         <th scope="row">Método de pago </th>
                                                         <th scope="row">Referencia
@@ -823,7 +823,7 @@
 
                                                     <tr v-for="(pagob, pgb) in pagos_boletas" :key="pgb">
                                                         <td scope="row"> </td>
-                                                        <td scope="row"> </td> 
+                                                        <td scope="row"> </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <button v-if="!pagos_boletas[pgb].url" type="button"
@@ -841,9 +841,10 @@
                                                         </td>
                                                         <td scope="row">
                                                             <div class="form-group">
-                                                                <select class="custom-select" v-on:change="forma_pago_boleta(pgb)">
+                                                                <select class="custom-select"
+                                                                    v-on:change="forma_pago_boleta(pgb)">
 
-                                                                    <option v-for="(f_g, fg) in forma_pago" 
+                                                                    <option v-for="(f_g, fg) in forma_pago"
                                                                         :key="fg"
                                                                         :selected="f_g.forma_pago_id == pagob.forma_pago_id"
                                                                         :value="f_g.forma_pago_id">
@@ -856,14 +857,14 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <input type="text" class="form-control"
-                                                                     v-model="pagos_boletas[pgb].referencia">
+                                                                    v-model="pagos_boletas[pgb].referencia">
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
 
                                                                 <input type="text" class="form-control"
-                                                                    :value="pagob.monto" 
+                                                                    :value="pagob.monto"
                                                                     v-on:keyup="monto_change($event,pgb)">
                                                             </div>
                                                         </td>
@@ -884,14 +885,14 @@
                                                     <tr v-if="is_complete_pago">
                                                         <td scope="row"> </td>
                                                         <td scope="row"> </td>
-                                                        <td scope="row"> </td> 
+                                                        <td scope="row"> </td>
                                                         <td scope="row" colspan="4">
                                                             <button type="button" name=""
                                                                 @click="add_forma_pago_boleta()"
                                                                 style="width: 100%; height: 100%;" id=""
                                                                 class="btn btn-info boton-color"><i class="fa fa-plus"
                                                                     aria-hidden="true"></i></button>
-                                                        </td> 
+                                                        </td>
                                                     </tr>
 
 
@@ -975,6 +976,25 @@
 
 
 
+        <CModal size="xl" :visible="print_comprobante" @close="() => { print_comprobante = false }">
+
+            <CModalBody>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Imprimir comprobante</h2>
+                        <iframe :src="rutaPDF" width="100%" height="600px"></iframe>
+
+                    </div>
+
+                </div>
+
+            </CModalBody>
+        </CModal>
+
+
+
 
     </div>
 
@@ -1024,7 +1044,7 @@
     import es from '@uppy/locales/src/es_ES';
     import ImageEditor from '@uppy/image-editor';
     import '@uppy/image-editor/dist/style.min.css';
-   
+
 
     import "@uppy/core/dist/style.css";
     import "@uppy/dashboard/dist/style.css";
@@ -1049,6 +1069,8 @@
         },
         data() {
             return {
+                print_comprobante: false,
+                rutaPDF: false,
                 forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
                 cotizacion: JSON.parse(this.$attrs.cotizacion) || '',
                 empresa: JSON.parse(this.$attrs.empresa) || '',
@@ -1107,7 +1129,7 @@
                 referencia: "",
                 url: false
             });
- 
+
             this.pagos.push({
                 monto: this.cotizacion.total,
                 forma_pago_id: 1,
@@ -1115,7 +1137,7 @@
                 url: false
             });
 
-            
+
 
             this.pago_moto_total()
             this.pago_moto_total_boleta()
@@ -1181,7 +1203,7 @@
         },
         methods: {
             /* -- ******** change forma de pago  ************* -- */
-            forma_pago_boleta(index){
+            forma_pago_boleta(index) {
                 console.log(event)
                 this.pagos_boletas[index].forma_pago_id = event.target.value;
             },
@@ -1273,7 +1295,7 @@
                 console.log(this.index_pago);
                 console.log(this.uppy);
                 this.uppy.getFiles().forEach((file) => {
- 
+
                     const reader = new FileReader();
 
                     reader.onload = () => {
@@ -1289,7 +1311,7 @@
                             this.pagos_boletas[this.index_pago_boleta].src = file.preview;
                             this.pagos_boletas[this.index_pago_boleta].url = base64Data;
                         }
-  
+
                     };
 
                     reader.readAsDataURL(file.data);
@@ -1408,13 +1430,13 @@
             ticket() {
 
             },
-            /* -- ******** crear boelta ************* -- */ 
-            crear_boleta(){ 
+            /* -- ******** crear boelta ************* -- */
+            crear_boleta() {
                 this.send_axios_reponse(
                         "Desear Emitir esta Boleta?",
                         "Si,Emitir la Boleta", {
                             serie: "B001",
-                            fecha_creacion_boleta: this.fecha_creacion_boleta, 
+                            fecha_creacion_boleta: this.fecha_creacion_boleta,
                             correlativo: this.correlativo_boleta,
                             cotizacion_id: this.cotizacion.cotizacion_id,
                             pagos: this.pagos_boletas,
@@ -1424,21 +1446,38 @@
                     ).then((result) => {
                         console.log(result);
                         if (result.success) {
-                            // La solicitud se completó exitosamente
+
                             Swal.fire({
-                                icon: "success",
-                                title: "factura emitida correctamente",
+                                title: 'boleta emitida correctamente',
                                 text: result.message,
-                                footer: "-------",
-                            });
-                            $('#smartwizard').smartWizard('next');
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'ver el comprobante'
+                            }).then((result_swal) => {
+                                $('#smartwizard').smartWizard('next');
+                                this.print_comprobante = true;
+                                this.rutaPDF = "/ventas_pdf/" + result.data;
+
+                            })
+                            
                         } else {
                             Swal.fire({
-                                icon: "warning",
-                                title: "Error al enviar la factura",
+                                title: 'boleta emitida correctamente',
                                 text: result.message,
-                                footer: "-------",
-                            });
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'ver el comprobante'
+                            }).then((result_swal) => {
+                                $('#smartwizard').smartWizard('next');
+                                this.print_comprobante = true;
+                                this.rutaPDF = "/ventas_pdf/" + result.data;
+
+                            })
+                             
                         }
                     })
                     .catch((error) => {
@@ -1446,7 +1485,7 @@
                         // El usuario canceló la operación o hubo un error
                         Swal.fire({
                             icon: "error",
-                            title: "Error al crear la factura",
+                            title: "Error al crear la boleta",
                             text: "recarga la pagina",
                             footer: "-------",
                         });
@@ -1454,8 +1493,8 @@
             },
             /* -- ******** crear factura ************* -- */
             crear_factura() {
-                console.log(this.pagos);
-                this.send_axios(
+
+                this.send_axios_reponse(
                         "Desear Emitir esta Factura?",
                         "Si,Emitir la factura", {
                             serie: "F001",
@@ -1470,23 +1509,41 @@
                     ).then((result) => {
                         if (result) {
                             // La solicitud se completó exitosamente
+
                             Swal.fire({
-                                icon: "success",
-                                title: "factura emitida correctamente",
-                                text: "se correctamente el mensaje de whatsapp",
-                                footer: "-------",
-                            });
-                            $('#smartwizard').smartWizard('next');
+                                title: 'factura emitida correctamente',
+                                text: result.message,
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'ver el comprobante'
+                            }).then((result_swal) => {
+                                $('#smartwizard').smartWizard('next');
+                                this.print_comprobante = true;
+                                this.rutaPDF = "/ventas_pdf/" + result.data;
+
+                            })
                         } else {
+
                             Swal.fire({
-                                icon: "error",
-                                title: "Error al crear la factura",
-                                text: "recarga la pagina",
-                                footer: "-------",
-                            });
+                                title: 'Error al crear la factura',
+                                text: result.message,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'ver el comprobante'
+                            }).then((result_swal) => {
+                                $('#smartwizard').smartWizard('next');
+                                this.print_comprobante = true;
+                                this.rutaPDF = "/ventas_pdf/" + result.data;
+
+                            })
                         }
                     })
                     .catch((error) => {
+                        console.log(error)
                         // El usuario canceló la operación o hubo un error
                         Swal.fire({
                             icon: "error",
@@ -1495,6 +1552,9 @@
                             footer: "-------",
                         });
                     });
+
+
+
             },
             /* -- *********************** -- */
             factura() {
@@ -1583,7 +1643,7 @@
 
             },
             enviado_whatsapp() {
-                this.sendUrl("https://www.google.com","+51"+this.cotizacion.inventario.moto.cliente.cli_telefono)
+                this.sendUrl("https://www.google.com", "+51" + this.cotizacion.inventario.moto.cliente.cli_telefono)
             },
             enviado() {
 
@@ -1662,6 +1722,8 @@
                                         text: response.data.message,
                                         footer: "-------",
                                     });
+
+                                    this.tiene_ruc = true;
 
                                 } else {
                                     Swal.fire({

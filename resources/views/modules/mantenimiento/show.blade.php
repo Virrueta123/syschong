@@ -131,7 +131,7 @@
     <div class="section-header">
         <h2 class="section-title">Fecha de del mantenimiento {{ \Carbon\Carbon::parse($get->created_at)->format('d/m/Y') }}</h2>
         <div class="section-header-breadcrumb">
-            <a href="{{ route('activaciones.cortesia', $id) }}" class="btn btn-primary boton-color m-2"><i
+            <a href="{{ route('sub_mantenimiento', $id) }}" class="btn btn-primary boton-color m-2"><i
                     class="fa fa-plus"> </i> Agregar otro mantenimiento</a>
         </div>
     </div>

@@ -66,6 +66,10 @@ include 'web/compras.php';
 
 include 'web/ventas.php';
 
+include 'web/reportes.php';
+
+include 'web/forma_pago.php';
+
 
 /* *********************** */
 
@@ -117,6 +121,8 @@ Route::resource('users', App\Http\Controllers\user_controller::class);
 Route::resource('ventas', App\Http\Controllers\ventas_controller::class);
 
 Route::resource('caja', App\Http\Controllers\caja_chica_controller::class);
+
+Route::resource('forma_pago', App\Http\Controllers\forma_pago_controller::class);
 
 include 'web/empresa.php';
 

@@ -13,4 +13,12 @@ class pagos_ventas extends Model
     public $primaryKey = 'pagos_ventas_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function ventas(){
+        return $this->belongsTo(ventas::class, 'ventas_id'); 
+    }
+    public function forma_pago(){
+        return $this->belongsTo(forma_pago::class, 'forma_pago_id'); 
+    
+    }
 }

@@ -37,7 +37,15 @@ class ventas_controller extends Controller
                             break;
 
                         case 'BM':
-                            return ' Boleta Mantenimiento';
+                            return 'Boleta Mantenimiento';
+                            break;
+
+                        case 'FV':
+                            return 'Factura';
+                            break;
+
+                        case 'BV':
+                            return 'Boleta';
                             break;
                     }
                 })
@@ -194,7 +202,7 @@ class ventas_controller extends Controller
         ])->find(decrypt_id($id));
 
         if ($get) {
-            return view('modules.ventas.show', compact('get', 'cuentas',"id"));
+            return view('modules.ventas.show', compact('get', 'cuentas', 'id'));
         } else {
             return view('errors.404');
         }
@@ -286,7 +294,7 @@ class ventas_controller extends Controller
         }
     }
     /* *********************** */
-    public function ventas_pdf( $id)
+    public function ventas_pdf($id)
     {
         $cuentas = cuentas::where('estado', 'A')->get();
 

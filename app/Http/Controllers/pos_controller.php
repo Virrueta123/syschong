@@ -194,7 +194,7 @@ class pos_controller extends Controller
                         foreach ($Datax['pagos'] as $pago) {
                             if ($pago['url'] != false) {
                                 $pagosVentas = new pagos_ventas();
-                                $pagosVentas->ventas_id = $venta->ventas_id;
+                                $pagosVentas->ventas_id = $venta->venta_id;
                                 $pagosVentas->fecha_pago = Carbon::now();
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
@@ -220,7 +220,7 @@ class pos_controller extends Controller
                                 /* *********************** */
                             } else {
                                 $pagosVentas = new pagos_ventas();
-                                $pagosVentas->ventas_id = $venta->ventas_id;
+                                $pagosVentas->ventas_id = $venta->venta_id;
                                 $pagosVentas->fecha_pago = Carbon::now();
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
@@ -322,7 +322,7 @@ class pos_controller extends Controller
                                 'message' => 'error del servidor',
                                 'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
                                 'success' => false,
-                                'data' => '',
+                                'data' => encrypt_id($venta->venta_id),
                             ]);
                             exit();
                         }
@@ -376,6 +376,8 @@ class pos_controller extends Controller
 
                     $cliente = cliente::find($request->input('cli_id'));
 
+                     
+
                     //firma sunat
                     $firma = new firma_sunat_controller();
 
@@ -393,14 +395,14 @@ class pos_controller extends Controller
                     $venta->setValorVenta = $Datax['total']; //importe total;
                     $venta->SubTotal = $Datax['total']; //importe total
                     $venta->MtoImpVenta = $Datax['total']; //importe total
-                    $venta->Dni = $cliente->cliente->cli_dni;
+                    $venta->Dni = $cliente->cli_dni;
                     $venta->Nombre = $cliente->cli_nombre;
                     $venta->Apellido = $cliente->cli_apellido;
                     $venta->ruc = 'no tiene';
                     $venta->departamento = 'no tiene';
                     $venta->distrito = 'no tiene';
                     $venta->provincia = 'no tiene';
-                    $venta->direccion = $cliente->cliente->cli_direccion;
+                    $venta->direccion = $cliente->cli_direccion;
                     $venta->razon_social = 'no tiene';
                     $venta->fecha_creacion = Carbon::now();
                     $venta->fecha_vencimiento = Carbon::now();
@@ -440,7 +442,7 @@ class pos_controller extends Controller
 
                     if ($created_venta) {
                         /* *********************** */
-
+                       
                         foreach ($Datax['pagos'] as $pago) {
                             if ($pago['url'] != false) {
                                 $pagosVentas = new pagos_ventas();
@@ -470,7 +472,7 @@ class pos_controller extends Controller
                                 /* *********************** */
                             } else {
                                 $pagosVentas = new pagos_ventas();
-                                $pagosVentas->ventas_id = $venta->ventas_id;
+                                $pagosVentas->ventas_id = $venta->venta_id;
                                 $pagosVentas->fecha_pago = Carbon::now();
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
@@ -572,7 +574,7 @@ class pos_controller extends Controller
                                 'message' => 'error la boleta no se pudo enviar a sunat',
                                 'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
                                 'success' => false,
-                                'data' => '',
+                                'data' => encrypt_id($venta->venta_id),
                             ]);
                             exit();
                         }

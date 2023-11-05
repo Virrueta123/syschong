@@ -585,7 +585,7 @@
 
                 if (this.pagos.length != 0) {
                     const importe_pagos = this.pagos.reduce((acumulador, res) => {
-                        return acumulador + res.monto;
+                        return acumulador + parseFloat(res.monto);
                     }, 0);
                     this.is_complete_pago = true;
                     console.log(this.is_complete_pago);
@@ -708,6 +708,7 @@
 
                         if ($("#cliente_select").val() !== null) {
 
+                            console.log("cliente " + $("#cliente_select").val())
 
                             if (this.repuestos.length != 0) {
                                 this.send_axios_reponse(
@@ -756,7 +757,7 @@
                         }
  
                     } else {
-                        Swal.fire('Los pagos no coinciden con el total de la boleta')
+                        Swal.fire('Los pagos no coinciden con el total del comprobante')
                     }
                 } else {
                     Swal.fire('la forma de pagos son iguales elije forma de pagos diferentes')

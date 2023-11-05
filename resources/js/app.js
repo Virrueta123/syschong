@@ -29,6 +29,9 @@ app.component('search-cliente_pos', require('./components/search_cliente_pos.vue
 app.component('crear-cliente_pos', require('./components/crear_cliente_pos.vue').default);
 
 
+app.component('caja-show', require('./components/caja/show_caja.vue').default);
+
+
 /* -- ******** cotizacion ************* -- */
 app.component('cotizacion-cliente-show',require('./components/cotizacion/cotizacion_cliente_show.vue').default);
 app.component('cotizacion-mantenimiento', require('./components/cotizacion/cotizacion_mantenimiento.vue').default);
