@@ -277,7 +277,7 @@
                                                     </td>
                                                     <td scope="row">
                                                         <div class="form-group">
-                                                            <select class="custom-select">
+                                                            <select class="custom-select" v-on:change="forma_pago_change(pg,$event)"> 
 
                                                                 <option v-for="(f_g, fg) in forma_pago"
                                                                     :key="fg"
@@ -825,6 +825,10 @@
                 }
 
                 console.log(this.correlativo_nota_venta)
+            },
+            forma_pago_change(index,value){
+                console.log(value)
+                this.pagos[index].forma_pago_id = value.target.value;
             },
             /* -- *********************** -- */
             eliminar_producto(identificador) {

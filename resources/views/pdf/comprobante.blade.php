@@ -302,7 +302,7 @@
                     <tr>
                         <td> S/. {{ $get->SubTotal }}</td>
                         <td> S/. 0.00</td>
-                        <td> S/. {{ $get->total }}</td>
+                        <td> S/. {{ $get->SubTotal }}</td>
                     </tr>
 
                 </tbody>
