@@ -1,8 +1,23 @@
 <template>
-    <FullCalendar :options="calendarOptions" />
+    <div class="card ">
+        <div class="card-header">
+            <Button class="p-2" label="Activaciones" severity="danger"  />
+            <hr>
+            <Button class="p-2" label="Cortesias"  />
+            <hr>
+            <Button class="p-2" label="Inicio Mantenimiento" severity="secondary"  />
+            <hr>
+            <Button class="p-2" label="Mantenimientos" severity="success"  /> 
+        </div>
+        <div class="card-body">
+            <FullCalendar :options="calendarOptions" />
+        </div>
+    </div>
+
 </template>
 
 <script>
+    import Button from 'primevue/button';
     import FullCalendar from '@fullcalendar/vue3'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
@@ -10,7 +25,8 @@
     import axios from 'axios';
     export default {
         components: {
-            FullCalendar // make the <FullCalendar> tag available
+            FullCalendar,
+            Button // make the <FullCalendar> tag available
         },
         data() {
             return {
@@ -23,7 +39,7 @@
                         right: 'dayGridMonth,dayGridWeek,dayGridDay' // user can switch between the two
                     },
                     initialView: 'dayGridWeek',
-                    navLinks:true
+                    navLinks: true
                 }
             }
         },
@@ -31,9 +47,9 @@
             const todayButton = document.querySelector('.fc-today-button');
             if (todayButton) {
                 todayButton.style.backgroundColor =
-                'red'; // Cambia el color a azul (personaliza según tus necesidades)
+                    'red'; // Cambia el color a azul (personaliza según tus necesidades)
                 todayButton.style.color =
-                'white'; // Cambia el color del texto a blanco (personaliza según tus necesidades)
+                    'white'; // Cambia el color del texto a blanco (personaliza según tus necesidades)
             }
             const headers = {
                 "Content-Type": "application/json",

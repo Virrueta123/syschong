@@ -42,8 +42,9 @@ class datatables_controller extends Controller
             'tienda',
         ])
 
-            ->whereMonth('created_at', '!=', Carbon::now())
-            ->where('activaciones.tienda_id', decrypt_id($id))
+            ->where('is_cobro', 'Y')
+            ->where('activado_taller', 'Y')
+            ->where("tienda_cobrar",decrypt_id($id))
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -97,7 +98,7 @@ class datatables_controller extends Controller
                 ->where('caja_chica_id', decrypt_id($id))
                 ->orderBy('created_at', 'asc')
                 ->get(),
-             ) 
+        )
             ->addColumn('action', static function ($Data) {
                 $caja_chica_id = encrypt_id($Data->caja_chica_id);
                 return view('buttons.caja', ['caja_chica_id' => $caja_chica_id]);
@@ -252,13 +253,12 @@ class datatables_controller extends Controller
                 ]);
             },
             'vendedor',
-            'tienda' => function ($query) use ($id) {
-                return $query->where('tienda_id', decrypt_id($id));
-            },
+            'tienda' 
         ])
 
-            ->whereMonth('created_at', now()->month)
-            ->where('activaciones.tienda_id', decrypt_id($id))
+            ->where('is_cobro', 'N')
+            ->where('activado_taller', 'Y')
+            ->where("tienda_cobrar",decrypt_id($id)) 
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -313,6 +313,7 @@ class datatables_controller extends Controller
      */
     public function tablas_cortesias_actual_por_tienda($id)
     {
+
         $cortesias = cortesias_activacion::with([
             'activaciones' => function ($query) use ($id) {
                 return $query->with([
@@ -330,14 +331,36 @@ class datatables_controller extends Controller
                 ]);
             },
         ])
+            ->where('is_cobro', 'N')
+            ->where('tipo', 'C')
+            ->orderBy('created_at', 'desc')
+            ->get(); 
+        $cortesias = cortesias_activacion::with([
+            'activaciones' => function ($query) use ($id) {
+                return $query->with([
+                    'tienda' ,
+                    'moto' => function ($query) {
+                        return $query->with([
+                            'cliente',
+                            'modelo' => function ($query) {
+                                return $query->with(['marca']);
+                            },
+                        ]);
+                    },
+                ]);
+            },
+        ])
 
-            ->whereMonth('created_at', now()->month)
+            ->where('is_cobro', 'N')
+            ->where("tienda_cobrar",decrypt_id($id))
+            ->where('tipo', 'C')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($cortesias)
             ->addIndexColumn()
             ->addColumn('cliente', function ($Data) {
+       
                 if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
                     return $Data->activaciones->moto->cliente->cli_razon_social;
                 } else {
@@ -345,6 +368,7 @@ class datatables_controller extends Controller
                 }
             })
             ->addColumn('dnioruc', function ($Data) {
+                 
                 if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
                     return $Data->activaciones->moto->cliente->cli_ruc;
                 } else {
@@ -352,12 +376,15 @@ class datatables_controller extends Controller
                 }
             })
             ->addColumn('marca', function ($Data) {
-                return $Data->activacione->moto->modelo->marca->marca_nombre;
+                 
+                return $Data->activaciones->moto->modelo->marca->marca_nombre;
             })
             ->addColumn('modelo', function ($Data) {
+                 
                 return $Data->activaciones->moto->modelo->modelo_nombre;
             })
             ->addColumn('motor', function ($Data) {
+                 
                 return $Data->activaciones->moto->mtx_motor;
             })
 

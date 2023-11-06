@@ -1,6 +1,6 @@
 <template>
     <div id="loading">
-        <table ref="miTabla" class="display" style="width:100%">
+        <table ref="miTabla" class="table table-bordered table-striped table-hover table-sm display" style="width:100%">
             <thead>
                 <tr>
                     <th>
@@ -141,16 +141,16 @@
                         name: 'motor'
                     },
                     {
-                        data: 'cortesias_activacion.moto.mtx_vin',
-                        name: 'cortesias_activacion.moto.mtx_vin'
+                        data: 'activaciones.moto.mtx_vin',
+                        name: 'activaciones.moto.mtx_vin'
                     },
                     {
-                        data: 'cortesias_activacion.moto.mtx_chasis',
-                        name: 'cortesias_activacion.moto.mtx_chasis'
+                        data: 'activaciones.moto.mtx_chasis',
+                        name: 'activaciones.moto.mtx_chasis'
                     },
                     {
-                        data: 'cortesias_activacion.moto.mtx_color',
-                        name: 'cortesias_activacion.moto.mtx_color'
+                        data: 'activaciones.moto.mtx_color',
+                        name: 'activaciones.moto.mtx_color'
                     },
                     {
                         data: 'precio',

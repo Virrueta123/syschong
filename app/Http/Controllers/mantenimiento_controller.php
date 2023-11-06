@@ -150,8 +150,23 @@ class mantenimiento_controller extends Controller
     }
 
     public function sub_mantenimiento($id){
-        dd($id);
-        
+        $activaciones_id = decrypt_id($id);
+        $accesorios = accesorios::all();
+        $autorizaciones = autorizaciones::all();
+        $get = activaciones::with([
+            'moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            },
+            'cortesias',
+            'vendedor',
+            'tienda',
+        ])->find($activaciones_id);
+        return view('modules.mantenimiento.create_sub', compact('accesorios', 'autorizaciones','get'));
     }
 
     /**

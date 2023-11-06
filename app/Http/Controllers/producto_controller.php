@@ -122,7 +122,7 @@ class producto_controller extends Controller
                 Column::make('prod_nombre')->title('Nombre'),
                 Column::make('prod_descripcion')->title('descripcion'),
                 Column::make('prod_precio_venta')->title('precio venta'),
-                Column::make('prod_stock_inicial')->title('cantidad'),
+                Column::make('stock')->title('cantidad'),
                 Column::computed('calidad')->title('Calidad'),
                 Column::make('unidad.unidades_nombre')->title('unidad'),
                 Column::make('categoria.categoria_nombre')->title('categoria'),
@@ -307,7 +307,9 @@ class producto_controller extends Controller
             'marca',
             'zona',
             'imagen',
+            "usuario"
         ])->find(decrypt_id($id));
+ 
 
         if ($get) {
             return view('modules.productos.show', ['get' => $get, 'id' => $id]);

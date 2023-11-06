@@ -113,7 +113,7 @@ class activaciones_controller extends Controller
     {
         $datax = $request->all();
         // Crear una nueva instancia del modelo
-        $activaciones = new activaciones();
+        $activaciones = new activaciones(); 
 
         // Establecer los valores de los campos
         $activaciones->tienda_id = $datax['tienda_id'];
@@ -121,6 +121,9 @@ class activaciones_controller extends Controller
         $activaciones->moto_id = $datax['moto_id'];
         $activaciones->tienda_cobrar = $datax['tienda_cobrar'];
         $activaciones->precio = $datax['precio'];
+        $activaciones->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
+        $activaciones->dias = $datax['dias'];
+        $activaciones->date_aviso = Carbon::now()->addDays($datax['dias']);
         $activaciones->user_id = auth()->user()->id; 
 
         // Guardar el registro en la base de datos
@@ -216,6 +219,11 @@ class activaciones_controller extends Controller
         $cortesia->km = $datax['km'];
         $cortesia->precio = $datax['precio'];
         $cortesia->activaciones_id = decrypt_id($id);
+        $cortesia->user_id = auth()->user()->id; 
+        $cortesia->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
+        $cortesia->dias = $datax['dias'];
+        $cortesia->date_aviso = Carbon::now()->addDays($datax['dias']);
+        $cortesia->tienda_cobrar = $datax['tienda_cobrar'];
 
         $numero_corterisa = cortesias_activacion::where('activaciones_id', decrypt_id($id))
             ->select('numero_corterisa')

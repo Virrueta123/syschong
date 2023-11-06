@@ -66,13 +66,17 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="prod_codigo">Tienda donde se cobrara esta cortesia</label>
+                                <label for="prod_codigo">Tienda donde se cobrara esta activacion</label>
                                 <div class="input-group">
                                     <search-tienda-cobrar></search-tienda-cobrar> 
                                 </div>
                             </div> 
+                            
                         </div>
 
+                        <div id="app">
+                            <is-dias></is-dias>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer">

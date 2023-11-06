@@ -197,8 +197,7 @@
                     },
                     inventario_moto_obs_cliente: {
                         required: true,
-                    }
-
+                    } 
                 },
                 submitHandler: function(form) {
                     var aceite_id = $("#aceite_id").val();

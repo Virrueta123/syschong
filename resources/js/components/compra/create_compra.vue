@@ -78,8 +78,8 @@
                                 <h1>Informacion de los respuestos</h1>
                                 <div class="section-header-breadcrumb">
 
-                                    <div class="form-group col-8">
-                                        <label>Actualizar precio de compra</label>
+                                    <div v-if="this.repuestos.length!=0" class="form-group col-8">
+                                        <label>Poner pagos a la compra</label>
                                         <div class="p-inputgroup flex-1">
                                             <span class="p-inputgroup-addon">
                                                 <Checkbox v-model="is_pago" name="is_pago" :binary="true" />
@@ -231,7 +231,7 @@
                                             </td>
                                             <td scope="row">
                                                 <div class="form-group">
-                                                    <select class="custom-select" v-on:change="forma_pago(pgb)">
+                                                    <select class="custom-select" v-on:change="forma_pago_change(pgb,$event)">
 
                                                         <option v-for="(f_g, fg) in forma_pago" :key="fg"
                                                             :selected="f_g.forma_pago_id == pagob.forma_pago_id"
@@ -436,7 +436,7 @@
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
     import "imask";
-    import "bootstrap" 
+    import "bootstrap"
 
     import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
@@ -533,18 +533,41 @@
                 pagos_boletas: [],
                 is_pago: false,
                 index_pago: 0,
-                tipo_comprobante:"F"
+                tipo_comprobante: "F",
+                igualdad_forma_de_pago : false
             }
         },
         computed: {
             sumar_total() {
                 if (this.repuestos.length != 0) {
                     const importeTotal = this.repuestos.reduce((acumulador, res) => {
-                        return acumulador + res.Importe;
+                        return acumulador + parseFloat(res.Importe);
                     }, 0);
                     return importeTotal;
 
                 } else {
+                    return 0;
+                }
+            },
+            sumar_pagos() {
+
+                if (this.pagos.length != 0) {
+                    const importe_pagos = this.pagos.reduce((acumulador, res) => {
+                        return acumulador + parseFloat(res.monto);
+                    }, 0);
+                    this.is_complete_pago = true;
+                    console.log(this.is_complete_pago);
+
+                    for (let i = 1; i < this.pagos.length; i++) {
+                        if (this.pagos[i].forma_pago_id == this.pagos[0].forma_pago_id) {
+                            this.igualdad_forma_de_pago = true;
+                            break; // Si se encuentra uno diferente, no es necesario seguir buscando
+                        }
+                    }
+
+                    return importe_pagos;
+                } else {
+                    this.is_complete_pago = false;
                     return 0;
                 }
             },
@@ -584,6 +607,10 @@
                     Swal.fire('al menos tiene que haber un metodo de pago!')
                 }
 
+            },
+            forma_pago_change(index,value){
+                console.log(value)
+                this.pagos[index].forma_pago_id = value.target.value;
             },
             addImage(index) {
                 console.log(index)
@@ -697,11 +724,11 @@
                         $(this.$refs.serie).val("F001")
                         break;
                     case "B":
-                    this.tipo_comprobante = "B";
+                        this.tipo_comprobante = "B";
                         $(this.$refs.serie).val("B001")
                         break;
                     case "N":
-                    this.tipo_comprobante = "N";
+                        this.tipo_comprobante = "N";
                         $(this.$refs.serie).val("NV01")
                         break;
                 }
@@ -779,8 +806,8 @@
                                 is_precio_compra: this.is_precio_compra,
                                 Importe: this.cantidad * this.precio_compra,
                             })
-  
-                            if (this.repuestos.length == 1) { 
+
+                            if (this.repuestos.length == 1) {
                                 this.pagos.push({
                                     monto: this.sumar_total,
                                     forma_pago_id: 1,
@@ -845,7 +872,7 @@
                         return elemento.prod_id == this
                             .prod_id; // Supongo que prod_id es un identificador único
                     });
- 
+
                     if (elementoExiste) {
                         Swal.fire({
                             icon: "info",
@@ -883,21 +910,23 @@
                         required: true,
                     }
                 },
-                submitHandler: function(form) { 
-
+                submitHandler: function(form) {
+                  if (this.igualdad_forma_de_pago) {
+                    if (this.sumar_pagos == this.sumar_total) {
+                        if (this.repuestos.length != 0) {
                     this.send_axios_reponse(
                             "Desear Emitir la compra?",
                             "Si,Emitir la compra", {
-                                proveedor_id:$("#proveedor_id").val(), 
-                                fecha_creacion:this.fecha_creacion,
-                                fecha_vencimiento:this.fecha_vencimiento,
-                                tipo_comprobante:this.tipo_comprobante,
-                                serie:this.serie,
-                                correlativo:this.correlativo,
+                                proveedor_id: $("#proveedor_id").val(),
+                                fecha_creacion: this.fecha_creacion,
+                                fecha_vencimiento: this.fecha_vencimiento,
+                                tipo_comprobante: this.tipo_comprobante,
+                                serie: this.serie,
+                                correlativo: this.correlativo,
                                 pagos: this.pagos,
                                 total: this.sumar_total,
                                 repuestos: this.repuestos,
-                                is_pago:this.is_pago
+                                is_pago: this.is_pago
                             },
                             "/emitir_compra"
                         ).then((result) => {
@@ -919,11 +948,23 @@
                             // El usuario canceló la operación o hubo un error
                             Swal.fire({
                                 icon: "error",
-                                title: "Error al crear la factura",
+                                title: "Error al crear la compra",
                                 text: "recarga la pagina",
                                 footer: "-------",
                             });
                         });
+                    } else {
+                                Swal.fire('tiene que haber productos en la venta para poder emitir el comprobante')
+                            }
+  
+                    } else {
+                        Swal.fire('Los pagos no coinciden con el total del comprobante')
+                    }
+                } else {
+                    Swal.fire('la forma de pagos son iguales elije forma de pagos diferentes')
+                }
+
+                    
 
                     return false;
                 }.bind(this)

@@ -8,7 +8,7 @@ use App\Models\cortesias_activacion;
 use App\Models\producto;
 use App\Models\tiendas;
 use Carbon\Carbon;
- 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -113,8 +113,7 @@ class tiendas_controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id )
-    
+    public function show($id)
     {
         
 
@@ -128,10 +127,33 @@ class tiendas_controller extends Controller
             },
         ])->find(decrypt_id($id));
 
-       
+        $get = tiendas::with([
+            'precios' => function ($query) {
+                $query->with([
+                    'modelo' => function ($query) {
+                        $query->with(['marca']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
 
-        return view('modules.tiendas.show', compact( 'get', 'id'));
- 
+        $activaciones = activaciones::where('is_cobro', 'N')
+            ->where('activado_taller', 'Y')
+            ->where('activaciones.tienda_cobrar', decrypt_id($id))
+            ->get();
+
+        $activaciones_count = count($activaciones);
+        $activaciones_cobro = $activaciones->sum('precio');
+
+        $cortesias = cortesias_activacion::where('is_cobro', 'N')
+            ->where('tipo', 'C')
+            ->where('tienda_cobrar', decrypt_id($id))
+            ->get();
+
+        $cortesias_count = count($cortesias);
+        $cortesias_cobro = $cortesias->sum('precio');
+
+        return view('modules.tiendas.show', compact('get', 'id', 'activaciones_count', 'activaciones_cobro', 'cortesias_count', 'cortesias_cobro'));
     }
 
     /**
@@ -184,5 +206,10 @@ class tiendas_controller extends Controller
             ->limit(9)
             ->get();
         echo json_encode($tiendas);
+    }
+
+    public function factura($id)
+    {
+        dd($id);
     }
 }

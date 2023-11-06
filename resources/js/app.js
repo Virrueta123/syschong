@@ -111,6 +111,7 @@ app.component('crear-categoria-producto', require('./components/categoria_produc
 /* -- *********************** -- */
 
 /* -- ******** mantenimiento ************* -- */
+app.component('mantenimiento-add-sub', require('./components/mantenimiento/mantenimiento_add_sub.vue').default);
 app.component('mantenimiento-add', require('./components/mantenimiento/mantenimiento_add.vue').default);
 app.component('mantenimiento-accesorios', require('./components/mantenimiento/mantenimiento_accesorios.vue').default);
 app.component('mantenimiento-autorizaciones', require('./components/mantenimiento/mantenimientoAutorizaciones.vue').default);
@@ -151,7 +152,7 @@ app.component('tablas-activaciones-actual-por-tienda', require('./components/tab
 app.component('tablas-cortesias-actual-por-tienda', require('./components/tablas/tablas_cortesias_actual_por_tienda.vue').default);
 /* -- *********************** -- */
 
-
+app.component('is-dias', require('./components/complementos/is_dias.vue').default);
 
 
 app.mount('#app');

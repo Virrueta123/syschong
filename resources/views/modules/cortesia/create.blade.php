@@ -54,7 +54,20 @@
                                 </div>
                             </div>
 
+                            
+                                <div class="form-group col-md-6">
+                                    <label for="prod_codigo">Tienda donde se cobrara esta cortesia</label>
+                                    <div class="input-group">
+                                        <search-tienda-cobrar></search-tienda-cobrar> 
+                                    </div>
+                                </div> 
+                            
+                               
                         </div>
+                        <div id="app">
+                            <is-dias></is-dias>
+                        </div>
+
 
                     </div>
                 </div>
@@ -67,8 +80,7 @@
 @endsection
 
 @section('js')
-    <script> 
-
+    <script>  
         /* -- ******** validation  ************* -- */
 
         $("#form_cortesia").validate({
@@ -79,6 +91,9 @@
                 precio: { 
                     required: true,
                   required: true,
+                }, 
+                tienda_cobrar:{
+                    required:true
                 }
             },
             submitHandler: function(form) {

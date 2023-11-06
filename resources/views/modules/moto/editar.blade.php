@@ -109,7 +109,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="mtx_color">Color</label>
-                                <input type="text" class="form-control" name="mtx_color" id="mtx_color">
+                                <input type="text" class="form-control" value="{{$show->mtx_color}}" name="mtx_color" id="mtx_color">
                             </div> 
                         </div>
                     </div>

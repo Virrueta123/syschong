@@ -31,7 +31,7 @@ class firma_sunat_controller extends Controller
         $see = new See();
         $see->setCertificate(file_get_contents('keys/certificate.pem'));
         $see->setService(SunatEndpoints::FE_PRODUCCION);
-        $see->setClaveSOL('10464579481', 'LEXVIRRU', 'Sicope456123');
+        $see->setClaveSOL('10010667971', 'JUANCARL', 'Juanc1234');
 
         return $see;
     }

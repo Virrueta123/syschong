@@ -53,7 +53,7 @@
 
                         <tr>
                             <td>Stock Actual:</td>
-                            <td>{{ $get->prod_stock_inicial }}</td>
+                            <td>{{ $get->stock }}</td>
                         </tr>
 
                         <tr>

@@ -599,7 +599,7 @@
             sumar_total() {
                 if (this.repuestos.length != 0) {
                     const importeTotal = this.repuestos.reduce((acumulador, res) => {
-                        return acumulador + res.Importe;
+                        return acumulador + parseFloat(res.Importe);
                     }, 0);
                     this.is_complete_pago = true;
                     this.pagos[0].monto = importeTotal;

@@ -1,6 +1,6 @@
 <template>
     <div id="loading">
-        <table ref="miTabla" class="display" style="width:100%">
+        <table ref="miTabla" class="table table-bordered table-striped table-hover table-sm display" style="width:100%">
             <thead>
                 <tr>
                     <th>

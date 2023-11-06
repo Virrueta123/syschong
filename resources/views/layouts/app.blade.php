@@ -77,8 +77,7 @@
                     </ul>
                     <div class="search-element">
                         <a href="{{ route('pos.create') }}" class="btn btn-icon btn-light"><i class="fa fa-plus"></i>
-                            POS</a>
-                        <a href="#" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> NC</a>
+                            POS</a> 
                         <a href="{{ route('empresa.edit') }}" class="btn btn-icon btn-light"><i class="fas fa-plus"></i> ME</a>
                         <a href="{{ route('cotizacion.index') }}" class="btn btn-icon btn-light"><i class="fa fa-file-invoice"></i></a>
                         <a href="{{ route('calendario.index') }}" class="btn btn-icon btn-light"><i class="fa fa-calendar"></i></a>
