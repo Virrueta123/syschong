@@ -568,7 +568,7 @@
                 pagos: [],
                 suma_pago: 0,
                 is_complete_pago: false,
-                serie: "F001",
+                serie: "F003",
                 correlativo: 0,
                 index_pago: 0,
                 xlDemo: false,
@@ -808,19 +808,19 @@
 
                 switch (valor) {
                     case "F":
-                        this.serie = "F001";
+                        this.serie = "F003";
                         this.is_ruc = true;
                         this.correlativo = this.correlativo_factura;
                         break;
                     case "B":
                     this.is_ruc = false;
-                        this.serie = "B001";
+                        this.serie = "B003";
                         this.correlativo = this.correlativo_boleta;
                         break;
                     case "N":
                     this.is_ruc = false;
                         this.correlativo = this.correlativo_nota_venta;
-                        this.serie = "NV01";
+                        this.serie = "NV03";
                         break;
                 }
 

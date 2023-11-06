@@ -721,15 +721,15 @@
                 switch (valor) {
                     case "F":
                         this.tipo_comprobante = "F";
-                        $(this.$refs.serie).val("F001")
+                        $(this.$refs.serie).val("F003")
                         break;
                     case "B":
                         this.tipo_comprobante = "B";
-                        $(this.$refs.serie).val("B001")
+                        $(this.$refs.serie).val("B003")
                         break;
                     case "N":
                         this.tipo_comprobante = "N";
-                        $(this.$refs.serie).val("NV01")
+                        $(this.$refs.serie).val("NV03")
                         break;
                 }
             },

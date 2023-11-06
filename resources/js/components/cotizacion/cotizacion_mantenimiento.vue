@@ -480,7 +480,7 @@
                                                 <h5 class="text-center">Ruc : {{ empresa . ruc }}</h5>
                                             </div>
                                             <div class="product-name">
-                                                <h6 class="text-center">F001 - {{ correlativo_factura }}</h6>
+                                                <h6 class="text-center">F003- {{ correlativo_factura }}</h6>
                                             </div>
                                             <div class="text-muted text-small"></div>
                                         </div>
@@ -1497,7 +1497,7 @@
                 this.send_axios_reponse(
                         "Desear Emitir esta Factura?",
                         "Si,Emitir la factura", {
-                            serie: "F001",
+                            serie: "F003",
                             fecha_creacion_factura: this.fecha_creacion_factura,
                             fecha_vencimiento_factura: this.fecha_vencimiento_factura,
                             correlativo: this.correlativo_factura,
