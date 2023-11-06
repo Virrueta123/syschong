@@ -220,13 +220,16 @@ class caja_chica_controller extends Controller
     public function destroy($id)
     {
         try {
+
             $caja = caja_chica::findOrFail(decrypt_id($id));
+          
 
             if ($caja->pagos()->exists()) {
                 session()->flash('warning', 'No se puede eliminar esta caja por que ya tiene compras o ventas');
                 return redirect()->route('caja.index');
             } else {
-                if ($caja->delete()) {
+                $delete = $caja->delete(); 
+                if ($delete) {
                     session()->flash('success', 'se elimino correctamente la caja');
                     return redirect()->route('caja.index');
                 } else {

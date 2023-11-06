@@ -32,24 +32,13 @@ class whatsapp_api extends Controller
             'to' => "51{$this->celular_cliente}",
             'type' => 'template',
             'template' => [
-                'name' => 'send_coti',
+                'name' => 'send_cotizacion_image ',
                 'language' => [
                     'code' => 'es_ES',
                     'policy' => 'deterministic',
                 ],
                 'components' => [
-                    [
-                        'type' => 'header',
-                        'parameters' => [
-                            [
-                                'type' => 'DOCUMENT',
-                                'document' => [
-                                    'link' => $this->link_pdf,
-                                ],
-                            ],
-                        ],
-                    ],
-
+                   
                     [
                         'type' => 'body',
                         'parameters' => [

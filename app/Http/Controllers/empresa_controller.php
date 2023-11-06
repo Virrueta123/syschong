@@ -72,7 +72,7 @@ class empresa_controller extends Controller
     {
         $data = $request->validate([
             'ruc' => 'required|string|max:12',
-            'celular' => 'required|string|max:9',
+            'celular' => 'required|string',
             'razon_social' => 'required|string|max:250',
             'direccion' => 'required|string|max:250', 
             'declaracion' => 'required|string|max:255',
@@ -80,7 +80,7 @@ class empresa_controller extends Controller
             'codigo_telefono' => 'required|string|max:155',
         ]);
 
-        $empresa = empresa::first();
+        $empresa = empresa::find(1);
         $empresa->update($data);
 
         return redirect()->route('home')->with('success', 'Empresa actualizada correctamente');
