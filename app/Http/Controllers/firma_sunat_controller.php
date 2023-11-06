@@ -56,13 +56,13 @@ class firma_sunat_controller extends Controller
             ->setProvincia('SAN MARTIN')
             ->setDistrito('TARAPOTO')
             ->setUrbanizacion('-')
-            ->setDireccion('PJ. UNION 126B LOZA BELAUNDE')
+            ->setDireccion('JR. TAHUANTINSUYO Nro 115')
             ->setCodLocal('0000'); // Codigo de establecimiento asignado por SUNAT, 0000 por defecto.
 
         $company = (new Company())
-            ->setRuc('10464579481')
-            ->setRazonSocial('ROSA LUZ INGA TORRES')
-            ->setNombreComercial('ROSA LUZ INGA TORRES')
+            ->setRuc('10010667971')
+            ->setRazonSocial('CHONG FLORES JUAN CARLOS')
+            ->setNombreComercial('REPUESTOS & SERVICIOS CHONGTipo')
             ->setAddress($address);
 
         return $company;
