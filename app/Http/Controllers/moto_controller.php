@@ -47,6 +47,10 @@ class moto_controller extends Controller
                 ->addColumn('fecha_creacion', function ($Data) {
                     return Carbon::parse($Data->created_at)->format('d/m/Y');
                 })
+                ->addColumn('estado', static function ($Data) {
+                    $estado  = $Data->mtx_estado;
+                    return view('complementos.estado_moto', ['estado' => $estado]);
+                })
                 ->addColumn('action', static function ($Data) {
                     $mtx_id = encrypt_id($Data->mtx_id);
                     return view('buttons.moto_buttons', ['mtx_id' => $mtx_id]);
@@ -169,10 +173,7 @@ class moto_controller extends Controller
     {
         try {
             $update = motos::where('mtx_id', decrypt_id($id));
-            $datax = $request->all();
-
-        
-
+            $datax = $request->all(); 
             $validate = $request->validate([
                 'mtx_placa' => 'required|string|max:50',
 

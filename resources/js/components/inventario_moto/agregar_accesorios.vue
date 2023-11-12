@@ -40,6 +40,8 @@
     </div>
 </template>
 
+keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | "C:\Users\abc\openssl\bin\openssl.exe" sha1 -binary | "C:\Users\abc\openssl\bin\openssl.exe" base64
+
 <script> 
     import "select2"; 
 

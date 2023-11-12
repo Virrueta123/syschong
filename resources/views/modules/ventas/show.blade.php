@@ -10,7 +10,6 @@
 @endsection
 
 @section('css')
-     
 @endsection
 
 
@@ -50,82 +49,83 @@
                                 <address>
                                     <strong>Cliente:</strong><br>
                                     @switch($get->tipo_comprobante)
-                                    @case('F')
-                                        Cliente:<span class="sin_bold">{{ $get->razon_social }}<br>
-                                        RUC:<span class="sin_bold">{{ $get->ruc }} <br>
-                                    @break
+                                        @case('F')
+                                            Cliente:<span class="sin_bold">{{ $get->razon_social }}<br>
+                                                RUC:<span class="sin_bold">{{ $get->ruc }} <br>
+                                                @break
 
-                                    @case('B')
-                                        Cliente:<span class="sin_bold">
-                                                {{ $get->Nmbre }}
-                                                {{ $get->Apellido }} <br>
-                                        DNI:<span class="sin_bold">{{ $get->Dni }} <br>
-                                    @break
+                                                @case('B')
+                                                    Cliente:<span class="sin_bold">
+                                                        {{ $get->Nmbre }}
+                                                        {{ $get->Apellido }} <br>
+                                                        DNI:<span class="sin_bold">{{ $get->Dni }} <br>
+                                                        @break
 
-                                    @case('N')
-                                        Cliente:<span class="sin_bold">
-                                                {{ $get->Nmbre }}
-                                                {{ $get->Apellido }} <br>
-                                        DNI:<span class="sin_bold">{{ $get->Dni }} <br>
-                                    @break
-                                @endswitch
-                                Direccion:<span class="sin_bold">{{ $get->direccion }}<br>
-                                
-                                Contacto:<span class="sin_bold">{{ $get->cliente->cli_telefono }}<br>
-                                 
+                                                        @case('N')
+                                                            Cliente:<span class="sin_bold">
+                                                                {{ $get->Nmbre }}
+                                                                {{ $get->Apellido }} <br>
+                                                                DNI:<span class="sin_bold">{{ $get->Dni }} <br>
+                                                                @break
+                                                            @endswitch
+                                                            Direccion:<span class="sin_bold">{{ $get->direccion }}<br>
+
+                                                                Contacto:<span
+                                                                    class="sin_bold">{{ $get->cliente->cli_telefono }}<br>
+
                                 </address>
                             </div>
                         </div>
-                      
+
                     </div>
                 </div>
                 <h1></h1>
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        <div class="section-title">Guias de remisión  </div> 
+                        <div class="section-title">Guias de remisión </div>
                         <div class="table-responsive">
-                              
+
                             <table class="table table-striped table-hover table-md">
                                 <tr>
                                     <th>Codigo</th>
                                     <th>Repuesto</th>
                                     <th>Detalle</th>
                                     <th>unidad</th>
-                                    <th>Precio</th> 
+                                    <th>Precio</th>
                                     <th>Cantidad</th>
-                                    <th>Importe</th> 
+                                    <th>Importe</th>
                                 </tr>
-            
+
                                 <tbody>
-            
+
                                     @foreach ($get->detalle as $detalle)
                                         @if ($detalle->tipo == 'p')
                                             <tr>
-            
+
                                                 <td>{{ $detalle->Codigo }} </td>
                                                 <td>{{ $detalle->Descripcion }}</td>
-            
+
                                                 <td> {{ $detalle->Detalle }} </td>
-            
-            
+
+
                                                 @if ($detalle->tipo == 'p')
                                                     <td>{{ $detalle->producto->unidad->unidades_nombre }}</td>
                                                 @else
                                                     <td>servicio</td>
                                                 @endif
-            
-            
+
+
                                                 <td>{{ $detalle->MtoPrecioUnitario }}</td>
-            
+
                                                 <td>{{ $detalle->Cantidad }}</td>
                                                 <td>{{ $detalle->MtoValorVenta }}</td>
-            
+
                                             </tr>
                                         @endif
                                     @endforeach
-            
-                                    
-                                         
+
+
+
                                     <tr>
                                         <th>Codigo</th>
                                         <th>Servicio</th>
@@ -135,39 +135,66 @@
                                         <th>Cantidad</th>
                                         <th>Importe</th>
                                     </tr>
-            
+
                                     @foreach ($get->detalle as $detalle)
                                         @if ($detalle->tipo == 's')
                                             <tr>
-            
+
                                                 <td>{{ $detalle->Codigo }} </td>
                                                 <td>{{ $detalle->Descripcion }}</td>
-            
+
                                                 <td> {{ $detalle->Detalle }} </td>
-            
-            
+
+
                                                 @if ($detalle->tipo == 'p')
                                                     <td>{{ $detalle->producto->unidad->unidades_nombre }}</td>
                                                 @else
                                                     <td>servicio</td>
                                                 @endif
-            
-            
+
+
                                                 <td>{{ $detalle->MtoPrecioUnitario }}</td>
-            
+
                                                 <td>{{ $detalle->Cantidad }}</td>
                                                 <td>{{ $detalle->MtoValorVenta }}</td>
-            
+
                                             </tr>
                                         @endif
                                     @endforeach
+                                    <tr>
+                                        <th colspan="6">Pagos</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="">Metodos de pago</th>
+                                        <th colspan="">Referencia</th>
+                                        <th colspan="">Monto</th>
+                                        <th colspan="">Imagen</th> 
+                                    </tr>
+
+                                    @foreach ($get->pagos as $pg)
+                                        <tr>
+
+                                            <td>{{ $pg->forma_pago->forma_pago_nombre }} </td>
+                                            <td>{{ $pg->referencia }}</td>
+                                            <td>{{ $pg->monto }}</td>
+                                           
+ 
+                                            @if ($pg->imagen =="Y")
+                                                <td>imagen</td>
+                                            @else
+                                            <td>no hay imagen</td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+
                                 </tbody>
                             </table>
 
                         </div>
                         <div class="row mt-4">
                             <div class="col-lg-8">
-                              
+
                             </div>
                             <div class="col-lg-4 text-right">
                                 <div class="invoice-detail-item">
@@ -181,25 +208,28 @@
                                 <hr class="mt-2 mb-2">
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Totales</div>
-                                    <div class="invoice-detail-value invoice-detail-value-lg">S/. {{ $get->SubTotal }}</div>
+                                    <div class="invoice-detail-value invoice-detail-value-lg">S/. {{ $get->SubTotal }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
             <hr>
             <div class="text-md-right">
                 <div class="float-lg-left mb-lg-0 mb-3">
-                     
+
                 </div>
-                <a target="_blank" class="btn btn-warning btn-icon icon-left" href="{{ route('ventas_pdf',$id) }}"><i class="fas fa-print"></i> Print</a>
+                <a target="_blank" class="btn btn-warning btn-icon icon-left" href="{{ route('ventas_pdf', $id) }}"><i
+                        class="fas fa-print"></i> Impimir</a>
             </div>
+
+
+
+
         </div>
     </div>
-
-
-     
 @endsection
 
 @section('js')

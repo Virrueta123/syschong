@@ -27,19 +27,50 @@
                 <div class="card-body">
                     <div id="app">
 
+                  
+
+                        <div class="card-header">
+                            <h2 class="section-title">Datos de la moto</h2>
+                        </div>
+
+                        <div class="form-row"> 
+                            <div class="form-group col-md-4">
+                                <label for="mtx_vin">Vin</label>
+                                <input type="text" class="form-control" name="mtx_vin" id="mtx_vin">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="mtx_motor">Motor</label>
+                                <input type="text" class="form-control" name="mtx_motor" id="mtx_motor">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="mtx_color">Color</label>
+                                <input type="text" class="form-control" name="mtx_color" id="mtx_color">
+                            </div> 
+                        </div>
+
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="prod_codigo">Buscar Tienda</label>
+                            <div class="form-group col-md-4">
+
+                                <label for="cli_telefono">Buscar Marca </label>
+ 
                                 <div class="input-group">
-                                    <search-tienda></search-tienda>
-                                </div>  
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="prod_codigo">Buscar la moto</label>
-                                <div class="input-group">
-                                    <search-moto-modelo></search-moto-modelo> 
+                                    <seleccionar-modelos >
+                                    </seleccionar-modelos> 
                                 </div>
+ 
                             </div>
+                            <div class="form-group col-md-4">
+                                <label for="mtx_fabricacion">Fecha de Fabricacion</label>
+                                <input type="date" class="form-control" name="mtx_fabricacion" id="mtx_fabricacion">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="mtx_chasis">Chasis</label>
+                                <input type="text" class="form-control" name="mtx_chasis" id="mtx_chasis">
+                            </div>
+                        </div>
+ 
+                        <div class="card-header">
+                            <h2 class="section-title">Datos de la Activacion</h2>
                         </div>
  
                         <div class="form-row">
@@ -57,26 +88,37 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="prod_codigo">Vendedor</label>
+                                <label for="prod_codigo">Precio de la gasolina</label>
+
                                 <div class="input-group">
-                                    <search-vendedor></search-vendedor>
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            S/.
+                                        </div>
+                                    </div>
+                                    <input-money name_precio="precio_gasolina" id="precio_gasolina"></input-money>
                                 </div>
-                            </div> 
+                            </div>
+
+                            
                         </div>
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="prod_codigo">Tienda donde se cobrara esta activacion</label>
+                                <label for="prod_codigo">Vendedor</label>
                                 <div class="input-group">
-                                    <search-tienda-cobrar></search-tienda-cobrar> 
+                                    <search-vendedor></search-vendedor>
                                 </div>
-                            </div> 
-                            
+                            </div>  
+                            <div class="form-group col-md-6">
+                                <label for="prod_codigo">Buscar Tienda</label>
+                                <div class="input-group">
+                                    <search-tienda></search-tienda>
+                                </div>  
+                            </div>  
                         </div>
-
-                        <div id="app">
-                            <is-dias></is-dias>
-                        </div>
+ 
+                     
                     </div>
                 </div>
                 <div class="card-footer">
@@ -105,10 +147,7 @@
                 },
                 precio: { 
                     required: true,
-                },
-                tienda_cobrar:{
-                    required:true
-                }
+                } 
             },
             submitHandler: function(form) {
                 $("#crear_activacion").addClass("disabled btn-progress")

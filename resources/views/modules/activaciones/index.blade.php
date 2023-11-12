@@ -12,18 +12,19 @@
         <div class="card-header">
             <h4>Todo las Activaciones registradas</h4>
             <div class="card-header-action">
-            
-                <a href="{{route("activaciones.create")}}" class="btn btn-primary boton-color"><i class="fa fa-plus" aria-hidden="true"></i> Crear una activacion</a> 
-             
+
+                <a href="{{ route('activaciones.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                        aria-hidden="true"></i> Crear una activacion</a>
+
             </div>
         </div>
-       
+
         <div class="card-body">
             <div class="table-responsive">
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-striped dataTable table-bordered table-hover " id="table_mtx">
+                        <table class="table dataTable table-bordered table-hover " id="table_mtx">
                             <thead>
                                 <tr>
                                     <th>
@@ -36,7 +37,7 @@
                                         Dni / Ruc
                                     </th>
                                     <th>
-                                        Vendedor 
+                                        Vendedor
                                     </th>
                                     <th>
                                         Marca
@@ -52,7 +53,7 @@
                                     </th>
                                     <th>
                                         Chasis
-                                    </th> 
+                                    </th>
                                     <th>
                                         Color
                                     </th>
@@ -61,17 +62,17 @@
                                     </th>
                                     <th>
                                         Precio
-                                    </th> 
+                                    </th>
                                     <th>
                                         Fecha de creacion
-                                    </th> 
+                                    </th>
                                     <th>
                                         <i class="fa fa-cogs" aria-hidden="true"></i> Config
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                             </tbody>
                             <tfoot>
                                 <th>
@@ -84,7 +85,7 @@
                                     Dni / Ruc
                                 </th>
                                 <th>
-                                    Vendedor 
+                                    Vendedor
                                 </th>
                                 <th>
                                     Marca
@@ -100,7 +101,7 @@
                                 </th>
                                 <th>
                                     Chasis
-                                </th> 
+                                </th>
                                 <th>
                                     Color
                                 </th>
@@ -109,10 +110,10 @@
                                 </th>
                                 <th>
                                     Precio
-                                </th> 
+                                </th>
                                 <th>
                                     Fecha de creacion
-                                </th> 
+                                </th>
                                 <th>
                                     <i class="fa fa-cogs" aria-hidden="true"></i> Config
                                 </th>
@@ -128,7 +129,7 @@
 @endsection
 
 @section('js')
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
     <script>
         $(function() {
 
@@ -165,7 +166,7 @@
                     {
                         data: 'motor',
                         name: 'motor'
-                    }, 
+                    },
                     {
                         data: 'moto.mtx_vin',
                         name: 'moto.mtx_vin'
@@ -173,7 +174,7 @@
                     {
                         data: 'moto.mtx_chasis',
                         name: 'moto.mtx_chasis'
-                    }, 
+                    },
                     {
                         data: 'moto.mtx_color',
                         name: 'moto.mtx_color'
@@ -185,7 +186,7 @@
                             switch (data) {
                                 case 'A':
                                     return '<center><div class="badge badge-pill badge-success mb-1 float-right">Si</div></center>';
-                                    break; 
+                                    break;
                                 case 'D':
                                     return '<center><div class="badge badge-pill badge-danger mb-1 float-right">No</div></center>';
                                     break;
@@ -195,7 +196,7 @@
                     {
                         data: 'precio',
                         name: 'precio'
-                    },  
+                    },
                     {
                         data: 'fecha_creacion',
                         name: 'fecha_creacion'
@@ -207,44 +208,45 @@
                     },
 
                 ],
-               
-                dom: 'Bfrtip',
-                "info": true,fixedColumns: true,keys: true,colReorder: true,
-                "lengthChange": true,
-                "autoWidth": false,
-                "ordering": true,
-                "buttons": [
-                    {
-                    text: '<i class="fa fa-bars"></i> columnas visibles',
-                    extend: 'colvis', 
+
+                fixedColumns: {
+                    left: 2,
+                    right :1 
                 },
-                {
-                    text: '<i class="fa fa-copy"></i> Copiar',
-                    extend: 'copy',
-                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
-                }, {
-                    text: '<i class="fa fa-file-csv"></i> Csv',
-                    extend: 'csvHtml5',
-                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
-                }, {
-                    text: '<i class="fa fa-file-excel"></i> Excel',
-                    extend: 'excelHtml5',
-                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
-                }, {
-                    text: '<i class="fa fa-file-pdf"></i> Pdf',
-                    extend: 'pdfHtml5',
-                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
-                }, {
-                    text: '<i class="fa fa-print"></i> Imprimir',
-                    extend: "print",
-                    title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
-                }, ]
+                pageLength: 5,
+                dom: 'Bfrtip',
+                "info": true,
+                keys: true,
+                colReorder: true,
+                "lengthChange": true,
+                'responsive': false,
+                "autoWidth": false,
+                "ordering": true, 
+                "buttons": [{
+                        text: '<i class="fa fa-bars"></i> columnas visibles',
+                        extend: 'colvis',
+                    },
+                    {
+                        text: '<i class="fa fa-copy"></i> Copiar',
+                        extend: 'copy',
+                        title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                    }, {
+                        text: '<i class="fa fa-file-csv"></i> Csv',
+                        extend: 'csvHtml5',
+                        title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                    }, {
+                        text: '<i class="fa fa-file-excel"></i> Excel',
+                        extend: 'excelHtml5',
+                        title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                    }, {
+                        text: '<i class="fa fa-print"></i> Imprimir',
+                        extend: "print",
+                        title: 'tabla_cliente_fecha_{{ $fecha_actual }}'
+                    },
+                ]
             })
+ 
 
-            
         });
-
-        
     </script>
 @endsection
-

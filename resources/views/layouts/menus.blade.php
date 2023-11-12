@@ -10,7 +10,7 @@
                     <span>{{ $mn['name'] }}</span></a>
                 <ul class="dropdown-menu">
                     @foreach ($mn['submenu'] as $submenu)
-                        <li><a class="nav-link" href="{{ route($submenu['url']) }}">{{ $submenu['name'] }}</a></li>
+                        <li> <a class="nav-link" style="font-size: 0.7rem;" href="{{ route($submenu['url']) }}">{{ $submenu['name'] }}</a></li>
                     @endforeach
                 </ul>
             </li>

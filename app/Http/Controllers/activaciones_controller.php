@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\ActivacionesImport;
 use App\Models\activaciones;
 use App\Models\cortesias_activacion;
+use App\Models\motos;
 use App\Models\tiendas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class activaciones_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    { 
+    {
         $fecha_actual = Carbon::now();
         if ($request->ajax()) {
             $tiendas = activaciones::with([
@@ -43,25 +44,37 @@ class activaciones_controller extends Controller
                 },
                 'vendedor',
                 'tienda',
-            ])->where('activado_taller', 'A')
+            ])
+                ->where('activado_taller', 'A')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             return DataTables::of($tiendas)
                 ->addIndexColumn()
                 ->addColumn('cliente', function ($Data) {
-                    if($Data->moto->cliente->cli_ruc != "no tiene" ){
-                        return $Data->moto->cliente->cli_razon_social;
+                    
+                    if(is_null($Data->moto->cliente)){
+                        return "sin cliente";
                     }else{
-                        return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
-                    } 
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_razon_social;
+                        } else {
+                            return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                        }
+                    }
+                    
                 })
                 ->addColumn('dnioruc', function ($Data) {
-                    if($Data->moto->cliente->cli_ruc  != "no tiene" ){
-                        return $Data->moto->cliente->cli_ruc;
+                    if(is_null($Data->moto->cliente)){
+                        return "sin cliente";
                     }else{
-                        return $Data->moto->cliente->cli_dni;
-                    }   
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_ruc;
+                        } else {
+                            return $Data->moto->cliente->cli_dni;
+                        }
+                    }
+                     
                 })
                 ->addColumn('vendedor', function ($Data) {
                     return $Data->vendedor->vendedor_nombres;
@@ -113,18 +126,28 @@ class activaciones_controller extends Controller
     {
         $datax = $request->all();
         // Crear una nueva instancia del modelo
-        $activaciones = new activaciones(); 
+        $activaciones = new activaciones();
 
-        // Establecer los valores de los campos
-        $activaciones->tienda_id = $datax['tienda_id'];
-        $activaciones->vendedor_id = $datax['vendedor_id'];
-        $activaciones->moto_id = $datax['moto_id'];
-        $activaciones->tienda_cobrar = $datax['tienda_cobrar'];
-        $activaciones->precio = $datax['precio'];
-        $activaciones->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
-        $activaciones->dias = $datax['dias'];
-        $activaciones->date_aviso = Carbon::now()->addDays($datax['dias']);
-        $activaciones->user_id = auth()->user()->id; 
+        //crear la moto
+        $moto = new motos();
+        $moto->mtx_vin = $datax['mtx_vin'];
+        $moto->mtx_motor = $datax['mtx_motor'];
+        $moto->mtx_color = $datax['mtx_color'];
+        $moto->modelo_id = $datax['modelo_id'];
+        $moto->mtx_fabricacion = $datax['mtx_fabricacion'];
+        $moto->mtx_chasis = $datax['mtx_chasis'];
+        $created = $moto->save();
+         
+        if ($created) {
+            // Establecer los valores de los campos
+            $activaciones->tienda_id = $datax['tienda_id'];
+            $activaciones->vendedor_id = $datax['vendedor_id'];
+            $activaciones->moto_id = $moto->mtx_id;
+            $activaciones->precio = $datax['precio'];
+            $activaciones->precio_gasolina = $datax['precio_gasolina'];
+            $activaciones->total = $datax['precio_gasolina'] + $datax['precio']; 
+            $activaciones->user_id = auth()->user()->id;
+        }
 
         // Guardar el registro en la base de datos
 
@@ -219,7 +242,7 @@ class activaciones_controller extends Controller
         $cortesia->km = $datax['km'];
         $cortesia->precio = $datax['precio'];
         $cortesia->activaciones_id = decrypt_id($id);
-        $cortesia->user_id = auth()->user()->id; 
+        $cortesia->user_id = auth()->user()->id;
         $cortesia->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
         $cortesia->dias = $datax['dias'];
         $cortesia->date_aviso = Carbon::now()->addDays($datax['dias']);

@@ -250,7 +250,7 @@ class compras_controller extends Controller
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
                         $pagosVentas->tipo = 'C';
-                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->imagen = 'N';
                         $pagosVentas->save();
                     }
                 }

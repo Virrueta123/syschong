@@ -225,7 +225,7 @@ class pos_controller extends Controller
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                                 $pagosVentas->referencia = $pago['referencia'];
-                                $pagosVentas->imagen = 'Y';
+                                $pagosVentas->imagen = 'N';
                                 $pagosVentas->caja_chica_id = $caja_chica;
                                 $pagosVentas->user_id = Auth::id();
                                 $pagosVentas->save();
@@ -477,7 +477,7 @@ class pos_controller extends Controller
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                                 $pagosVentas->referencia = $pago['referencia'];
-                                $pagosVentas->imagen = 'Y';
+                                $pagosVentas->imagen = 'N';
                                 $pagosVentas->caja_chica_id = $caja_chica;
                                 $pagosVentas->user_id = Auth::id();
                                 $pagosVentas->save();
@@ -626,9 +626,7 @@ class pos_controller extends Controller
                     /* ******** insertar ventas ************* */
 
                     $cliente = cliente::find($request->input('cli_id'));
-
-                    //firma sunat
-                    $firma = new firma_sunat_controller();
+ 
 
                     $venta = new ventas();
                     $venta->venta_serie = $request->input('serie'); //-
@@ -644,14 +642,14 @@ class pos_controller extends Controller
                     $venta->setValorVenta = $Datax['total']; //importe total;
                     $venta->SubTotal = $Datax['total']; //importe total
                     $venta->MtoImpVenta = $Datax['total']; //importe total
-                    $venta->Dni = $cliente->cliente->cli_dni;
+                    $venta->Dni = $cliente->cli_dni;
                     $venta->Nombre = $cliente->cli_nombre;
                     $venta->Apellido = $cliente->cli_apellido;
                     $venta->ruc = 'no tiene';
                     $venta->departamento = 'no tiene';
                     $venta->distrito = 'no tiene';
                     $venta->provincia = 'no tiene';
-                    $venta->direccion = $cliente->cliente->cli_direccion;
+                    $venta->direccion = $cliente->cli_direccion;
                     $venta->razon_social = 'no tiene';
                     $venta->fecha_creacion = Carbon::now();
                     $venta->fecha_vencimiento = Carbon::now();
@@ -721,12 +719,12 @@ class pos_controller extends Controller
                                 /* *********************** */
                             } else {
                                 $pagosVentas = new pagos_ventas();
-                                $pagosVentas->ventas_id = $venta->ventas_id;
+                                $pagosVentas->ventas_id = $venta->venta_id;
                                 $pagosVentas->fecha_pago = Carbon::now();
                                 $pagosVentas->monto = $pago['monto'];
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                                 $pagosVentas->referencia = $pago['referencia'];
-                                $pagosVentas->imagen = 'Y';
+                                $pagosVentas->imagen = 'N';
                                 $pagosVentas->caja_chica_id = $caja_chica;
                                 $pagosVentas->user_id = Auth::id();
                                 $pagosVentas->save();

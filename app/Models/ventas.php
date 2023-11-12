@@ -29,6 +29,10 @@ class ventas extends Model
         return $this->hasMany(detalle_venta::class,"venta_id");
     }
 
+    public function pagos(){
+        return $this->hasMany(pagos_ventas::class,"ventas_id");
+    }
+
     public function getUrlAttribute(){
         return encrypt_id($this->cotizacion_id);
     }

@@ -20,6 +20,9 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });  
+
+            console.log("dsadsad")
+
             $(this.$refs.select_moto).select2({
                 language: this.languajeSelect,
                 ajax: {
@@ -46,7 +49,7 @@
                     },
                     processResults: (data) => {
                         // Tranforms the top-level key of the response object from 'items' to 'results'
-
+                        console.log(data);
                         return {
                             results: $.map(data, function(item) {
                                 return {

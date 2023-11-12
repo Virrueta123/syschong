@@ -154,8 +154,8 @@
                         name: 'mtx_fabricacion'
                     },
                     {
-                        data: 'mtx_estado',
-                        name: 'mtx_estado'
+                        data: 'estado',
+                        name: 'estado'
                     },
                     {
                         data: 'mtx_chasis',

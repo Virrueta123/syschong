@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\cliente;
+use App\Models\modelo;
+use App\Models\motos;
 use Carbon\Carbon;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
@@ -120,7 +122,7 @@ class clienteController extends Controller
     {
         try {
             $datax = $request->all();
-             
+
             $validate = $request->validate([
                 'cli_ruc' => 'required|string|max:255',
                 'cli_razon_social' => 'required|string|max:255',
@@ -243,7 +245,6 @@ class clienteController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -422,4 +423,58 @@ class clienteController extends Controller
         }
     }
     /* *********************** */
+    function update_vue_cliente(Request $req)
+    {
+        try {
+            $datax = $req->all();
+
+            $moto = motos::find($datax['mtx_id']);  
+            
+            $cliente = new cliente();
+            $cliente->cli_nombre = $datax["cli_nombre"];
+            $cliente->cli_apellido = $datax["cli_apellido"];
+            $cliente->cli_dni = $datax["cli_dni"];
+            $cliente->cli_direccion = $datax["cli_direccion"];
+            $cliente->cli_provincia = $datax["cli_provincia"];
+            $cliente->cli_distrito = $datax["cli_distrito"];
+            $cliente->cli_departamento = $datax["cli_departamento"];
+            $cliente->cli_telefono = $datax["cli_telefono"];
+            $cliente->cli_correo = $datax["cli_correo"];
+            $cliente->cli_ruc = $datax["cli_ruc"];
+            $cliente->cli_razon_social = $datax["cli_razon_social"];
+            $cliente->cli_direccion_ruc = $datax["cli_direccion_ruc"];
+            $cliente->cli_provincia_ruc = $datax["cli_provincia_ruc"];
+            $cliente->cli_departamento_ruc = $datax["cli_departamento_ruc"];
+            $cliente->cli_distrito_ruc = $datax["cli_distrito_ruc"];
+            $cliente->save();
+
+            $moto->cli_id = $cliente->cli_id;
+        
+
+            if ($moto->update()) {
+                return response()->json([
+                    'message' => 'se actualizo correctamente el  cliente',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('error al actualizar el cliente');
+                return response()->json([
+                    'message' => 'error al actualizar el cliente',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error al actualizar el cliente',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
 }

@@ -22,7 +22,9 @@ app.component('search-tienda-cobrar', require('./components/tienda/cobrar_tienda
 /* -- *********************** -- */
 
 app.component('search-cliente', require('./components/search_cliente.vue').default);
-app.component('crear-cliente', require('./components/crear_cliente.vue').default);
+app.component('crear-cliente', require('./components/crear_cliente.vue').default)
+
+app.component('asignar-cliente', require('./components/cliente/asignar_cliente_activacion.vue').default)
 
 
 app.component('search-cliente_pos', require('./components/search_cliente_pos.vue').default);

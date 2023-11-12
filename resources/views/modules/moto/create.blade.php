@@ -63,7 +63,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
 
-                                <label for="cli_telefono">Buscar Marca </label>
+                                <label for="cli_telefono">Buscar Modelo </label>
  
                                 <div class="input-group">
                                     <seleccionar-modelos >

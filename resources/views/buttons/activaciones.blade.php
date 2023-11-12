@@ -1,21 +1,16 @@
-<td class="p-2 d-inline-block" style="justify-content: center;">
-    <div class="row d-flex flex-row">
-       
-        
-        <a class="btn btn-info btn-sm m-1" href="{{ route('activaciones.show', $activaciones_id) }}"> <i class="fa fa-eye fa-1x"></i>
+ 
+ 
+<div class="dropdown d-inline ">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-cogs"></i>
+    </button>
+    <div class="dropdown-menu bg-danger " x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+         
+  
+        <a class="dropdown-item text-white" href="{{ route('activaciones.show', $activaciones_id) }}"> <i class="fa fa-eye fa-1x"></i> ver activacion
         </a>
-
-  <!-- ******** 
-        <a class="btn btn-info btn-sm m-1" href="{{ route('activaciones.edit', $activaciones_id) }}"> <i class="fa fa-edit fa-1x"></i>
-        </a>
-
-        <form method="POST" id="formdeletetx{{ $activaciones_id }}" action="{{ route('activaciones.destroy', $activaciones_id) }}">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input name="_method" type="hidden" value="DELETE">
-            <button type="submit"
-                onclick="FormDelete('tx{{ $activaciones_id }}','esta segur@ que desea eliminar este cliente',event)"
-                class="btn btn-danger btn-sm m-1"><i class="fa fa-trash fa-1x"> </i></button> -->
-        </form>
-
+         
     </div>
-</td>
+  </div>
+
+ 

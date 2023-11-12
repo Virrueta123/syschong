@@ -447,7 +447,7 @@ class cotizacion_controller extends Controller
                         $pagosVentas->monto = $pago['monto'];
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
-                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->imagen = 'N';
                         $pagosVentas->caja_chica_id = $caja_chica;
                         $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();
@@ -762,7 +762,7 @@ class cotizacion_controller extends Controller
                         $pagosVentas->monto = $pago['monto'];
                         $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                         $pagosVentas->referencia = $pago['referencia'];
-                        $pagosVentas->imagen = 'Y';
+                        $pagosVentas->imagen = 'N';
                         $pagosVentas->caja_chica_id = $caja_chica;
                         $pagosVentas->user_id = Auth::id();
                         $pagosVentas->save();

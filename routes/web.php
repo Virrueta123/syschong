@@ -84,6 +84,8 @@ Route::resource('moto', App\Http\Controllers\moto_controller::class);
 
 Route::resource('marca', App\Http\Controllers\marca_controller::class);
 
+Route::resource('modelo', App\Http\Controllers\modelo_controller::class);
+
 Route::resource('producto', App\Http\Controllers\producto_controller::class);
 
 Route::resource('marca_producto', App\Http\Controllers\marca_producto_controller::class);
