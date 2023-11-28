@@ -67,7 +67,7 @@ import "jquery-validation";
 import "jquery-validation/dist/localization/messages_es"
 import "select2";
 import "imask";
-import "bootstrap"
+ 
 
 import {
     myMixin

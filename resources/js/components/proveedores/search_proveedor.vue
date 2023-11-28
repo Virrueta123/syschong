@@ -18,7 +18,7 @@
         data(){
             return {
                 selected: this.$attrs.selected || '',
-                id: this.$attrs.id || 0,
+                id: this.$attrs.id_proveedor || 0,
             }
         },
         mounted() {

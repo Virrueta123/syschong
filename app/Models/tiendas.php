@@ -17,4 +17,8 @@ class tiendas extends Model
     public function precios(){
         return $this->hasMany(activacion_precio::class, 'tienda_id')->withTrashed();
     }
+
+    public function activaciones(){
+        return $this->hasMany(activaciones::class, 'tienda_id')->withTrashed();
+    }
 }

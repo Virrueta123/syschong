@@ -19,10 +19,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-
-
-                            <img src="../../../../public/images/svg/crear_formulario.svg" alt="My Happy SVG" />
-
+ 
                             <div class="card-body">
 
                                 <h2 class="section-title">Crear categoria del producto</h2>

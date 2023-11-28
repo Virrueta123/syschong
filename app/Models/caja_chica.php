@@ -20,7 +20,7 @@ class caja_chica extends Model
     }
     public function pagos()
     {
-        return $this->hasMany(pagos_ventas::class,"caja_id");
+        return $this->hasMany(pagos_ventas::class,"caja_chica_id");
     }
 
     public function ventas()

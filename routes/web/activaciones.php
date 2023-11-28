@@ -10,4 +10,6 @@ Route::post('/activaciones/{id}/cortesia', [App\Http\Controllers\activaciones_co
 
 Route::post('/importar_activaciones', [App\Http\Controllers\activaciones_controller::class, 'importar_activaciones'])->name('activaciones.importar_activaciones'); 
 
- 
+ Route::post('/create_vue_cortesia', [App\Http\Controllers\activaciones_controller::class, 'create_vue_cortesia'])->name('create_vue_cortesia'); 
+
+ Route::delete('/cortesia/{id}', [App\Http\Controllers\activaciones_controller::class, 'cortesia_destroy'])->name('cortesia.delete'); 

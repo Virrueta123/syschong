@@ -6,6 +6,7 @@ use App\Models\activaciones;
 use App\Models\caja_chica;
 use App\Models\compras;
 use App\Models\cortesias_activacion;
+use App\Models\tienda_facturas;
 use App\Models\ventas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class datatables_controller extends Controller
 
             ->where('is_cobro', 'Y')
             ->where('activado_taller', 'Y')
-            ->where("tienda_cobrar",decrypt_id($id))
+            ->where('tienda_id', decrypt_id($id))
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -100,8 +101,8 @@ class datatables_controller extends Controller
                 ->get(),
         )
             ->addColumn('action', static function ($Data) {
-                $caja_chica_id = encrypt_id($Data->caja_chica_id);
-                return view('buttons.caja', ['caja_chica_id' => $caja_chica_id]);
+                $compra_id = encrypt_id($Data->compra_id);
+                return view('buttons.compras', ['compra_id' => $compra_id]);
             })
             ->addColumn('proveedor', static function ($Data) {
                 return $Data->proveedor->proveedor_razon_social . ' - ' . $Data->proveedor->proveedor_ruc;
@@ -253,29 +254,37 @@ class datatables_controller extends Controller
                 ]);
             },
             'vendedor',
-            'tienda' 
+            'tienda',
         ])
 
             ->where('is_cobro', 'N')
-            ->where('activado_taller', 'Y')
-            ->where("tienda_cobrar",decrypt_id($id)) 
+            ->where('activado_taller', 'A')
+            ->where('tienda_id', decrypt_id($id))
             ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($activaciones)
             ->addIndexColumn()
             ->addColumn('cliente', function ($Data) {
-                if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->moto->cliente->cli_razon_social;
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                    }
                 }
             })
             ->addColumn('dnioruc', function ($Data) {
-                if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->moto->cliente->cli_ruc;
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->moto->cliente->cli_dni;
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->moto->cliente->cli_dni;
+                    }
                 }
             })
             ->addColumn('vendedor', function ($Data) {
@@ -313,32 +322,10 @@ class datatables_controller extends Controller
      */
     public function tablas_cortesias_actual_por_tienda($id)
     {
-
         $cortesias = cortesias_activacion::with([
             'activaciones' => function ($query) use ($id) {
                 return $query->with([
-                    'tienda' => function ($query) use ($id) {
-                        return $query->where('tienda_id', decrypt_id($id));
-                    },
-                    'moto' => function ($query) {
-                        return $query->with([
-                            'cliente',
-                            'modelo' => function ($query) {
-                                return $query->with(['marca']);
-                            },
-                        ]);
-                    },
-                ]);
-            },
-        ])
-            ->where('is_cobro', 'N')
-            ->where('tipo', 'C')
-            ->orderBy('created_at', 'desc')
-            ->get(); 
-        $cortesias = cortesias_activacion::with([
-            'activaciones' => function ($query) use ($id) {
-                return $query->with([
-                    'tienda' ,
+                    'tienda',
                     'moto' => function ($query) {
                         return $query->with([
                             'cliente',
@@ -352,7 +339,7 @@ class datatables_controller extends Controller
         ])
 
             ->where('is_cobro', 'N')
-            ->where("tienda_cobrar",decrypt_id($id))
+            ->where('tienda_cobrar', decrypt_id($id))
             ->where('tipo', 'C')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -360,7 +347,6 @@ class datatables_controller extends Controller
         return DataTables::of($cortesias)
             ->addIndexColumn()
             ->addColumn('cliente', function ($Data) {
-       
                 if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
                     return $Data->activaciones->moto->cliente->cli_razon_social;
                 } else {
@@ -368,7 +354,6 @@ class datatables_controller extends Controller
                 }
             })
             ->addColumn('dnioruc', function ($Data) {
-                 
                 if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
                     return $Data->activaciones->moto->cliente->cli_ruc;
                 } else {
@@ -376,16 +361,35 @@ class datatables_controller extends Controller
                 }
             })
             ->addColumn('marca', function ($Data) {
-                 
                 return $Data->activaciones->moto->modelo->marca->marca_nombre;
             })
             ->addColumn('modelo', function ($Data) {
-                 
                 return $Data->activaciones->moto->modelo->modelo_nombre;
             })
             ->addColumn('motor', function ($Data) {
-                 
                 return $Data->activaciones->moto->mtx_motor;
+            })
+            ->addColumn('numero_cortesia_letra', function ($Data) {
+                switch ($Data->numero_corterisa) {
+                    case 1:
+                        return 'PRIMER SERVICIO DE CORTESIA';
+                        break;
+                    case 2:
+                        return 'SEGUNDO SERVICIO DE CORTESIA';
+                        break;
+                    case 3:
+                        return 'TERCER SERVICIO DE CORTESIA';
+                        break;
+                    case 4:
+                        return 'CUARTO SERVICIO DE CORTESIA';
+                        break;
+                    case 5:
+                        return 'QUINTO SERVICIO DE CORTESIA';
+                        break;
+                    case 6:
+                        return 'SEXTO SERVICIO DE CORTESIA';
+                        break;
+                }
             })
 
             ->addColumn('fecha_creacion', function ($Data) {
@@ -398,7 +402,34 @@ class datatables_controller extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function factura_tienda_table($id)
+    {
+        
+        $facturas = tienda_facturas::with([
+            'venta'  
+        ]) 
+            ->where('tienda_id', decrypt_id($id)) 
+            ->orderBy('created_at', 'desc')
+            ->get();
 
+        return DataTables::of($facturas)
+            ->addIndexColumn() 
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $venta_id = encrypt_id($Data->venta->venta_id);
+                return view('buttons.venta', ['venta_id' => $venta_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
     /**
      * Display the specified resource.
      *

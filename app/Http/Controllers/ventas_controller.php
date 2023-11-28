@@ -34,7 +34,11 @@ class ventas_controller extends Controller
     {
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
-            return DataTables::of(ventas::whereNotIn('tipo_comprobante', ['N'])->orderBy('created_at', 'asc')->get())
+            return DataTables::of(
+                ventas::whereNotIn('tipo_comprobante', ['N'])
+                    ->orderBy('created_at', 'asc')
+                    ->get(),
+            )
                 ->addColumn('action', static function ($Data) {
                     $venta_id = encrypt_id($Data->venta_id);
                     return view('buttons.venta', ['venta_id' => $venta_id]);
@@ -55,6 +59,10 @@ class ventas_controller extends Controller
 
                         case 'BV':
                             return 'Boleta';
+                            break;
+
+                        case 'FT':
+                            return 'Factura casa comercial';
                             break;
                     }
                 })
@@ -167,7 +175,7 @@ class ventas_controller extends Controller
 
         return view('modules.ventas.index', compact('html'));
     }
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -176,30 +184,16 @@ class ventas_controller extends Controller
     {
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
-            return DataTables::of(ventas::where('tipo_comprobante', 'N')->orderBy('created_at', 'asc')->get())
+            return DataTables::of(
+                ventas::where('tipo_comprobante', 'N')
+                    ->orderBy('created_at', 'asc')
+                    ->get(),
+            )
                 ->addColumn('action', static function ($Data) {
                     $venta_id = encrypt_id($Data->venta_id);
                     return view('buttons.venta', ['venta_id' => $venta_id]);
                 })
-                ->addColumn('tipo_venta', static function ($Data) {
-                    switch ($Data->tipo_venta) {
-                        case 'FM':
-                            return 'Factura Mantenimiento';
-                            break;
-
-                        case 'BM':
-                            return 'Boleta Mantenimiento';
-                            break;
-
-                        case 'FV':
-                            return 'Factura';
-                            break;
-
-                        case 'BV':
-                            return 'Boleta';
-                            break;
-                    }
-                })
+                
                 ->addColumn('numero', static function ($Data) {
                     return $Data->venta_serie . '-' . $Data->venta_correlativo;
                 })
@@ -244,8 +238,7 @@ class ventas_controller extends Controller
 
         $html = $builder
             ->columns([
-                Column::make('fecha_creacion')->title('Emision'),
-                Column::make('tipo_venta')->title('Tipo Comprobante'),
+                Column::make('fecha_creacion')->title('Emision'), 
                 Column::make('cliente')
                     ->title('Cliente')
                     ->searchable(true)

@@ -8,3 +8,4 @@ Route::post('/store_vue_cliente', [App\Http\Controllers\clienteController::class
 Route::post('/update_vue_cliente', [App\Http\Controllers\clienteController::class, 'update_vue_cliente'])->name('update_vue_cliente');
 Route::post('/store_vue_cliente_ruc', [App\Http\Controllers\clienteController::class, 'store_vue_cliente_ruc'])->name('store_vue_cliente_ruc');
 Route::post('/editar_ruc', [App\Http\Controllers\clienteController::class, 'editar_ruc'])->name('editar_ruc');
+Route::post('/editar_celular', [App\Http\Controllers\clienteController::class, 'editar_celular'])->name('editar_celular');

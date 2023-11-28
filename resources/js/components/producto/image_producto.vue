@@ -87,10 +87,10 @@
                             <div class="form-row">
 
                                 <div class="form-group col-md-12">
-                                    <label>Seleccionar marcas de motos</label>
-                                    <p>Selecciona las marcas en donde el producto funciona</p>
+                                    <label>Seleccionar modelos de motos</label>
+                                    <p>Selecciona los modelos en donde el producto funciona</p>
 
-                                    <seleccionar-marcas :marcas_motos="marcas_motos"></seleccionar-marcas>
+                                    <seleccionar-marcas :modelos="modelos"></seleccionar-marcas>
                                 </div>
 
 
@@ -179,11 +179,11 @@
     export default {
         data() {
             return {
-                marcas_motos: JSON.parse(this.$attrs.marcas_motos),
+                modelos: JSON.parse(this.$attrs.modelos),
             }
         },
         mounted() {
-
+         
             // Initialize Uppy with desired options
             this.uppy = new Uppy({
                     debug: true,
@@ -258,7 +258,32 @@
                 rules: {
                     unidades_id: {
                         required: true,
+                    },
+                    prod_nombre:{
+                        required: true,
+                        maxlength: 249
+                    },marca_prod_id: {
+                        required: true,
+                    },
+                    zona_id: {
+                        required: true,
+                    },
+                    unidades_id: {
+                        required: true,
+                    },
+                    categoria_id: {
+                        required: true,
+                    },
+                    prod_precio_venta:{
+                        required:true
+                    },
+                    prod_stock_inicial:{
+                        required:true
+                    },
+                    prod_minimo:{
+                        required:true
                     }
+                    
                 },
                 submitHandler: function(form) {
 

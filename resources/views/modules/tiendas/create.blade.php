@@ -51,7 +51,7 @@
                         <agregar-precios></agregar-precios>
                     </div>
                 </div>
-
+ 
 
                 <div class="card-footer">
                     <button type="submit" id="crear_tienda" class="btn btn-danger boton-color">Crear tienda</button>
@@ -133,8 +133,9 @@
             submitHandler: function(form) {
                 $("#crear_tienda").addClass("disabled btn-progress")
 
-                var precios = $("#precios");
-
+                var precios = $("#precios"); 
+                    return true; 
+/*
                 if (precios.val() == 0) {
                     Swal.fire({
                         icon: "info",
@@ -143,9 +144,8 @@
                         footer: "-------",
                     });
                 } else {
-                    $("#crear_tienda").addClass("disabled btn-progress")
-                    return true; 
-                } 
+                   
+                } */
             }
         });
         /* -- *********************** -- */

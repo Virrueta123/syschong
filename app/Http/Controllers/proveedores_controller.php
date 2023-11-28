@@ -285,7 +285,8 @@ class proveedores_controller extends Controller
     /* ******** funciones para consumir en vue ************* */
     function proveedor_search(Request $req)
     {
-        $cliente = proveedores::select(DB::raw('proveedor_id AS id'), DB::raw("CONCAT(proveedor_nombre,' ', proveedor_razon_social) AS name"))
+       
+        $cliente = proveedores::select(DB::raw('proveedor_id AS id'), DB::raw("CONCAT('Ruc ',proveedor_ruc,'/ R.social ', proveedor_razon_social,'/ Dni ',proveedor_dni,'/ nombre ',proveedor_nombre) AS name"))
             ->where('proveedor_nombre', 'like', '%' . $req->all()['search'] . '%')
             ->orWhere('proveedor_razon_social', 'like', '%' . $req->all()['search'] . '%') 
             ->orWhere('proveedor_ruc', 'like', '%' . $req->all()['search'] . '%') 

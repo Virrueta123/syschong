@@ -24,4 +24,8 @@ class modelo extends Model
     {
         return $this->belongsTo(tipo_vehiculo::class, 'tipo_vehiculo_id')->withTrashed();
     }
+    public function moto()
+    {
+        return $this->hasMany(motos::class, 'modelo_id')->withTrashed();
+    }
 }

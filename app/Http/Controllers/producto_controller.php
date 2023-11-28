@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ProductoImport;
+use App\Models\categoria_producto;
 use App\Models\detalle_compra;
 use App\Models\detalle_venta;
 use App\Models\imagen_producto;
 use App\Models\marca;
+use App\Models\marca_producto;
+use App\Models\modelo;
 use App\Models\producto;
-use App\Models\producto_marcas;
+use App\Models\producto_modelo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +41,7 @@ class producto_controller extends Controller
      */
     public function datatables_vue()
     {
-        $producto = producto::with(['marca_producto'])
+        $producto = producto::with(['producto_modelo'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -57,7 +60,7 @@ class producto_controller extends Controller
 
     public function search_aceites()
     {
-        $producto = producto::with(['marca_producto',"unidad"])
+        $producto = producto::with(['producto_modelo',"unidad"])
             ->where('unidades_id',65)
             ->orderBy('created_at', 'desc') 
             ->get();
@@ -88,8 +91,8 @@ class producto_controller extends Controller
             return DataTables::of(
                 producto::with([
                     'marca_producto',
-                    'producto_marcas' => function ($query) {
-                        $query->with(['marca']);
+                    'producto_modelo' => function ($query) {
+                        $query->with(['modelo']);
                     },
                     'unidad',
                     'categoria',
@@ -119,6 +122,7 @@ class producto_controller extends Controller
         $html = $builder
             ->columns([
                 Column::make('prod_codigo')->title('Codigo'),
+                Column::make('prod_codigo_barra')->title('Codigo sistema'),
                 Column::make('prod_nombre')->title('Nombre'),
                 Column::make('prod_descripcion')->title('descripcion'),
                 Column::make('prod_precio_venta')->title('precio venta'),
@@ -186,9 +190,10 @@ class producto_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        $marcas_motos = marca::select('marca_id AS id', DB::raw('marca_nombre AS text'))->get();
-        return view('modules.productos.create', ['marcas_motos' => $marcas_motos]);
+    {$modelos =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
+        ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
+        ->get();
+        return view('modules.productos.create', ['modelos' => $modelos]);
     }
 
     /**
@@ -199,8 +204,8 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
-        $array_marcas = explode(',', $request->input('marcas_moto'));
+       
+       
 
         // Crear un nuevo registro
         $producto = new producto();
@@ -218,6 +223,18 @@ class producto_controller extends Controller
         $producto->prod_minimo = $request->input('prod_minimo');
         $producto->prod_calidad = $request->input('prod_calidad');
 
+        $marca = marca_producto::find($request->input('marca_prod_id'));
+
+        $cod_marca = substr(str_replace(' ', '', $marca->marca_prod_nombre), 0, 3);
+
+        $categoria = categoria_producto::find($request->input('categoria_id'));
+
+        $cod_categoria = substr(str_replace(' ', '', $categoria->categoria_nombre), 0, 3);
+
+        $codigo = substr(str_replace(' ', '',$request->input('prod_nombre')), 0, 3) . '' . $cod_marca . '' . $cod_categoria."".Carbon::now()->format("d");
+        
+        $producto->prod_codigo_barra =  $codigo;
+ 
         $producto->user_id = Auth::id();
 
         $created = $producto->save();
@@ -263,13 +280,17 @@ class producto_controller extends Controller
                 }
             }
 
-            foreach ($array_marcas as $marca) {
-                $producto_marcas = new producto_marcas();
-                $producto_marcas->marca_id = $marca;
-                $producto_marcas->prod_id = $producto->prod_id;
-                $producto_marcas->save();
+            if( $array_modelo = explode(',', $request->input('modelo_moto'))){
+                foreach ($array_modelo as $modelo) {
+                    $producto_modelo = new producto_modelo();
+                    $producto_modelo->modelo_id = $modelo;
+                    $producto_modelo->prod_id = $producto->prod_id;
+                    $producto_modelo->save();
+                } 
             }
+           
 
+            
             session()->flash('success', 'Producto creado correctamente');
             return response()->json([
                 'message' => 'se creo correctamente un producto',
@@ -330,19 +351,21 @@ class producto_controller extends Controller
             'marca_producto',
             'unidad',
             'categoria',
-            'producto_marcas' => function ($query) {
-                $query->with(['marca']);
+            'producto_modelo' => function ($query) {
+                $query->with(['modelo']);
             },
             'zona',
             'imagen',
         ])->find(decrypt_id($id));
 
-        if ($get) {
-            $marcas_motos = marca::select('marca_id AS id', DB::raw('marca_nombre AS text'))
-                ->where('estado', 'A')
-                ->get();
+        if ($get) { 
+ 
+            $producto_modelo =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
+            ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
+            ->get();
+            
 
-            return view('modules.productos.edit', ['get' => $get, 'id' => $id, 'marcas_motos' => $marcas_motos]);
+            return view('modules.productos.edit', ['get' => $get, 'id' => $id, 'producto_modelo' => $producto_modelo]);
         } else {
             return view('errors.404');
         }
@@ -427,14 +450,16 @@ class producto_controller extends Controller
                 }
             }
 
-            $eliminar = producto_marcas::where('prod_id', decrypt_id($id))->delete();
+            $eliminar = producto_modelo::where('prod_id', decrypt_id($id))->delete();
 
-            foreach ($array_marcas as $marca) {
-                $producto_marcas = new producto_marcas();
-
-                $producto_marcas->marca_id = $marca;
-                $producto_marcas->prod_id = decrypt_id($id);
-                $producto_marcas->save();
+           
+            if( $array_modelo = explode(',', $request->input('modelo_moto'))){
+                foreach ($array_modelo as $modelo) {
+                    $producto_modelo = new producto_modelo();
+                    $producto_modelo->modelo_id = $modelo;
+                    $producto_modelo->prod_id = decrypt_id($id);
+                    $producto_modelo->save();
+                } 
             }
 
             session()->flash('success', 'Producto editado correctamente');
@@ -463,7 +488,23 @@ class producto_controller extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $destroy = producto::find(  decrypt_id($id));
+            $destroy->delete();
+
+            if ($destroy) {
+                session()->flash('success', 'Registro eliminado correctamente');
+                return redirect()->route('producto.index');
+            } else {
+                Log::error('no se pudo eliminar la producto');
+                session()->flash('error', 'error al eliminar en la base de datos');
+                return redirect()->route('producto.index');
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            session()->flash('error', 'error al eliminar');
+            return redirect()->route('producto.index');
+        }   
     }
 
     public function importar()

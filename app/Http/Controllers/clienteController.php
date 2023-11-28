@@ -477,4 +477,40 @@ class clienteController extends Controller
             ]);
         }
     }
+
+        /* *********************** */
+        function editar_celular(Request $req)
+        {
+            try {
+                $datax = $req->all();
+    
+                $cliente = cliente::find($datax['cli_id']); 
+                $cliente->cli_telefono = $datax['cli_telefono']; 
+    
+                if ( $cliente->update()) {
+                    return response()->json([
+                        'message' => 'se actualizo correctamente el  cliente',
+                        'error' => '',
+                        'success' => true,
+                        'data' => $datax['cli_telefono'],
+                    ]);
+                } else {
+                    Log::error('error al actualizar el cliente');
+                    return response()->json([
+                        'message' => 'error al actualizar el cliente',
+                        'error' => '',
+                        'success' => false,
+                        'data' => '',
+                    ]);
+                }
+            } catch (\Throwable $th) {
+                Log::error($th->getMessage());
+                return response()->json([
+                    'message' => 'error al actualizar el cliente',
+                    'error' => $th->getMessage(),
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        }
 }

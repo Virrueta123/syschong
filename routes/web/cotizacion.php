@@ -8,11 +8,21 @@ Route::get('/cotizacion/{inventario_moto_id}', [App\Http\Controllers\cotizacion_
 
 Route::get('/cotizacion/{cotizacion}/pdf', [App\Http\Controllers\cotizacion_controller::class, 'pdf'])->name('cotizacion.pdf'); 
 
-Route::get('/cotizacion/{cotizacion}/cliente', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_show_cliente'])->name('cotizacion.cliente'); 
+Route::get('/cotizacion/{cotizacion}/cliente', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_show_cliente'])->name('cotizacion.cliente');
+Route::get('/venta/{venta}/cliente', [App\Http\Controllers\cotizacion_controller::class, 'venta_show_cliente'])->name('venta.cliente');  
  
 Route::post('/cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'store'])->name('cotizacion.store'); 
 
 Route::post('/cotizacion_enviada', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada'])->name('cotizacion_enviada');
+
+Route::post('/cotizacion_en_proceso', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_en_proceso'])->name('cotizacion_en_proceso');
+
+Route::post('/pendiente_aprobacion', [App\Http\Controllers\cotizacion_controller::class, 'pendiente_aprobacion'])->name('pendiente_aprobacion');
+
+Route::post('/avisado', [App\Http\Controllers\cotizacion_controller::class, 'avisado'])->name('avisado');
+
+Route::post('/cerrado', [App\Http\Controllers\cotizacion_controller::class, 'cerrado'])->name('cerrado');
+
 
 Route::post('/cotizacion_enviada_whatsapp', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada_whatsapp'])->name('cotizacion_enviada_whatsapp');  
 

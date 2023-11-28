@@ -127,8 +127,7 @@
                                 <div class="form-group col-md-12">
                                     <select name="mecanico_id" class="form-control">
                                         <option value="">Seleccionar mecanico</option>
-                                        @foreach ($mecanicos as $mecanico)
- 
+                                        @foreach ($mecanicos as $mecanico) 
                                             <option  {{ $cortesia->mecanico->id ==  $mecanico->id ? "selected" : "" }} value="{{ $mecanico->id }}">{{ $mecanico->name }} |
                                                 {{ $mecanico->last_name }}</option>
                                         @endforeach

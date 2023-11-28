@@ -59,6 +59,7 @@ class cotizacion_controller extends Controller
     {
         $this->middleware('auth')->except([
             'cotizacion_show_cliente',
+            "venta_show_cliente",
             'cotizacion_aprobada',
             // Adicione aqui o nome das rotas que você deseja excluir do middleware "auth"
         ]);
@@ -222,7 +223,11 @@ class cotizacion_controller extends Controller
             'inventario' => function ($query) {
                 $query->with([
                     'moto' => function ($query) {
-                        $query->with(['cliente', 'marca']);
+                        $query->with(['cliente', 
+                        'modelo'=>function ($query) {
+                            $query->with(['marca' ]);
+                        }
+                    ]);
                     },
                 ]);
             },
@@ -236,6 +241,8 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
+
+        
 
         $correlativo_factura = ventas::where('tipo_comprobante', 'F')->max('venta_correlativo');
 
@@ -265,6 +272,8 @@ class cotizacion_controller extends Controller
                 'correlativo_factura' => $correlativo_factura,
                 'correlativo_boleta' => $correlativo_boleta,
                 'forma_pago' => $forma_pago,
+                'url_whatsapp' => asset('/') . 'cotizacion/' . $id . '/cliente',
+                'url_raiz' => asset('/')
             ]);
         } else {
             return view('errors.404');
@@ -279,7 +288,43 @@ class cotizacion_controller extends Controller
      */
     public function edit($id)
     {
-        //
+        $get = cotizacion::with([
+            'inventario' => function ($query) {
+                $query->with([
+                    'moto' => function ($query) {
+                        $query->with(['cliente', 'marca']);
+                    },
+                ]);
+            },
+            'mecanico',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+
+        if ($get) {
+            $mecanicos = User::where('roles_id', 2)->get();
+            $accesorios = accesorios_inventario_detalle::with('accesorios')
+                ->where('inventario_moto_id', decrypt_id($id))
+                ->get();
+            $autorizaciones = inventario_autorizaciones::with('autorizaciones')
+                ->where('inventario_moto_id', decrypt_id($id))
+                ->get();
+            return view('modules.cotizacion.edit', [
+                'get' => $get,
+                'accesorios' => $accesorios,
+                'autorizaciones' => $autorizaciones,
+                'id' => $id,
+                'mecanicos' => $mecanicos,
+            ]);
+        } else {
+            return view('errors.404');
+        }
     }
 
     /**
@@ -302,7 +347,25 @@ class cotizacion_controller extends Controller
      */
     public function destroy($id)
     {
-        //
+      
+       try {
+
+            $cotizacion = cotizacion::find(decrypt_id($id));
+       
+            $delete = $cotizacion->delete(); 
+            if ($delete) {
+                session()->flash('success', 'se elimino correctamente la cotizacion');
+                return redirect()->route('taller.index');
+            } else {
+                session()->flash('success', 'error al eliminar la cotizacion');
+                return redirect()->route('taller.index');
+            }
+         
+        } catch (\Throwable $th) {
+            Log::error($th);
+            session()->flash('error', 'no se creo correctamente la caja');
+            return redirect()->route('caja.index');
+        }
     }
     //crear boleta
     public function emitir_boleta_cotizacion(Request $request)
@@ -551,7 +614,8 @@ class cotizacion_controller extends Controller
                     $factura->save();
 
                     $update = cotizacion::find($cotizacion->cotizacion_id);
-                    $update->progreso = 4;
+                    $update->venta_id = $venta->venta_id;
+
                     $update->save();
 
                     return response()->json([
@@ -577,7 +641,8 @@ class cotizacion_controller extends Controller
                     $factura->save();
 
                     $update = cotizacion::find($cotizacion->cotizacion_id);
-                    $update->progreso = 4;
+                    $update->venta_id = $venta->venta_id;
+
                     $update->save();
 
                     return response()->json([
@@ -866,7 +931,7 @@ class cotizacion_controller extends Controller
                     $factura->save();
 
                     $update = cotizacion::find($cotizacion->cotizacion_id);
-                    $update->progreso = 4;
+                    $update->venta_id = $venta->venta_id;
                     $update->save();
 
                     return response()->json([
@@ -892,7 +957,7 @@ class cotizacion_controller extends Controller
                     $factura->save();
 
                     $update = cotizacion::find($cotizacion->cotizacion_id);
-                    $update->progreso = 4;
+                    $update->venta_id = $venta->venta_id;
                     $update->save();
 
                     return response()->json([
@@ -987,6 +1052,31 @@ class cotizacion_controller extends Controller
         return view('modules.cotizacion.show_cliente', ['get' => $get]);
     }
 
+    public function venta_show_cliente($venta)
+    {
+        $cuentas = cuentas::where('estado', 'A')->get();
+
+        $get = ventas::with([
+            'vendedor',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($venta));
+
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.comprobante', ['get' => $get, 'id' => $venta, 'cuentas' => $cuentas]);
+
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
+    }
+
     /* ******** cotizacion aprobada whatsapp ************* */
     public function cotizacion_enviada_whatsapp(Request $request)
     {
@@ -1046,6 +1136,146 @@ class cotizacion_controller extends Controller
     /* *********************** */
     /* ******** cambiar estado de cotizacion ************* */
 
+    public function cotizacion_en_proceso(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $update = cotizacion::find($cotizacion_id);
+
+            $update->progreso = 1;
+            if ($update->save()) {
+                return response()->json([
+                    'message' => 'actualizacion exitosa se cambio a "En proceso"',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se pudo registrar la marca de producto');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function pendiente_aprobacion(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $update = cotizacion::find($cotizacion_id);
+
+            $update->progreso = 2;
+            if ($update->save()) {
+                return response()->json([
+                    'message' => 'actualizacion exitosa se cambio a "En proceso"',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se pudo registrar la marca de producto');
+                return response()->json([
+                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    
+    public function avisado(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $update = cotizacion::find($cotizacion_id);
+
+            $update->progreso = 5;
+            if ($update->save()) {
+                return response()->json([
+                    'message' => 'actualizacion exitosa se cambio a "Avisado"',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se puedo actualizar el estado');
+                return response()->json([
+                    'message' => 'no se puedo actualizar el estado',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+    public function cerrado(Request $request)
+    {
+        try {
+            $cotizacion_id = $request->all()['cotizacion_id'];
+
+            $update = cotizacion::find($cotizacion_id);
+
+            $update->progreso = 6;
+            if ($update->save()) {
+                return response()->json([
+                    'message' => 'actualizacion exitosa se cambio a "Cerrado"',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            } else {
+                Log::error('no se puedo actualizar el estado');
+                return response()->json([
+                    'message' => 'no se puedo actualizar el estado',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
     public function cotizacion_enviada(Request $request)
     {
         try {
@@ -1064,7 +1294,7 @@ class cotizacion_controller extends Controller
             } else {
                 Log::error('no se pudo registrar la marca de producto');
                 return response()->json([
-                    'message' => 'no se puedo actualizar la cotizacion a enviada',
+                    'message' => 'no se puedo actualizar el estado',
                     'error' => '',
                     'success' => false,
                     'data' => '',
@@ -1098,7 +1328,7 @@ class cotizacion_controller extends Controller
             if (count($detalle) == $contador) {
                 $cotizacion_id = $request->all()['cotizacion_id'];
                 $update = cotizacion::find($cotizacion_id);
-                $update->progreso = 2;
+                $update->progreso = 3;
                 $update->save();
                 return response()->json([
                     'message' => 'se actualizo la cotizacion a aprobada',
@@ -1134,7 +1364,7 @@ class cotizacion_controller extends Controller
         try {
             $cotizacion_id = $request->all()['cotizacion_id'];
             $update = cotizacion::find($cotizacion_id);
-            $update->progreso = 3;
+            $update->progreso = 4;
             if ($update->save()) {
                 return response()->json([
                     'message' => 'Trabajo finalizado',
@@ -1169,8 +1399,10 @@ class cotizacion_controller extends Controller
     {
         $cotizacion = cotizacion::select(DB::raw('*'))
             ->with([
+                'mecanico',
                 'inventario' => function ($query) {
                     $query->with([
+                        'cortesia',
                         'moto' => function ($query) {
                             $query->with(['cliente']);
                         },
@@ -1179,6 +1411,79 @@ class cotizacion_controller extends Controller
             ])
             ->where('progreso', $progreso)
             ->get();
+
+        return DataTables::of($cotizacion)
+            ->addColumn('action', static function ($Data) {
+                $cotizacion_id = encrypt_id($Data->cotizacion_id);
+                return view('buttons.cotizacion', ['cotizacion_id' => $cotizacion_id]);
+            })
+            ->addColumn('cliente', function ($Data) {
+                if(is_null($Data->inventario->moto->cliente)){
+                    return "Sin Cliente";
+                }else{
+                    if ($Data->inventario->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->inventario->moto->cliente->cli_razon_social;
+                    } else {
+                        if (is_null($Data->inventario->moto->cliente->cli_ruc)) {
+                            return $Data->inventario->moto->cliente->cli_nombre . ' ' . $Data->inventario->moto->cliente->cli_apellido;
+                        } else {
+                            return $Data->inventario->moto->cliente->cli_razon_social;
+                        }
+                    }
+                }
+                
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if(is_null($Data->inventario->moto->cliente)){
+                    return "Sin Cliente";
+                }else{
+                    if ($Data->inventario->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->inventario->moto->cliente->cli_ruc;
+                    } else {
+                        if (is_null($Data->inventario->moto->cliente->cli_ruc)) {
+                            return $Data->inventario->moto->cliente->cli_dni;
+                        } else {
+                            return $Data->inventario->moto->cliente->cli_ruc;
+                        }
+                    }
+                }
+               
+            })
+            ->addColumn('mecanico', function ($Data) {
+                 
+                    if (is_null($Data->mecanico)) {
+                        return "Sin Mecanico";
+                    } else {
+                        return $Data->mecanico->name . ' ' . $Data->mecanico->last_name; 
+                    }
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->inventario->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->inventario->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->inventario->moto->mtx_motor;
+            })
+            ->addColumn('vin', function ($Data) {
+                return $Data->inventario->moto->mtx_vin;
+            })
+            ->addColumn('fecha', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('tipo', function ($Data) {
+                if ($Data->inventario->cortesia->tipo == 'M') {
+                    return 'Mantenimiento particular';
+                } else {
+                    $title = 'Cortesia';
+                    $title_sub = 'N° Cortesia = ' . $Data->inventario->cortesia->numero_corterisa;
+                    return view('complementos.title', ['title' => $title, 'title_sub'=>$title_sub]);
+                }
+
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->toJson();
 
         return response()->json(['data' => $cotizacion]);
     }

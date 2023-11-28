@@ -70,7 +70,11 @@ include 'web/reportes.php';
 
 include 'web/forma_pago.php';
 
+include 'web/taller.php';
 
+include 'web/service.php';
+
+include 'web/caja_chica.php';
 /* *********************** */
 
 
@@ -85,6 +89,8 @@ Route::resource('moto', App\Http\Controllers\moto_controller::class);
 Route::resource('marca', App\Http\Controllers\marca_controller::class);
 
 Route::resource('modelo', App\Http\Controllers\modelo_controller::class);
+
+Route::resource('zona', App\Http\Controllers\zona_controller::class);
 
 Route::resource('producto', App\Http\Controllers\producto_controller::class);
 
@@ -125,6 +131,11 @@ Route::resource('ventas', App\Http\Controllers\ventas_controller::class);
 Route::resource('caja', App\Http\Controllers\caja_chica_controller::class);
 
 Route::resource('forma_pago', App\Http\Controllers\forma_pago_controller::class);
+
+Route::resource('taller', App\Http\Controllers\taller_controller::class);
+
+Route::resource('mecanico', App\Http\Controllers\mecanicos_controller::class);
+
 
 include 'web/empresa.php';
 

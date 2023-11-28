@@ -9,7 +9,7 @@
 @endsection
 @section('content')
     <div id="app">
-        <image-producto  marcas_motos="{{ $marcas_motos }}"></image-producto>
+        <image-producto  modelos="{{ $modelos }}"></image-producto>
     </div>
 @endsection
 

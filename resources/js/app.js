@@ -9,9 +9,10 @@ app.component('input-money', require('./components/implementaciones/input_curren
 
 app.component('example-component', require('./components/ExampleComponent.vue').default);
 
-app.component('dni', require('./components/dni.vue').default);
-app.component('ruc', require('./components/ruc.vue').default);
+app.component('dni', require('./components/cliente/dni.vue').default);
+app.component('ruc', require('./components/cliente/ruc.vue').default);
 
+app.component('add-factura', require('./components/taller/add_factura_tienda.vue').default)
 
 /* -- ********  componentes tienda ************* -- */
 app.component('ruc-tienda', require('./components/tienda/ruc_tienda.vue').default);
@@ -26,6 +27,11 @@ app.component('crear-cliente', require('./components/crear_cliente.vue').default
 
 app.component('asignar-cliente', require('./components/cliente/asignar_cliente_activacion.vue').default)
 
+app.component('taller-show', require('./components/taller/taller_show.vue').default)
+
+
+
+app.component('add-cortesia', require('./components/cortesia/add_cortesia.vue').default)
 
 app.component('search-cliente_pos', require('./components/search_cliente_pos.vue').default);
 app.component('crear-cliente_pos', require('./components/crear_cliente_pos.vue').default);
@@ -125,6 +131,7 @@ app.component('search-mecanicos', require('./components/mecanicos/search_mecanic
 
 /* -- ******** modulos para comprar ************* -- */
 app.component('create-compra', require('./components/compra/create_compra.vue').default);
+app.component('editar-compra', require('./components/compra/editar_compra.vue').default);
 app.component('search-respuestos', require('./components/compra/search_respuestos.vue').default);
 /* -- *********************** -- */
 
@@ -152,6 +159,7 @@ app.component('repuestos_add', require('./components/repuestos/add_repuesto.vue'
 app.component('tablas-activaciones-anterior-por-tienda', require('./components/tablas/tablas_activaciones_anterior_por_tienda.vue').default);
 app.component('tablas-activaciones-actual-por-tienda', require('./components/tablas/tablas_activaciones_actual_por_tienda.vue').default);
 app.component('tablas-cortesias-actual-por-tienda', require('./components/tablas/tablas_cortesias_actual_por_tienda.vue').default);
+app.component('tablas-factura-tienda', require('./components/tablas/tablas_factura_tienda.vue').default);
 /* -- *********************** -- */
 
 app.component('is-dias', require('./components/complementos/is_dias.vue').default);

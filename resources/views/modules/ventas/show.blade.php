@@ -56,22 +56,20 @@
 
                                                 @case('B')
                                                     Cliente:<span class="sin_bold">
-                                                        {{ $get->Nmbre }}
+                                                        {{ $get->Nombre }}
                                                         {{ $get->Apellido }} <br>
                                                         DNI:<span class="sin_bold">{{ $get->Dni }} <br>
                                                         @break
 
                                                         @case('N')
                                                             Cliente:<span class="sin_bold">
-                                                                {{ $get->Nmbre }}
+                                                                {{ $get->Nombre }}
                                                                 {{ $get->Apellido }} <br>
                                                                 DNI:<span class="sin_bold">{{ $get->Dni }} <br>
                                                                 @break
                                                             @endswitch
                                                             Direccion:<span class="sin_bold">{{ $get->direccion }}<br>
-
-                                                                Contacto:<span
-                                                                    class="sin_bold">{{ $get->cliente->cli_telefono }}<br>
+ 
 
                                 </address>
                             </div>
@@ -102,7 +100,7 @@
                                         @if ($detalle->tipo == 'p')
                                             <tr>
 
-                                                <td>{{ $detalle->Codigo }} </td>
+                                                <td> {{ $detalle->CodProducto }} </td>
                                                 <td>{{ $detalle->Descripcion }}</td>
 
                                                 <td> {{ $detalle->Detalle }} </td>
@@ -140,7 +138,7 @@
                                         @if ($detalle->tipo == 's')
                                             <tr>
 
-                                                <td>{{ $detalle->Codigo }} </td>
+                                                <td>{{ $detalle->CodProducto }} </td>
                                                 <td>{{ $detalle->Descripcion }}</td>
 
                                                 <td> {{ $detalle->Detalle }} </td>

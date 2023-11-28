@@ -183,9 +183,7 @@
                             @endswitch
 
                             <h5>Direccion:<span class="sin_bold">{{ $get->direccion }}</span>
-                            </h5>
-                            <h5>Contacto:<span class="sin_bold">{{ $get->cliente->cli_telefono }}</span>
-                            </h5>
+                            </h5> 
 
                         </td>
                         <td>
@@ -264,7 +262,7 @@
                         @if ($detalle->tipo == 's')
                             <tr>
 
-                                <td>{{ $detalle->Codigo }} </td>
+                                <td>{{ $detalle->CodProducto }} </td>
                                 <td>{{ $detalle->Descripcion }}</td>
 
                                 <td> {{ $detalle->Detalle }} </td>

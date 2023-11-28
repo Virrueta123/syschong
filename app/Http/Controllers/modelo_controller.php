@@ -235,7 +235,7 @@ class modelo_controller extends Controller
 
             $caja = modelo::findOrFail(decrypt_id($id));
           
-            if ($caja->pagos()->exists()) {
+            if ($caja->moto()->exists()) {
                 session()->flash('warning', 'No se puede eliminar esta modelo por que se esta usando en otros registros');
                 return redirect()->route('modelo.index');
             } else {

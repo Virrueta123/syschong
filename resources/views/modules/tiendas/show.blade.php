@@ -9,7 +9,7 @@
     </div>
 @endsection
 @section('content')
-    
+<div id="app">
     <div class="row mt-sm-4"> 
         <div class="col-12 col-md-12 col-lg-12">
           
@@ -66,6 +66,12 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="card text-white"> 
+      <div class="card-body">
+       <tablas-factura-tienda id="{{ $id }}"></tablas-factura-tienda>
+      </div>
     </div>
 
     <div class="card">
@@ -199,7 +205,7 @@
         </div>
     </div>
 
-    <div id="app">
+
 
         <div class="section-header">
             <h6>Activaciones pasadas</h6>
@@ -248,10 +254,7 @@
                 <div class="budget-price-square bg-danger" data-width="20" style="width: 20px;"></div>
                 <div class="budget-price-label">Total de cortesias</div>
             </div>
-        </div>
-
-
-
+        </div> 
     </div>
 @endsection
 

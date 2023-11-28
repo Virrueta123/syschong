@@ -14,7 +14,7 @@ class producto extends Model
     public $primaryKey = 'prod_id';
     protected $fillable = [];
     protected $guarded = [];
-    protected $appends = ['stock'];
+    protected $appends = ['stock',"precio"];
   
     public function marca_producto( ){
         return $this->belongsTo(marca_producto::class,"marca_id")->withTrashed();
@@ -28,7 +28,7 @@ class producto extends Model
         return $this->belongsTo(categoria_producto::class,"categoria_id")->withTrashed(); 
     }
 
-    public function marca( ){
+    public function marca(){
         return $this->belongsTo(marca_producto::class,"marca_id")->withTrashed(); 
     }
 
@@ -36,8 +36,8 @@ class producto extends Model
         return $this->belongsTo(zona::class,"zona_id")->withTrashed(); 
     }
 
-    public function producto_marcas( ){
-        return $this->hasMany(producto_marcas::class,"prod_id");
+    public function producto_modelo( ){
+        return $this->hasMany(producto_modelo::class,"prod_id");
     }
 
     public function usuario( ){
@@ -53,5 +53,14 @@ class producto extends Model
         $ventas = detalle_venta::where('prod_id', $this->prod_id)->where('tipo', "p")->sum('Cantidad');
         $stock = $this->prod_stock_inicial + $compras - $ventas   ;
         return $stock; 
+    }
+    public function getPrecioAttribute( ){
+        $compras = detalle_compra::where('prod_id', $this->prod_id)->where("is_precio_venta","Y")->orderBy('created_at', 'desc')->first();
+        if($compras){
+            return $compras->precio_venta;
+        }else{
+            return $this->prod_precio_venta;
+        }
+        
     }
 }

@@ -17,10 +17,14 @@ class compras extends Model
 
     public function usuario(){
         return $this->belongsTo(User::class,'user_id');
-    }
-
+    } 
     public function proveedor(){
-        return $this->belongsTo(proveedores::class,'proveedor_id');
-    
+        return $this->belongsTo(proveedores::class,'proveedor_id'); 
+    }
+    public function detalle(){ 
+        return $this->hasMany(detalle_compra::class,"compra_id");
+    }
+    public function pagos(){
+        return $this->hasMany(pagos_ventas::class,"compra_id");
     }
 }

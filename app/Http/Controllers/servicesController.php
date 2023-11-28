@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ubigeo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class servicesController extends Controller
 {
@@ -176,5 +178,18 @@ class servicesController extends Controller
     public function consulta_ruc_api(Request $request)
     {
         return $this->consulta_ruc($request->all()['ruc']);
+    }
+
+    public function ubigeo_search(Request $request){
+        $ubigeo = ubigeo::select(DB::raw('ubigeo_id AS id'), DB::raw("CONCAT(Ubigeo,' / ', Departamento,' / ',Provincia,' / ',Distrito) AS name"))
+         
+            ->where('Ubigeo', 'like', '%' . $request->all()['search'] . '%')
+            ->orWhere('Departamento', 'like', '%' . $request->all()['search'] . '%')
+            ->orWhere('Provincia', 'like', '%' . $request->all()['search'] . '%')
+            ->orWhere('Distrito', 'like', '%' . $request->all()['search'] . '%')
+            ->limit(25)
+            ->get();
+
+        echo json_encode($ubigeo);
     }
 }

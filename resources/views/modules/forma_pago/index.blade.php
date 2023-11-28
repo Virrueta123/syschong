@@ -4,7 +4,7 @@
     <h1>Toda las formas de pago</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-        <div class="breadcrumb-item"><a href="{{ route('producto.index') }}">Toda las formas de pago</a></div>
+        <div class="breadcrumb-item"><a href="{{ route('forma_pago.index') }}">Toda las formas de pago</a></div>
         <div class="breadcrumb-item">Lista de toda las formas de pago</div>
     </div>
 @endsection
@@ -14,7 +14,7 @@
         <div class="card-header">
             <h4>Toda las formas de pago</h4>
             <div class="card-header-action"> 
-                <a href="{{ route('producto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                <a href="{{ route('forma_pago.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
                         aria-hidden="true"></i> Crear Forma de pago</a>
 
             </div>

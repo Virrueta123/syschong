@@ -14,4 +14,9 @@ class marca extends Model
     public $primaryKey = 'marca_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function modelo()
+    {
+        return $this->hasMany(modelo::class, 'marca_id')->withTrashed();
+    }
 }

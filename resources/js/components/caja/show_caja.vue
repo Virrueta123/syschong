@@ -3,18 +3,18 @@
     <div class="card">
 
         <div class="card-header">
-            <h4>Visualizar reporte de la caja</h4>
-
+            <h4>Visualizar reporte de la caja</h4> 
+            <div class="card-header-action">
+                <a href="{{ route('zona.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                    aria-hidden="true"></i> Descargar Pdf</a> 
+            </div>
         </div>
         <div class="card-body main-wrapper">
             <button class="btn btn-danger" v-on:click="reporte_ventas()">
                 <i class="fa  fa-circle-notch"></i> Recargar
             </button>
-            <div class="row">
-
-                <div class="col-md-6">
-
-
+            <div class="row"> 
+                <div class="col-md-6"> 
                     <TabView>
                         <TabPanel header="Grafico Venta">
                             <h3 class="text-center">Ventas </h3>

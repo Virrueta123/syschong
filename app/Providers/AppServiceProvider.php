@@ -33,189 +33,194 @@ class AppServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $menu = [
                     [
-                        'name' => 'VENTAS',
+                        'name' => 'Ventas',
                         'icon' => 'fa fa-cart-plus',
                         'submenu' => [
                             [
-                                'name' => 'LISTADO DE COMPROBANTES',
+                                'name' => 'Listado de comprobantes',
                                 'url' => 'ventas.index',
                             ],
                             [
-                                'name' => 'NOTA DE VENTA ',
+                                'name' => 'Nota de venta',
                                 'url' => 'ventas.notas_venta',
                             ],
                             [
-                                'name' => 'OPORTUNIDADES DE VENTA',
+                                'name' => 'Oportunidades de venta',
                                 'url' => 'cliente.create',
                             ],
                             [
-                                'name' => 'COTIZACION',
+                                'name' => 'Cotizacion',
                                 'url' => 'cliente.create',
-                            ]
+                            ],
                         ],
                     ],
 
                     [
-                        'name' => 'ACTIVACIONES',
+                        'name' => 'Activaciones',
                         'icon' => 'fa fa-cart-plus',
                         'submenu' => [
                             [
-                                'name' => 'NUEVA ACTIVACION',
+                                'name' => 'Nueva activacion',
                                 'url' => 'activaciones.create',
                             ],
                             [
-                                'name' => 'LISTADO',
-                                'url' => 'cliente.create',
-                            ],
-                            [
-                                'name' => 'CASAS COMERCIALES',
-                                'url' => 'cliente.create',
-                            ], 
-                        ],
-                    ],
-
-                     [
-                        'name' => 'TALLER',
-                        'icon' => 'fa fa-hammer',
-                        'submenu' => [
-                            [
-                                'name' => 'TODA LAS ACTIVACIONES',
+                                'name' => 'Listado',
                                 'url' => 'activaciones.index',
                             ],
                             [
-                                'name' => 'NUEVA ACTIVACION',
-                                'url' => 'activaciones.create',
+                                'name' => 'Casas comerciales',
+                                'url' => 'tiendas.index',
                             ],
                             [
-                                'name' => 'MANTENIMIENTO PARTICULAR',
-                                'url' => 'mantenimiento.create',
+                                'name' => 'Vendedores por casa comerciales',
+                                'url' => 'vendedor.index',
                             ],
-                            [
-                                'name' => 'MECANICOS',
-                                'url' => 'cliente.create',
-                            ],
-                            [
-                                'name' => 'TALLER',
-                                'url' => 'cliente.create',
-                            ]
                         ],
-                    ], 
-                    [
-                        'name' => 'PRODUCTOS/SERVICIOS',
-                        'icon' => 'fa fa-box',
-                        'submenu' => [
-                            [
-                                'name' => 'PRODUCTOS',
-                                'url' => 'producto.index',
-                            ],
-                            [
-                                'name' => 'SERVICIOS',
-                                'url' => 'servicios.index',
-                            ],
-                            [
-                                'name' => 'CATEGORIAS',
-                                'url' => 'categorias.index',
-                            ],
-                            [
-                                'name' => 'MARCAS',
-                                'url' => 'marca_producto.index',
-                            ]
-                        ],
-                    ],
-                    [
-                        'name' => 'CLIENTES',
-                        'icon' => 'fa fa-users',
-                        'submenu' => [
-                            [
-                                'name' => 'CLIENTES',
-                                'url' => 'cliente.index',
-                            ],
-                            [
-                                'name' => 'TIPO',
-                                'url' => 'cliente.create',
-                            ], 
-                        ],
-                    ],
-                    [
-                        'name' => 'VEHICULOS',
-                        'icon' => 'fa fa-motorcycle',
-                        'submenu' => [ 
-                            [
-                                'name' => 'VEHICULOS',
-                                'url' => 'moto.index',
-                            ],
-                            [
-                                'name' => 'NUEVO VEHICULO',
-                                'url' => 'moto.create',
-                            ],
-                            [
-                                'name' => 'MARCA VEHICULO',
-                                'url' => 'marca.index',
-                            ], 
-                            [
-                                'name' => 'MODELO VEHICULO',
-                                'url' => 'modelo.index',
-                            ], 
-                        ],
-                    ], 
-                    [
-                        'name' => 'COMPRAS',
-                        'icon' => 'fa fa-cart-plus',
-                        'submenu' => [
-                            [
-                                'name' => 'LISTADO',
-                                'url' => 'cliente.index',
-                            ],
-                            [
-                                'name' => 'NUEVA COMPRA',
-                                'url' => 'cliente.create',
-                            ], 
-                            [
-                                'name' => 'LISTADO DE COMPRAS',
-                                'url' => 'cliente.create',
-                            ], 
-                            [
-                                'name' => 'PROVEEDORES',
-                                'url' => 'cliente.create',
-                            ], 
-                        ],
-                    ],
-                 
-            
-                    [
-                        'name' => 'INVENTARIO',
-                        'icon' => 'fa fa-box-open',
-                        'submenu' => [
-                            [
-                                'name' => 'MOVIMIENTOS',
-                                'url' => 'cliente.index',
-                            ],
-                            [
-                                'name' => 'DEVOLUCION A PROVEEDOR',
-                                'url' => 'cliente.create',
-                            ],  
-                        ],
-                    ],
-                    [
-                        'name' => 'CAJA',
-                        'icon' => 'fa fa-cash-register',
-                        'submenu' => [['name' => 'PUNTO DE VENTA', 'url' => 'pos.create'], ['name' => 'cajas', 'url' => 'caja.index'], ['name' => 'FORMA DE PAGO', 'url' => 'forma_pago.index'], ['name' => 'CREAR FORMA DE VENTA', 'url' => 'forma_pago.create']],
-                    ],
-                    [
-                        'name' => 'USUARIOS',
-                        'icon' => 'fa fa-users',
-                        'submenu' => [['name' => 'USUARIOS', 'url' => 'users.index'], ['name' => 'NUEVO USUARIO', 'url' => 'users.create']],
                     ],
 
                     [
-                        'name' => 'REPORTES',
-                        'icon' => 'fa fa-chart-pie',
-                        'submenu' => [['name' => 'PUNTO DE VENTA', 'url' => 'pos.create'], ['name' => 'cajas', 'url' => 'caja.index'], ['name' => 'FORMA DE PAGO', 'url' => 'forma_pago.index'], ['name' => 'CREAR FORMA DE VENTA', 'url' => 'forma_pago.create']],
+                        'name' => 'Taller',
+                        'icon' => 'fa fa-hammer',
+                        'submenu' => [
+                            [
+                                'name' => 'Servicio de cortesía',
+                                'url' => 'activaciones.create',
+                            ],
+                            [
+                                'name' => 'Mantenimiento particular',
+                                'url' => 'mantenimiento.create',
+                            ],
+                            [
+                                'name' => 'Mecanicos',
+                                'url' => 'mecanico.index',
+                            ],
+                            [
+                                'name' => 'Taller',
+                                'url' => 'taller.index',
+                            ],
+                        ],
                     ],
- 
- 
- 
-                    
+                    [
+                        'name' => 'Productos/Servicios',
+                        'icon' => 'fa fa-box',
+                        'submenu' => [
+                            [
+                                'name' => 'Productos',
+                                'url' => 'producto.index',
+                            ],
+                            [
+                                'name' => 'Servicios',
+                                'url' => 'servicios.index',
+                            ],
+                            [
+                                'name' => 'Categorias',
+                                'url' => 'categorias.index',
+                            ],
+                            [
+                                'name' => 'Marcas',
+                                'url' => 'marca_producto.index',
+                            ],
+                            [
+                                'name' => 'Zona',
+                                'url' => 'zona.index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'Clientes',
+                        'icon' => 'fa fa-users',
+                        'submenu' => [
+                            [
+                                'name' => 'Clientes',
+                                'url' => 'cliente.index',
+                            ],
+                            [
+                                'name' => 'Tipo',
+                                'url' => 'cliente.create',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'Vehiculos',
+                        'icon' => 'fa fa-motorcycle',
+                        'submenu' => [
+                            [
+                                'name' => 'Vehiculos',
+                                'url' => 'moto.index',
+                            ],
+                            [
+                                'name' => 'Nuevo vehiculo',
+                                'url' => 'moto.create',
+                            ],
+                            [
+                                'name' => 'Marca Vehiculo',
+                                'url' => 'marca.index',
+                            ],
+                            [
+                                'name' => 'Modelo Vehiculo',
+                                'url' => 'modelo.index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'Compras',
+                        'icon' => 'fa fa-cart-plus',
+                        'submenu' => [
+                            [
+                                'name' => 'Listado',
+                                'url' => 'compras.index',
+                            ],
+                            [
+                                'name' => 'Nueva Compra',
+                                'url' => 'compras.create',
+                            ],
+                            [
+                                'name' => 'Listado de compras',
+                                'url' => 'compras.index',
+                            ],
+                            [
+                                'name' => 'Proveedores',
+                                'url' => 'proveedores.index',
+                            ],
+                        ],
+                    ],
+
+                    [
+                        'name' => 'Inventario',
+                        'icon' => 'fa fa-box-open',
+                        'submenu' => [
+                            [
+                                'name' => 'Movimientos',
+                                'url' => 'cliente.index',
+                            ],
+                            [
+                                'name' => 'Devolucion a proveedor',
+                                'url' => 'cliente.create',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'Caja',
+                        'icon' => 'fa fa-cash-register',
+                        'submenu' => [
+                            ['name' => 'Punto de venta', 'url' => 'pos.create'],
+                         ['name' => 'Cajas', 'url' => 'caja.index'], 
+                         ['name' => 'Forma de pago', 'url' => 'forma_pago.index'], 
+                         ['name' => 'Crear forma de venta', 'url' => 'forma_pago.create']],
+                    ],
+                    [
+                        'name' => 'Usuarios',
+                        'icon' => 'fa fa-users',
+                        'submenu' => [['name' => 'Usuarios', 'url' => 'users.index'], 
+                        ['name' => 'Nuevo usuario', 'url' => 'users.create']],
+                    ],
+
+                    [
+                        'name' => 'Reportes',
+                        'icon' => 'fa fa-chart-pie',
+                        'submenu' => [
+                            ['name' => 'Punto de venta', 'url' => 'pos.create']],
+                    ],
                 ];
 
                 view()->share([

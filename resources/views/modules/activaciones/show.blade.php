@@ -40,7 +40,7 @@
                                     <td>Tienda:</td>
                                     <td>{{ $get->tienda->tienda_nombre }}</td>
                                 </tr>
-                                <tr class="m-0 p-0">  
+                                <tr class="m-0 p-0">
                                     <td>Vendedor:</td>
                                     <td>{{ $get->vendedor->vendedor_nombres }}</td>
                                 </tr>
@@ -56,17 +56,18 @@
 
                                 @if (is_null($get->moto->cliente))
                                     <tr>
-                                        <td >
+                                        <td>
                                             <h4>Sin cliente</h4>
                                         </td>
-                                        <td style="float: right;"><asignar-cliente mtx_id="{{$get->moto->mtx_id}}"></asignar-cliente></td>
-                                    </tr> 
+                                        <td style="float: right;"><asignar-cliente
+                                                mtx_id="{{ $get->moto->mtx_id }}"></asignar-cliente></td>
+                                    </tr>
                                 @else
                                     <tr>
                                         <td>Dni / Ruc</td>
 
                                         <td>
-                                            {{  !is_null($get->moto->cliente->cli_ruc) ? $get->moto->cliente->cli_ruc : $get->moto->cliente->cli_dni }}
+                                            {{ !is_null($get->moto->cliente->cli_ruc) ? $get->moto->cliente->cli_ruc : $get->moto->cliente->cli_dni }}
                                             {{ $get->moto->cliente->cli_ruc != 'no tiene' ? $get->moto->cliente->cli_ruc : $get->moto->cliente->cli_dni }}
                                         </td>
                                     </tr>
@@ -74,8 +75,8 @@
                                     <tr>
                                         <td>Nombre o apellido / Razon social</td>
                                         <td>
-                                            {{  !is_null($get->moto->cliente->cli_ruc) ? $get->moto->cliente->cli_razon_social : $get->moto->cliente->cli_nombre . ' ' . $get->moto->cliente->cli_apellido }}
-                                            {{ $get->moto->cliente->cli_ruc != 'no tiene'  ? $get->moto->cliente->cli_razon_social : $get->moto->cliente->cli_nombre . ' ' . $get->moto->cliente->cli_apellido }}
+                                            {{ !is_null($get->moto->cliente->cli_ruc) ? $get->moto->cliente->cli_razon_social : $get->moto->cliente->cli_nombre . ' ' . $get->moto->cliente->cli_apellido }}
+                                            {{ $get->moto->cliente->cli_ruc != 'no tiene' ? $get->moto->cliente->cli_razon_social : $get->moto->cliente->cli_nombre . ' ' . $get->moto->cliente->cli_apellido }}
                                         </td>
                                     </tr>
 
@@ -175,50 +176,97 @@
     </div>
     <div class="section-body">
 
+        <div class="card text-white">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered table-striped table-hover table-sm display">
+                            <thead>
+                                <tr>
+                                    <th scope="col">N°Cortesia</th>
+                                    <th scope="col">Km</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Proxima Cortesia</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Tienda a cobrar</th>
+                                    <th scope="col"><i class="fa fa-cog" aria-hidden="true"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @forelse  ($get->cortesias as $cotesia)
+                                    @php
+                                        $otraFecha = \Carbon\Carbon::parse($cotesia->created_at); // Sustituye '2023-08-31' con tu fecha deseada
+
+                                        $hoy = \Carbon\Carbon::now(); // Obtiene la fecha y hora actual
+
+                                        $diferenciaEnDias = $hoy->diffInDays($otraFecha);
+                                    @endphp
+
+                                    <tr>
+                                        <th scope="row">{{ $cotesia->numero_corterisa }}</th>
+                                        <td>{{ $cotesia->km }} Km </td>
+                                        <td>{{ \Carbon\Carbon::parse($cotesia->created_at)->format('d/m/Y') }}</td>
+                                        <td>{{ $diferenciaEnDias }} dias</td>
+                                        <td>{{ $cotesia->precio }} dias</td>
+                                        <td>{{ $cotesia->tcobrar->tienda_nombre }} </td>
+                                        <td>
+
+
+                                            <div class="dropdown d-inline ">
+                                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                                    id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <i class="fa fa-cogs"></i>
+                                                </button>
+                                                <div class="dropdown-menu " x-placement="bottom-start"
+                                                    style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
 
 
 
-        <div class="row">
-            <div class="col-12">
-                <div class="activities">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('cotizaciones.show', $cotesia->cortesias_activacion_id) }}"> <i
+                                                            class="fa fa-eye fa-1x"></i>Ver Proceso
+                                                    </a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('cotizaciones.edit', $cotesia->cortesias_activacion_id) }}"> <i
+                                                            class="fa fa-edit fa-1x"></i>Editar
+                                                    </a>
 
-                    @forelse  ($get->cortesias as $cotesia)
-                        @php
-                            $otraFecha = \Carbon\Carbon::parse($cotesia->created_at); // Sustituye '2023-08-31' con tu fecha deseada
+                                                    <form method="POST" id="formdeletetx{{ $cotesia->cortesias_activacion_id }}"
+                                                        action="{{ route('cortesia.delete', $cotesia->cortesias_activacion_id) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <input name="_method" type="hidden" value="DELETE">
+                                                        <button type="submit"
+                                                            onclick="FormDelete('tx{{ $cotesia->cortesias_activacion_id }}','esta segur@ que desea eliminar este registro, se eliminara tambien la cotizacion relacionada',event)"
+                                                            class="btn dropdown-item btn-danger btn-sm m-1"><i
+                                                                class="fa fa-trash fa-1x"> </i>Eliminar Cortesia</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                            $hoy = \Carbon\Carbon::now(); // Obtiene la fecha y hora actual
 
-                            $diferenciaEnDias = $hoy->diffInDays($otraFecha);
-                        @endphp
+                                @empty
+                                    <div class="col-md-12 col-lg-12 mb-12 mb-lg-0">
+                                        <center v-if="show_servicios.length == 0">
+                                            <img src="{{ asset('images/svg/sin_data.svg') }}" width="400"
+                                                alt="">
+                                            <h6 class="m-4">Aun no hay cortesias</h6>
+                                        </center>
+                                    </div>
+                                @endforelse
 
-                        <div class="activity">
-                            <div class="activity-icon bg-primary text-white shadow-primary">
-                                <i class="fa fa-check" aria-hidden="true"></i>
-                            </div>
-                            <div class="activity-detail">
-                                <div class="mb-2">
-                                    <span
-                                        class="text-job text-primary">{{ \Carbon\Carbon::parse($cotesia->created_at)->format('d/m/Y') }}
-                                    </span>
-                                    <span class="bullet"></span>
-                                    <a class="text-job" href="#">Cortesia N° {{ $cotesia->numero_corterisa }}</a>
 
-                                </div>
-                                <p>{{ $cotesia->km }} Km | {{ $diferenciaEnDias }} dias</p>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-md-12 col-lg-12 mb-12 mb-lg-0">
-                            <center v-if="show_servicios.length == 0">
-                                <img src="{{ asset('images/svg/sin_data.svg') }}" width="400" alt="">
-                                <h6 class="m-4">Aun no hay cortesias</h6>
-                            </center>
-                        </div>
-                    @endforelse
 
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+ 
     </div>
 @endsection
 

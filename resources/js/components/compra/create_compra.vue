@@ -231,7 +231,8 @@
                                             </td>
                                             <td scope="row">
                                                 <div class="form-group">
-                                                    <select class="custom-select" v-on:change="forma_pago_change(pgb,$event)">
+                                                    <select class="custom-select"
+                                                        v-on:change="forma_pago_change(pgb,$event)">
 
                                                         <option v-for="(f_g, fg) in forma_pago" :key="fg"
                                                             :selected="f_g.forma_pago_id == pagob.forma_pago_id"
@@ -534,7 +535,7 @@
                 is_pago: false,
                 index_pago: 0,
                 tipo_comprobante: "F",
-                igualdad_forma_de_pago : false
+                igualdad_forma_de_pago: false
             }
         },
         computed: {
@@ -558,12 +559,7 @@
                     this.is_complete_pago = true;
                     console.log(this.is_complete_pago);
 
-                    for (let i = 1; i < this.pagos.length; i++) {
-                        if (this.pagos[i].forma_pago_id == this.pagos[0].forma_pago_id) {
-                            this.igualdad_forma_de_pago = true;
-                            break; // Si se encuentra uno diferente, no es necesario seguir buscando
-                        }
-                    }
+
 
                     return importe_pagos;
                 } else {
@@ -608,7 +604,7 @@
                 }
 
             },
-            forma_pago_change(index,value){
+            forma_pago_change(index, value) {
                 console.log(value)
                 this.pagos[index].forma_pago_id = value.target.value;
             },
@@ -911,60 +907,54 @@
                     }
                 },
                 submitHandler: function(form) {
-                  if (this.igualdad_forma_de_pago) {
-                    if (this.sumar_pagos == this.sumar_total) {
-                        if (this.repuestos.length != 0) {
-                    this.send_axios_reponse(
-                            "Desear Emitir la compra?",
-                            "Si,Emitir la compra", {
-                                proveedor_id: $("#proveedor_id").val(),
-                                fecha_creacion: this.fecha_creacion,
-                                fecha_vencimiento: this.fecha_vencimiento,
-                                tipo_comprobante: this.tipo_comprobante,
-                                serie: this.serie,
-                                correlativo: this.correlativo,
-                                pagos: this.pagos,
-                                total: this.sumar_total,
-                                repuestos: this.repuestos,
-                                is_pago: this.is_pago
-                            },
-                            "/emitir_compra"
-                        ).then((result) => {
-                            console.log(result);
-                            if (result.success) {
-                                // La solicitud se completó exitosamente
-                                window.location.href = "/compras";
-                            } else {
+
+                    if (this.repuestos.length != 0) {
+                        this.send_axios_reponse(
+                                "Desear Emitir la compra?",
+                                "Si,Emitir la compra", {
+                                    proveedor_id: $("#proveedor_id").val(),
+                                    fecha_creacion: this.fecha_creacion,
+                                    fecha_vencimiento: this.fecha_vencimiento,
+                                    tipo_comprobante: this.tipo_comprobante,
+                                    serie: this.serie,
+                                    correlativo: this.correlativo,
+                                    pagos: this.pagos,
+                                    total: this.sumar_total,
+                                    repuestos: this.repuestos,
+                                    is_pago: this.is_pago
+                                },
+                                "/emitir_compra"
+                            ).then((result) => {
+                                console.log(result);
+                                if (result.success) {
+                                    // La solicitud se completó exitosamente
+                                    window.location.href = "/compras";
+                                } else {
+                                    Swal.fire({
+                                        icon: "warning",
+                                        title: "Error al crear la compra",
+                                        text: result.message,
+                                        footer: "-------",
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                                // El usuario canceló la operación o hubo un error
                                 Swal.fire({
-                                    icon: "warning",
+                                    icon: "error",
                                     title: "Error al crear la compra",
-                                    text: result.message,
+                                    text: "recarga la pagina",
                                     footer: "-------",
                                 });
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            // El usuario canceló la operación o hubo un error
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error al crear la compra",
-                                text: "recarga la pagina",
-                                footer: "-------",
                             });
-                        });
                     } else {
-                                Swal.fire('tiene que haber productos en la venta para poder emitir el comprobante')
-                            }
-  
-                    } else {
-                        Swal.fire('Los pagos no coinciden con el total del comprobante')
+                        Swal.fire(
+                            'tiene que haber productos en la venta para poder emitir el comprobante'
+                        )
                     }
-                } else {
-                    Swal.fire('la forma de pagos son iguales elije forma de pagos diferentes')
-                }
 
-                    
+
 
                     return false;
                 }.bind(this)

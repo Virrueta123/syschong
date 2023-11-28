@@ -46,4 +46,11 @@ class empresa extends Model
     public function codigo_telefono(){
         return $this::where('active', "A")->first()->codigo_telefono;
     }
+
+    public function cortesia(){
+        return $this::where('active', "A")->first()->cortesia;
+    }
+    public function activacion(){
+        return $this::where('active', "A")->first()->activacion;
+    }
 }

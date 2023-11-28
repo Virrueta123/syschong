@@ -10,36 +10,21 @@
                 </div>
                 <div class="card-body">
 
-                    <div class="form-group col-md-12 p-0">
-                        <label for="prod_codigo">Buscar la moto</label>
-                        <div class="input-group">
-                            <search-moto-modelo name="mtx_id"></search-moto-modelo>
-                        </div>
-                    </div>
 
-                    <div class="form-group col-md-12 p-0">
-                        <label for="prod_codigo">Buscar Mecanico</label>
-                        <div class="input-group">
-                            <search-mecanicos name="mecanico_id"></search-mecanicos>
-                        </div>
-                    </div>
+
+
 
                     <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="prod_codigo">Precio Mantenimiento</label>
 
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        S/.
-                                    </div>
-                                </div>
-                                <input-money name="precio" name_precio="precio"></input-money>
-                            </div>
+                        <div class="form-group col-md-8 p-0">
+                            <label for="prod_codigo">Buscar la moto</label>
+                           
+                                <search-moto-modelo name="mtx_id"></search-moto-modelo>
+                          
                         </div>
 
-                        <div class="form-group col-md-3">
-                            <label for="prod_codigo">Precio Mantenimiento</label>
+                        <div class="form-group col-md-4">
+                            <label for="prod_codigo">Kilometraje</label>
 
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -51,27 +36,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label for="prod_codigo">Aviso</label>
-                            <div class="input-group-prepend">
 
-                            </div>
-
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <Checkbox name="is_aviso" v-on:click="is_aviso_change" id="is_aviso"
-                                            v-model="is_aviso" :binary="true" />
-                                    </span>
-                                </div>
-                                <p-inputnumber name="dias" :disabled="isDisabledDias" id="dias" v-model="dias"
-                                    inputId="minmax-buttons" :useGrouping="false" showButtons :min="0"
-                                    :max="1000" />
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Dias</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="section-header">
@@ -95,13 +60,35 @@
                     </div>
 
 
-                    <add-aceites></add-aceites>
-
                     <h2 class="section-title">Observaciones del cliente</h2>
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="aut_nombre">(Fallas,Ruidos extraños, Etc.)</label>
                             <textarea class="form-control" name="inventario_moto_obs_cliente" id="" cols="30" rows="10"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h1>Cotizacion</h1>
+                    </div>
+
+                    <repuestos_add v-on:childEvent="handleChildEvent"></repuestos_add>
+
+                    <div class="section-header">
+                        <h1>Otros Datos</h1>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="observacion_sta">Observacion del Sta</label>
+                        <div class="form-group col-md-12">
+                            <textarea name="observacion_sta" class="form-control" id="" cols="30" rows="10"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="trabajo_realizar">Trabajos a realiza</label>
+                        <div class="form-group col-md-12">
+                            <textarea name="trabajo_realizar" class="form-control" id="" cols="30" rows="10"></textarea>
                         </div>
                     </div>
 
@@ -134,13 +121,16 @@
 
     import mantenimientoAutorizaciones from './mantenimientoAutorizaciones.vue';
 
+    import repuestos_add from "../repuestos/add_repuesto.vue"
+
     export default {
         components: {
             "p-inputnumber": InputNumber,
             "Checkbox": Checkbox,
             ChildComponent,
             mantenimientoAccesorios,
-            mantenimientoAutorizaciones
+            mantenimientoAutorizaciones,
+            repuestos_add
         },
         data() {
             return {
@@ -152,7 +142,8 @@
                 accesorios: this.$attrs.accesorios,
                 dataFromParent: 'Datos desde el padre',
                 select_acesorios: [],
-                select_autorizacion: []
+                select_autorizacion: [],
+                repuestos: [],
             }
         },
         methods: {
@@ -167,6 +158,8 @@
             handleChildEvent(data) {
                 // Manejar datos enviados desde el hijo
                 console.log('Datos del hijo:', data);
+                this.repuestos = data;
+                console.log(this.repuestos)
             },
 
             is_aviso_change() {
@@ -196,68 +189,85 @@
                         required: true,
                     },
                     inventario_moto_obs_cliente: {
-                        required: true,
-                    } 
+                        required: false,
+                    }
                 },
                 submitHandler: function(form) {
-                    var aceite_id = $("#aceite_id").val();
 
-                    if (typeof aceite_id === 'undefined') {
-                        Swal.fire("Inserte un aceite para continuar")
-                    } else {
-                        try {
-                            const fileUploadForm = document.getElementById('form_crear_mantenimiento');
-                            const formData = new FormData(fileUploadForm);
+                    console.log(this.select_acesorios.length);
 
-                            console.log(this.select_acesorios)
+                    if (this.select_acesorios.length != 0) {
+                        if (this.select_autorizacion.length) {
+                            try {
+                                const fileUploadForm = document.getElementById('form_crear_mantenimiento');
+                                const formData = new FormData(fileUploadForm);
 
-                            formData.append('is_aviso', this.is_aviso);
-                            formData.append('dias', this.dias);
-                            formData.append('aceite_id', $("#aceite_id").val());
-                            formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
-                            formData.append('select_autorizacion', JSON.stringify(this
-                            .select_autorizacion));
+                                console.log(this.select_acesorios)
 
-                            const headers = {
-                                "Content-Type": "application/json",
-                            };
-                            const data = formData;
-                            axios
-                                .post("/create_vue_mantenimiento", data, {
-                                    headers,
-                                })
-                                .then((response) => {
+                                formData.append('is_aviso', this.is_aviso);
+                                formData.append('dias', this.dias);
+                                formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
+                                formData.append('select_autorizacion', JSON.stringify(this
+                                    .select_autorizacion));
+                                formData.append('repuestos', JSON.stringify(this.repuestos));
 
 
-                                    if (response.data.success) {
+                                const headers = {
+                                    "Content-Type": "application/json",
+                                };
+                                const data = formData;
+                                /*const data = {
+                                    data: this.formData,
+                                    is_aviso: this.is_aviso,
+                                    dias: this.dias,
+                                    select_acesorios: this.select_acesorios,
+                                    select_autorizacion: this.select_autorizacion,
+                                    repuestos: this.repuestos
+                                };*/
+                                axios
+                                    .post("/create_vue_mantenimiento", data, {
+                                        headers,
+                                    })
+                                    .then((response) => {
 
-                                        window.location.href = response.data.data;
 
-                                    } else {
+                                        if (response.data.success) {
+
+                                            window.location.href = response.data.data;
+
+                                        } else {
+                                            Swal.fire({
+                                                position: 'center',
+                                                icon: 'error',
+                                                title: 'Error al registrar el mantenimiento, intentelo otra vez',
+                                                showConfirmButton: false,
+                                                timer: 3000
+                                            })
+                                        }
+                                    })
+                                    .catch((error) => {
                                         Swal.fire({
-                                            position: 'center',
-                                            icon: 'error',
-                                            title: 'Error al registrar el mantenimiento, intentelo otra vez',
-                                            showConfirmButton: false,
-                                            timer: 3000
-                                        })
-                                    }
-                                })
-                                .catch((error) => {
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "Error 500",
-                                        text: "Error en el servidor, vuelva a intentar",
-                                        footer: "-------",
+                                            icon: "error",
+                                            title: "Error 500",
+                                            text: "Error en el servidor, vuelva a intentar",
+                                            footer: "-------",
+                                        });
+                                        console.error(error);
                                     });
-                                    console.error(error);
-                                });
 
 
-                        } catch (error) {
-                            console.log(error)
+                            } catch (error) {
+                                console.log(error)
+                            }
+                        } else {
+                            Swal.fire("necesitas seleccionar al menos una autorizacion")
                         }
+                    } else {
+                        Swal.fire("necesitas seleccionar al menos un accesorio")
                     }
+
+
+
 
 
 

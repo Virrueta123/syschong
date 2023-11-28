@@ -27,6 +27,11 @@ class activaciones extends Model
         return $this->belongsTo(tiendas::class,'tienda_id')->withTrashed();
     }
 
+    public function tcobrar(){
+        return $this->belongsTo(tiendas::class,'tienda_cobrar')->withTrashed();
+    }
+
+
     public function vendedor(){
         return $this->belongsTo(vendedor::class,'vendedor_id')->withTrashed();
     }

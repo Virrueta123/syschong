@@ -5,31 +5,43 @@
             <li class="nav-item">
                 <a class="nav-link" href="#step-1">
                     <div class="num">1</div>
-                    Emitido
+                    Pendiente
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#step-2">
                     <span class="num">2</span>
-                    Enviado
+                    En proceso
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#step-3">
                     <span class="num">3</span>
-                    Aprobado
+                    Pendiente aprobacion
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link " href="#step-4">
                     <span class="num">4</span>
-                    Trabajo terminado
+                    Aprobado
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link " href="#step-5">
                     <span class="num">5</span>
                     Finalizado
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#step-6">
+                    <span class="num">6</span>
+                    Avisado
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#step-7">
+                    <span class="num">7</span>
+                    Cerrado
                 </a>
             </li>
         </ul>
@@ -40,15 +52,9 @@
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-next pr-2"
-                            v-on:click="enviado()">Has
-                            sido enviado</button>
-
-                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
-                            v-on:click="enviado_whatsapp_api()">
-                            <i class="fa fa-whatsapp" aria-hidden="true"></i> enviar por Whatsapp Api</button>
-                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
-                            v-on:click="enviado_whatsapp()">
-                            enviar whatsapp normal</button>
+                            v-on:click="cotizacion_en_proceso()">Has
+                            En proceso</button> 
+                        
 
                     </div>
                 </div>
@@ -90,12 +96,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <address>
-                                    <strong>Mecanico : </strong>{{ cotizacion . mecanico . name }} -
-                                    {{ cotizacion . mecanico . lastname }}<br>
+                                    <strong>Mecanico : </strong>
+                                    <p v-if="cotizacion . mecanico"> {{ cotizacion . mecanico . name }} -
+                                    {{ cotizacion . mecanico . last_name }}</p>
+                                    <p v-else>Sin mecanico</p>
+                                   <br>
                                     <strong>Color : </strong>{{ cotizacion . inventario . moto . mtx_color }}<br>
                                     <strong>Marca :
-                                    </strong><span v-if="cotizacion . inventario . moto . marca">
-                                        {{ cotizacion . inventario . moto . marca . marca_nombre }}
+                                    </strong> <span> 
+                                        {{ cotizacion . inventario . moto .modelo. marca . marca_nombre }}
                                     </span><br>
                                     <strong>Kilometraje :
                                     </strong>{{ cotizacion . inventario . inventario_moto_kilometraje }}
@@ -109,7 +118,7 @@
                                     <strong>Placa :
                                     </strong>{{ format_date(cotizacion . created_at, true) }}<br>
                                     <strong>Modelo :
-                                    </strong>{{ format_date(cotizacion . created_at, false) }}<br>
+                                    </strong> {{ cotizacion . inventario . moto .modelo. modelo_nombre }}<br>
 
                                 </address>
                             </div>
@@ -200,6 +209,19 @@
             </div>
             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                 <div class="section-header">
+                    <div class="section-header-breadcrumb">
+                        <button type="button" class="btn btn-info boton-color custom-next mr-2 pr-2"
+                            v-on:click="pendiente_aprobacion()">
+                            cambiar a Pendiente Aprobacion</button>
+                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
+                            v-on:click="enviado_whatsapp()">
+                            enviar whatsapp normal</button>
+
+                    </div>
+                </div>
+            </div>
+            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                <div class="section-header">
                     <h1> </h1>
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-prev">Anterior</button>
@@ -245,8 +267,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <address>
-                                    <strong>Mecanico : </strong>{{ cotizacion . mecanico . name }} -
-                                    {{ cotizacion . mecanico . lastname }}<br>
+                                    <strong>Mecanico : </strong>
+                                    <p v-if="cotizacion . mecanico"> {{ cotizacion . mecanico . name }} -
+                                    {{ cotizacion . mecanico . last_name }}</p>
+                                    <p v-else>Sin mecanico</p>
+                                    <br>
                                     <strong>Color : </strong>{{ cotizacion . inventario . moto . mtx_color }}<br>
                                     <strong>Marca :
                                     </strong> <span v-if="cotizacion . inventario . moto . marca">
@@ -360,7 +385,7 @@
 
 
             </div>
-            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+            <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-prev">Anterior</button>
@@ -385,20 +410,17 @@
 
 
             </div>
-            <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+            <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-prev">Anterior</button>
                         <div class="mr-2"></div>
-                        <CButton data-toggle="modal" data-target="#modal-crear-comprobante"
-                            class="btn btn-info boton-color " color="primary" @click="() => { xlDemo = true }">
-                            Genenerar
-                            Comprobante Electronico</CButton>
+                        <button type="button" class="btn btn-info boton-color custom-next"
+                            v-on:click="avisado()">Avisar</button>
+                        
                     </div>
                 </div>
-
-
-
+ 
                 <div class="container mt-5">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
@@ -413,8 +435,19 @@
                 </div>
 
                 <!-- ******** generar comprobante electronico ************* -->
+ 
 
-                <div class="card">
+
+                <div v-if="print_comprobante" class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Imprimir comprobante</h2>
+                        <iframe :src="rutaPDF" width="100%" height="600px"></iframe>
+
+                    </div>
+
+                </div>
+ 
+                <div v-else  class="card">
                     <div class="card-header">
                         <h4 class="text-center">Generar Comprobante Electronico</h4>
 
@@ -926,23 +959,38 @@
 
 
             </div>
-            <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+            <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-6">
                 <div class="section-header">
 
                     <div class="section-header-breadcrumb">
                         <button type="button" class="btn btn-info boton-color custom-prev">Anterior</button>
+                        <button type="button" class="btn btn-info boton-color custom-next"
+                            v-on:click="cerrado()">Siguiente</button>
+                    </div> 
+                </div>
+                <div class="container mt-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12">
+                                <!-- Imagen centrada -->
+                                <img width="100" src="../../../../public/images/svg/finalizado.svg"
+                                    class="img-fluid mx-auto d-block" alt="Imagen Centrada">
 
+                                <!-- Título centrado debajo de la imagen -->
+                                <h2 class="titulo-centrado mt-3 text-center">Trabajo Avisado</h2>
+                            </div>
+                        </div>
                     </div>
+            </div>
+            <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                <div class="section-header">
+
+                  
 
                     <div class="container mt-5">
                         <div class="row justify-content-center">
                             <div class="col-md-12">
-                                <!-- Imagen centrada -->
-                                <img src="../../../../public/images/svg/finalizado.svg"
-                                    class="img-fluid mx-auto d-block" alt="Imagen Centrada">
-
-                                <!-- Título centrado debajo de la imagen -->
-                                <h2 class="titulo-centrado mt-3 text-center">Trabajado terminado</h2>
+                                
+                                <h2 class="titulo-centrado mt-3 text-center">Trabajo Cerrado</h2>
                             </div>
                         </div>
                     </div>
@@ -958,7 +1006,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <h2 class="text-center">Agregar la iamgen del pago</h2>
+                        <h2 class="text-center">Agregar la imagen del pago</h2>
                         <div>
                             <input type="file" name="images[]" style="display: none;" id="images"
                                 ref="fileInput" @change="handleFileChange" multiple />
@@ -976,22 +1024,7 @@
 
 
 
-        <CModal size="xl" :visible="print_comprobante" @close="() => { print_comprobante = false }">
-
-            <CModalBody>
-
-
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <h2 class="text-center">Imprimir comprobante</h2>
-                        <iframe :src="rutaPDF" width="100%" height="600px"></iframe>
-
-                    </div>
-
-                </div>
-
-            </CModalBody>
-        </CModal>
+      
 
 
 
@@ -1074,6 +1107,9 @@
                 forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
                 cotizacion: JSON.parse(this.$attrs.cotizacion) || '',
                 empresa: JSON.parse(this.$attrs.empresa) || '',
+                id: this.$attrs.id  || '',
+                url_raiz: this.$attrs. url_raiz  || '',
+                url_whatsapp:this.$attrs.url_whatsapp  || '',
                 is_ruc: false,
                 tiene_ruc: false,
                 is_dni: false,
@@ -1122,7 +1158,7 @@
             }
         },
         mounted() {
-
+ 
             this.pagos_boletas.push({
                 monto: this.cotizacion.total,
                 forma_pago_id: 1,
@@ -1136,9 +1172,7 @@
                 referencia: "",
                 url: false
             });
-
-
-
+ 
             this.pago_moto_total()
             this.pago_moto_total_boleta()
 
@@ -1348,8 +1382,7 @@
             monto_change(e, index) {
                 console.log(e.target.value)
                 this.pagos[index].monto = e.target.value;
-                this.pago_moto_total();
-
+                this.pago_moto_total(); 
             },
             /* -- *********************** -- */
             /* -- ******** change condiciones de pago ************* -- */
@@ -1455,8 +1488,8 @@
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
                                 confirmButtonText: 'ver el comprobante'
-                            }).then((result_swal) => {
-                                $('#smartwizard').smartWizard('next');
+                            }).then((result_swal) => { 
+                                this.cotizacion.venta_id = result.data
                                 this.print_comprobante = true;
                                 this.rutaPDF = "/ventas_pdf/" + result.data;
 
@@ -1471,9 +1504,9 @@
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
                                 confirmButtonText: 'ver el comprobante'
-                            }).then((result_swal) => {
-                                $('#smartwizard').smartWizard('next');
+                            }).then((result_swal) => { 
                                 this.print_comprobante = true;
+                                this.cotizacion.venta_id = result.data
                                 this.rutaPDF = "/ventas_pdf/" + result.data;
 
                             })
@@ -1518,8 +1551,7 @@
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
                                 confirmButtonText: 'ver el comprobante'
-                            }).then((result_swal) => {
-                                $('#smartwizard').smartWizard('next');
+                            }).then((result_swal) => { 
                                 this.print_comprobante = true;
                                 this.rutaPDF = "/ventas_pdf/" + result.data;
 
@@ -1535,7 +1567,7 @@
                                 cancelButtonColor: '#d33',
                                 confirmButtonText: 'ver el comprobante'
                             }).then((result_swal) => {
-                                $('#smartwizard').smartWizard('next');
+                                 
                                 this.print_comprobante = true;
                                 this.rutaPDF = "/ventas_pdf/" + result.data;
 
@@ -1643,11 +1675,59 @@
 
             },
             enviado_whatsapp() {
-                this.sendUrl("https://www.google.com", "+51" + this.cotizacion.inventario.moto.cliente.cli_telefono)
+                this.sendUrl(this.url_whatsapp, "+51" + this.cotizacion.inventario.moto.cliente.cli_telefono)
             },
-            enviado() {
+            avisado(){
+                this.venta_url(this.url_raiz+"venta/"+this.cotizacion.venta_id+"/cliente", "+51" + this.cotizacion.inventario.moto.cliente.cli_telefono)
+             
+
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = {
+                            cotizacion_id: this.cotizacion.cotizacion_id, 
+                        };
+                        axios
+                            .post("/avisado", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+                                if (response.data.success) {
+
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Excelente",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    $('#smartwizard').smartWizard('next');
 
 
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    console.error(response.data);
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                   
+               
+            
+            },
+            enviado() { 
                 this.send_axios("Enviaste el presupuesto al cliente?",
                         "Si, lo envie", {
                             cotizacion_id: this.cotizacion.cotizacion_id,
@@ -1747,6 +1827,177 @@
                     }
                 })
 
+            },
+            cotizacion_en_proceso(){
+                Swal.fire({
+                    title: 'Deseas cambiar a "En Pronceso"?',
+                    text: "--",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, deseo cambiar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = {
+                            cotizacion_id: this.cotizacion.cotizacion_id, 
+                        };
+                        axios
+                            .post("/cotizacion_en_proceso", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+                                if (response.data.success) {
+
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Excelente",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    $('#smartwizard').smartWizard('next');
+
+
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    console.error(response.data);
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                    }
+                })
+            },
+            pendiente_aprobacion(){
+                Swal.fire({
+                    title: 'Deseas cambiar a "Pendiente Aprobacion"?',
+                    text: "--",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, deseo cambiar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = {
+                            cotizacion_id: this.cotizacion.cotizacion_id, 
+                        };
+                        axios
+                            .post("/pendiente_aprobacion", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+                                if (response.data.success) {
+
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Excelente",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    $('#smartwizard').smartWizard('next');
+
+
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    console.error(response.data);
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                    }
+                })
+            },
+            cerrado(){
+                Swal.fire({
+                    title: 'Deseas cambiar a "Cerrado"?',
+                    text: "--",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, deseo cambiar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = {
+                            cotizacion_id: this.cotizacion.cotizacion_id, 
+                        };
+                        axios
+                            .post("/cerrado", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+                                if (response.data.success) {
+
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Excelente",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    $('#smartwizard').smartWizard('next');
+
+
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                    console.error(response.data);
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                    }
+                })
             },
             aprobado() {
                 Swal.fire({

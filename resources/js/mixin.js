@@ -41,8 +41,42 @@ export const myMixin = {
         }
     },
     methods: {
+      alert_success(msm){
+        Swal.fire({
+          toast: true,
+          icon: 'success',
+          title: msm,
+          animation: true,
+          position: 'top',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+      },
+      alert_error(msm){
+        Swal.fire({
+          toast: true,
+          icon: 'error',
+          title: msm,
+          animation: true,
+          position: 'top',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true, 
+        })
+      },
       async sendUrl(url, phone) {
-        var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text=Buenas tardes tu presupuesto esta en esta url='+url;
+        var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text=hola su presupuesto de su moto esta en esta url='+url;
+
+        // Abre la URL en una nueva ventana o pestaña del navegador
+        window.open(ruta, '_blank');
+      },
+      async venta_url(url, phone) {
+        var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text=Hola su moto esta lista, su boleta lo puede ver en esta url='+url;
 
         // Abre la URL en una nueva ventana o pestaña del navegador
         window.open(ruta, '_blank');
@@ -155,8 +189,7 @@ export const myMixin = {
                 }
               });
             });
-          },
-
+          },  
   currency(name){
     console.log(name)
     $("input[data-type='"+name+"']").on({

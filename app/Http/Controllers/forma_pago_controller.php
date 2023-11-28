@@ -102,7 +102,7 @@ class forma_pago_controller extends Controller
      */
     public function create()
     {
-        //
+        return view('modules.forma_pago.create');
     }
 
     /**
@@ -113,7 +113,22 @@ class forma_pago_controller extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datax = $request->all();
+
+        $validatedData = $request->validate([
+            'forma_pago_nombre' => 'required|max:249|unique:forma_pago',
+        ]);
+
+        $create = forma_pago::create($validatedData);
+
+        if ($create) {
+            session()->flash('success', 'Registro creado correctamente');
+            return redirect()->route('forma_pago.index');
+        } else {
+            Log::error('no se pudo registrar la forma_pago');
+            session()->flash('error', 'error al registrar en la base de datos');
+            return redirect()->route('forma_pago.index');
+        }
     }
 
     /**
@@ -135,7 +150,8 @@ class forma_pago_controller extends Controller
      */
     public function edit($id)
     {
-        //
+        $get = forma_pago::find(decrypt_id($id));
+        return view('modules.forma_pago.edit',compact("get","id"));
     }
 
     /**
@@ -147,7 +163,25 @@ class forma_pago_controller extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        $update = forma_pago::find(decrypt_id($id));
+        $datax = $request->all(); 
+
+        $validate = $request->validate([
+            'forma_pago_nombre' => 'required|max:249|unique:forma_pago',
+        ]);
+
+
+        $update = $update->update($validate);
+
+        if ($update) {
+            session()->flash('success', 'Registro editado correctamente');
+            return redirect()->route('forma_pago.index');
+        } else {
+            Log::error('no se pudo editar forma_pago');
+            session()->flash('error', 'error al editar en la base de datos');
+            return redirect()->route('forma_pago.index');
+        }
     }
 
     /**
@@ -158,7 +192,29 @@ class forma_pago_controller extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+
+            $forma_pago = forma_pago::findOrFail(decrypt_id($id));
+        
+
+            if ($forma_pago->pagos()->exists()) {
+                session()->flash('warning', 'No se puede eliminar esta forma de pago por que ya tiene pagos relacionados');
+                return redirect()->route('forma_pago.index');
+            } else {
+                $delete = $forma_pago->delete(); 
+                if ($delete) {
+                    session()->flash('success', 'se elimino correctamente la forma de pago');
+                    return redirect()->route('forma_pago.index');
+                } else {
+                    session()->flash('success', 'error al eliminar la forma de pago');
+                    return redirect()->route('forma_pago.index');
+                }
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            session()->flash('error', 'no se puedo eliminar la forma de pago');
+            return redirect()->route('forma_pago.index');
+        }
     }
     /**
      * Remove the specified resource from storage.

@@ -11,7 +11,7 @@
 @section('content')
     <div id="app">
 
-        <cotizacion-mantenimiento forma_pago="{{$forma_pago}}" correlativo_factura="{{$correlativo_factura}}" correlativo_boleta="{{$correlativo_boleta}}" empresa="{{$empresa}}" cotizacion="{{ $get }}" />
+        <cotizacion-mantenimiento url_whatsapp={{$url_whatsapp}} url_raiz={{$url_raiz}} id="{{$id}}" forma_pago="{{$forma_pago}}" correlativo_factura="{{$correlativo_factura}}" correlativo_boleta="{{$correlativo_boleta}}" empresa="{{$empresa}}" cotizacion="{{ $get }}" />
 
     </div>
 @endsection

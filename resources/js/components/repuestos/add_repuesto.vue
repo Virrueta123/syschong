@@ -22,8 +22,6 @@
                                 <th scope="col">Detalle</th>
                                 <th scope="col">unidad</th>
                                 <th scope="col">Precio</th>
-                                <th scope="col">Descuento</th>
-                                <th scope="col">V.Descuento</th>
                                 <th scope="col">Cantidad</th>
                                 <th scope="col">Importe</th>
                                 <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>
@@ -64,21 +62,14 @@
                                         :name="'cotizacion[' + index + '][Detalle]'">
                                 </td>
 
+                                 
+
                                 <td scope="row">{{ repuesto . unidad }}</td>
-                                <td scope="row">{{ repuesto . Precio }}</td>
+                                <td scope="row"> <input-money :valor="repuesto . Precio" v-on:keyup="change_precio(index)" name_precio="precio_gasolina" id="precio_gasolina"></input-money></td>
 
-                                <td scope="row"> <input :name="'cotizacion[' + index + '][Descuento]'"
-                                        type="number" class="form-control"
-                                        v-on:change="descuento_change($event,index,repuesto . Importe)"
-                                        :v-model="repuesto.Descuento"></td>
-
-                                <td scope="row"> <input :name="'cotizacion[' + index + '][ValorDescuento]'"
-                                        type="number" disabled class="form-control" :id="'valor_descuento' + index"
-                                        v-model="repuesto.ValorDescuento"></td>
 
                                 <td scope="row">{{ repuesto . Cantidad }}</td>
                                 <td scope="row">{{ repuesto . Importe }}</td>
-                                <td scope="row">{{ repuesto . ImporteDescuento }}</td>
                                 <td><button type="button" name="" id=""
                                         v-on:click="eliminar_producto(repuesto . prod_id)"
                                         class="btn btn-danger btn-sm"><i class="fa fa-trash"
@@ -116,10 +107,7 @@
                             <div class="invoice-detail-name">SubTotal</div>
                             <div class="invoice-detail-value">S/. {{ total }}</div>
                         </div>
-                        <div class="invoice-detail-item">
-                            <div class="invoice-detail-name">Descuento</div>
-                            <div class="invoice-detail-value">S/. {{ total_descuento }}</div>
-                        </div>
+                        
                         <hr class="mt-2 mb-2">
                         <div class="invoice-detail-item">
                             <div class="invoice-detail-name">Total</div>
@@ -137,8 +125,8 @@
 
         <div class="modal fade" id="modal-add-repuesto" tabindex="-1" role="dialog"
             aria-labelledby="modal-crear-cliente-label" aria-hidden="true">
-            <div class="modal-dialog modal-xl" tabindex="-1" role="dialog"
-                aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                aria-hidden="true">
                 <div class="modal-content">
                     <form id="form_cliente" method="POST" action="#">
                         <div class="modal-header">
@@ -162,55 +150,58 @@
 
                                 </div>
 
+                                <table class="table table-striped table-inverse table-responsive">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>Descripcion</th>
+                                            <th>Codigo de fabrica</th>
+                                            <th>Codigo</th>
+                                            <th>Precio</th>
+                                            <th>Stock</th>
+                                            <th>cantidad</th>
+                                            <th>Agregar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(show, index) in show_productos" :key="index">
+                                            <td scope="row">
+                                                <div class="text-job text-muted">{{ show . prod_nombre }} </div>
+                                            </td>
+                                            <td>
+                                                <div class="media-title">{{ show . prod_codigo }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="media-title">{{ show . prod_codigo_barra }}</div>
+                                            </td>
 
-                               
-                                            <div class="card-body m-0">
-                                                <ul
-                                                    class="list-unstyled m-0 user-details list-unstyled-border list-unstyled-noborder">
-                                                    <li v-for="(show, index) in show_productos" :key="index"
-                                                        class="media p-4 " style="background-color: #eee;">
-                                                        <img alt="image" class="mr-3  " width="60"
-                                                            src="../../../../public/images/svg/servicios.svg">
-                                                        <div class="media-body">
-                                                            <div class="media-title">{{ show . prod_codigo }}</div>
-                                                            <div class="text-job text-muted">{{ show . prod_nombre }}
-                                                            </div>
-                                                        </div>
-                                                        <div class="media-items">
-                                                            <div class="media-item">
-                                                                <div class="media-value">Stock</div>
-                                                                <div class="media-label">
-                                                                    {{ show . stock }}
-                                                                </div>
-                                                            </div> 
-                                                            <div class="media-item">
-                                                                <div class="media-value">Precio</div>
-                                                                <div class="media-label">
-                                                                    {{ show . prod_precio_venta }}</div>
-                                                            </div>
-                                                            <div v-if="parseInt(show.stock) != 0" >
-                                                                 
-                                                                    <div class="media-value"><input type="number"
-                                                                            :id="'cantidad' + index"
-                                                                            v-on:change="cantidad_change(show.stock,$event,index)"
-                                                                            class="form-control text-center"
-                                                                            value="1"></div>
-                                                                    <div class="media-label">cantidad</div>
-                                                               
-                                                                <div class="media-item">
-                                                                    <button type="button" :id="'button_add' + index"
-                                                                        v-on:click="agregar_producto(show.stock,$event,index,show.prod_id)"
-                                                                        class="btn btn-primary boton-color"><i
-                                                                            class="fa fa-plus"
-                                                                            aria-hidden="true"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
+                                            <td>
+                                                <div class="media-title">{{ show . precio }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="media-title">{{ show . stock }}</div>
+                                            </td>
+                                            <td v-if="parseInt(show.stock) != 0">
+                                                <div class="media-value"><input type="number"
+                                                        :id="'cantidad' + index"
+                                                        v-on:change="cantidad_change(show.stock,$event,index)"
+                                                        class="form-control text-center" value="1"></div>
+                                            </td>
+                                            <td colspan="2" v-else align="center">
+                                                <span class="badge badge-danger">Sin stock</span>
+                                            </td>
 
-                                                </ul>
-                                            </div>
-                                           
+                                            <td v-if="parseInt(show.stock) != 0">
+                                                <div class="media-item">
+                                                    <button type="button" :id="'button_add' + index"
+                                                        v-on:click="agregar_producto(show.stock,$event,index,show.prod_id)"
+                                                        class="btn btn-primary boton-color"><i class="fa fa-plus"
+                                                            aria-hidden="true"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
 
 
                             </div>
@@ -253,57 +244,69 @@
                                             id="cli_telefono" placeholder="Buscar...."
                                             v-on:keyup="buscando_servicio($event)">
                                     </div>
+ 
+                                        <table class="table table-striped table-inverse table-responsive">
+                                            <thead class="thead-inverse">
+                                                <tr>
+                                                    <th>Descripcion</th>
+                                                    <th>Codigo de fabrica</th>
+                                                    <th>Precio</th>
+                                                    <th>cantidad</th>
+                                                    <th>Agregar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(show, index) in show_servicios" :key="index">
+                                                    <td scope="row">
+                                                        <div class="text-job text-muted">{{ show . servicios_nombre }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="media-title">SER-{{ show . servicios_codigo }}
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="media-title">{{ show . servicios_precio }}</div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="media-item">
+                                                            <div class="media-value"><input
+                                                                    :id="'cantidad_servicios' + index"
+                                                                    v-on:change="cantidad_servicios_change($event,index)"
+                                                                    type="number" value="1"
+                                                                    class="form-control text-center"></div>
+                                                            <div class="media-label">cantidad</div>
+                                                        </div>
+                                                    </td>
+
+
+                                                    <td>
+                                                        <div class="media-item">
+                                                            <button
+                                                                v-on:click="agregar_servicio( index,show.servicios_id)"
+                                                                type="button" class="btn btn-primary boton-color"><i
+                                                                    class="fa fa-plus"
+                                                                    aria-hidden="true"></i></button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr v-if="show_servicios.length == 0">
+                                                    <td colspan="5">
+                                                        No hay servicios con esos datos
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                  
 
                                 </div>
 
-                                <div class="card-body m-0">
-                                    <ul
-                                        class="list-unstyled m-0 user-details list-unstyled-border list-unstyled-noborder">
-                                        <li v-for="(show, index) in show_servicios" :key="index"
-                                            class="media p-4 " style="background-color: #eee;">
-                                            <img alt="image" class="mr-3  " width="60"
-                                                src="../../../../public/images/svg/servicios.svg">
-                                            <div class="media-body">
-                                                <div class="media-title">Servicio</div>
-                                                <div class="text-job text-muted">{{ show . servicios_nombre }}</div>
-                                            </div>
-                                            <div class="media-items">
-                                                <div class="media-item">
-                                                    <div class="media-value">Codigo</div>
-                                                    <div class="media-label">
-                                                        SER-{{ show . servicios_codigo }}
-                                                    </div>
-                                                </div>
-                                                <div class="media-item">
-                                                    <div class="media-value">Precio</div>
-                                                    <div class="media-label">{{ show . servicios_precio }}</div>
-                                                </div>
-                                                <div class="media-item">
-                                                    <div class="media-value"><input :id="'cantidad_servicios' + index"
-                                                            v-on:change="cantidad_servicios_change($event,index)"
-                                                            type="number" value="1"
-                                                            class="form-control text-center"></div>
-                                                    <div class="media-label">cantidad</div>
-                                                </div>
-                                                <div class="media-item">
-                                                    <button v-on:click="agregar_servicio( index,show.servicios_id)"
-                                                        type="button" class="btn btn-primary boton-color"><i
-                                                            class="fa fa-plus" aria-hidden="true"></i></button>
-                                                </div>
-                                            </div>
-                                        </li>
 
-                                    </ul>
-                                </div>
 
-                                <div class="col-md-12 col-lg-12 mb-12 mb-lg-0">
-                                    <center v-if="show_servicios.length == 0">
-                                        <img src="../../../../public/images/svg/servicios.svg" width="400"
-                                            alt="">
-                                        <h6 class="m-4">Escriba en el campo buscar para mostrar los
-                                            servicios</h6>
-                                    </center>
-                                </div>
+
+
 
                             </div>
 
@@ -351,6 +354,11 @@
             }
         },
         methods: {
+            change_precio(index){ 
+                this.repuestos[index].Precio = event.target.value;
+                this.repuestos[index].Importe = this.repuestos[index].Precio * this.repuestos[index].Cantidad;
+                this.calcular_total();
+            },
             agregar_producto(stock, event, index, identificador) {
 
                 console.log(this.show_productos)
@@ -370,16 +378,17 @@
                         Descripcion: this.show_productos[indice].prod_nombre,
                         Detalle: "",
                         unidad: this.show_productos[indice].unidad.unidades_nombre,
-                        Precio: this.show_productos[indice].prod_precio_venta,
+                        Precio: this.show_productos[indice].precio,
                         Descuento: 0,
                         ValorDescuento: 0,
                         Cantidad: cantidad,
-                        Importe: cantidad * this.show_productos[indice].prod_precio_venta,
+                        Importe: cantidad * this.show_productos[indice].precio,
                         ImporteDescuento: 0
                     })
 
                 }
                 this.calcular_total();
+                this.$emit('childEvent', this.repuestos);
             },
 
             agregar_servicio(index, identificador) {
@@ -409,6 +418,7 @@
 
                 }
                 this.calcular_total();
+                this.$emit('childEvent', this.repuestos);
             },
             eliminar_producto(identificador) {
                 var indice = this.repuestos.findIndex(
@@ -576,61 +586,7 @@
         },
         mounted() {
             var self = this
-            // Coloca aquí el código que deseas ejecutar después del temporizador
-            const headers_aceite = {
-                "Content-Type": "application/json",
-            };
-            const data_aceite = {
-                prod_id: this.aceite_id
-            };
-
-            axios
-                .post("/get_producto", data_aceite, {
-                    headers_aceite,
-                })
-                .then((response) => {
-
-                    if (response.data.success) {
-                        var data = response.data.data;
-
-                        console.log(response.data.data);
-
-                        this.repuestos.push({
-                            prod_id: data.prod_id,
-                            tipo: "p",
-                            servicios_id: 0,
-                            Codigo: data.prod_codigo,
-                            Descripcion: data.prod_nombre,
-                            Detalle: "",
-                            unidad: data.unidad.unidades_nombre,
-                            Precio: data.prod_precio_venta,
-                            Descuento: 0,
-                            ValorDescuento: 0,
-                            Cantidad: 1,
-                            Importe: 1 * data.prod_precio_venta,
-                            ImporteDescuento: 0
-                        })
-
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: response.data.message,
-                            footer: "-------",
-                        });
-                    }
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error 500",
-                        text: "Error en el servidor, vuelva a intentar",
-                        footer: "-------",
-                    });
-                    console.error(error);
-                });
-
-
+             
             // Coloca aquí el código que deseas ejecutar después del temporizador
             const headers = {
                 "Content-Type": "application/json",

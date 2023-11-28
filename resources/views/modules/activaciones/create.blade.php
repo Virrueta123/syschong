@@ -83,7 +83,7 @@
                                             S/.
                                         </div>
                                     </div>
-                                    <input-money name_precio="precio"></input-money>
+                                    <input-money valor="{{app('empresa')->activacion()}}" name_precio="precio"></input-money>
                                 </div>
                             </div>
 
@@ -96,7 +96,7 @@
                                             S/.
                                         </div>
                                     </div>
-                                    <input-money name_precio="precio_gasolina" id="precio_gasolina"></input-money>
+                                    <input-money  name_precio="precio_gasolina" id="precio_gasolina"></input-money>
                                 </div>
                             </div>
 
@@ -136,6 +136,9 @@
 
         $("#form_activaciones").validate({
             rules: {
+                mtx_motor:{
+                    required: true,
+                },
                 tienda_id: {
                     required: true,
                 },

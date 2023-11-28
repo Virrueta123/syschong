@@ -96,8 +96,7 @@
                     </th>
                 </tr>
             </tfoot>
-        </table>
-       
+        </table> 
     </div>
 </template>
 

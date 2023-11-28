@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class producto_marcas extends Model
-{
+class producto_modelo extends Model
+{ 
     use HasFactory,SoftDeletes;
-    protected $table = 'producto_marcas';
+    protected $table = 'producto_modelo';
     public $timestamps = true;
-    public $primaryKey = 'productos_marcas_id';
+    public $primaryKey = 'producto_modelo_id';
     protected $fillable = [];
     protected $guarded = [];
 
-    public function marca(){
-        return $this->belongsTo(marca::class, 'marca_id');
+    public function modelo( ){
+        return $this->hasMany(modelo::class,"modelo_id");
     }
 }

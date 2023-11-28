@@ -1,8 +1,8 @@
 <template>
     <div>
-        <select multiple="multiple" ref="marcas_moto" class="form-control select2 select2-hidden-accessible"
-            style="width: 100%; height:280px;" name="marcas_moto"></select>
-        <input type="hidden" v-model="array_motos" id="marcas_moto" name="marcas_moto">
+        <select multiple="multiple" ref="modelo_moto" class="js-example-basic-single js-states form-control"
+            style="width: 100%; height:480px;" name="modelo_moto"></select>
+        <input type="hidden" v-model="array_motos" id="modelo_moto" name="modelo_moto">
     </div>
 </template>
 
@@ -19,37 +19,44 @@
         data() {
             return {
                 selected: this.$attrs.selected || "",
-                marcas_motos: this.$attrs.marcas_motos,
+                producto_modelo: this.$attrs.producto_modelo,
                 array_motos: []
             }
         },
         mounted() {
-            $(this.$refs.marcas_moto).select2({
+            console.log(this.producto_modelo);
+            $(this.$refs.modelo_moto).select2({
                 tags: false,
                 placeholder: "",
                 maximumSelectionLength: 60,
-                data: this.marcas_motos,
+                data: this.producto_modelo,
             });
 
             if (this.selected != "" ) {
                 var seleccionados = [];
                 this.selected.forEach(element => {
                     console.log(element)
-                    seleccionados.push(element.marca.marca_id)
+                    seleccionados.push(element.modelo_id)
                 }); 
-                var select_marca_moto = $(this.$refs.marcas_moto); 
+                var select_marca_moto = $(this.$refs.modelo_moto); 
                 select_marca_moto.val(seleccionados).trigger("change") 
-                this.array_motos = $(this.$refs.marcas_moto).val();
+                this.array_motos = $(this.$refs.modelo_moto).val();
             }
   
-            $(this.$refs.marcas_moto).on("change", () => {
-                this.$emit("select", $(this.$refs.marcas_moto).val());
-                this.array_motos = $(this.$refs.marcas_moto).val();
+            $(this.$refs.modelo_moto).on("change", () => {
+                this.$emit("select", $(this.$refs.modelo_moto).val());
+                this.array_motos = $(this.$refs.modelo_moto).val();
             });
         }
     }
 </script>
 
 <style>
-
+.select2-selection__rendered {
+    line-height: 31px !important;
+}
+.select2-results__options {
+   max-height: 500px;
+}
+ 
 </style>

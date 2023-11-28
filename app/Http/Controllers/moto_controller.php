@@ -42,7 +42,15 @@ class moto_controller extends Controller
                     return $Data->modelo->modelo_nombre;
                 })
                 ->addColumn('cliente', function ($Data) {
-                    return $Data->cliente->cli_nombre . '-' . $Data->cliente->cli_apellido;
+                    if(is_null($Data->cliente)){
+                        return "sin cliente";
+                    }else{
+                        if ($Data->cliente->cli_ruc != 'no tiene') {
+                            return $Data->cliente->cli_razon_social;
+                        } else {
+                            return $Data->cliente->cli_nombre . '-' . $Data->cliente->cli_apellido;
+                        }
+                    } 
                 })
                 ->addColumn('fecha_creacion', function ($Data) {
                     return Carbon::parse($Data->created_at)->format('d/m/Y');
@@ -255,10 +263,11 @@ class moto_controller extends Controller
                 $query
                     ->whereRaw('CONCAT(cliente.cli_nombre," ",cliente.cli_apellido) LIKE ?', '%' . $search . '%')
                     ->orWhere('cliente.cli_apellido', 'like', '%' . $search . '%')
+                    ->orWhere('marca.marca_nombre', 'like', '%' . $search . '%')
                     ->orWhere('modelo.modelo_nombre', 'like', '%' . $search . '%')
                     ->orWhere('motos.mtx_motor', 'like', '%' . $search . '%');
             })
-            ->limit(15)
+            ->limit(15) 
             ->get();
 
         echo json_encode($moto);
@@ -280,11 +289,15 @@ class moto_controller extends Controller
     public function get_moto(Request $req)
     {
         try {
-            $show = motos::with('cliente')->find($req->all()['id']);
+            $show = motos::with(["cliente",'modelo' => function ($query) {
+                $query->with(['marca']);
+            }])->find($req->all()['id']);
+
+      
 
             if ($show) {
                 return response()->json([
-                    'message' => 'todo ok',
+                    'message' => 'datos cargados correctamente',
                     'error' => '',
                     'success' => true,
                     'data' => $show,
@@ -298,6 +311,82 @@ class moto_controller extends Controller
                     'data' => '',
                 ]);
             }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al mostrar los datos, cargue el navegador nuevamente',
+                'error' => $th,
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function store_moto_vue(Request $req){
+        
+        try {
+           
+
+            $validate = $req->validate([
+                'mtx_placa' => 'required|string|max:50',
+
+                'mtx_vin' => 'required|max:200',
+
+                'modelo_id' => 'required', 
+
+                'mtx_fabricacion' => 'required|date',
+
+                'mtx_estado' => 'required|max:1',
+
+                'mtx_chasis' => 'required|max:200',
+
+                'mtx_color' => 'required|string|max:200', 
+
+                'mtx_motor' => 'required|string|max:200', 
+
+                'cli_id' => 'required',
+            ]);
+
+            
+
+            $validate['user_id'] = Auth::user()->id;
+
+            $create = motos::create($validate);
+
+        
+
+            if ($create) {
+                $moto = motos::with(["cliente",'modelo' => function ($query) {
+                    $query->with(['marca']);
+                }])->find($create->mtx_id);
+
+                $moto_array = $moto->toArray();
+  
+                $moto_array["value"] = $create->mtx_id;
+                $moto_array["title"] = 'Cliente : '.$moto->cliente->cli_nombre.' '. $moto->cliente->cli_apellido. ' | Moto : '.  $moto->modelo->marca->marca_nombre.' modelo: ' .$moto->modelo->modelo_nombre.' Clindraje: '. $moto->modelo->cilindraje.' Motor:'.$moto->mtx_motor;
+                
+                return response()->json(
+                    [
+                        'message' => 'se creo correctamente la moto',
+                        'error' => '',
+                        'success' => true,
+                        'data' => $moto_array
+                    ] 
+                );
+                dd($validate);
+                
+            } else {
+                Log::error('no se pudo registrar el cliente');
+                return response()->json(
+                    [
+                        'message' => 'no se pudo registrar la moto',
+                        'error' => '',
+                        'success' => false,
+                        'data' => '',
+                    ], 
+                );
+            }
+ 
         } catch (\Throwable $th) {
             Log::error($th);
             return response()->json([

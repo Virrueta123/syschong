@@ -27,14 +27,14 @@ class reportes_vue_controller extends Controller
             foreach ($forma_pago as $fg) {
                 $pagos_ventas = pagos_ventas::with([
                     'forma_pago',
-                    'ventas' => function ($query) use ($id) {
-                        $query->where('caja_chica_id', $id);
-                    },
+                    'ventas' 
                 ])
                     ->where('tipo', 'V')
                     ->where('forma_pago_id', $fg->forma_pago_id)
+                    ->where("caja_chica_id", $id)
                     ->get()
                     ->sum('monto');
+
                 array_push($labels_pago_venta, $fg->forma_pago_nombre);
                 array_push($data_pago_venta, $pagos_ventas);
             }
@@ -45,12 +45,11 @@ class reportes_vue_controller extends Controller
             foreach ($forma_pago as $fg) {
                 $pagos_compras = pagos_ventas::with([
                     'forma_pago',
-                    'ventas' => function ($query) use ($id) {
-                        $query->where('caja_chica_id', $id);
-                    },
+                    'ventas' 
                 ])
                     ->where('tipo', 'C')
                     ->where('forma_pago_id', $fg->forma_pago_id)
+                    ->where("caja_chica_id", $id)
                     ->get()
                     ->sum('monto');
                 array_push($labels_pago_compras, $fg->forma_pago_nombre);

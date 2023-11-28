@@ -96,12 +96,9 @@
                                     <label>Seleccionar marcas de motos</label>
                                     <p>Selecciona las marcas en donde el producto funciona</p>
 
-                                    <seleccionar-marcas :selected="productos.producto_marcas"
-                                        :marcas_motos="marcas_motos"></seleccionar-marcas>
-                                </div>
-
-
-
+                                    <seleccionar-marcas :selected="productos.producto_modelo"
+                                        :producto_modelo="producto_modelo"></seleccionar-marcas>
+                                </div> 
                             </div>
 
                             <div class="form-row">
@@ -112,7 +109,7 @@
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <label for="prod_stock_inicial">Stock Inicial </label>
+                                    <label for="prod_stock_inicial">Stock Inicial</label>
                                     <input type="number" :value="productos.prod_stock_inicial" class="form-control"
                                         name="prod_stock_inicial" id="prod_stock_inicial">
                                 </div>
@@ -194,7 +191,7 @@
     export default {
         data() {
             return {
-                marcas_motos: JSON.parse(this.$attrs.marcas_motos) || "",
+                producto_modelo: JSON.parse(this.$attrs.producto_modelo) || "",
                 productos: JSON.parse(this.$attrs.productos) || "",
                 id: this.$attrs.id || ""
             }
@@ -207,7 +204,7 @@
                 }
             });
 
-            console.log(this.marcas_motos)
+          
 
             // Initialize Uppy with desired options
             this.uppy = new Uppy({

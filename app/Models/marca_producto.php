@@ -14,4 +14,6 @@ class marca_producto extends Model
     public $primaryKey = 'marca_prod_id';
     protected $fillable = [];
     protected $guarded = [];
+
+   
 }
