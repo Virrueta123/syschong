@@ -96,13 +96,13 @@
                     </th>
                 </tr>
             </tfoot>
-        </table> 
+        </table>
     </div>
 </template>
 
-<script> 
-    import $ from "jquery"; 
-    import 'datatables.net-buttons-bs5'; 
+<script>
+    import $ from "jquery";
+    import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';
@@ -204,8 +204,12 @@
                         name: 'action'
                     },
 
-                ],
 
+                ],
+                processing: true,
+                language: {
+                    processing: '<div id="loading-indicator">Cargando datos...</div>',
+                },
                 dom: 'Bfrtip',
                 "info": true,
                 fixedColumns: true,

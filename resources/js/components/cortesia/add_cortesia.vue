@@ -16,16 +16,23 @@
                             <div class="card-body">
                                 <table class="table table-striped table-md">
                                     <tbody>
+                                        <tr v-if="activacion.moto . cliente" class="m-0 p-0" >
+                                            <td> <editar-cliente-cortesia :cliente="activacion.moto . cliente"></editar-cliente-cortesia></td> 
+                                        </tr>
+                                        <tr v-else class="m-0 p-0">
+                                            <asignar-cliente
+                                                :mtx_id="activacion.moto.mtx_id"></asignar-cliente>
+                                        </tr>
                                         <tr class="m-0 p-0">
                                             <td>Cliente:</td>
                                            
                                             <td v-if="activacion.moto . cliente"> 
                                                 {{ activacion.moto . cliente . cli_nombre }}
                                                 {{ activacion.moto . cliente . cli_apellido }}
+                                               
                                             </td>
                                             <td v-else>
-                                                Sin Cliente <asignar-cliente
-                                                mtx_id="{{ activacion.moto.mtx_id }}"></asignar-cliente>
+                                                Sin Cliente 
                                             </td>
                                         </tr>
                                         <tr class="m-0 p-0">
@@ -209,7 +216,7 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear
-                        Mantenimiento</button>
+                        Cortesia</button>
                 </div>
             </form>
         </div>

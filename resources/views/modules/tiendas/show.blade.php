@@ -117,7 +117,7 @@
                         <h4>Total de activaciones por facturar</h4>
                       </div>
                       <div class="card-body">
-                        {{$activaciones_cobro}}
+                        S/. {{moneyformat($activaciones_cobro)}}
                       </div>
                     </div>
                   </div>
@@ -148,7 +148,7 @@
                           <h4>Total de cortesias por facturar</h4>
                         </div>
                         <div class="card-body">
-                          {{$cortesias_cobro}}
+                            S/. {{ moneyformat($cortesias_cobro) }}
                         </div>
                       </div>
                     </div>

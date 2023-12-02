@@ -26,6 +26,8 @@ app.component('search-cliente', require('./components/search_cliente.vue').defau
 app.component('crear-cliente', require('./components/crear_cliente.vue').default)
 
 app.component('asignar-cliente', require('./components/cliente/asignar_cliente_activacion.vue').default)
+app.component('editar-cliente', require('./components/cliente/editar-cliente.vue').default)
+app.component('editar-cliente-cortesia', require('./components/cliente/editar-cliente-cortesia.vue').default)
 
 app.component('taller-show', require('./components/taller/taller_show.vue').default)
 
@@ -126,6 +128,10 @@ app.component('mantenimiento-autorizaciones', require('./components/mantenimient
 
 /* -- ******** componentes mecanicos ************* -- */
 app.component('search-mecanicos', require('./components/mecanicos/search_mecanicos.vue').default);
+/* -- *********************** -- */
+
+/* -- ******** crear gastos ************* -- */
+app.component('crear-gastos', require('./components/gastos/crear_gastos.vue').default);
 /* -- *********************** -- */
 
 

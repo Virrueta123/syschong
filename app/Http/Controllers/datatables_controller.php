@@ -183,6 +183,10 @@ class datatables_controller extends Controller
                     case 'BV':
                         return 'Boleta';
                         break;
+
+                        case 'FT':
+                            return 'Factura por tienda comercial';
+                            break;
                 }
             })
             ->addColumn('numero', static function ($Data) {
@@ -269,10 +273,14 @@ class datatables_controller extends Controller
                 if (is_null($Data->moto->cliente)) {
                     return 'sin cliente';
                 } else {
-                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                        return $Data->moto->cliente->cli_razon_social;
+                    if (is_null($Data->moto->cliente->cli_ruc)) {
+                        return 'sin cliente';
                     } else {
-                        return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_razon_social;
+                        } else {
+                            return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                        }
                     }
                 }
             })
@@ -280,10 +288,14 @@ class datatables_controller extends Controller
                 if (is_null($Data->moto->cliente)) {
                     return 'sin cliente';
                 } else {
-                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                        return $Data->moto->cliente->cli_ruc;
+                    if (is_null($Data->moto->cliente->cli_ruc)) {
+                        return 'sin cliente';
                     } else {
-                        return $Data->moto->cliente->cli_dni;
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_ruc;
+                        } else {
+                            return $Data->moto->cliente->cli_dni;
+                        }
                     }
                 }
             })
@@ -347,17 +359,25 @@ class datatables_controller extends Controller
         return DataTables::of($cortesias)
             ->addIndexColumn()
             ->addColumn('cliente', function ($Data) {
-                if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->activaciones->moto->cliente->cli_razon_social;
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    }
                 }
             })
             ->addColumn('dnioruc', function ($Data) {
-                if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->activaciones->moto->cliente->cli_ruc;
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->activaciones->moto->cliente->cli_dni;
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_dni;
+                    }
                 }
             })
             ->addColumn('marca', function ($Data) {
@@ -410,22 +430,21 @@ class datatables_controller extends Controller
      */
     public function factura_tienda_table($id)
     {
-        
-        $facturas = tienda_facturas::with([
-            'venta'  
-        ]) 
-            ->where('tienda_id', decrypt_id($id)) 
+        $facturas = tienda_facturas::with(['venta'])
+            ->where('tienda_id', decrypt_id($id))
             ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($facturas)
-            ->addIndexColumn() 
+            ->addIndexColumn()
             ->addColumn('fecha_creacion', function ($Data) {
                 return Carbon::parse($Data->created_at)->format('d/m/Y');
             })
             ->addColumn('action', static function ($Data) {
                 $venta_id = encrypt_id($Data->venta->venta_id);
-                return view('buttons.venta', ['venta_id' => $venta_id]);
+                $estado = $Data->venta->venta_estado; 
+
+                return view('buttons.factura_tienda', ['venta_id' => $venta_id,"estado"=>$estado,"tienda_facturas_id"=>encrypt_id($Data->tienda_facturas_id)]);
             })
             ->rawColumns(['action'])
             ->make(true);

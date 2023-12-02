@@ -237,6 +237,9 @@ class inventario_moto_controller extends Controller
     { 
 
         $get = inventario_moto::with([
+            'cotizacion' => function ($query) {
+                $query->with('detalle');
+            },
             'moto' => function ($query) {
                 $query->with('cliente');
             },

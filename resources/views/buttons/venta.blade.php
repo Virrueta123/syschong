@@ -5,9 +5,11 @@
      </button>
      <div class="dropdown-menu" x-placement="bottom-start"
          style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+         
          <a class="dropdown-item" href="{{ route('ventas.show', $venta_id) }}"> <i class="fa fa-eye fa-1x"></i>
              Visualizar
          </a>
+        
 
          <a class="dropdown-item" href="{{ route('ventas.edit', $venta_id) }}"> <i class="fa fa-edit fa-1x"></i> editar
              venta
@@ -19,9 +21,10 @@
                  <input name="_method" type="hidden" value="DELETE">
                  <button type="submit" style="width: 100%"
                      onclick="FormDelete('tx{{ $venta_id }}','esta segur@ que desea eliminar esta usuario',event)"
-                     class="btn btn-ligth btn-sm m-1 text-left"><i class="fa fa-trash fa-1x"> </i> Eliminar
-                     usuario</button>
+                     class="btn btn-ligth btn-sm m-1 text-left"><i class="fa fa-trash fa-1x"> </i> Dar de baja</button>
              </form>
          </a>
+
+
      </div>
  </div>

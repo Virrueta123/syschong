@@ -14,5 +14,9 @@ class cliente extends Model
     public $primaryKey = 'cli_id';
     protected $fillable = [];
     protected $guarded = [];
-    
+
+    public function tipo_cliente()
+    {
+        return $this->belongsTo(tipo_cliente::class,"tipo_cliente_id");
+    }
 }

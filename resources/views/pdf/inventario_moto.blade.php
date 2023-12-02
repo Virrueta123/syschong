@@ -104,8 +104,8 @@
                 <td>
                     <div class="etiqueta">
                         <h4>Ruc: {{ app('empresa')->ruc() }}</h4>
-                        <h4>Inventario Vehicular</h4>
-                        <h4>IV - {{ $get->inventario_numero }}</h4>
+                        <h4>ORDEN DE SERVICIO</h4>
+                        <h4>N° {{ $get->inventario_numero }}</h4>
                     </div>
                 </td>
             </tr>
@@ -274,7 +274,7 @@
     <div class="container">
         <table class="table" width="100">
             <thead>
-                <tr  >
+                <tr>
                     <td>
                         <h4>Nivel de gasolina</h4>
                     </td>
@@ -301,18 +301,106 @@
     <div class="container">
         <table class="table" width="100">
             <thead>
-                <tr  >
+                <tr>
                     <th>
                         <h4>Observacion del cliente (Fallas,Ruidos extraños, Etc.)</h4>
-                    </th> 
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="text-center">
-                        <h5>{{ $get->inventario_moto_obs_cliente }} %</h5>
-                    </td> 
+                        <h5>{{ $get->inventario_moto_obs_cliente }} </h5>
+                    </td>
                 </tr>
+
+            </tbody>
+        </table>
+
+        <table class="table" width="100">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>observacion_sta</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center">
+                        <h5>{{ $get->cotizacion->observacion_sta }} </h5>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table class="table" width="100">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>trabajo_realizar</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center">
+                        <h5>{{ $get->cotizacion->trabajo_realizar }} </h5>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+        <table class="table" width="100">
+            <tr>
+                <th colspan="8">Respuestos a utilizar</th>
+               
+            </tr>
+            <tr>
+                <th>Codigo de fabrica</th>
+                <th>Codigo</th>
+                <th>Repuesto</th>
+                <th>Detalle</th>
+                <th>unidad</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Importe</th>
+            </tr>
+
+            <tbody>
+
+                @foreach ($get->cotizacion->detalle as $detalle)
+                    @if ($detalle->tipo == 'p')
+                        <tr>
+                            <td> {{ $detalle->prod_codigo_barra }} </td>
+                            <td> {{ $detalle->Codigo }} </td>
+                            <td>{{ $detalle->Descripcion }}</td>
+
+                            <td> {{ $detalle->Detalle }} </td>
+
+
+                            @if ($detalle->tipo == 'p')
+                                <td>{{ $detalle->producto->unidad->unidades_nombre }}</td>
+                            @else
+                                <td>servicio</td>
+                            @endif
+
+
+                            <td>{{ $detalle->MtoPrecioUnitario }}</td>
+
+                            <td>{{ $detalle->Cantidad }}</td>
+                            <td>{{ $detalle->MtoValorVenta }}</td>
+
+                        </tr>
+                    @endif
+                @endforeach
+
+
+
 
             </tbody>
         </table>
@@ -325,11 +413,11 @@
                     <th style="padding: 8px;padding-top:65px;">
                         <h4>_______________________________________</h4>
                         <br>
-                        <h5>{{app('empresa')->declaracion()}}</h5>
-                    </th> 
+                        <h5>{{ app('empresa')->declaracion() }}</h5>
+                    </th>
                 </tr>
             </thead>
-            
+
         </table>
     </div>
 

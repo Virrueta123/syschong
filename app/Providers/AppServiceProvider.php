@@ -67,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
                                 'name' => 'Listado',
                                 'url' => 'activaciones.index',
                             ],
+                            /*
                             [
                                 'name' => 'Casas comerciales',
                                 'url' => 'tiendas.index',
@@ -74,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
                             [
                                 'name' => 'Vendedores por casa comerciales',
                                 'url' => 'vendedor.index',
-                            ],
+                            ],*/
                         ],
                     ],
 
@@ -82,10 +83,11 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'Taller',
                         'icon' => 'fa fa-hammer',
                         'submenu' => [
+                            /*
                             [
                                 'name' => 'Servicio de cortesía',
                                 'url' => 'activaciones.create',
-                            ],
+                            ],*/
                             [
                                 'name' => 'Mantenimiento particular',
                                 'url' => 'mantenimiento.create',
@@ -136,7 +138,7 @@ class AppServiceProvider extends ServiceProvider
                             ],
                             [
                                 'name' => 'Tipo',
-                                'url' => 'cliente.create',
+                                'url' => 'tipo_cliente.index',
                             ],
                         ],
                     ],
@@ -182,9 +184,18 @@ class AppServiceProvider extends ServiceProvider
                                 'name' => 'Proveedores',
                                 'url' => 'proveedores.index',
                             ],
+                            [
+                                'name' => 'Gastos',
+                                'url' => 'gastos.index',
+                            ],
+                            /*
+                            [
+                                'name' => 'Tipo de gastos',
+                                'url' => 'tipo_gastos.index',
+                            ],*/
                         ],
                     ],
-
+/*
                     [
                         'name' => 'Inventario',
                         'icon' => 'fa fa-box-open',
@@ -198,7 +209,7 @@ class AppServiceProvider extends ServiceProvider
                                 'url' => 'cliente.create',
                             ],
                         ],
-                    ],
+                    ],*/
                     [
                         'name' => 'Caja',
                         'icon' => 'fa fa-cash-register',

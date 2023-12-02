@@ -64,6 +64,9 @@
                                     </tr>
                                 @else
                                     <tr>
+                                        <td><editar-cliente cliente="{{$get->moto->cliente}}"></editar-cliente></td>
+                                    </tr>
+                                    <tr>
                                         <td>Dni / Ruc</td>
 
                                         <td>
@@ -109,12 +112,16 @@
                                         <td>{{ $get->moto->cliente->cli_telefono }}</td>
                                     </tr>
                                 @endif
-
-
+ 
 
                                 <tr>
                                     <td colspan="2">
                                         <h4>Datos del Moto</h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <a class="btn btn-primary boton-color" href="{{route("moto.edit",encrypt_id($get->moto->mtx_id))}}"></i> Editar moto</a>
                                     </td>
                                 </tr>
 
@@ -226,15 +233,16 @@
 
 
                                                     <a class="dropdown-item"
-                                                        href="{{ route('cotizaciones.show', $cotesia->cortesias_activacion_id) }}"> <i
-                                                            class="fa fa-eye fa-1x"></i>Ver Proceso
+                                                        href="{{ route('cotizaciones.show', $cotesia->cortesias_activacion_id) }}">
+                                                        <i class="fa fa-eye fa-1x"></i>Ver Proceso
                                                     </a>
                                                     <a class="dropdown-item"
-                                                        href="{{ route('cotizaciones.edit', $cotesia->cortesias_activacion_id) }}"> <i
-                                                            class="fa fa-edit fa-1x"></i>Editar
+                                                        href="{{ route('cotizaciones.edit', $cotesia->cortesias_activacion_id) }}">
+                                                        <i class="fa fa-edit fa-1x"></i>Editar
                                                     </a>
 
-                                                    <form method="POST" id="formdeletetx{{ $cotesia->cortesias_activacion_id }}"
+                                                    <form method="POST"
+                                                        id="formdeletetx{{ $cotesia->cortesias_activacion_id }}"
                                                         action="{{ route('cortesia.delete', $cotesia->cortesias_activacion_id) }}">
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                         <input name="_method" type="hidden" value="DELETE">
@@ -266,7 +274,7 @@
                 </div>
             </div>
         </div>
- 
+
     </div>
 @endsection
 

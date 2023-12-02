@@ -41,6 +41,34 @@
                         <label for="direccion">Dirección</label>
                         <input type="text" class="form-control" id="direccion" name="direccion" value="{{ $empresa->direccion }}" required>
                     </div> 
+
+                    
+                    <div id="app">
+                        <div class="form-group">
+                            <label for="prod_codigo">Precio Activacion</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        S/.
+                                    </div>
+                                </div>
+                                <input-money  valor="{{$empresa->activacion}}" name_precio="activacion" id="activacion"></input-money>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prod_codigo">Precio Cortesia</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        S/.
+                                    </div>
+                                </div>
+                                <input-money  valor="{{$empresa->cortesia}}" name_precio="cortesia" id="activacion"></input-money>
+                            </div>
+                        </div>
+                    </div> 
                     <div class="form-group">
                         <label for="declaracion">Declaración</label>
                         <input type="text" class="form-control" id="declaracion" name="declaracion" value="{{ $empresa->declaracion }}" required>

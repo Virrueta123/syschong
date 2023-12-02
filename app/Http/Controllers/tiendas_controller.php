@@ -13,6 +13,7 @@ use App\Models\tienda_detalle_factura;
 use App\Models\tienda_facturas;
 use App\Models\tiendas;
 use App\Models\ventas;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
@@ -406,7 +407,7 @@ class tiendas_controller extends Controller
                 $cortesias_activacion->is_cobro = 'Y';
                 $cortesias_activacion->update();
 
-                $tienda_detalle_factura->cortesia_activacion_id = $cortesias_activacion->cortesia_activacion_id;
+                $tienda_detalle_factura->cortesia_activacion_id = $detalle['cortesias_activacion_id'];
 
                 $detalleVenta->CodProducto = 'SER' . $detalle['tipo'] . $cortesias_activacion->activaciones->moto->mtx_motor;
                 $detalleVenta->Unidad = 'ZZ';
@@ -554,7 +555,7 @@ class tiendas_controller extends Controller
                     'message' => 'error del servidor',
                     'error' => 'Codigo Error: ' . $result->getError()->getCode() . ' Mensaje Error: ' . $result->getError()->getMessage(),
                     'success' => false,
-                    'data' => encrypt_id($venta->venta_id),
+                    'data' => encrypt_id($datax['tienda']["tienda_id"]),
                 ]);
                 exit();
             }
@@ -576,7 +577,7 @@ class tiendas_controller extends Controller
                     'message' => $cdr->getDescription(),
                     'error' => '',
                     'success' => true,
-                    'data' => encrypt_id($venta->venta_id),
+                    'data' => encrypt_id($datax['tienda']["tienda_id"]),
                 ]);
 
                 if (count($cdr->getNotes()) > 0) {
@@ -598,6 +599,25 @@ class tiendas_controller extends Controller
                 'success' => false,
                 'data' => '',
             ]);
+        }
+    }
+
+    public function reporte_factura($id)
+    {
+        
+
+        $get = tienda_facturas::with([
+              "tienda_detalle_factura"
+        ])->find(decrypt_id($id));
+ 
+
+        if ($get) {
+
+            $pdf = Pdf::loadView('pdf.reporte_factura_pdf', ['get' => $get, 'id' => $id])->setPaper('a4', 'landscape'); 
+            return $pdf->stream();
+             
+        } else {
+            return view('errors.404');
         }
     }
 }

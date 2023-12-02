@@ -78,20 +78,20 @@
                     </th>
                 </tr>
             </tfoot>
-        </table> 
+        </table>
     </div>
 </template>
 
-<script> 
-    import $ from "jquery"; 
-    import 'datatables.net-buttons-bs5'; 
+<script>
+    import $ from "jquery";
+    import 'datatables.net-buttons-bs5';
     import 'datatables.net-fixedcolumns-bs5';
     import 'datatables.net-responsive-bs5';
     import 'datatables.net-searchbuilder-bs5';
     import 'datatables.net-searchpanes-bs5';
     import 'datatables.net-select-bs5';
     import 'datatables.net-staterestore-bs5';
-   
+
 
 
 
@@ -110,7 +110,7 @@
 
         },
         mounted() {
-           
+
             var total = 0;
             var tables = $(this.$refs.miTabla).DataTable({
 
@@ -169,7 +169,10 @@
                     },
 
                 ],
-
+                processing: true,
+                language: {
+                    processing: '<div id="loading-indicator">Cargando datos...</div>',
+                },
                 dom: 'Bfrtip',
                 "info": true,
                 fixedColumns: true,

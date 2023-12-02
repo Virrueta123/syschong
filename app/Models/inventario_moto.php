@@ -15,6 +15,8 @@ class inventario_moto extends Model
     protected $fillable = [];
     protected $guarded = [];
 
+    protected $appends = ['url'];
+
     public function moto(){
         return $this->belongsTo(motos::class,"mtx_id")->withTrashed();
     }
@@ -23,5 +25,13 @@ class inventario_moto extends Model
         return $this->hasOne(cortesias_activacion::class,"inventario_moto_id")->withTrashed();
     }
 
+    public function cotizacion(){
+        return $this->hasOne(cotizacion::class,"inventario_moto_id")->withTrashed();
+    }
+
+    public function getUrlAttribute()
+    {
+        return encrypt_id($this->inventario_moto_id);
+    }
    
 }

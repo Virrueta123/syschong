@@ -429,7 +429,10 @@
         },
         methods: {
             crear_factura() {
-                this.send_axios_reponse(
+                if(this.fecha_creacion_factura ==  this.fecha_vencimiento_factura){
+                    Swal.fire("la fecha no puede ser igual para emitir esta factura")
+                }else{
+                    this.send_axios_reponse(
                         "Desear Emitir esta Factura de esta tienda?",
                         "Si,Emitir la factura", {
                             tienda: this.tienda,
@@ -449,13 +452,15 @@
                                 title: 'factura emitida correctamente',
                                 text: result.message,
                                 icon: 'success',
-                                showCancelButton: true,
+                                showCancelButton: false,
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
-                                confirmButtonText: 'ver el comprobante'
+                                confirmButtonText: 'Ir a la casa comercial'
                             }).then((result_swal) => {
-                                console.log(result)
-
+                                console.log(result) 
+                                if(result_swal.isConfirmed){
+                                    window.location.href = "/tiendas/" + result.data
+                                }
                             })
 
                         } else {
@@ -464,14 +469,14 @@
                                 title: 'Error al crear la factura',
                                 text: result.message,
                                 icon: 'warning',
-                                showCancelButton: true,
+                                showCancelButton: false,
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
-                                confirmButtonText: 'ver el comprobante'
-                            }).then((result_swal) => {
-
-                                console.log(result)
-
+                                confirmButtonText: 'Ir a la casa comercial'
+                            }).then((result_swal) => { 
+                                if(result_swal.isConfirmed){
+                                    window.location.href = "/tiendas/" + result.data
+                                }
                             })
                         }
                     })
@@ -485,6 +490,7 @@
                             footer: "-------",
                         });
                     });
+                } 
 
             },
             eliminar_registro(index) {

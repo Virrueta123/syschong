@@ -205,10 +205,12 @@
                     {
                         data: 'action',
                         name: 'action'
-                    },
-
+                    } 
                 ],
-
+                processing: true,
+                language: {
+                    processing: '<div id="loading-indicator">Cargando datos...</div>',
+                },        
                 fixedColumns: {
                     left: 2,
                     right :1 

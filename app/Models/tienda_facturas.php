@@ -19,4 +19,9 @@ class tienda_facturas extends Model
     {
         return $this->belongsTo(ventas::class, 'venta_id')->withTrashed();
     }
+
+    public function tienda_detalle_factura()
+    {
+        return $this->belongsTo(tienda_detalle_factura::class, 'tienda_facturas_id')->withTrashed();
+    }
 }

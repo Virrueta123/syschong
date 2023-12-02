@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
+use App\Models\empresa;
 use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Greenter\Model\Voided\Voided;
+use Greenter\Model\Voided\VoidedDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Html\Column;
+use Greenter\Ws\Services\SoapClient;
+use Greenter\Ws\Services\BillSender;
 
 class ventas_controller extends Controller
 {
@@ -193,7 +198,7 @@ class ventas_controller extends Controller
                     $venta_id = encrypt_id($Data->venta_id);
                     return view('buttons.venta', ['venta_id' => $venta_id]);
                 })
-                
+
                 ->addColumn('numero', static function ($Data) {
                     return $Data->venta_serie . '-' . $Data->venta_correlativo;
                 })
@@ -238,7 +243,7 @@ class ventas_controller extends Controller
 
         $html = $builder
             ->columns([
-                Column::make('fecha_creacion')->title('Emision'), 
+                Column::make('fecha_creacion')->title('Emision'),
                 Column::make('cliente')
                     ->title('Cliente')
                     ->searchable(true)
@@ -386,7 +391,50 @@ class ventas_controller extends Controller
      */
     public function destroy($id)
     {
-        //
+        $get = ventas::find(decrypt_id($id));
+
+        $firma = new firma_sunat_controller();
+        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+
+        $detail1 = new VoidedDetail();
+        $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
+        $detail1
+            ->setTipoDoc( $tipo_doc) // Factura
+            ->setSerie($get->venta_serie)
+            ->setCorrelativo($get->venta_correlativo)
+            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
+  
+        $cDeBaja = new Voided();
+        $cDeBaja
+            ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
+            ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
+            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
+            ->setCompany($firma->company())
+            ->setDetails([$detail1]);
+
+        $result = $see->send($cDeBaja);
+        // Guardar XML
+        file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
+
+        if (!$result->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($result->getError());
+            exit();
+        }
+
+        $ticket = $result->getTicket();
+        dd ('Ticket : ' . $ticket . PHP_EOL);
+
+        $statusResult = $see->getStatus($ticket);
+        if (!$statusResult->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($statusResult->getError());
+            return;
+        }
+
+        dd ($statusResult->getCdrResponse()->getDescription());
+        // Guardar CDR
+        file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
     }
 
     /* ******** registrar la venta con vue ************* */

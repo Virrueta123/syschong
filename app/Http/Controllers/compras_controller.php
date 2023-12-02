@@ -525,9 +525,7 @@ class compras_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-       
-
+    { 
         try {
             $delete = compras::find(decrypt_id($id));
  

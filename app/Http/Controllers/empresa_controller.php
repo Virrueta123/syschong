@@ -78,6 +78,8 @@ class empresa_controller extends Controller
             'declaracion' => 'required|string|max:255',
             'token_whatsapps_api' => 'required|string|max:255',
             'codigo_telefono' => 'required|string|max:155',
+            'activacion' => 'required|string|max:155',
+            'cortesia' => 'required|string|max:155',
         ]);
 
         $empresa = empresa::find(1);

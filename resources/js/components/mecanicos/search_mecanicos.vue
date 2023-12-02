@@ -1,7 +1,7 @@
 <template>
 
     <select name="mecanico_id" id="select_mecanico" ref="select_mecanico" class="form-control select2" 
-        tabindex="-1" aria-hidden="true" language="es">
+        tabindex="-1" aria-hidden="true" language="es" style="width: 100%;">
     </select>
 
 </template>

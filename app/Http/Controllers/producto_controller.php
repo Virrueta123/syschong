@@ -174,7 +174,7 @@ class producto_controller extends Controller
                 'language' => [
                     'url' => url('//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json'),
                 ],
-                'processing' => false,
+                'processing' => true,
                 'serverSide' => true,
                 'responsive' => true,
                 'autoWidth' => false,

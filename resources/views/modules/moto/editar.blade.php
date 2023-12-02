@@ -35,8 +35,14 @@
                                 <label for="cli_telefono">Buscar Cliente </label>
  
                                 <div class="input-group">
-                                    <search-cliente selected="{{$show->cliente->cli_nombre}} {{$show->cliente->cli_nombre}}-{{$show->cliente->cli_dni}}" id="{{$show->cliente->cli_id}}">
+                                    @if ($show->cliente)
+                                    <search-cliente selected="{{$show->cliente->cli_nombre}} {{$show->cliente->cli_apellido}}-{{$show->cliente->cli_dni}}" id="{{$show->cliente->cli_id}}">
                                     </search-cliente>
+                                    @else
+                                    <search-cliente  >
+                                    </search-cliente>
+                                    @endif
+                                    
                                     <crear-cliente select_element="#cliente_select">
                                     </crear-cliente>
                                 </div>
@@ -75,9 +81,9 @@
                                 </div>
  
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">  
                                 <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                <input type="date" class="form-control" value="{{ $show->mtx_fabricacion }}" name="mtx_fabricacion" id="mtx_fabricacion">
+                                <input type="date" class="form-control" value="{{ \Carbon\Carbon::parse($show->mtx_fabricacion)->format("Y-m-d") }}" name="mtx_fabricacion" id="mtx_fabricacion">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="mtx_chasis">Chasis</label>
@@ -193,14 +199,14 @@
                 },
                 mtx_chasis: {
                     maxlength: 200,
-                    required: true,
+                    required: false,
                 },
                 mtx_color: {
                     maxlength: 200,
                     required: true,
                 }, 
                 cli_id: {
-                    required: true,
+                    required: false,
                 }
 
             },

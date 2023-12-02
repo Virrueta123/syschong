@@ -33,7 +33,7 @@ class clienteController extends Controller
     {
         $fecha_actual = Carbon::now();
         if ($request->ajax()) {
-            $cliente = cliente::orderBy('created_at', 'desc')->get();
+            $cliente = cliente::with(["tipo_cliente"])->orderBy('created_at', 'desc')->get();
             return DataTables::of($cliente)
                 ->addIndexColumn()
                 ->addColumn('nombres', function ($Data) {
@@ -190,13 +190,13 @@ class clienteController extends Controller
             ]);
 
             $validate['cli_telefono'] = str_replace('-', '', $validate['cli_telefono']);
-            $validate['cli_correo'] = is_null($validate['cli_correo']) ? 'N' : $validate['cli_correo'];
-            $validate['cli_ruc'] = is_null($datax['cli_ruc']) ? 'N' : $datax['cli_ruc'];
-            $validate['cli_razon_social'] = is_null($datax['cli_razon_social']) ? 'N' : $datax['cli_razon_social'];
-            $validate['cli_direccion_ruc'] = is_null($datax['cli_direccion_ruc']) ? 'N' : $datax['cli_direccion_ruc'];
-            $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? 'N' : $datax['cli_provincia_ruc'];
-            $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? 'N' : $datax['cli_departamento_ruc'];
-            $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? 'N' : $datax['cli_distrito_ruc'];
+            $validate['cli_correo'] = is_null($validate['cli_correo']) ? 'no tiene' : $validate['cli_correo'];
+            $validate['cli_ruc'] = is_null($datax['cli_ruc']) ? 'no tiene' : $datax['cli_ruc'];
+            $validate['cli_razon_social'] = is_null($datax['cli_razon_social']) ? 'no tiene' : $datax['cli_razon_social'];
+            $validate['cli_direccion_ruc'] = is_null($datax['cli_direccion_ruc']) ? 'no tiene' : $datax['cli_direccion_ruc'];
+            $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? 'no tiene' : $datax['cli_provincia_ruc'];
+            $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? 'no tiene' : $datax['cli_departamento_ruc'];
+            $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? 'no tiene' : $datax['cli_distrito_ruc'];
             $validate['user_id'] = Auth::user()->id;
 
             $create = cliente::create($validate);
@@ -296,9 +296,9 @@ class clienteController extends Controller
 
             $validate['cli_telefono'] = str_replace('-', '', $validate['cli_telefono']);
             $validate['cli_correo'] = is_null($validate['cli_correo']) ? '' : $validate['cli_correo'];
-            $validate['cli_ruc'] = is_null($datax['cli_ruc']) ? '' : $datax['cli_ruc'];
-            $validate['cli_razon_social'] = is_null($datax['cli_razon_social']) ? '' : $datax['cli_razon_social'];
-            $validate['cli_direccion_ruc'] = is_null($datax['cli_direccion_ruc']) ? '' : $datax['cli_direccion_ruc'];
+            $validate['cli_ruc'] = is_null($datax['cli_ruc']) ? 'no tiene' : $datax['cli_ruc'];
+            $validate['cli_razon_social'] = is_null($datax['cli_razon_social']) ? 'no tiene' : $datax['cli_razon_social'];
+            $validate['cli_direccion_ruc'] = is_null($datax['cli_direccion_ruc']) ? 'no tiene' : $datax['cli_direccion_ruc'];
             $validate['cli_provincia_ruc'] = is_null($datax['cli_provincia_ruc']) ? '' : $datax['cli_provincia_ruc'];
             $validate['cli_departamento_ruc'] = is_null($datax['cli_departamento_ruc']) ? '' : $datax['cli_departamento_ruc'];
             $validate['cli_distrito_ruc'] = is_null($datax['cli_distrito_ruc']) ? '' : $datax['cli_distrito_ruc'];
@@ -428,32 +428,81 @@ class clienteController extends Controller
         try {
             $datax = $req->all();
 
-            $moto = motos::find($datax['mtx_id']);  
-            
             $cliente = new cliente();
-            $cliente->cli_nombre = $datax["cli_nombre"];
-            $cliente->cli_apellido = $datax["cli_apellido"];
-            $cliente->cli_dni = $datax["cli_dni"];
-            $cliente->cli_direccion = $datax["cli_direccion"];
-            $cliente->cli_provincia = $datax["cli_provincia"];
-            $cliente->cli_distrito = $datax["cli_distrito"];
-            $cliente->cli_departamento = $datax["cli_departamento"];
-            $cliente->cli_telefono = $datax["cli_telefono"];
-            $cliente->cli_correo = $datax["cli_correo"];
-            $cliente->cli_ruc = $datax["cli_ruc"];
-            $cliente->cli_razon_social = $datax["cli_razon_social"];
-            $cliente->cli_direccion_ruc = $datax["cli_direccion_ruc"];
-            $cliente->cli_provincia_ruc = $datax["cli_provincia_ruc"];
-            $cliente->cli_departamento_ruc = $datax["cli_departamento_ruc"];
-            $cliente->cli_distrito_ruc = $datax["cli_distrito_ruc"];
+            $cliente->cli_nombre = is_null($datax['cli_nombre']) ? 'no tiene' :$datax['cli_nombre'] ;
+            $cliente->cli_apellido = $datax['cli_apellido'];
+            $cliente->cli_dni = $datax['cli_dni'];
+            $cliente->cli_direccion = $datax['cli_direccion'];
+            $cliente->cli_provincia = $datax['cli_provincia'];
+            $cliente->cli_distrito = $datax['cli_distrito'];
+            $cliente->cli_departamento = $datax['cli_departamento'];
+            $cliente->cli_telefono = str_replace('-', '', $datax['cli_telefono']);
+            $cliente->cli_correo = $datax['cli_correo'];
+            $cliente->cli_ruc =  is_null($datax['cli_ruc'])  ? 'no tiene' :$datax['cli_ruc'] ;
+            $cliente->cli_razon_social =is_null( $datax['cli_razon_social'])  ? 'no tiene' :$datax['cli_razon_social'] ;
+            $cliente->cli_direccion_ruc =is_null( $datax['cli_direccion_ruc'])  ? 'no tiene' :$datax['cli_direccion_ruc'] ;
+            $cliente->cli_provincia_ruc = $datax['cli_provincia_ruc'];
+            $cliente->cli_departamento_ruc = $datax['cli_departamento_ruc'];
+            $cliente->cli_distrito_ruc = $datax['cli_distrito_ruc'];
             $cliente->save();
+            $cli_id = $cliente->cli_id;
 
-            $moto->cli_id = $cliente->cli_id;
-        
+            $moto = motos::find($datax['mtx_id']);
+
+            $moto->cli_id = $cli_id;
 
             if ($moto->update()) {
                 return response()->json([
                     'message' => 'se actualizo correctamente el  cliente',
+                    'error' => '',
+                    'success' => true,
+                    'data' => $cliente,
+                ]);
+            } else {
+                Log::error('error al actualizar el cliente');
+                return response()->json([
+                    'message' => 'error al actualizar el cliente',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error al actualizar el cliente',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    function update_vue_cli(Request $req)
+    {
+        try {
+            $datax = $req->all();
+ 
+            $cliente = cliente::find($datax['cli_id']);
+            $cliente->cli_nombre = $datax['cli_nombre'];
+            $cliente->cli_apellido = $datax['cli_apellido'];
+            $cliente->cli_dni = $datax['cli_dni'];
+            $cliente->cli_direccion = $datax['cli_direccion'];
+            $cliente->cli_provincia = $datax['cli_provincia'];
+            $cliente->cli_distrito = $datax['cli_distrito'];
+            $cliente->cli_departamento = $datax['cli_departamento'];
+            $cliente->cli_telefono = str_replace('-', '', $datax['cli_telefono']);
+            $cliente->cli_correo = $datax['cli_correo'];
+            $cliente->cli_ruc = $datax['cli_ruc'];
+            $cliente->cli_razon_social = $datax['cli_razon_social'];
+            $cliente->cli_direccion_ruc = $datax['cli_direccion_ruc'];
+            $cliente->cli_provincia_ruc = $datax['cli_provincia_ruc'];
+            $cliente->cli_departamento_ruc = $datax['cli_departamento_ruc'];
+            $cliente->cli_distrito_ruc = $datax['cli_distrito_ruc'];
+          
+            if ($cliente->update()) {
+                return response()->json([
+                    'message' => 'se actualizo correctamente el cliente',
                     'error' => '',
                     'success' => true,
                     'data' => '',
@@ -478,39 +527,39 @@ class clienteController extends Controller
         }
     }
 
-        /* *********************** */
-        function editar_celular(Request $req)
-        {
-            try {
-                $datax = $req->all();
-    
-                $cliente = cliente::find($datax['cli_id']); 
-                $cliente->cli_telefono = $datax['cli_telefono']; 
-    
-                if ( $cliente->update()) {
-                    return response()->json([
-                        'message' => 'se actualizo correctamente el  cliente',
-                        'error' => '',
-                        'success' => true,
-                        'data' => $datax['cli_telefono'],
-                    ]);
-                } else {
-                    Log::error('error al actualizar el cliente');
-                    return response()->json([
-                        'message' => 'error al actualizar el cliente',
-                        'error' => '',
-                        'success' => false,
-                        'data' => '',
-                    ]);
-                }
-            } catch (\Throwable $th) {
-                Log::error($th->getMessage());
+    /* *********************** */
+    function editar_celular(Request $req)
+    {
+        try {
+            $datax = $req->all();
+
+            $cliente = cliente::find($datax['cli_id']);
+            $cliente->cli_telefono = $datax['cli_telefono'];
+
+            if ($cliente->update()) {
+                return response()->json([
+                    'message' => 'se actualizo correctamente el  cliente',
+                    'error' => '',
+                    'success' => true,
+                    'data' => $datax['cli_telefono'],
+                ]);
+            } else {
+                Log::error('error al actualizar el cliente');
                 return response()->json([
                     'message' => 'error al actualizar el cliente',
-                    'error' => $th->getMessage(),
+                    'error' => '',
                     'success' => false,
                     'data' => '',
                 ]);
             }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error al actualizar el cliente',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
         }
+    }
 }

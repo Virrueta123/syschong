@@ -183,7 +183,7 @@ class moto_controller extends Controller
             $update = motos::where('mtx_id', decrypt_id($id));
             $datax = $request->all(); 
             $validate = $request->validate([
-                'mtx_placa' => 'required|string|max:50',
+                'mtx_placa' => 'string|max:50',
 
                 'mtx_vin' => 'required|max:200',
 
@@ -193,11 +193,11 @@ class moto_controller extends Controller
 
                 'mtx_estado' => 'required|max:1',
 
-                'mtx_chasis' => 'required|max:200',
+                'mtx_chasis' => 'max:200',
 
                 'mtx_color' => 'required|string|max:200', 
 
-                'cli_id' => 'required',
+                'cli_id' => '',
             ]);
 
             if(!is_null($datax["mtx_fabricacion"])){

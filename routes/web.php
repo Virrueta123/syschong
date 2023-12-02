@@ -75,6 +75,8 @@ include 'web/taller.php';
 include 'web/service.php';
 
 include 'web/caja_chica.php';
+
+include 'web/gastos.php';
 /* *********************** */
 
 
@@ -136,6 +138,11 @@ Route::resource('taller', App\Http\Controllers\taller_controller::class);
 
 Route::resource('mecanico', App\Http\Controllers\mecanicos_controller::class);
 
+Route::resource('tipo_cliente', App\Http\Controllers\tipo_cliente_controller::class);
+
+Route::resource('gastos', App\Http\Controllers\gastos_controller::class);
+
+Route::resource('tipo_gastos', App\Http\Controllers\tipo_gastos_controller::class);
 
 include 'web/empresa.php';
 

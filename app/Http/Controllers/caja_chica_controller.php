@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\caja_chica;
 use App\Models\forma_pago;
 use App\Models\pagos_ventas;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ use Yajra\DataTables\Html\Column;
 
 class caja_chica_controller extends Controller
 {
-     /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -33,16 +34,20 @@ class caja_chica_controller extends Controller
     {
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
-            return DataTables::of(caja_chica::with(['usuario'])->orderBy('created_at', 'asc')->get())
+            return DataTables::of(
+                caja_chica::with(['usuario'])
+                    ->orderBy('created_at', 'asc')
+                    ->get(),
+            )
                 ->addColumn('action', static function ($Data) {
                     $caja_chica_id = encrypt_id($Data->caja_chica_id);
-                    return view('buttons.caja', ['caja_chica_id' => $caja_chica_id,"is_abierto"=>$Data->is_abierto]);
+                    return view('buttons.caja', ['caja_chica_id' => $caja_chica_id, 'is_abierto' => $Data->is_abierto]);
                 })
                 ->addColumn('fecha_cierra', static function ($Data) {
-                    if ($Data->is_abierto == "C") {
-                       return Carbon::parse($Data->fecha_cierra)->format('Y-m-d');
+                    if ($Data->is_abierto == 'C') {
+                        return Carbon::parse($Data->fecha_cierra)->format('Y-m-d');
                     } else {
-                        return 'Caja Abierta'; 
+                        return 'Caja Abierta';
                     }
                 })
                 ->addColumn('created_at', static function ($Data) {
@@ -129,15 +134,15 @@ class caja_chica_controller extends Controller
      */
     public function create()
     {
-      
-        $apertura_caja = caja_chica::where('is_abierto', 'Y')->where("user_id",Auth::id())->first();
-        if(is_null($apertura_caja)){
+        $apertura_caja = caja_chica::where('is_abierto', 'Y')
+            ->where('user_id', Auth::id())
+            ->first();
+        if (is_null($apertura_caja)) {
             return view('modules.caja.create');
-        }else{
+        } else {
             session()->flash('error', 'ya esta creada una caja con este usuario');
             return redirect()->route('caja.index');
         }
-        
     }
 
     /**
@@ -182,10 +187,9 @@ class caja_chica_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {   
-        
+    {
         $show = caja_chica::find(decrypt_id($id));
-        return view("modules.caja.show",compact("show","id")); 
+        return view('modules.caja.show', compact('show', 'id'));
     }
 
     /**
@@ -194,10 +198,10 @@ class caja_chica_controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id,Request $request)
+    public function edit($id, Request $request)
     {
         $get = caja_chica::find(decrypt_id($id));
-        return view("modules.caja.edit",compact("get","id"));  
+        return view('modules.caja.edit', compact('get', 'id'));
     }
 
     /**
@@ -209,30 +213,27 @@ class caja_chica_controller extends Controller
      */
     public function update(Request $request, $id)
     {
-         
-            $datax = $request->all();
+        $datax = $request->all();
 
-            $validate = $request->validate([
-                'referencia' => 'required',
-                'saldo_inicial' => 'required',
-            ]);
+        $validate = $request->validate([
+            'referencia' => 'required',
+            'saldo_inicial' => 'required',
+        ]);
 
-            $validate['user_id'] = Auth::user()->id;
+        $validate['user_id'] = Auth::user()->id;
 
-            $caja_chica = caja_chica::findOrFail(decrypt_id($id));
-            $caja_chica->referencia = $validate['referencia'];
-            $caja_chica->saldo_inicial = $validate['saldo_inicial'];
- 
+        $caja_chica = caja_chica::findOrFail(decrypt_id($id));
+        $caja_chica->referencia = $validate['referencia'];
+        $caja_chica->saldo_inicial = $validate['saldo_inicial'];
 
-            if ($caja_chica->update()) {
-                session()->flash('success', 'se edito correctamente la caja');
-                return redirect()->route('caja.index');
-            } else {
-                Log::error('no se edito correctamente la caja');
-                session()->flash('error', 'no se edito correctamente la caja');
-                return redirect()->route('caja.index');
-            }
-         
+        if ($caja_chica->update()) {
+            session()->flash('success', 'se edito correctamente la caja');
+            return redirect()->route('caja.index');
+        } else {
+            Log::error('no se edito correctamente la caja');
+            session()->flash('error', 'no se edito correctamente la caja');
+            return redirect()->route('caja.index');
+        }
     }
 
     /**
@@ -244,15 +245,13 @@ class caja_chica_controller extends Controller
     public function destroy($id)
     {
         try {
-
             $caja = caja_chica::findOrFail(decrypt_id($id));
-          
 
             if ($caja->pagos()->exists()) {
                 session()->flash('warning', 'No se puede eliminar esta caja por que ya tiene compras o ventas');
                 return redirect()->route('caja.index');
             } else {
-                $delete = $caja->delete(); 
+                $delete = $caja->delete();
                 if ($delete) {
                     session()->flash('success', 'se elimino correctamente la caja');
                     return redirect()->route('caja.index');
@@ -268,25 +267,44 @@ class caja_chica_controller extends Controller
         }
     }
 
-      public function cerrar($id)
+    public function cerrar($id)
+    {
+        $caja = caja_chica::with(['pagos'])->find(decrypt_id($id));
+
+        if (count($caja->pagos) != 0) {
+            $caja->is_abierto = 'C';
+
+            $compras = $caja->pagos->where('tipo', 'C')->sum('monto');
+            $ventas = $caja->pagos->where('tipo', 'V')->sum('monto');
+            $caja->saldo_final = $caja->saldo_inicial + $ventas - $compras;
+            $caja->cierre = Carbon::now();
+            $caja->update();
+            session()->flash('success', 'se cerró correctamente la caja');
+            return redirect()->route('caja.index');
+        } else {
+            session()->flash('error', 'no se pudo cerrar la caja por que no tiene pagos ni ventas');
+            return redirect()->route('caja.index');
+        }
+    }
+
+    public function reporte($id)
     {
         
-                $caja = caja_chica::with(["pagos"])->find(decrypt_id($id));
-                 
-                if(count($caja->pagos )!= 0){
-                    $caja->is_abierto = 'C';
 
-                    $compras = $caja->pagos->where("tipo","C")->sum("monto");
-                    $ventas = $caja->pagos->where("tipo","V")->sum("monto"); 
-                    $caja->saldo_final = $caja->saldo_inicial + $ventas - $compras;
-                    $caja->cierre = Carbon::now();
-                    $caja->update();
-                    session()->flash('success', 'se cerró correctamente la caja');
-                    return redirect()->route('caja.index'); 
-                }else{
-                    session()->flash('error', 'no se pudo cerrar la caja por que no tiene pagos ni ventas');
-                    return redirect()->route('caja.index');
-                }
-             
+        $get = caja_chica::with([
+             "usuario","pagos","ventas"
+        ])->find(decrypt_id($id));
+
+
+        $calcular_ingresos = $get->pagos->where('tipo', 'C')->sum('monto');
+
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.caja_chica', ['get' => $get, 'id' => $id]);
+
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
     }
 }
+ 

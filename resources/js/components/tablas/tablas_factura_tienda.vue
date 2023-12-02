@@ -14,6 +14,9 @@
                         Total
                     </th>
                     <th>
+                        Estado
+                    </th>
+                    <th>
                         Fecha de creacion
                     </th> 
                     <th>
@@ -78,6 +81,24 @@
                         name: 'venta.venta_total'
                     }, 
                     {
+                        data: 'venta.estado',
+                        name: 'venta.estado',
+                        render: function(data, type, full, meta) {
+                            switch (data) {
+                                case 'A':
+                                    return '<center><div class="badge badge-pill badge-success mb-1 float-right">Aceptado</div></center>';
+                                    break; 
+                                case 'R':
+                                    return '<center><div class="badge badge-pill badge-danger mb-1 float-right">Rechazado</div></center>';
+                                    break;
+                                case 'D':
+                                    return '<center><div class="badge badge-pill badge-danger mb-1 float-right">Dado de baja</div></center>';
+                                    break; 
+                            }
+                        }
+
+                    },
+                    {
                         data: 'fecha_creacion',
                         name: 'fecha_creacion'
                     }, 
@@ -87,7 +108,10 @@
                     },
 
                 ],
-
+                processing: true,
+          language: {
+            processing: '<div id="loading-indicator">Cargando datos...</div>',
+          },
                 dom: 'Bfrtip',
                 "info": true,
                 fixedColumns: true,

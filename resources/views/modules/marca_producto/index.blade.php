@@ -111,7 +111,10 @@
                     },
 
                 ],
-
+                processing: true,
+                language: {
+                    processing: '<div id="loading-indicator">Cargando datos...</div>',
+                },      
                 dom: 'Bfrtip',
                 "info": true,
                 fixedColumns: true,

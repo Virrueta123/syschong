@@ -68,3 +68,8 @@ function fechaactual(){
 function moneyformat($money){
    return number_format($money, 2, '.', ',');
 }
+
+function generarNumeroConsecutivo() {
+    static $numero = 1;
+    return str_pad($numero++, 8, '0', STR_PAD_LEFT);
+}
