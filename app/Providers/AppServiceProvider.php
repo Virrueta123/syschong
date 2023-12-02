@@ -44,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
                                 'name' => 'Nota de venta',
                                 'url' => 'ventas.notas_venta',
                             ],
+                            /*
                             [
                                 'name' => 'Oportunidades de venta',
                                 'url' => 'cliente.create',
@@ -51,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
                             [
                                 'name' => 'Cotizacion',
                                 'url' => 'cliente.create',
-                            ],
+                            ],*/
                         ],
                     ],
 
@@ -67,11 +68,12 @@ class AppServiceProvider extends ServiceProvider
                                 'name' => 'Listado',
                                 'url' => 'activaciones.index',
                             ],
-                            /*
+                            
                             [
                                 'name' => 'Casas comerciales',
                                 'url' => 'tiendas.index',
                             ],
+                            /*
                             [
                                 'name' => 'Vendedores por casa comerciales',
                                 'url' => 'vendedor.index',
