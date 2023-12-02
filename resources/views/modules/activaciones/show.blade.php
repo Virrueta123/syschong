@@ -236,10 +236,12 @@
                                                         href="{{ route('cotizaciones.show', $cotesia->cortesias_activacion_id) }}">
                                                         <i class="fa fa-eye fa-1x"></i>Ver Proceso
                                                     </a>
+                                                    <!-- ********   
+                                                     
                                                     <a class="dropdown-item"
                                                         href="{{ route('cotizaciones.edit', $cotesia->cortesias_activacion_id) }}">
                                                         <i class="fa fa-edit fa-1x"></i>Editar
-                                                    </a>
+                                                    </a> -->
 
                                                     <form method="POST"
                                                         id="formdeletetx{{ $cotesia->cortesias_activacion_id }}"

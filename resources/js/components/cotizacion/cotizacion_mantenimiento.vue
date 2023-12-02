@@ -2,18 +2,19 @@
     <div></div>
     <div id="smartwizard">
         <div class="section-header">
-                    <div class="section-header-breadcrumb">
- 
+            <div class="section-header-breadcrumb">
 
-                        <a v-if="cotizacion . inventario . moto . cliente" type="button" class="btn btn-info boton-color custom-next mr-2 pr-2"
-                            target="_blank" :href="'/imprimir_inventario_moto/'+cotizacion . inventario .url">
-                            Imprimir orden de servicio</a>
- 
 
-                       
+                <a v-if="cotizacion . inventario . moto . cliente" type="button"
+                    class="btn btn-info boton-color custom-next mr-2 pr-2" target="_blank"
+                    :href="'/imprimir_inventario_moto/' + cotizacion.inventario.url">
+                    Imprimir orden de servicio</a>
 
-                    </div>
-                </div>
+
+
+
+            </div>
+        </div>
         <ul class="nav">
             <li class="nav-item">
                 <a class="nav-link" href="#step-1">
@@ -229,7 +230,7 @@
             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
- 
+
 
                         <button type="button" class="btn btn-info boton-color custom-next mr-2 pr-2"
                             v-on:click="pendiente_aprobacion()">
@@ -240,63 +241,62 @@
                             class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp()">
                             enviar whatsapp normal</button>
 
-                       
+
 
                     </div>
                 </div>
 
                 <div class="card text-left" v-if="!cotizacion . inventario . moto . cliente">
-                            <div class="card-body">
-                                <form id="form_cliente" method="POST" action="#">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para
-                                            crear un cliente</h5>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                    <div class="card-body">
+                        <form id="form_cliente" method="POST" action="#">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para
+                                    crear un cliente</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+
+
+                                <div class="card-body">
+                                    <div id="app">
+                                        <dni cli_dni="" cli_nombre="" cli_apellido="" cli_direccion=""
+                                            cli_departamento="" cli_provincia="" cli_distrito=""></dni>
+                                        <ruc cli_ruc="" cli_razon_social="" cli_direccion_ruc=""
+                                            cli_departamento_ruc="" cli_provincia_ruc="" cli_distrito_ruc="">
+                                        </ruc>
                                     </div>
-                                    <div class="modal-body">
-
-
-
-                                        <div class="card-body">
-                                            <div id="app">
-                                                <dni cli_dni="" cli_nombre="" cli_apellido="" cli_direccion=""
-                                                    cli_departamento="" cli_provincia="" cli_distrito=""></dni>
-                                                <ruc cli_ruc="" cli_razon_social="" cli_direccion_ruc=""
-                                                    cli_departamento_ruc="" cli_provincia_ruc="" cli_distrito_ruc="">
-                                                </ruc>
-                                            </div>
-                                            <h2 class="section-title">Contactos</h2>
-                                            <div class="form-row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="cli_telefono">Celular</label>
-                                                    <input type="text" class="form-control" name="cli_telefono"
-                                                        id="cli_telefono">
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="cli_correo">Correo Electronico</label>
-                                                    <input type="email" class="form-control" name="cli_correo"
-                                                        id="cli_correo">
-                                                </div>
-                                            </div>
-
+                                    <h2 class="section-title">Contactos</h2>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="cli_telefono">Celular</label>
+                                            <input type="text" class="form-control" name="cli_telefono"
+                                                id="cli_telefono">
                                         </div>
 
+                                        <div class="form-group col-md-6">
+                                            <label for="cli_correo">Correo Electronico</label>
+                                            <input type="email" class="form-control" name="cli_correo"
+                                                id="cli_correo">
+                                        </div>
+                                    </div>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-secondary" id="crear_cliente_cerrar"
-                                            data-dismiss="modal">Cerrar
-                                            Formulario</button>
-                                        <button type="submit" class="btn btn-primary" id="crear_cliente">Crear
-                                            Cliente</button>
-                                    </div>
-                                </form>
+                                </div>
+
+
                             </div>
-                        </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" id="crear_cliente_cerrar"
+                                    data-dismiss="modal">Cerrar
+                                    Formulario</button>
+                                <button type="submit" class="btn btn-primary" id="crear_cliente">Crear
+                                    Cliente</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                 <div class="section-header">
@@ -479,17 +479,6 @@
                     </div>
                 </div>
 
-                <div class="card text-left">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div style="width: 100%;">
-                                    <search-mecanicos></search-mecanicos>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="container mt-5">
                     <div class="row justify-content-center">
@@ -1205,6 +1194,50 @@
         </CModal>
 
 
+        <div class="card text-left">
+            <div class="card-body">
+                <div class="section-header">
+                    <h1>Otros Datos</h1>
+                </div>
+
+                <h2 class="section-title">Observaciones del cliente</h2>
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="aut_nombre">Mecanico</label>
+                        <search-mecanicos id="mecanico_id"></search-mecanicos>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="aut_nombre">(Fallas,Ruidos extraños, Etc.)</label>
+                        <textarea class="form-control" id="inventario_moto_obs_cliente" name="inventario_moto_obs_cliente"
+                            :value="cotizacion.inventario.inventario_moto_obs_cliente" cols="30" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="observacion_sta">Observacion del Sta</label>
+                    <div class="form-group col-md-12">
+                        <textarea name="observacion_sta" class="form-control" id="observacion_sta" cols="30"
+                            :value="cotizacion.observacion_sta" rows="10"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="trabajo_realizar">Trabajos a realiza</label>
+                    <div class="form-group col-md-12">
+                        <textarea name="trabajo_realizar" class="form-control" id="trabajo_realizar" cols="30"
+                            :value="cotizacion.trabajo_realizar" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button v type="button" v-on:click="actualizar_datos()"
+                    class="btn btn-info boton-color custom-next mr-2 pr-2">
+                    Actualizar</button>
+            </div>
+        </div>
+
 
 
 
@@ -1327,6 +1360,7 @@
             }
         },
         computed: {
+            
             detallesAprobados() {
                 return this.cotizacion.detalle.filter(detalle => detalle.aprobar);
             },
@@ -1535,6 +1569,52 @@
             },
         },
         methods: {
+            actualizar_datos() {
+                this.send_axios_reponse(
+                        "Desear actulizar?",
+                        "Si", {
+                            cotizacion_id:this.cotizacion.cotizacion_id,
+                            inventario_moto_obs_cliente: $("#inventario_moto_obs_cliente").val(),
+                            mecanico_id: $("#mecanico_id").val(),
+                            observacion_sta: $("#observacion_sta").val(),
+                            trabajo_realizar: $("#trabajo_realizar").val(),
+                            inventario_moto_id : this.cotizacion.inventario.inventario_moto_id
+                        },
+                        "/actualizar_otros"
+                    ).then((result) => {
+                        console.log(result);
+                        if (result.success) {
+ 
+                            Swal.fire({
+                                icon: "success",
+                                title: result.message,
+                                text: "recarga la pagina",
+                                footer: "-------",
+                            });
+
+                            window.location.reload();
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al actualizar",
+                                text: result.message,
+                                footer: "-------",
+                            });
+
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        // El usuario canceló la operación o hubo un error
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error al actualizar",
+                            text: "recarga la pagina",
+                            footer: "-------",
+                        });
+                    });
+            },
             /* -- ******** change forma de pago  ************* -- */
             forma_pago_boleta(index) {
                 console.log(event)

@@ -8,8 +8,9 @@
 
         <a class="dropdown-item" href="{{ route('cotizaciones.show', $cotizacion_id) }}"> <i class="fa fa-eye fa-1x"></i>Ver Proceso
         </a>
-        <a class="dropdown-item" href="{{ route('cotizaciones.edit', $cotizacion_id) }}"> <i class="fa fa-edit fa-1x"></i>Editar
-        </a>
+        <!-- ********  <a class="dropdown-item" href="{{ route('cotizaciones.edit', $cotizacion_id) }}"> <i class="fa fa-edit fa-1x"></i>Editar
+        </a>  -->
+        
  
         <form method="POST" id="formdeletetx{{ $cotizacion_id }}" action="{{ route('cotizaciones.destroy', $cotizacion_id) }}">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">

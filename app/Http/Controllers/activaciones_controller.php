@@ -468,4 +468,37 @@ class activaciones_controller extends Controller
         Excel::import(new ActivacionesImport(), $request->file('file'));
     }
     /* *********************** */
+    public function actualizar_otros(Request $request){
+       
+        // Crear un nuevo registro
+        $update = cotizacion::find($request->input('cotizacion_id'));
+ 
+        $update->mecanico_id = $request->input('mecanico_id');
+        $update->observacion_sta = $request->input('observacion_sta');
+        $update->trabajo_realizar = $request->input('trabajo_realizar');  
+        $update = $update->save();
+
+        $update_inventario = inventario_moto::find($request->input('inventario_moto_id'));
+        $update_inventario->inventario_moto_obs_cliente = $request->input('inventario_moto_obs_cliente');
+        $update_inventario = $update_inventario->save();
+
+        if ($update) {
+             
+      
+            return response()->json([
+                'message' => 'actualizado correctamente',
+                'error' => '',
+                'success' => true,
+                'data' =>  ''
+            ]);
+        } else {
+            Log::error('no se pudo registrar el producto');
+            return response()->json([
+                'message' => 'no se pudo actualizar el registro',
+                'error' => '',
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
 }
