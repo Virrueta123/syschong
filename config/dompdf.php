@@ -1,7 +1,10 @@
 <?php
 
 return array(
-
+    'def' => [
+        'svg-namespace' => 'http://www.w3.org/2000/svg',
+        'x-domain' => true,
+    ],
     /*
     |--------------------------------------------------------------------------
     | Settings

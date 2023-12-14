@@ -21,6 +21,14 @@ class inventario_moto extends Model
         return $this->belongsTo(motos::class,"mtx_id")->withTrashed();
     }
 
+    public function inventario_autorizaciones(){
+        return $this->hasMany(inventario_autorizaciones::class,"inventario_moto_id")->withTrashed();
+    }
+
+    public function accesorios_inventario(){
+        return $this->hasMany(accesorios_inventario_detalle::class,"inventario_moto_id")->withTrashed();
+    }
+
     public function cortesia(){
         return $this->hasOne(cortesias_activacion::class,"inventario_moto_id")->withTrashed();
     }

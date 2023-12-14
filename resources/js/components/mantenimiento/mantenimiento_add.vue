@@ -8,11 +8,7 @@
                 <div class="card-header">
                     <h2 class="section-title">Formulario para crear un mantenimiento</h2>
                 </div>
-                <div class="card-body">
-
-
-
-
+                <div class="card-body"> 
 
                     <div class="form-row">
 

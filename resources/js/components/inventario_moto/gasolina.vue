@@ -10,8 +10,7 @@
 
             </div>
             <div class="col-sm-4 ">
-                <h4 class="mt-2 text-center">{{ gasolina }}%</h4>
-
+                <h4 class="mt-2 text-center">{{ gasolina }}%</h4> 
             </div>
 
             <div class="col-sm-4 d-flex justify-content-center align-items-center">
@@ -41,7 +40,8 @@
 
         data() {
             return {
-                gasolina: 0
+                gasolina: 0,
+                valor:this.$attrs.valor || ''
             }
         },
         methods: {
@@ -56,7 +56,9 @@
             }
         },
         mounted() {
-
+            if (this.valor != "") {
+                this.gasolina = this.valor;
+            }
         }
     }
 </script>

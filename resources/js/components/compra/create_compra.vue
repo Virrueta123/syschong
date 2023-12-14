@@ -106,6 +106,8 @@
                                             <th scope="col">Precio Venta</th>
                                             <th scope="col">Cantidad</th>
                                             <th scope="col">Importe</th>
+                                            <th scope="col" class="text-center"><i class="fa fa-search"
+                                                    aria-hidden="true"></i></th>
                                             <th scope="col" class="text-center"><i class="fa fa-cog"
                                                     aria-hidden="true"></i></th>
                                         </tr>
@@ -164,6 +166,11 @@
 
                                             <td scope="row">{{ repuesto . Cantidad }}</td>
                                             <td scope="row">{{ repuesto . Importe }}</td>
+                                            <td><button type="button" name="" id=""
+                                                    v-on:click="agregar_cotizacion(index)"
+                                                    class="btn btn-danger btn-sm"><i class="fa fa-search"
+                                                        aria-hidden="true"></i></button></td>
+
                                             <td><button type="button" name="" id=""
                                                     v-on:click="eliminar_producto(repuesto . prod_id)"
                                                     class="btn btn-danger btn-sm"><i class="fa fa-trash"
@@ -422,6 +429,21 @@
             </CModalBody>
         </CModal>
 
+        <CModal size="xl" :visible="add_cotizacion_modal" @close="() => { add_cotizacion_modal = false }">
+
+<CModalBody>
+
+    <div class="card text-left">
+      
+      <div class="card-body">
+        <h4 class="card-title">Title</h4>
+        <p class="card-text">Body</p>
+      </div>
+    </div>
+  
+</CModalBody>
+</CModal>
+
     </div>
 
 
@@ -514,7 +536,10 @@
                 total: 0,
                 porcentaje: 0,
                 total_descuento: 0,
+                //modal
+                add_cotizacion_modal:false,
                 xlDemo: false,
+                //---//
                 is_complete_pago: true,
                 /* -- ******** variables del modal para agregar productos ************* -- */
                 is_precio_venta: false,
@@ -572,6 +597,14 @@
             },
         },
         methods: {
+            /* -- ******** agregar a las cotizaciones los productos ************* -- */
+            agregar_cotizacion(index){
+                //agergado  a a cotizacion primero se abrira un model
+                this.add_cotizacion_modal = true;
+                var producto = this.repuestos[index];
+                
+            },
+            /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
             monto_change(e, index) {
                 console.log(e.target.value)

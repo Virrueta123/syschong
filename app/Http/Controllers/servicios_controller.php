@@ -46,7 +46,18 @@ class servicios_controller extends Controller
         }
     }
 
-       /**
+    public function servicios_seleccionados(Request $request)
+    {
+        $servicios = servicios::where('estado', 'A')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('modules.servicios.servicios_seleccionados', ['servicios' => $servicios]);
+    }
+
+
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -64,39 +75,37 @@ class servicios_controller extends Controller
      */
     public function store(Request $request)
     {
-      
-            $datax = $request->all();
-           
-            $validate = $request->validate([
-                'servicios_nombre' => 'required|string|max:249|unique:servicios,servicios_nombre',
-                'servicios_descripcion' => 'required|string|max:249',
-                'servicios_precio' => 'required|string',  
-            ]);
+        $datax = $request->all();
 
-            $codigo = servicios::max('servicios_codigo');
-            if (is_null($codigo)) {
-                $codigo = 1;
-            } else {
-                $codigo++;
-            }
+        $validate = $request->validate([
+            'servicios_nombre' => 'required|string|max:249|unique:servicios,servicios_nombre',
+            'servicios_descripcion' => 'required|string|max:249',
+            'servicios_precio' => 'required|string',
+        ]);
 
-            $validate['servicios_codigo'] = $codigo;
+        $codigo = servicios::max('servicios_codigo');
+        if (is_null($codigo)) {
+            $codigo = 1;
+        } else {
+            $codigo++;
+        }
 
-            $validate['servicios_precio'] =  str_replace(',', '', $validate['servicios_precio']);
+        $validate['servicios_codigo'] = $codigo;
 
-            $validate['user_id'] = Auth::user()->id;
-  
-            $create = servicios::create($validate);
-             
-            if ($create) {
-                session()->flash('success', 'se creo correctamente una nueo servicio');
-                return redirect()->route('servicios.index');
-            } else {
-                Log::error('no se pudo registrar el servicio');
-                session()->flash('error', 'error al registrar en la base de datos');
-                return redirect()->route('servicios.index');
-            }
-         
+        $validate['servicios_precio'] = str_replace(',', '', $validate['servicios_precio']);
+
+        $validate['user_id'] = Auth::user()->id;
+
+        $create = servicios::create($validate);
+
+        if ($create) {
+            session()->flash('success', 'se creo correctamente una nueo servicio');
+            return redirect()->route('servicios.index');
+        } else {
+            Log::error('no se pudo registrar el servicio');
+            session()->flash('error', 'error al registrar en la base de datos');
+            return redirect()->route('servicios.index');
+        }
     }
 
     /**
@@ -143,35 +152,32 @@ class servicios_controller extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-            $update = servicios::where('servicios_id', decrypt_id($id));
-            $datax = $request->all();
-       
-            
-            $validate = $request->validate([
-                'servicios_nombre' => 'required|string|max:249',
-                'servicios_descripcion' => 'required|string|max:249',
-                'servicios_precio' => 'required|string',  
-            ]); 
+        $update = servicios::where('servicios_id', decrypt_id($id));
+        $datax = $request->all();
 
-            $validate['user_id'] = Auth::user()->id;
+        $validate = $request->validate([
+            'servicios_nombre' => 'required|string|max:249',
+            'servicios_descripcion' => 'required|string|max:249',
+            'servicios_precio' => 'required|string',
+        ]);
 
-            $validate['servicios_precio'] =  str_replace(',', '', $validate['servicios_precio']);
+        $validate['user_id'] = Auth::user()->id;
 
-            $update = $update->update($validate);
+        $validate['servicios_precio'] = str_replace(',', '', $validate['servicios_precio']);
 
-            if ($update) {
-                session()->flash('success', 'Registro editado correctamente');
-                return redirect()->route('servicios.index');
-            } else {
-                Log::error('no se pudo registrar el servicio');
-                session()->flash('error', 'error al editar en la base de datos');
-                return redirect()->route('servicios.index');
-            }
-         
-    } 
+        $update = $update->update($validate);
 
-        /**
+        if ($update) {
+            session()->flash('success', 'Registro editado correctamente');
+            return redirect()->route('servicios.index');
+        } else {
+            Log::error('no se pudo registrar el servicio');
+            session()->flash('error', 'error al editar en la base de datos');
+            return redirect()->route('servicios.index');
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -268,6 +274,31 @@ class servicios_controller extends Controller
             return response()->json([
                 'message' => 'error al buscar los datos',
                 'error' => $th,
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    //actualizar los servicios por defecto
+    public function servicios_defecto(Request $request){
+        $datax = $request->all();
+
+        dd($datax);
+        if (true) {
+        
+            return response()->json([
+                'message' => 'datos encontrados',
+                'error' => '',
+                'success' => true,
+                'data' => "",
+            ]);
+            
+            
+        } else {
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => 'error al registrar la factura',
                 'success' => false,
                 'data' => '',
             ]);

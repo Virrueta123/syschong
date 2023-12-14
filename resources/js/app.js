@@ -109,10 +109,12 @@ app.component('importar-activaciones', require('./components/activaciones/import
 
 /* -- ******** componentes servicios ************* -- */
 app.component('servicios-add', require('./components/servicios/servicios_add.vue').default);
+app.component('importar-servicios', require('./components/servicios/importar_servicios.vue').default);
+app.component('servicios-seleccionados', require('./components/servicios/servicios_seleccionados.vue').default);
 /* -- *********************** -- */
 
 /* -- ******** componentes servicios ************* -- */
-app.component('importar-servicios', require('./components/servicios/importar_servicios.vue').default);
+
 /* -- *********************** -- */
 
 /* -- ******** componentes categoria producto ************* -- */
@@ -126,6 +128,8 @@ app.component('mantenimiento-add', require('./components/mantenimiento/mantenimi
 app.component('mantenimiento-accesorios', require('./components/mantenimiento/mantenimiento_accesorios.vue').default);
 app.component('mantenimiento-autorizaciones', require('./components/mantenimiento/mantenimientoAutorizaciones.vue').default);
 
+app.component('mantenimiento-autorizaciones-edit', require('./components/mantenimiento/autorizaciones_edit.vue').default);
+app.component('mantenimiento-accesorios-edit', require('./components/mantenimiento/mantenimiento_accesorios_edit.vue').default);
 /* -- ******** componentes mecanicos ************* -- */
 app.component('search-mecanicos', require('./components/mecanicos/search_mecanicos.vue').default);
 /* -- *********************** -- */
@@ -146,6 +150,8 @@ app.component('search-respuestos', require('./components/compra/search_respuesto
 app.component('search-moto', require('./components/moto/search_moto.vue').default);
 app.component('search-moto-modelo', require('./components/moto/search_moto_modelo.vue').default);
 
+//seleccionar aceites
+app.component('seleccionar-aceites', require('./components/moto/seleccionar_aceites.vue').default);
 
 
 app.component('add-aceites', require('./components/inventario_moto/aceite.vue').default);
@@ -158,6 +164,7 @@ app.component('autorizaciones', require('./components/inventario_moto/autorizaci
 /* -- ******** repuestos componentes ************* -- */
 
 app.component('repuestos_add', require('./components/repuestos/add_repuesto.vue').default);
+app.component('repuestos-edit', require('./components/repuestos/edit_repuestos.vue').default);
 
 /* -- *********************** -- */
 
@@ -169,6 +176,15 @@ app.component('tablas-factura-tienda', require('./components/tablas/tablas_factu
 /* -- *********************** -- */
 
 app.component('is-dias', require('./components/complementos/is_dias.vue').default);
+
+/* -- ******** pdfs  ************* -- */
+
+app.component('pdf-orden-servicio', require('./components/pdf/pdf-orden-servicio.vue').default);
+/* -- *********************** -- */
+
+/* -- ******** imagen ************* -- */
+app.component('imagen-orden-de-servicio', require('./components/imagenes/imagen_orden_de_servicio.vue').default);
+/* -- *********************** -- */
 
 
 app.mount('#app');

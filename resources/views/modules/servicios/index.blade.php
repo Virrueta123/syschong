@@ -14,6 +14,7 @@
             <div class="card-header-action">
             
                 <a href="{{ route('servicios.create') }}" class="btn btn-primary boton-color">Crear un Servicio</a> 
+                <a href="{{ route('servicios.servicios_seleccionados') }}" class="btn btn-primary boton-color">Servicios seleccionados</a> 
              
             </div>
           

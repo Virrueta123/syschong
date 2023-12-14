@@ -6,6 +6,8 @@ use App\Models\activaciones;
 use App\Models\caja_chica;
 use App\Models\compras;
 use App\Models\cortesias_activacion;
+use App\Models\cotizacion;
+use App\Models\servicios;
 use App\Models\tienda_facturas;
 use App\Models\ventas;
 use Carbon\Carbon;
@@ -184,9 +186,9 @@ class datatables_controller extends Controller
                         return 'Boleta';
                         break;
 
-                        case 'FT':
-                            return 'Factura por tienda comercial';
-                            break;
+                    case 'FT':
+                        return 'Factura por tienda comercial';
+                        break;
                 }
             })
             ->addColumn('numero', static function ($Data) {
@@ -442,9 +444,9 @@ class datatables_controller extends Controller
             })
             ->addColumn('action', static function ($Data) {
                 $venta_id = encrypt_id($Data->venta->venta_id);
-                $estado = $Data->venta->venta_estado; 
+                $estado = $Data->venta->venta_estado;
 
-                return view('buttons.factura_tienda', ['venta_id' => $venta_id,"estado"=>$estado,"tienda_facturas_id"=>encrypt_id($Data->tienda_facturas_id)]);
+                return view('buttons.factura_tienda', ['venta_id' => $venta_id, 'estado' => $estado, 'tienda_facturas_id' => encrypt_id($Data->tienda_facturas_id)]);
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -455,42 +457,40 @@ class datatables_controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function tablle_cotizacion_para_compra()
     {
-        //
+        $facturas = cotizacion::with(['venta'])
+            ->whereNotIn('progreso', [5, 6])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return DataTables::of($facturas)
+            ->addIndexColumn()
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $venta_id = encrypt_id($Data->venta->venta_id);
+                $estado = $Data->venta->venta_estado;
+
+                return view('buttons.cotizacion', ['venta_id' => $venta_id, 'estado' => $estado, 'tienda_facturas_id' => encrypt_id($Data->tienda_facturas_id)]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function servicios_seleccionados_table()
     {
-        //
-    }
+        $servicios = servicios::where('estado', 'A')->orderBy('created_at', 'desc')->get();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        return DataTables::of($servicios)
+            ->addIndexColumn()
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }

@@ -306,7 +306,9 @@
                 is_modal_create: false,
                 is_modal_view_moto: false,
                 is_modal_edit_celular_moto:false,
-                moto: []
+                moto: [],
+                selected: this.$attrs.selected || '',
+                id: this.$attrs.id || 0,
             }
         },
         methods: {
@@ -488,9 +490,7 @@
                 });
 
             },
-            change_select(event) {
-
-                console.log(event);
+            change_select(event) { 
                 var moto_id = event.target[this.conteo].value
 
                 const data = {
@@ -531,6 +531,50 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
+
+            if (this.selected != "" && this.id != 0) {
+                var valor = this.selected;
+
+                console.log(this.selected)
+
+                var $select = $(this.$refs.select_moto);
+
+                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+
+                var moto_id = this.id;
+
+                const data = {
+                    id: moto_id
+                };
+
+                axios
+                    .post("/get_moto", data)
+                    .then((response) => {
+                        console.log(response);
+                        if (response.data.success) {
+
+                            console.log(response.data.data);
+
+                            this.is_select = true;
+                            this.moto = response.data.data
+                            this.conteo++;
+                            this.alert_success(response.data.message)
+
+                        } else {
+                            this.alert_error(response.data.message)
+
+                        }
+                        this.hideLoadingSpinner();
+                    })
+                    .catch((error) => {
+                        this.alert_error("error del servidor, por favor recargue la pagina")
+
+                    });
+
+
+                $select.append($option).trigger('change'); 
+            }
+
 
 
 

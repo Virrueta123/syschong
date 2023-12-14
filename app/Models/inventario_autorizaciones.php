@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class inventario_autorizaciones extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = 'inventario_autorizaciones';
     public $timestamps = false;
     public $primaryKey = 'inventario_autorizaciones_id';

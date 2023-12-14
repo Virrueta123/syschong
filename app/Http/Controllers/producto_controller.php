@@ -204,9 +204,7 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
-       
-       
-
+        
         // Crear un nuevo registro
         $producto = new producto();
         $producto->categoria_id = $request->input('categoria_id');
@@ -600,4 +598,8 @@ class producto_controller extends Controller
         echo json_encode($modelo);
     }
     /* *********************** */
+
+    function seleccionar_aceites(){
+        return view('modules.productos.seleccionar_aceites');
+    }
 }

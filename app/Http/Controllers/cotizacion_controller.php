@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\accesorios;
 use App\Models\accesorios_inventario_detalle;
+use App\Models\autorizaciones;
 use App\Models\caja_chica;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
@@ -229,8 +231,15 @@ class cotizacion_controller extends Controller
                         }
                     ]);
                     },
+                    'inventario_autorizaciones' => function ($query) {
+                        $query->with(['autorizaciones']);
+                    },
+                    'accesorios_inventario' => function ($query) {
+                        $query->with(['accesorios']);
+                    },
                 ]);
             },
+                
             'mecanico',
             'detalle' => function ($query) {
                 $query->with([
@@ -260,6 +269,9 @@ class cotizacion_controller extends Controller
             $correlativo_boleta++;
         }
 
+        $accesorios = accesorios::all();
+        $autorizaciones = autorizaciones::all();
+
         $forma_pago = forma_pago::where('estado', 'A')->get();
 
         $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
@@ -268,6 +280,8 @@ class cotizacion_controller extends Controller
             return view('modules.cotizacion.show', [
                 'get' => $get,
                 'id' => $id,
+                'accesorios' => $accesorios,
+                'autorizaciones' => $autorizaciones,
                 'empresa' => $empresa,
                 'correlativo_factura' => $correlativo_factura,
                 'correlativo_boleta' => $correlativo_boleta,

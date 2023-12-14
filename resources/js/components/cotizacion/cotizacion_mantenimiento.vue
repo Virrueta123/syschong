@@ -230,7 +230,7 @@
             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
-
+ 
 
                         <button type="button" class="btn btn-info boton-color custom-next mr-2 pr-2"
                             v-on:click="pendiente_aprobacion()">
@@ -239,12 +239,85 @@
 
                         <button v-if="cotizacion . inventario . moto . cliente" type="button"
                             class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp()">
-                            enviar whatsapp normal</button>
-
-
+                            enviar whatsapp normal</button> 
 
                     </div>
                 </div>
+
+                <div class="section-body">
+                            <div class="card">
+                                <form id="form_crear_mantenimiento" method="POST" action="#">
+
+                                    <div class="card-header">
+                                        <h2 class="section-title">Formulario para crear un mantenimiento</h2>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <div class="form-row">
+
+                                            <div class="form-group col-md-8 p-0">
+                                                <label for="prod_codigo">Buscar la moto</label>
+
+                                                <search-moto-modelo :id="cotizacion.inventario.moto.mtx_id" :selected="'Cliente : '+cotizacion.inventario.moto.cliente.cli_nombre+' '+cotizacion.inventario.moto.cliente.cli_apellido+' | Moto : '+ cotizacion.inventario.moto.modelo.marca.marca_nombre +' modelo: ' + cotizacion.inventario.moto.modelo.modelo_nombre+ ' Clindraje: '+cotizacion.inventario.moto.modelo.cilindraje+' Motor:'+cotizacion.inventario.moto.mtx_motor" name="mtx_id"></search-moto-modelo>
+
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="prod_codigo">Kilometraje</label>
+
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            Km
+                                                        </div>
+                                                    </div>
+                                                    <input name="km" :value="cotizacion.inventario.inventario_moto_kilometraje" type="number" class="form-control">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="section-header">
+                                            <h1>Inventario</h1>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <mantenimiento-accesorios-edit :accesorios="accesorios" :selected_accesorios="cotizacion.inventario.accesorios_inventario"
+                                                @childEvent="add_accesorios">
+                                            </mantenimiento-accesorios-edit>
+                                        </div>
+
+                                        <h2 class="section-title">Mas datos de la moto</h2>
+                                        <div class="form-row">
+                                            <gasolina_inventario :valor="cotizacion.inventario.inventario_moto_nivel_gasolina"></gasolina_inventario>
+                                        </div>
+
+                                        <h2 class="section-title">Condiciones</h2>
+                                        <div class="form-row">
+                                            <mantenimiento-autorizaciones-edit @childAutorizacion="add_Autorizacion"
+                                                :autorizaciones="autorizaciones" :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimiento-autorizaciones-edit>
+                                        </div>
+
+
+                                       
+
+                                        <div class="section-header">
+                                            <h1>Cotizacion</h1>
+                                        </div>
+
+                                        <repuestos-edit :detalle="cotizacion.detalle" v-on:childEvent="handleChildEvent"></repuestos-edit>
+ 
+
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" id="crear_cliente"
+                                            class="btn btn-danger boton-color">Editar
+                                            Mantenimiento</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                 <div class="card text-left" v-if="!cotizacion . inventario . moto . cliente">
                     <div class="card-body">
@@ -257,9 +330,6 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-
-
-
                                 <div class="card-body">
                                     <div id="app">
                                         <dni cli_dni="" cli_nombre="" cli_apellido="" cli_direccion=""
@@ -1317,6 +1387,14 @@
         },
         data() {
             return {
+                //edicion
+                autorizaciones:  JSON.parse(this.$attrs.autorizaciones),
+                accesorios: JSON.parse(this.$attrs.accesorios),
+                select_acesorios: [],
+                select_autorizacion: [],
+                repuestos: [],
+                dataFromParent: 'Datos desde el padre',
+                //----
                 print_comprobante: false,
                 rutaPDF: false,
                 forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
@@ -1360,7 +1438,7 @@
             }
         },
         computed: {
-            
+
             detallesAprobados() {
                 return this.cotizacion.detalle.filter(detalle => detalle.aprobar);
             },
@@ -1371,7 +1449,7 @@
                 }, 0);
                 this.pagos[0].monto = importeTotal;
                 this.pagos_boletas[0].monto = importeTotal;
-                return importeTotal;
+                return importeTotal;s
             }
         },
         mounted() {
@@ -1468,8 +1546,7 @@
                             headers,
                         })
                         .then((response) => {
-                            console.log(response.data);
-                            console.log(response.data)
+                          
                             if (response.data.success) {
 
                                 Swal.fire({
@@ -1485,7 +1562,7 @@
                                 $('body').removeClass('modal-open');
                                 $('.modal-backdrop').remove();
 
-                                console.log(response.data);
+                            
                                 self.cotizacion.inventario.moto.cliente = response.data
 
 
@@ -1509,6 +1586,101 @@
                         });
                     return false;
                 }
+            });
+            /* -- *********************** -- */
+
+            /* -- ******** editar cotizacion ************* -- */
+            $("#form_crear_mantenimiento").validate({
+                rules: {
+                    mtx_id: {
+                        required: true,
+                    },
+                    precio: {
+                        required: true,
+                    },
+                    km: {
+                        required: true,
+                    },
+                    inventario_moto_obs_cliente: {
+                        required: false,
+                    }
+                },
+                submitHandler: function(form) {
+
+                    console.log(this.select_acesorios.length);
+
+                    if (this.select_acesorios.length != 0) {
+                        if (this.select_autorizacion.length) {
+                            try {
+                                const fileUploadForm = document.getElementById('form_crear_mantenimiento');
+                                const formData = new FormData(fileUploadForm);
+
+                                console.log(this.select_acesorios)
+
+                                formData.append('is_aviso', this.is_aviso);
+                                formData.append('dias', this.dias);
+                                formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
+                                formData.append('select_autorizacion', JSON.stringify(this
+                                    .select_autorizacion));
+                                formData.append('repuestos', JSON.stringify(this.repuestos));
+
+
+                                const headers = {
+                                    "Content-Type": "application/json",
+                                };
+                                const data = formData;
+                                /*const data = {
+                                    data: this.formData,
+                                    is_aviso: this.is_aviso,
+                                    dias: this.dias,
+                                    select_acesorios: this.select_acesorios,
+                                    select_autorizacion: this.select_autorizacion,
+                                    repuestos: this.repuestos
+                                };*/
+                                axios
+                                    .post("/create_vue_mantenimiento", data, {
+                                        headers,
+                                    })
+                                    .then((response) => {
+
+
+                                        if (response.data.success) {
+
+                                            window.location.href = response.data.data;
+
+                                        } else {
+                                            Swal.fire({
+                                                position: 'center',
+                                                icon: 'error',
+                                                title: 'Error al registrar el mantenimiento, intentelo otra vez',
+                                                showConfirmButton: false,
+                                                timer: 3000
+                                            })
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Error 500",
+                                            text: "Error en el servidor, vuelva a intentar",
+                                            footer: "-------",
+                                        });
+                                        console.error(error);
+                                    });
+
+
+                            } catch (error) {
+                                console.log(error)
+                            }
+                        } else {
+                            Swal.fire("necesitas seleccionar al menos una autorizacion")
+                        }
+                    } else {
+                        Swal.fire("necesitas seleccionar al menos un accesorio")
+                    }
+ 
+                    return false;
+                }.bind(this)
             });
             /* -- *********************** -- */
 
@@ -1563,28 +1735,42 @@
         watch: {
             is_ruc(newValue, oldValue) {
                 // Aquí puedes realizar acciones basadas en el cambio de la propiedad 'message'
-                console.log('El valor anterior era:', oldValue);
-                console.log('El nuevo valor es:', newValue);
+                //console.log('El valor anterior era:', oldValue);
+                //console.log('El nuevo valor es:', newValue);
 
             },
         },
         methods: {
+            add_accesorios(data) {
+           
+                this.select_acesorios = data;
+                
+            },
+            add_Autorizacion(data) {
+                this.select_autorizacion = data;
+            },
+            handleChildEvent(data) {
+                // Manejar datos enviados desde el hijo
+         
+                this.repuestos = data;
+           
+            },
             actualizar_datos() {
                 this.send_axios_reponse(
                         "Desear actulizar?",
                         "Si", {
-                            cotizacion_id:this.cotizacion.cotizacion_id,
+                            cotizacion_id: this.cotizacion.cotizacion_id,
                             inventario_moto_obs_cliente: $("#inventario_moto_obs_cliente").val(),
                             mecanico_id: $("#mecanico_id").val(),
                             observacion_sta: $("#observacion_sta").val(),
                             trabajo_realizar: $("#trabajo_realizar").val(),
-                            inventario_moto_id : this.cotizacion.inventario.inventario_moto_id
+                            inventario_moto_id: this.cotizacion.inventario.inventario_moto_id
                         },
                         "/actualizar_otros"
                     ).then((result) => {
-                        console.log(result);
+                    
                         if (result.success) {
- 
+
                             Swal.fire({
                                 icon: "success",
                                 title: result.message,
@@ -1617,7 +1803,7 @@
             },
             /* -- ******** change forma de pago  ************* -- */
             forma_pago_boleta(index) {
-                console.log(event)
+              
                 this.pagos_boletas[index].forma_pago_id = event.target.value;
             },
             /* -- *********************** -- */
@@ -1657,12 +1843,12 @@
                             const fileData = file.getData();
 
                             // Imprimir el contenido del archivo
-                            console.log(fileData);
+                          
                         });
                 });
             },
             addImage(index) {
-                console.log(index)
+                
                 this.xlDemo = true;
                 this.index_pago = index;
 
@@ -1698,15 +1884,14 @@
                             const fileData = file.getData();
 
                             // Imprimir el contenido del archivo
-                            console.log(fileData);
+                          
                         });
                 });
 
                 /* -- *********************** -- */
             },
             insert_img() {
-                console.log(this.index_pago);
-                console.log(this.uppy);
+        
                 this.uppy.getFiles().forEach((file) => {
 
                     const reader = new FileReader();
@@ -1715,12 +1900,12 @@
                         const base64Data = reader.result.split(',')[1];
 
                         if (this.index_factura) {
-                            console.log("factura");
+                            
                             this.pagos[this.index_pago].src = file.preview;
                             this.pagos[this.index_pago].url = base64Data;
                         }
                         if (this.index_boleta) {
-                            console.log("boleta");
+                        
                             this.pagos_boletas[this.index_pago_boleta].src = file.preview;
                             this.pagos_boletas[this.index_pago_boleta].url = base64Data;
                         }
@@ -1759,7 +1944,7 @@
             /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
             monto_change(e, index) {
-                console.log(e.target.value)
+             
                 this.pagos[index].monto = e.target.value;
                 this.pago_moto_total();
             },
@@ -1771,7 +1956,7 @@
             /* -- *********************** -- */
             /* -- ******** evento change para creacion fecha ************* -- */
             fecha_creacion_change(date) {
-                console.log(date);
+                 
                 this.fecha_vencimiento_factura = this.fecha_creacion_factura
             },
             /* -- *********************** -- */
@@ -1856,7 +2041,7 @@
                         },
                         "/emitir_boleta_cotizacion"
                     ).then((result) => {
-                        console.log(result);
+                        
                         if (result.success) {
 
                             Swal.fire({
@@ -2172,7 +2357,7 @@
                             })
                             .then((response) => {
 
-                                console.log(response.data);
+                            
 
                                 if (response.data.success) {
 

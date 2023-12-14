@@ -24,7 +24,7 @@ Route::post('/search_repuesto_compra', [App\Http\Controllers\producto_controller
 Route::get('/search_repuesto_datatable', [App\Http\Controllers\producto_controller::class, 'search_repuesto_datatable'])->name('producto.search_repuesto_datatable'); 
 
 Route::get('/search_aceites', [App\Http\Controllers\producto_controller::class, 'search_aceites'])->name('producto.search_aceites'); 
-
-
-
+  
 Route::post('/get_producto', [App\Http\Controllers\producto_controller::class, 'get_producto'])->name('producto.get_producto'); 
+
+Route::post('seleccionar_aceites', [App\Http\Controllers\producto_controller::class, 'seleccionar_aceites'])->name('seleccionar_aceites'); 

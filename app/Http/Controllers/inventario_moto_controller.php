@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class inventario_moto_controller extends Controller
@@ -88,7 +89,6 @@ class inventario_moto_controller extends Controller
     public function store(Request $request)
     {
         try {
-         
             /* ******** obteniendo el ultimo registro ultimo registro ************* */
             $ultimo_registro = inventario_moto::max('inventario_numero');
 
@@ -97,9 +97,9 @@ class inventario_moto_controller extends Controller
             } else {
                 $ultimo_registro = 1;
             }
-             
+
             /* *********************** */
-           
+
             $datax = $request->all();
 
             $autorizaciones = json_decode($datax['autorizaciones']);
@@ -112,7 +112,7 @@ class inventario_moto_controller extends Controller
                 'inventario_moto_nivel_gasolina' => 'required',
             ]);
 
-            $validate["inventario_numero"] = $ultimo_registro;
+            $validate['inventario_numero'] = $ultimo_registro;
 
             $create = inventario_moto::create($validate);
 
@@ -234,8 +234,7 @@ class inventario_moto_controller extends Controller
     /* ******** imprimir inventario moto ************* */
 
     public function imprimir_inventario_moto($id)
-    { 
-
+    {
         $get = inventario_moto::with([
             'cotizacion' => function ($query) {
                 $query->with('detalle');
@@ -253,12 +252,12 @@ class inventario_moto_controller extends Controller
                 ->where('inventario_moto_id', decrypt_id($id))
                 ->get();
 
-            $pdf = Pdf::loadView('pdf.inventario_moto', ['get' => $get, 'accesorios' => $accesorios, 'autorizaciones' => $autorizaciones, 'id' => $id]);
-            return $pdf->stream();
+            return view('pdf.orden_servicio', ['get' => $get, 'accesorios' => $accesorios, 'autorizaciones' => $autorizaciones, 'id' => $id]);
+
+  
         } else {
             return view('errors.404');
         }
- 
     }
 
     /* *********************** */
