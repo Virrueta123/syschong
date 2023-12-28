@@ -1,13 +1,14 @@
 <template>
     <div class="card text-left">
-        <h2 class="section-title">Seleccionados (Maximo 4 servicios) <button type="button" class="btn btn-primary btn-lg" v-on:click="actualizar_datos(index)"><i
-                                    class="fa fa-edit" aria-hidden="true"></i> Actualizar datos</button></h2>
+        <h2 class="section-title">Seleccionados (Maximo 4 servicios) <button type="button" class="btn btn-primary btn-lg"
+                v-on:click="actualizar_datos(index)"><i class="fa fa-edit" aria-hidden="true"></i> Actualizar
+                datos</button></h2>
         <div class="card-header">
             <div class="card text-left">
                 <div class="card-body">
                     <h3>{{ seleccionados . length }}</h3>
                 </div>
-                
+
             </div>
             <table ref="table_seleccion" id="table_seleccion"
                 class="table table-bordered table-striped table-hover table-sm display" style="width:100%">
@@ -22,7 +23,7 @@
                         <th>
                             Total
                         </th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +37,7 @@
                         <td>
                             {{ seleccionado . servicios_precio }}
                         </td>
-                        
+
                     </tr>
                 </tbody>
 
@@ -100,44 +101,24 @@
                 this.send_axios_reponse(
                         "Desear actualizar los datos?",
                         "Si,Deseo actualizar", {
-                            seleccionados: this.seleccionados, 
+                            seleccionados: this.seleccionados,
                         },
                         "/servicios_defecto"
                     ).then((result) => {
                         console.log(result)
                         if (result.success) {
                             // La solicitud se completó exitosamente
-                            log(result.success)
-                            /* Swal.fire({
-                                title: 'factura emitida correctamente',
-                                text: result.message,
-                                icon: 'success',
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Ir a la casa comercial'
-                            }).then((result_swal) => {
-                                console.log(result) 
-                                if(result_swal.isConfirmed){
-                                    window.location.href = "/tiendas/" + result.data
-                                }
-                            }) */
-                            
+
+                            window.location.href = result.data
+
                         } else {
 
-                            /*Swal.fire({
-                                title: 'Error al crear la factura',
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
                                 text: result.message,
-                                icon: 'warning',
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Ir a la casa comercial'
-                            }).then((result_swal) => { 
-                                if(result_swal.isConfirmed){
-                                    window.location.href = "/tiendas/" + result.data
-                                }
-                            })*/
+                                footer: "-------",
+                            });
                         }
                     })
                     .catch((error) => {
@@ -201,18 +182,9 @@
                     } else {
 
                         self.seleccionados = self.tables.rows('.selected').data().toArray()
-                    }
-
-
-                });
-            })
-
-
-
-
-
-
-
+                    }  
+                }); 
+            }) 
 
         },
 

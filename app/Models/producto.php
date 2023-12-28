@@ -60,7 +60,6 @@ class producto extends Model
             return $compras->precio_venta;
         }else{
             return $this->prod_precio_venta;
-        }
-        
+        } 
     }
 }

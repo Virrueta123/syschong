@@ -1,6 +1,6 @@
 <template>
 
-
+ 
     <div class="section-body">
         <div class="card">
             <form id="form_crear_cortesia" method="POST" action="#">
@@ -165,7 +165,7 @@
                     </div>
 
                     <div class="form-row">
-                        <mantenimientoAccesorios :accesorios="accesorios" @childEvent="add_accesorios">
+                        <mantenimientoAccesorios  :accesorios="accesorios" @childEvent="add_accesorios">
                         </mantenimientoAccesorios>
                     </div>
 
@@ -193,7 +193,7 @@
                         <h1>Cotizacion</h1>
                     </div>
 
-                    <repuestos_add v-on:childEvent="handleChildEvent"></repuestos_add>
+                    <repuestos_add :servicios_defecto="servicios_defecto" :productos_defecto="productos_defecto" v-on:childEvent="handleChildEvent"></repuestos_add>
 
                     <div class="section-header">
                         <h1>Otros Datos</h1>
@@ -262,6 +262,8 @@
                 autorizaciones: this.$attrs.autorizaciones,
                 accesorios: this.$attrs.accesorios,
                 dataFromParent: 'Datos desde el padre',
+                servicios_defecto: this.$attrs.servicios_defecto,
+                productos_defecto: this.$attrs.productos_defecto,
                 select_acesorios: [],
                 select_autorizacion: [],
                 repuestos: [],

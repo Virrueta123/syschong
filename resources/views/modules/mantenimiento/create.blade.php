@@ -9,7 +9,7 @@
 @endsection
 @section('content')
     <div id="app">
-        <mantenimiento-add accesorios="{{ $accesorios }}" autorizaciones="{{ $autorizaciones }}"></mantenimiento-add>
+        <mantenimiento-add accesorios="{{ $accesorios }}" autorizaciones="{{ $autorizaciones }}"  servicios_defecto="{{ $servicios_defecto }}" productos_defecto="{{ $productos_defecto }}"></mantenimiento-add>
     </div>
 @endsection
  

@@ -14,7 +14,7 @@
 <body>
 
     <div id="app">
-        <pdf-orden-servicio></pdf-orden-servicio>
+        <pdf-orden-servicio accesorios_selected="{{$accesorios_selected}}" cotizacion="{{$get}}"></pdf-orden-servicio>
     </div>
  
     <script src="{{ mix('js/app.js') }}"></script>

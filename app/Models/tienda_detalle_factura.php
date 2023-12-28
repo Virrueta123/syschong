@@ -13,4 +13,11 @@ class tienda_detalle_factura extends Model
     public $timestamps = true;
     public $primaryKey = 'tienda_detalle_factura_id'; 
     protected $guarded = [];
+
+    public function activaciones(){
+        return $this->belongsTo(activaciones::class,'activaciones_id'); 
+    }
+    public function cortesias_activacion(){
+        return $this->belongsTo(cortesias_activacion::class,'cortesia_activacion_id'); 
+    }
 }

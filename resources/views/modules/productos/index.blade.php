@@ -16,8 +16,12 @@
             <div class="card-header-action">
                 <a href="{{ route('producto.importar') }}" class="btn btn-primary boton-color"><i class="fa fa-file-excel"
                         aria-hidden="true"></i> importar productos</a>
-                <a href="{{ route('producto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
-                        aria-hidden="true"></i> Crear un producto</a>
+
+                <a href="{{ route('productos.productos_seleccionados') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                        aria-hidden="true"></i> Productos seleccionados</a>
+
+                        <a href="{{ route('producto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                            aria-hidden="true"></i> Crear un producto</a>
 
             </div>
 

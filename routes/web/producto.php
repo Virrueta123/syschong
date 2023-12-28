@@ -28,3 +28,8 @@ Route::get('/search_aceites', [App\Http\Controllers\producto_controller::class, 
 Route::post('/get_producto', [App\Http\Controllers\producto_controller::class, 'get_producto'])->name('producto.get_producto'); 
 
 Route::post('seleccionar_aceites', [App\Http\Controllers\producto_controller::class, 'seleccionar_aceites'])->name('seleccionar_aceites'); 
+
+
+Route::get('/productos_seleccionados', [App\Http\Controllers\producto_controller::class, 'productos_seleccionados'])->name('productos.productos_seleccionados'); 
+
+Route::post('/productos_defecto', [App\Http\Controllers\producto_controller::class, 'productos_defecto'])->name('productos.productos_defecto'); 

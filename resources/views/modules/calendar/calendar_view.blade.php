@@ -11,7 +11,8 @@
 
 @section('content')
     <div id="app">
-        <calendar-view></calendar-view>
+        <calendar-view> 
+        </calendar-view>
     </div>
  
 @endsection

@@ -250,9 +250,7 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
-
-        
-
+  
         $correlativo_factura = ventas::where('tipo_comprobante', 'F')->max('venta_correlativo');
 
         if (is_null($correlativo_factura)) {
@@ -1446,6 +1444,9 @@ class cotizacion_controller extends Controller
                     }
                 }
                 
+            })
+            ->addColumn('numero', function ($Data) {
+               return $Data->cotizacion_serie."-".$Data->cotizacion_correlativo;
             })
             ->addColumn('dnioruc', function ($Data) {
                 if(is_null($Data->inventario->moto->cliente)){

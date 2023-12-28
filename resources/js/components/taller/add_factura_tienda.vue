@@ -161,6 +161,36 @@
 
         <CModal size="xl" :visible="is_modal" @close="() => { is_modal = false }">
             <CModalBody>
+                <div class="card text-left">
+                    <div class="card-header">
+                        <h3>Activaciones</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-row">
+
+                            <div class="form-group col-md-12">
+                                <label for="prod_codigo">Filtrar por marca</label>
+                                <div class="input-group">
+                                    <select multiple="multiple" ref="marca_moto"
+                                        class="js-example-basic-single js-states form-control"
+                                        style="width: 100%; height:480px;" name="marca_moto"
+                                        v-on:change="change_moto()"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="prod_codigo">Filtrar por montos</label>
+                                <div class="input-group">
+                                    <select multiple="multiple" ref="precios_activacion"
+                                        class="js-example-basic-single js-states form-control"
+                                        style="width: 100%; height:480px;" name="precios_activacion"></select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -246,8 +276,28 @@
 
         <CModal size="xl" :visible="is_modal_cortesia" @close="() => { is_modal_cortesia = false }">
             <CModalBody>
+                <div class="card text-left">
+                    <div class="card-header">
+                        <h3>Tabla de las cortesias sin cobrar</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-row"> 
+                            <div class="form-group col-md-12">
+                                <label for="prod_codigo">Filtrar por cortesia</label>
+                                <div class="input-group">
+                                    <select multiple="multiple" ref="cortesia_multiple"
+                                        class="js-example-basic-single js-states form-control"
+                                        style="width: 100%; height:480px;" name="cortesia_multiple"
+                                         ></select>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <table ref="cortesias" id="cortesias"
@@ -287,10 +337,7 @@
                                             </th>
                                             <th>
                                                 Fecha de creacion
-                                            </th>
-                                            <th>
-                                                <i class="fa fa-cogs" aria-hidden="true"></i> Config
-                                            </th>
+                                            </th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -339,12 +386,14 @@
     import Checkbox from 'primevue/checkbox';
     import Button from 'primevue/button';
 
+    import $ from "jquery";
+    import "select2";
+    import "select2/dist/css/select2.css";
+
     import {
         ref,
         onMounted
     } from 'vue';
-
-
 
     import {
         myMixin
@@ -397,8 +446,15 @@
                 is_modal_cortesia: false,
                 detalle: [],
                 table: [],
+                montos: [],
+                marca: [],
+                select_monto: [],
+                select_cortesia: [],
                 cortesia_table: [],
                 correlativo_factura: JSON.parse(this.$attrs.correlativo_factura),
+                marca_moto: JSON.parse(this.$attrs.marca_moto),
+                numero_cortesia: JSON.parse(this.$attrs.numero_cortesia),
+                precios: JSON.parse(this.$attrs.precios),
                 tienda: JSON.parse(this.$attrs.tienda),
                 fecha_creacion_factura: null,
                 fecha_vencimiento_factura: null,
@@ -428,69 +484,73 @@
 
         },
         methods: {
+            //change marcas para filtrar la tabla activaciones
+            change_moto() {
+                console.log($(this.$refs.marca_moto).val());
+            },
             crear_factura() {
-                if(this.fecha_creacion_factura ==  this.fecha_vencimiento_factura){
+                if (this.fecha_creacion_factura == this.fecha_vencimiento_factura) {
                     Swal.fire("la fecha no puede ser igual para emitir esta factura")
-                }else{
+                } else {
                     this.send_axios_reponse(
-                        "Desear Emitir esta Factura de esta tienda?",
-                        "Si,Emitir la factura", {
-                            tienda: this.tienda,
-                            fecha_creacion_factura: this.fecha_creacion_factura,
-                            fecha_vencimiento_factura: this.fecha_vencimiento_factura,
-                            correlativo: this.correlativo_factura,
-                            total: this.sumar_total,
-                            detalle: this.detalle
-                        },
-                        "/emitir_factura_tienda"
-                    ).then((result) => {
-                        console.log(result)
-                        if (result.success) {
-                            // La solicitud se completó exitosamente
+                            "Desear Emitir esta Factura de esta tienda?",
+                            "Si,Emitir la factura", {
+                                tienda: this.tienda,
+                                fecha_creacion_factura: this.fecha_creacion_factura,
+                                fecha_vencimiento_factura: this.fecha_vencimiento_factura,
+                                correlativo: this.correlativo_factura,
+                                total: this.sumar_total,
+                                detalle: this.detalle
+                            },
+                            "/emitir_factura_tienda"
+                        ).then((result) => {
+                            console.log(result)
+                            if (result.success) {
+                                // La solicitud se completó exitosamente
 
+                                Swal.fire({
+                                    title: 'factura emitida correctamente',
+                                    text: result.message,
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Ir a la casa comercial'
+                                }).then((result_swal) => {
+                                    console.log(result)
+                                    if (result_swal.isConfirmed) {
+                                        window.location.href = "/tiendas/" + result.data
+                                    }
+                                })
+
+                            } else {
+
+                                Swal.fire({
+                                    title: 'Error al crear la factura',
+                                    text: result.message,
+                                    icon: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Ir a la casa comercial'
+                                }).then((result_swal) => {
+                                    if (result_swal.isConfirmed) {
+                                        window.location.href = "/tiendas/" + result.data
+                                    }
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            // El usuario canceló la operación o hubo un error
                             Swal.fire({
-                                title: 'factura emitida correctamente',
-                                text: result.message,
-                                icon: 'success',
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Ir a la casa comercial'
-                            }).then((result_swal) => {
-                                console.log(result) 
-                                if(result_swal.isConfirmed){
-                                    window.location.href = "/tiendas/" + result.data
-                                }
-                            })
-
-                        } else {
-
-                            Swal.fire({
-                                title: 'Error al crear la factura',
-                                text: result.message,
-                                icon: 'warning',
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Ir a la casa comercial'
-                            }).then((result_swal) => { 
-                                if(result_swal.isConfirmed){
-                                    window.location.href = "/tiendas/" + result.data
-                                }
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                        // El usuario canceló la operación o hubo un error
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error al crear la factura",
-                            text: "recarga la pagina",
-                            footer: "-------",
+                                icon: "error",
+                                title: "Error al crear la factura",
+                                text: "recarga la pagina",
+                                footer: "-------",
+                            });
                         });
-                    });
-                } 
+                }
 
             },
             eliminar_registro(index) {
@@ -536,15 +596,17 @@
                         var self = this;
                         var elementoExiste = self.detalle.some((elemento) => {
                             if (elemento.tipo == "CR") {
-                                return elemento.cortesias_activacion_id == this.table_cortesia[clave].cortesias_activacion_id;
+                                return elemento.cortesias_activacion_id == this.table_cortesia[clave]
+                                    .cortesias_activacion_id;
                             }
                         });
 
                         if (elementoExiste) {
-                            this.alert_error("esta cortesia ya esta agregada =>" + this.table_cortesia[clave].numero_cortesia_letra + " " + this
-                                    .table_cortesia[clave].activaciones.moto.modelo.marca
-                                    .marca_nombre + " " + this.table_cortesia[clave].activaciones.moto
-                                    .mtx_motor)
+                            this.alert_error("esta cortesia ya esta agregada =>" + this.table_cortesia[clave]
+                                .numero_cortesia_letra + " " + this
+                                .table_cortesia[clave].activaciones.moto.modelo.marca
+                                .marca_nombre + " " + this.table_cortesia[clave].activaciones.moto
+                                .mtx_motor)
 
                         } else {
                             this.detalle.push({
@@ -561,7 +623,7 @@
                             this.conteo_index++;
                         }
                     }
-                } 
+                }
 
             },
             updateSourceList(newSourceList) {
@@ -570,186 +632,268 @@
             updateTargetList(newTargetList) {
                 this.targetList = newTargetList;
             },
-            modal() {
-                this.is_modal = true;
+            //datatable
+            datatable() {
+
+                if ($.fn.DataTable.isDataTable("#activaciones")) {
+                    $("#activaciones").DataTable().destroy();
+                }
                 var self = this
-                this.$nextTick(() => {
+                var table_activaciones = $(this.$refs.activaciones).DataTable({
 
-                    var table_activaciones = $(this.$refs.activaciones).DataTable({
+                    initComplete: search_input_by_column,
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    },
 
-                        initComplete: search_input_by_column,
-                        language: {
-                            "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    ajax: {
+                        url: '/tablas_activaciones_actual_por_tienda_by_factura',
+                        data: {
+                            'tienda_id': this.id,
+                            'marca': this.marca,
+                            "select_monto": this.select_monto
                         },
-                        ajax: "/tablas_activaciones_actual_por_tienda/" + this.id,
-                        columns: [{
-                                data: 'tienda',
-                                name: 'tienda'
-                            },
-                            {
-                                data: 'cliente',
-                                name: 'cliente'
-                            },
-                            {
-                                data: 'dnioruc',
-                                name: 'dnioruc'
-                            },
-                            {
-                                data: 'vendedor',
-                                name: 'vendedor'
-                            },
-                            {
-                                data: 'marca',
-                                name: 'marca'
-                            },
-                            {
-                                data: 'modelo',
-                                name: 'modelo'
-                            },
-                            {
-                                data: 'motor',
-                                name: 'motor'
-                            },
-                            {
-                                data: 'moto.mtx_vin',
-                                name: 'moto.mtx_vin'
-                            },
-                            {
-                                data: 'moto.mtx_chasis',
-                                name: 'moto.mtx_chasis'
-                            },
-                            {
-                                data: 'moto.mtx_color',
-                                name: 'moto.mtx_color'
-                            },
-                            {
-                                data: 'activado_taller',
-                                name: 'activado_taller',
-                                render: function(data, type, full, meta) {
-                                    switch (data) {
-                                        case 'A':
-                                            return '<center><div class="badge badge-pill badge-success mb-1 float-right">Si</div></center>';
-                                            break;
-                                        case 'D':
-                                            return '<center><div class="badge badge-pill badge-danger mb-1 float-right">No</div></center>';
-                                            break;
-                                    }
+                        type: 'post',
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                        }
+                    },
+                    columns: [{
+                            data: 'tienda',
+                            name: 'tienda'
+                        },
+                        {
+                            data: 'cliente',
+                            name: 'cliente'
+                        },
+                        {
+                            data: 'dnioruc',
+                            name: 'dnioruc'
+                        },
+                        {
+                            data: 'vendedor',
+                            name: 'vendedor'
+                        },
+                        {
+                            data: 'marca',
+                            name: 'marca'
+                        },
+                        {
+                            data: 'modelo',
+                            name: 'modelo'
+                        },
+                        {
+                            data: 'motor',
+                            name: 'motor'
+                        },
+                        {
+                            data: 'moto.mtx_vin',
+                            name: 'moto.mtx_vin'
+                        },
+                        {
+                            data: 'moto.mtx_chasis',
+                            name: 'moto.mtx_chasis'
+                        },
+                        {
+                            data: 'moto.mtx_color',
+                            name: 'moto.mtx_color'
+                        },
+                        {
+                            data: 'activado_taller',
+                            name: 'activado_taller',
+                            render: function(data, type, full, meta) {
+                                switch (data) {
+                                    case 'A':
+                                        return '<center><div class="badge badge-pill badge-success mb-1 float-right">Si</div></center>';
+                                        break;
+                                    case 'D':
+                                        return '<center><div class="badge badge-pill badge-danger mb-1 float-right">No</div></center>';
+                                        break;
                                 }
-                            },
-                            {
-                                data: 'precio',
-                                name: 'precio'
-                            },
-                            {
-                                data: 'fecha_creacion',
-                                name: 'fecha_creacion'
-                            },
+                            }
+                        },
+                        {
+                            data: 'total',
+                            name: 'total'
+                        },
+                        {
+                            data: 'fecha_creacion',
+                            name: 'fecha_creacion'
+                        },
 
 
-                        ],
-
-                        "info": true,
-                        fixedColumns: true,
-                        keys: true,
-                        colReorder: true,
-                        "lengthChange": true,
-                        'responsive': false,
-                        "autoWidth": false,
-                        "ordering": true,
-                        // Otras opciones y configuraciones de DataTables aquí
-                    });
-
-                    $('#activaciones tbody').on('click', 'tr', function() {
-                        $(this).toggleClass('selected');
-                        console.log(table_activaciones.rows('.selected').data().toArray());
-                        self.table = table_activaciones.rows('.selected').data().toArray()
-                    });
+                    ],
+                    processing: true,
+                    "info": true,
+                    select: {
+                        style: 'multi'
+                    },
+                    fixedColumns: true,
+                    keys: true,
+                    colReorder: true,
+                    "lengthChange": true,
+                    'responsive': false,
+                    "autoWidth": false,
+                    "ordering": true,
+                    // Otras opciones y configuraciones de DataTables aquí
                 });
 
+                $('#activaciones tbody').on('click', 'tr', function() {
+
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    } else {
+                        $(this).addClass('selected');
+                    }
+                    self.table = table_activaciones.rows('.selected').data().toArray()
+                });
+            },
+            datatable_cortesias() {
+                if ($.fn.DataTable.isDataTable("#cortesias")) {
+                    $("#cortesias").DataTable().destroy();
+                }
+                var self = this
+
+                var tabla_cortesia = $(this.$refs.cortesias).DataTable({
+                    initComplete: search_input_by_column,
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    },
+                    ajax: {
+                        url: '/tablas_cortesias_actual_por_tienda_by_factura',
+                        data: {
+                            'tienda_id': this.id,
+                            'select_cortesia': this.select_cortesia, 
+                        },
+                        type: 'post',
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                        }
+                    },
+                    columns: [{
+                            data: 'numero_cortesia_letra',
+                            name: 'numero_cortesia_letra'
+                        },
+                        {
+                            data: 'cliente',
+                            name: 'cliente'
+                        },
+                        {
+                            data: 'dnioruc',
+                            name: 'dnioruc'
+                        },
+                        {
+                            data: 'marca',
+                            name: 'marca'
+                        },
+                        {
+                            data: 'modelo',
+                            name: 'modelo'
+                        },
+                        {
+                            data: 'motor',
+                            name: 'motor'
+                        },
+                        {
+                            data: 'activaciones.moto.mtx_vin',
+                            name: 'activaciones.moto.mtx_vin'
+                        },
+                        {
+                            data: 'activaciones.moto.mtx_chasis',
+                            name: 'activaciones.moto.mtx_chasis'
+                        },
+                        {
+                            data: 'activaciones.moto.mtx_color',
+                            name: 'activaciones.moto.mtx_color'
+                        },
+                        {
+                            data: 'precio',
+                            name: 'precio',
+                            render: function(data, type, full, meta) {
+                                return data;
+                            }
+                        },
+                        {
+                            data: 'fecha_creacion',
+                            name: 'fecha_creacion'
+                        }, 
+
+                    ],
+                    select: {
+                        style: 'multi'
+                    },
+                    "info": true,
+                    fixedColumns: true,
+                    keys: true,
+                    colReorder: true,
+                    "lengthChange": true,
+                    'responsive': true,
+                    "autoWidth": false,
+                    "ordering": true,
+                    // Otras opciones y configuraciones de DataTables aquí
+                });
+
+                $('#cortesias tbody').on('click', 'tr', function() {
+                    $(this).toggleClass('selected');
+
+                    self.table_cortesia = tabla_cortesia.rows('.selected').data().toArray()
+                });
+            },
+            modal() {
+                this.is_modal = true;
+
+                this.$nextTick(() => {
+                    this.datatable();
+                    $(this.$refs.marca_moto).select2({
+                        tags: false,
+                        placeholder: "",
+                        maximumSelectionLength: 60,
+                        data: this.marca_moto,
+                    });
+
+                    $(this.$refs.marca_moto).on("change", () => {
+                        this.$emit("select", $(this.$refs.marca_moto).val());
+                        this.marca = $(this.$refs.marca_moto).val();
+                        this.datatable();
+                    });
+
+                    $(this.$refs.precios_activacion).select2({
+                        tags: false,
+                        placeholder: "",
+                        maximumSelectionLength: 60,
+                        data: this.precios,
+                    });
+
+                    $(this.$refs.precios_activacion).on("change", () => {
+                        this.$emit("select", $(this.$refs.precios_activacion).val());
+                        this.select_monto = $(this.$refs.precios_activacion).val();
+                        this.datatable();
+                    });
+
+                });
             },
             modal_cortesias() {
 
                 this.is_modal_cortesia = true;
-                var self = this
+
+                console.log(this.select_cortesia );
+                
                 this.$nextTick(() => {
 
-                    var tabla_cortesia = $(this.$refs.cortesias).DataTable({
-                        initComplete: search_input_by_column,
-                        language: {
-                            "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                        },
-                        ajax: "/tablas_cortesias_actual_por_tienda/" + this.id,
-                        columns: [{
-                                data: 'numero_cortesia_letra',
-                                name: 'numero_cortesia_letra'
-                            },
-                            {
-                                data: 'cliente',
-                                name: 'cliente'
-                            },
-                            {
-                                data: 'dnioruc',
-                                name: 'dnioruc'
-                            },
-                            {
-                                data: 'marca',
-                                name: 'marca'
-                            },
-                            {
-                                data: 'modelo',
-                                name: 'modelo'
-                            },
-                            {
-                                data: 'motor',
-                                name: 'motor'
-                            },
-                            {
-                                data: 'activaciones.moto.mtx_vin',
-                                name: 'activaciones.moto.mtx_vin'
-                            },
-                            {
-                                data: 'activaciones.moto.mtx_chasis',
-                                name: 'activaciones.moto.mtx_chasis'
-                            },
-                            {
-                                data: 'activaciones.moto.mtx_color',
-                                name: 'activaciones.moto.mtx_color'
-                            },
-                            {
-                                data: 'precio',
-                                name: 'precio',
-                                render: function(data, type, full, meta) {
-                                    return data;
-                                }
-                            },
-                            {
-                                data: 'fecha_creacion',
-                                name: 'fecha_creacion'
-                            },
-
-                            {
-                                data: 'action',
-                                name: 'action'
-                            },
-
-                        ],
-
-                        "info": true,
-                        fixedColumns: true,
-                        keys: true,
-                        colReorder: true,
-                        "lengthChange": true,
-                        'responsive': true,
-                        "autoWidth": false,
-                        "ordering": true,
-                        // Otras opciones y configuraciones de DataTables aquí
+                    this.datatable_cortesias();
+                    $(this.$refs.cortesia_multiple).select2({
+                        tags: false,
+                        placeholder: "",
+                        maximumSelectionLength: 60,
+                        data: this.numero_cortesia,
                     });
 
-                    $('#cortesias tbody').on('click', 'tr', function() {
-                        $(this).toggleClass('selected');
-
-                        self.table_cortesia = tabla_cortesia.rows('.selected').data().toArray()
+                    $(this.$refs.cortesia_multiple).on("change", () => {
+                        this.$emit("select", $(this.$refs.cortesia_multiple).val());
+                        this.select_cortesia = $(this.$refs.cortesia_multiple).val();
+                        this.datatable_cortesias();
                     });
+
                 });
 
             }

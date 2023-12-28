@@ -7,6 +7,26 @@
         <div class="breadcrumb-item">Creando una moto</div>
     </div>
 @endsection
+@section('css')
+<style>.color-radio {
+   display: none;
+ }
+
+ .color-label {
+   display: inline-block;
+   width: 30px;
+   height: 30px;
+   margin: 5px;
+   cursor: pointer;
+ }
+
+ /* Estilos para los colores */
+ #azul + .color-label { background-color: blue; }
+ #amarillo + .color-label { background-color: yellow; }
+ #rojo + .color-label { background-color: red; }
+ #negro + .color-label { background-color: black; color: white; }
+ #blanco + .color-label { background-color: white; border: 1px solid #ccc; }</style>   
+@endsection
 @section('content')
 
     <div class="section-body">
@@ -84,25 +104,25 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Estado</label>
-                            <div class="selectgroup w-100">
-                                <label class="selectgroup-item">
-                                    <input type="radio" name="mtx_estado" value="N" class="selectgroup-input"
-                                        checked="">
-                                    <span class="selectgroup-button">Nuevo</span>
-                                </label>
-                                <label class="selectgroup-item">
-                                    <input type="radio" name="mtx_estado" value="B" class="selectgroup-input">
-                                    <span class="selectgroup-button">Bueno</span>
-                                </label>
-                                <label class="selectgroup-item">
-                                    <input type="radio" name="mtx_estado" value="R" class="selectgroup-input">
-                                    <span class="selectgroup-button">Regular</span>
-                                </label>
-                                <label class="selectgroup-item">
-                                    <input type="radio" name="mtx_estado" value="D" class="selectgroup-input">
-                                    <span class="selectgroup-button">Deficiente</span>
-                                </label>
+                            <label for="mtx_color">Color</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-primary" id="#azul">
+                                      <input type="radio" name="mtx_color" checked value="azul"> Azul
+                                    </label>
+                                    <label class="btn btn-warning">
+                                      <input type="radio" name="mtx_color" value="amarillo"> Amarillo
+                                    </label>
+                                    <label class="btn btn-danger">
+                                      <input type="radio" name="mtx_color" value="rojo"> Rojo
+                                    </label>
+                                    <label class="btn btn-dark">
+                                      <input type="radio" name="mtx_color" value="negro"> Negro
+                                    </label>
+                                    <label class="btn btn-light">
+                                      <input type="radio" name="mtx_color" value="blanco"> Blanco
+                                    </label>
+                                  </div>
                             </div>
                         </div>
                         <div class="form-row">
@@ -189,11 +209,7 @@
                 },
                 mtx_estado: {
                     required: true,
-                },
-                mtx_chasis: {
-                    maxlength: 200,
-                    required: true,
-                },
+                }, 
                 mtx_color: {
                     maxlength: 200,
                     required: true,

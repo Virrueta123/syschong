@@ -15,7 +15,7 @@
                 type="button" data-toggle="modal" data-target="#modal-crear-marca"><i class="fa fa-eye"
                     aria-hidden="true"></i></button>
             <div v-if="is_select">
-                <h6> Telefono: {{ moto . cliente . cli_telefono }}</h6>
+                <h6> Telefono: {{  moto . cliente ? moto . cliente . cli_telefono :"" }}</h6>
                 <button class="btn btn-primary boton-color" v-on:click="modal_edit_celular()" type="button"><i
                         class="fa-solid fa-phone"></i> Actualizar telefono</button>
             </div>
@@ -246,8 +246,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="cli_telefono">telefono</label>
-                                    <input type="text" class="form-control" name="cli_telefono"
-                                        :value="moto.cliente.cli_telefono" id="cli_telefono">
+                                     
                                 </div>
                             </div> 
                         </div>
@@ -491,7 +490,7 @@
 
             },
             change_select(event) { 
-                var moto_id = event.target[this.conteo].value
+                var moto_id = event.target.value
 
                 const data = {
                     id: moto_id

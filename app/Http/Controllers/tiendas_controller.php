@@ -8,6 +8,8 @@ use App\Models\caja_chica;
 use App\Models\cortesias_activacion;
 use App\Models\detalle_venta;
 use App\Models\empresa;
+use App\Models\marca;
+use App\Models\numero_cortesia;
 use App\Models\producto;
 use App\Models\tienda_detalle_factura;
 use App\Models\tienda_facturas;
@@ -160,6 +162,7 @@ class tiendas_controller extends Controller
             ->where('activado_taller', 'A')
             ->where('tienda_id', decrypt_id($id))
             ->get();
+ 
 
         $activaciones_count = count($activaciones);
         $activaciones_cobro = $activaciones->sum('total');
@@ -280,11 +283,26 @@ class tiendas_controller extends Controller
 
         $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
 
+        //marcas de motos
+        $marca_moto =  marca::select('marca_id as id', DB::raw("marca_nombre as text"))
+        ->get();
+
+        $numero_cortesia = numero_cortesia::select('numero_cortesia_id as id', DB::raw("nombre as text"))
+        ->get();
+
+        $precios = activaciones::select('total','total as id', DB::raw("total as text"))
+        ->distinct()
+        ->get();
+ 
+
         return view('modules.tiendas.factura', [
             'id' => $id,
             'empresa' => $empresa,
             'correlativo_factura' => $correlativo_factura,
             'tienda' => $tienda,
+            'marca_moto' => $marca_moto,
+            'precios' => $precios,
+            'numero_cortesia' => $numero_cortesia
         ]);
     }
     // add factura por tienda cortesia y activaciones
@@ -604,13 +622,46 @@ class tiendas_controller extends Controller
 
     public function reporte_factura($id)
     {
-        
-
+         
         $get = tienda_facturas::with([
-              "tienda_detalle_factura"
+              "venta",  
+              "tienda_detalle_factura" => function ($query) {
+                return $query->with([
+                    "activaciones" => function ($query) {
+                        return $query->with([
+                            "tienda",
+                            "moto" => function ($query) {
+                                return $query->with([
+                                    "cliente",
+                                    "modelo" => function ($query) {
+                                        return $query->with(["marca"]);
+                                    },
+                                ]);
+                            },
+                        ]);
+                    },
+                    "cortesias_activacion" => function ($query) {
+                        return $query->with([
+                            "tcobrar",
+                            "activaciones" => function ($query) {
+                                return $query->with([
+                                    "moto" => function ($query) {
+                                        return $query->with([
+                                            "cliente",
+                                            "modelo" => function ($query) {
+                                                return $query->with(["marca"]);
+                                            },
+                                        ]);
+                                    },
+                                ]);
+                            },
+                        ]);
+                    },
+                ]);
+                      
+              }
         ])->find(decrypt_id($id));
- 
-
+  
         if ($get) {
 
             $pdf = Pdf::loadView('pdf.reporte_factura_pdf', ['get' => $get, 'id' => $id])->setPaper('a4', 'landscape'); 

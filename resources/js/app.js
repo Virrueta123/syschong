@@ -7,6 +7,8 @@ const app = createApp({});
 
 app.component('input-money', require('./components/implementaciones/input_currency.vue').default);
 
+
+
 app.component('example-component', require('./components/ExampleComponent.vue').default);
 
 app.component('dni', require('./components/cliente/dni.vue').default);
@@ -81,6 +83,7 @@ app.component('crear-marca-producto', require('./components/marca_producto/crear
 
 /* -- ********   vendedor ************* -- */
 app.component('search-vendedor', require('./components/vendedor/search_vendedor.vue').default);
+app.component('crear-vendedor', require('./components/vendedor/crear_vendedor.vue').default);
 /* -- *********************** -- */
 
 
@@ -120,6 +123,7 @@ app.component('servicios-seleccionados', require('./components/servicios/servici
 /* -- ******** componentes categoria producto ************* -- */
 app.component('search-categoria-producto', require('./components/categoria_producto/search_categoria_producto.vue').default);
 app.component('crear-categoria-producto', require('./components/categoria_producto/crear-categoria_producto.vue').default);
+app.component('productos-seleccionados', require('./components/producto/productos_seleccionados.vue').default);
 /* -- *********************** -- */
 
 /* -- ******** mantenimiento ************* -- */
@@ -185,7 +189,7 @@ app.component('pdf-orden-servicio', require('./components/pdf/pdf-orden-servicio
 /* -- ******** imagen ************* -- */
 app.component('imagen-orden-de-servicio', require('./components/imagenes/imagen_orden_de_servicio.vue').default);
 /* -- *********************** -- */
-
+app.component('dashboard', require('./components/home/dashboard.vue').default);
 
 app.mount('#app');
 

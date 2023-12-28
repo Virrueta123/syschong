@@ -4,9 +4,7 @@
     <div class="section-body">
         <div class="card">
             <form id="form_crear_producto" method="POST" action="#" enctype="multipart/form-data">
-
                 <div id="app">
-
                     <div class="card text-left">
                         <div class="card-body">
                             <div class="section-header">
@@ -36,10 +34,8 @@
                                     <input type="text" class="form-control" name="prod_descripcion"
                                         id="prod_descripcion">
                                 </div>
-                            </div>
-
-                            <div class="form-row">
-
+                            </div> 
+                            <div class="form-row"> 
                                 <div class="form-group col-md-6">
                                     <label for="prod_codigo">Marca de producto</label>
                                     <div class="input-group">
@@ -79,7 +75,7 @@
 
                                         <search-categoria-producto></search-categoria-producto>
                                         <crear-categoria-producto
-                                            select_element="#select_categoria_producto"></crear-categoria-producto>
+                                            select_element="#select_categoria_producto"></crear-categoria-producto> 
                                     </div>
                                 </div>
                             </div>
@@ -140,8 +136,7 @@
                                             ref="fileInput" @change="handleFileChange" multiple />
                                         <div ref="uppyContainer"></div>
                                     </div>
-                                </div>
-
+                                </div> 
                             </div>
 
 

@@ -202,7 +202,9 @@ class gastos_controller extends Controller
             ]);
 
             $validate['user_id'] = Auth::user()->id;
+             
             $caja_chica = caja_chica::where("user_id", auth()->user()->id)->where("is_abierto","Y")->first()->caja_chica_id;
+            $validate['caja_chica_id'] = $caja_chica;
             $unique_marca_nombre = gastos::where('gastos_nombre', $datax['gastos_nombre'])->first();
 
             if ($unique_marca_nombre) {
@@ -226,6 +228,7 @@ class gastos_controller extends Controller
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                                 $pagosVentas->referencia = $pago['referencia'];
                                 $pagosVentas->imagen = 'Y';
+                                $pagosVentas->tipo = 'G';
                                 $pagosVentas->caja_chica_id = $caja_chica;
                                 $pagosVentas->user_id = Auth::id();
                                 $pagosVentas->save();
@@ -252,6 +255,7 @@ class gastos_controller extends Controller
                                 $pagosVentas->forma_pago_id = $pago['forma_pago_id'];
                                 $pagosVentas->referencia = $pago['referencia'];
                                 $pagosVentas->imagen = 'N';
+                                $pagosVentas->tipo = 'G';
                                 $pagosVentas->caja_chica_id = $caja_chica;
                                 $pagosVentas->user_id = Auth::id();
                                 $pagosVentas->save();

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\caja_chica;
 use App\Models\compra;
-use App\Models\compras; 
+use App\Models\compras;
+use App\Models\cotizacioncotizacion_detalle;
 use App\Models\detalle_compra;
 use App\Models\forma_pago;
 use App\Models\image_pago;
@@ -191,9 +192,12 @@ class compras_controller extends Controller
             $compra->user_id = Auth::user()->id;
             $compra->is_pago = $Datax['is_pago'] ? 'Y' : 'N';
             $compra->caja_chica_id = $caja_chica;
+
+            
   
             if ($compra->save()) {
                 foreach ($Datax['repuestos'] as $detalle) {
+
                     $producto = producto::find($detalle['prod_id']);
 
                     $compra_lote = detalle_compra::where('prod_id', $detalle['prod_id'])->max('lote');
@@ -217,6 +221,32 @@ class compras_controller extends Controller
                     $detalle_compra->zona_id = $detalle['zona_id'];
 
                     $detalle_compra->save();
+ 
+                   foreach ( $detalle["cotizaccion"] as $coti) {
+                   
+                        $cotizaion_detalle = new cotizacioncotizacion_detalle();
+
+                        // Asignar valores a los campos
+                        $cotizaion_detalle->cotizacion_id =$coti["cotizacion_id"]; // ID de la cotización relacionada
+                        $cotizaion_detalle->prod_id =$detalle_compra->prod_id; // ID del producto relacionado
+                        $cotizaion_detalle->servicios_id = 0; // ID del servicio relacionado
+                        $cotizaion_detalle->tipo = "P"; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
+                        $cotizaion_detalle->Precio = $detalle['is_precio_venta'] ? $detalle['precio_venta'] :  $detalle['precio_compra'];
+                        $cotizaion_detalle->Importe =$detalle['is_precio_venta'] ? $detalle['precio_venta'] *$coti["cantidad"] :  $detalle['precio_compra'] *$coti["cantidad"];
+                        $cotizaion_detalle->ImporteDescuento = 0;
+                        $cotizaion_detalle->Descuento = 0;
+                        $cotizaion_detalle->Descripcion = $detalle['Descripcion'];
+                        $cotizaion_detalle->Codigo = $producto->prod_codigo;
+                        $cotizaion_detalle->Cantidad = $coti["cantidad"];
+                        $cotizaion_detalle->ValorDescuento = 0;
+                        $cotizaion_detalle->Detalle = "";
+        
+                        // Guardar el registro en la base de datos
+                        $cotizaion_detalle->save();
+                    }
+
+                     
+
                 }
 
                 foreach ($Datax['pagos'] as $pago) {

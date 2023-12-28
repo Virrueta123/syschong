@@ -6,6 +6,7 @@ use App\Models\vendedor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Html\Column;
@@ -173,11 +174,63 @@ class vendedor_controller extends Controller
 
     public function search_vendedor(Request $req)
     {
+        
         $vendedor = vendedor::select(DB::raw('vendedor_id AS id'), 'vendedor_nombres as name')
             ->where('vendedor_nombres', 'like', '%' . $req->all()['search'] . '%')
+            ->where('tienda_id', $req->all()['tienda_id'])
             ->limit(9)
             ->get();
         echo json_encode($vendedor);
+    }
+
+        public function crear_vendedor(Request $request)
+    {
+        
+        try {
+            
+            $datax = $request->all();
+            $validate = $request->validate([
+                'vendedor_nombres' => 'required|string|max:250',
+                "tienda_id"=>'required',
+            ]); 
+
+            $unique_vendedor = vendedor::where('vendedor_nombres', $datax['vendedor_nombres'])->where("tienda_id",$datax['tienda_id'])->first();
+
+            if ($unique_vendedor) {
+                return response()->json([
+                    'message' => 'Este vendedor ya existe en esta tienda',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            } else {
+                $create = vendedor::create($validate);
+                if ($create) {
+                    return response()->json([
+                        'message' => 'se creo correctamente un vendedor',
+                        'error' => '',
+                        'success' => true,
+                        'data' => ['value' => $create->vendedor_id, 'title' => $create->vendedor_nombres],
+                    ]);
+                } else {
+                    Log::error('no se pudo registrar el vendedor');
+                    return response()->json([
+                        'message' => 'no se pudo registrar el vendedor',
+                        'error' => '',
+                        'success' => false,
+                        'data' => '',
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th,
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
 
 }

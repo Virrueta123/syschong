@@ -13,7 +13,10 @@ use App\Models\cotizacioncotizacion_detalle;
 use App\Models\inventario_autorizaciones;
 use App\Models\inventario_moto;
 use App\Models\motos;
+use App\Models\productos_defecto;
+use App\Models\servicios_defecto;
 use App\Models\tiendas;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +109,7 @@ class activaciones_controller extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+                
         } else {
             return view('modules.activaciones.index', ['fecha_actual' => $fecha_actual]);
         }
@@ -118,7 +122,8 @@ class activaciones_controller extends Controller
      */
     public function create()
     {
-        return view('modules.activaciones.create');
+        $fecha_actual = Carbon::now()->format("Y-m-d");
+        return view('modules.activaciones.create',compact("fecha_actual"));
     }
 
     /**
@@ -139,8 +144,7 @@ class activaciones_controller extends Controller
         $moto->mtx_motor = $datax['mtx_motor'];
         $moto->mtx_color = $datax['mtx_color'];
         $moto->modelo_id = $datax['modelo_id'];
-        $moto->mtx_fabricacion = $datax['mtx_fabricacion'];
-        $moto->mtx_chasis = $datax['mtx_chasis'];
+        $moto->mtx_fabricacion = $datax['mtx_fabricacion']; 
         $created = $moto->save();
 
         if ($created) {
@@ -289,7 +293,11 @@ class activaciones_controller extends Controller
             },
         ])->find(decrypt_id($id));
 
-        return view('modules.cortesia.create', compact('id', 'accesorios', 'autorizaciones', 'activacion'));
+        $servicios_defecto = servicios_defecto::with(["servicio"])->orderBy("created_at")->get();
+  
+        $productos_defecto = productos_defecto::with(["producto"])->orderBy("created_at")->get();
+
+        return view('modules.cortesia.create', compact('id', 'accesorios', 'autorizaciones', 'activacion',"servicios_defecto","productos_defecto"));
     }
 
     public function cortesia_store($id, Request $request)
@@ -413,6 +421,7 @@ class activaciones_controller extends Controller
             $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
             $cotizacion->mecanico_id = 0; // ID del mecánico relacionado
             $cotizacion->trabajo_realizar = $datax['trabajo_realizar'];
+            $cotizacion->tipo_cotizacion = "C";
 
             if ($cotizacion->save()) {
                 foreach ($datax['cotizacion'] as $ps) {
@@ -500,5 +509,31 @@ class activaciones_controller extends Controller
                 'data' => '',
             ]);
         }
+    }
+
+    public function pdf_activacion($activaciones_id){
+        $get = activaciones::with([
+            'moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            },
+            'cortesias' => function ($query) {
+                return $query->with(['tcobrar']);
+            },
+            'vendedor',"tienda"
+        ])->find(decrypt_id($activaciones_id));
+
+      
+       if ($get) {
+           $pdf = Pdf::loadView('pdf.pdf_activacion', ['get' => $get, 'id' => $activaciones_id])->setPaper('a5');
+
+           return $pdf->stream();
+       } else {
+           return view('errors.404');
+       }
     }
 }

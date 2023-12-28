@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\ServiciosImport;
 use App\Models\servicios;
+use App\Models\servicios_defecto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,8 +55,6 @@ class servicios_controller extends Controller
 
         return view('modules.servicios.servicios_seleccionados', ['servicios' => $servicios]);
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -281,24 +280,38 @@ class servicios_controller extends Controller
     }
 
     //actualizar los servicios por defecto
-    public function servicios_defecto(Request $request){
-        $datax = $request->all();
+    public function servicios_defecto(Request $request)
+    {
+        try {
+            $datax = $request->all();
 
-        dd($datax);
-        if (true) {
-        
+            $servicio_defecto = servicios_defecto::orderBy('created_at', 'desc')->get();
+
+            if (count($servicio_defecto) != 0) {
+                foreach ($servicio_defecto as $servicio) {
+                    $servicio->delete();
+                }
+            }
+
+            //insertando los servicios por defecto en la tabla servicios_defecto
+            foreach ($datax['seleccionados'] as $seleccionado) {
+                $create = servicios_defecto::create([
+                    'servicios_id' => $seleccionado['servicios_id'],
+                ]);
+            }
+
+            session()->flash('success', 'registro creado correctamente');
             return response()->json([
-                'message' => 'datos encontrados',
+                'message' => 'datos registrados correctamente',
                 'error' => '',
                 'success' => true,
-                'data' => "",
+                'data' => route("servicios.index")
             ]);
-            
-            
-        } else {
+        } catch (\Throwable $th) {
+            Log::error($th);
             return response()->json([
-                'message' => 'error del servidor',
-                'error' => 'error al registrar la factura',
+                'message' => 'error aal registrar los datos',
+                'error' => $th->getMessage(),
                 'success' => false,
                 'data' => '',
             ]);

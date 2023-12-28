@@ -30,9 +30,7 @@
                                 </div>
                                 <input name="km" type="number" class="form-control">
                             </div>
-                        </div>
-
-
+                        </div>  
                     </div>
 
                     <div class="section-header">
@@ -68,7 +66,7 @@
                         <h1>Cotizacion</h1>
                     </div>
 
-                    <repuestos_add v-on:childEvent="handleChildEvent"></repuestos_add>
+                    <repuestos_add :servicios_defecto="servicios_defecto" :productos_defecto="productos_defecto" v-on:childEvent="handleChildEvent"></repuestos_add>
 
                     <div class="section-header">
                         <h1>Otros Datos</h1>
@@ -136,6 +134,8 @@
                 dias: 0,
                 autorizaciones: this.$attrs.autorizaciones,
                 accesorios: this.$attrs.accesorios,
+                servicios_defecto: this.$attrs.servicios_defecto,
+                productos_defecto: this.$attrs.productos_defecto,
                 dataFromParent: 'Datos desde el padre',
                 select_acesorios: [],
                 select_autorizacion: [],

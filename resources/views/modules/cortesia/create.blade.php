@@ -9,7 +9,7 @@
 @endsection
 @section('content')
    <div id="app">
-     <add-cortesia activacion="{{$activacion}}" cortesia="{{app('empresa')->cortesia()}}" id="{{$id}}" accesorios="{{$accesorios}}" autorizaciones="{{$autorizaciones}}"></add-cortesia>
+     <add-cortesia activacion="{{$activacion}}" cortesia="{{app('empresa')->cortesia()}}" id="{{$id}}" accesorios="{{$accesorios}}" autorizaciones="{{$autorizaciones}}" servicios_defecto="{{ $servicios_defecto }}" productos_defecto="{{ $productos_defecto }}"></add-cortesia>
    </div>
 @endsection
 

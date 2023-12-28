@@ -12,6 +12,7 @@ use App\Models\marca_producto;
 use App\Models\modelo;
 use App\Models\producto;
 use App\Models\producto_modelo;
+use App\Models\productos_defecto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -190,7 +191,8 @@ class producto_controller extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {$modelos =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
+    {
+        $modelos =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
         ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
         ->get();
         return view('modules.productos.create', ['modelos' => $modelos]);
@@ -602,4 +604,51 @@ class producto_controller extends Controller
     function seleccionar_aceites(){
         return view('modules.productos.seleccionar_aceites');
     }
+
+    //productos seleccionados
+    public function productos_seleccionados(Request $request)
+    {
+        $productos = producto::orderBy('created_at', 'desc')
+            ->get();
+
+        return view('modules.productos.productos_seleccionados', ['productos' => $productos]);
+    }
+     //actualizar los productos por defecto
+     public function productos_defecto(Request $request)
+     {
+         try {
+             $datax = $request->all();
+ 
+             $producto_defecto = productos_defecto::orderBy('created_at', 'desc')->get();
+ 
+             if (count($producto_defecto) != 0) {
+                 foreach ($producto_defecto as $servicio) {
+                     $servicio->delete();
+                 }
+             }
+ 
+             //insertando los servicios por defecto en la tabla servicios_defecto
+             foreach ($datax['seleccionados'] as $seleccionado) {
+                 $create = productos_defecto::create([
+                     'prod_id' => $seleccionado['prod_id'],
+                 ]);
+             }
+ 
+             session()->flash('success', 'registro creado correctamente');
+             return response()->json([
+                 'message' => 'datos registrados correctamente',
+                 'error' => '',
+                 'success' => true,
+                 'data' => route("producto.index")
+             ]);
+         } catch (\Throwable $th) {
+             Log::error($th);
+             return response()->json([
+                 'message' => 'error al registrar los datos',
+                 'error' => $th->getMessage(),
+                 'success' => false,
+                 'data' => '',
+             ]);
+         }
+     }
 }

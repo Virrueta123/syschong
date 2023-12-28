@@ -11,7 +11,7 @@
     <div class="section-body">
         
             <div id="app">
-                <add-factura empresa="{{ $empresa }}" tienda="{{ $tienda }}"  id="{{$id }}" correlativo_factura="{{$correlativo_factura}}" ></add-factura>
+                <add-factura empresa="{{ $empresa }}" tienda="{{ $tienda }}" marca_moto="{{ $marca_moto }}" precios="{{ $precios }}" numero_cortesia="{{ $numero_cortesia }}" id="{{$id }}" correlativo_factura="{{$correlativo_factura}}" ></add-factura>
             </div>
         
     </div>

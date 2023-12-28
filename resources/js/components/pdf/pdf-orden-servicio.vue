@@ -34,103 +34,107 @@
 
                     <imagen-orden-de-servicio></imagen-orden-de-servicio>
 
-                    <text transform="matrix(1 0 0 1 142.4525 110.4517)" class="st0 st1">text1</text>
-                    <text transform="matrix(1 0 0 1 142.4525 123.2904)" class="st0 st1">text2</text>
-                    <text transform="matrix(1 0 0 1 83.5947 149.2808)" class="st0 st2">text4</text>
-                    <text transform="matrix(1 0 0 1 380.2361 149.2808)" class="st0 st2">text5</text>
-                    <text transform="matrix(1 0 0 1 83.721 160.1382)" class="st0 st2">text6</text>
-                    <text transform="matrix(1 0 0 1 83.721 171.6774)" class="st0 st2">text8</text>
-                    <text transform="matrix(1 0 0 1 83.721 211.0123)" class="st0 st2">text10</text>
-                    <text transform="matrix(1 0 0 1 83.721 223.0065)" class="st0 st2">text12</text>
-                    <text transform="matrix(1 0 0 1 83.721 233.484)" class="st0 st2">text14</text>
-                    <text transform="matrix(1 0 0 1 112.7558 802.5588)" class="st0 st2">text18</text>
-                    <text transform="matrix(1 0 0 1 112.8823 524.71)" class="st0 st2">text24</text>
-                    <text transform="matrix(1 0 0 1 440.7362 524.71)" class="st0 st2">text26</text>
-                    <text transform="matrix(1 0 0 1 472.6155 803.075)" class="st0 st2">text20</text>
-                    <text transform="matrix(1 0 0 1 409.0132 813.4246)" class="st0 st2">text21</text>
-                    <text transform="matrix(1 0 0 1 51.2004 813.4249)" class="st0 st2">text19</text>
-                    <text transform="matrix(1 0 0 1 52.7796 535.8851)" class="st0 st2">text25</text>
-                    <text transform="matrix(1 0 0 1 382.9155 535.8851)" class="st0 st2">text27</text>
-                    <text transform="matrix(1 0 0 1 37.0645 273.3026)" class="st0 st2">tiposervicio</text>
-                    <text transform="matrix(1 0 0 1 48.2973 457.4838)" class="st0 st2">texto 22</text>
-                    <text transform="matrix(1 0 0 1 372.3217 457.4838)" class="st0 st2">texto 23</text>
-                    <text transform="matrix(1 0 0 1 380.2361 244.1344)" class="st0 st2">text17</text>
-                    <text transform="matrix(1 0 0 1 380.3631 233.484)" class="st0 st2">text15</text>
-                    <text transform="matrix(1 0 0 1 380.236 222.0065)" class="st0 st2">text13</text>
-                    <text transform="matrix(1 0 0 1 380.236 211.0123)" class="st0 st2">text11</text>
-                    <text transform="matrix(1 0 0 1 380.236 171.6774)" class="st0 st2">text9</text>
-                    <text transform="matrix(1 0 0 1 380.236 160.1382)" class="st0 st2">text7</text>
-                    <text transform="matrix(1 0 0 1 380.0765 123.2904)" class="st0 st1">text3</text>
-                    <text transform="matrix(1 0 0 1 474.0994 110.4516)" class="st0 st1">dia1</text>
-                    <text transform="matrix(1 0 0 1 501.2607 110.4516)" class="st0 st1">mes1</text>
-                    <text transform="matrix(1 0 0 1 536.9714 110.4516)" class="st0 st1">ano1</text>
+                    <g transform="translate(25, 635)" font-size="6" id="groupList">
+                    </g>
+
+                    <g transform="translate(150, 250)" font-size="10" id="groupTipoServicio">
+                    </g>
+                    <text transform="matrix(1 0 0 1 142.4525 110.4517)" class="st0 st1">{{ servicio_tecnico }}</text>
+                    <text transform="matrix(1 0 0 1 142.4525 123.2904)" class="st0 st1">{{ ciudad }}</text>
+                    <text transform="matrix(1 0 0 1 83.5947 149.2808)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 380.2361 149.2808)" class="st0 st2">{{ dni }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 160.1382)" class="st0 st2">{{ direccion }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 171.6774)" class="st0 st2">{{ correo }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 211.0123)" class="st0 st2">{{ marca }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 223.0065)" class="st0 st2">{{ nchasis }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 233.484)" class="st0 st2">{{ nmotor }}</text>
+                    <text transform="matrix(1 0 0 1 112.7558 802.5588)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 112.8823 524.71)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 440.7362 524.71)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 472.6155 803.075)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 409.0132 813.4246)" class="st0 st2">{{ dni }}</text>
+                    <text transform="matrix(1 0 0 1 51.2004 813.4249)" class="st0 st2">{{ dni }}</text>
+                    <text transform="matrix(1 0 0 1 52.7796 535.8851)" class="st0 st2">{{ dni }}</text>
+                    <text transform="matrix(1 0 0 1 382.9155 535.8851)" class="st0 st2">{{ dni }}</text>
+
+                    <text transform="matrix(1 0 0 1 48.2973 457.4838)" class="st0 st2">{{ nombre }}</text>
+                    <text transform="matrix(1 0 0 1 372.3217 457.4838)" class="st0 st2">{{ dni }}</text>
+                    <text transform="matrix(1 0 0 1 380.2361 244.1344)" class="st0 st2">{{ cilindrada }}</text>
+                    <text transform="matrix(1 0 0 1 380.3631 233.484)" class="st0 st2">{{ kilometraje }}</text>
+                    <text transform="matrix(1 0 0 1 380.236 222.0065)" class="st0 st2">{{ nplaca }}</text>
+                    <text transform="matrix(1 0 0 1 380.236 211.0123)" class="st0 st2">{{ color }}</text>
+                    <text transform="matrix(1 0 0 1 380.236 171.6774)" class="st0 st2">{{ distrito }}</text>
+                    <text transform="matrix(1 0 0 1 380.236 160.1382)" class="st0 st2">{{ telefono }}</text>
+                    <text transform="matrix(1 0 0 1 380.0765 123.2904)" class="st0 st1">{{ departamento }}</text>
+                    <text transform="matrix(1 0 0 1 474.0994 110.4516)" class="st0 st1">{{ dia1 }}</text>
+                    <text transform="matrix(1 0 0 1 501.2607 110.4516)" class="st0 st1">{{ mes1 }}</text>
+                    <text transform="matrix(1 0 0 1 536.9714 110.4516)" class="st0 st1">{{ ano1 }}</text>
                     <rect x="37.1" y="323.3" class="st3" width="263.5" height="51.3" />
 
-                    <text transform="matrix(1 0 0 1 249.4153 781.3066)" class="st0 st1">dia2</text>
-                    <text transform="matrix(1 0 0 1 278.4111 781.4163)" class="st0 st1">mes2</text>
-                    <text transform="matrix(1 0 0 1 314.6102 781.5261)" class="st0 st1">ano2</text>
-                    <text transform="matrix(1 0 0 1 249.4153 500.748)" class="st0 st1">dia2</text>
-                    <text transform="matrix(1 0 0 1 278.4111 500.8577)" class="st0 st1">mes2</text>
-                    <text transform="matrix(1 0 0 1 314.6102 500.9674)" class="st0 st1">ano2</text>
+                    <text transform="matrix(1 0 0 1 249.4153 781.3066)" class="st0 st1">{{ dia2 }}</text>
+                    <text transform="matrix(1 0 0 1 278.4111 781.4163)" class="st0 st1">{{ mes2 }}</text>
+                    <text transform="matrix(1 0 0 1 314.6102 781.5261)" class="st0 st1">{{ ano2 }}</text>
+                    <text transform="matrix(1 0 0 1 249.4153 500.748)" class="st0 st1">{{ dia3 }}</text>
+                    <text transform="matrix(1 0 0 1 278.4111 500.8577)" class="st0 st1">{{ mes3 }}</text>
+                    <text transform="matrix(1 0 0 1 314.6102 500.9674)" class="st0 st1">{{ ano3 }}</text>
                     <polygon class="st3"
                         points="565.5,723.7 361.5,723.7 291.5,723.7 291.5,700.2 361.5,700.6 361.5,681.9 565.5,681.9 " />
 
-                    <text transform="matrix(1 0 0 1 368.8708 75.6128)" class="st0 st5">texto28</text>
-                    <text transform="matrix(1 0 0 1 83.721 244.1342)" class="st0 st2">text16</text>
+                    <text transform="matrix(1 0 0 1 368.8708 75.6128)" class="st0 st5">{{ numero_orden }}</text>
+                    <text transform="matrix(1 0 0 1 83.721 244.1342)" class="st0 st2">{{ modelo }}</text>
+                    <rect x="114.7" y="591.9" fill="#FFFFFF" width="28.8" height="7.9" />
+                    <rect x="114.7" y="603.3" fill="#FFFFFF" width="33.9" height="8.5" />
+                    <rect x="113.9" y="615.9" fill="#FFFFFF" width="30.6" height="6.2" />
+                    <text transform="matrix(1 0 0 1 113.9033 597.4102)" font-family="'MyriadPro-Regular'"
+                        font-size="7.7904px">{{ kilometraje }}</text>
+                    <text transform="matrix(1 0 0 1 113.9032 608.8788)" font-family="'MyriadPro-Regular'"
+                        font-size="7.7904px">{{ modelo }}</text>
+                    <text transform="matrix(1 0 0 1 113.9032 620.1202)" font-family="'MyriadPro-Regular'"
+                        font-size="7.7904px">{{ nplaca }}</text>
+
+                    <g>
+                        <line fill="none" stroke="#000000" stroke-miterlimit="10"
+                            stroke-dasharray="1.5237,1.5237" x1="171.9" y1="582.2" :x2="valor_gasolina"
+                            y2="582.2" />
+                    </g>
 
                     <rect x="44.8" y="86" fill="#FFFFFF" width="84.6" height="9.8" />
                     <text transform="matrix(1 0 0 1 45.8261 92.9922)" font-family="'ArialMT'"
-                        font-size="8px">celu1</text>
+                        font-size="8px">{{ celular_empresa }}</text>
                     <text transform="matrix(1 0 0 1 43.1777 577.4465)" font-family="'ArialMT'"
-                        font-size="8px">celu2</text>
+                        font-size="8px">{{ celular_empresa }}</text>
 
                     <foreignObject transform="matrix(1 0 0 1 290.46 682)" class="box textarea"
                         font-family="'ArialMT'" font-size="8px" width="250" height="110">
-                        <text> _______________Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor
-                            bibendum leo, vel consectetur libero cursus id. Aliquam at dui risus. Maecenas non nisi sit
-                            amet ligula fermentum varius. In vitae cursus justo. Proin vel urna
-                            sed velit bibendum vestibulum ac a nulla. Vivamus non felis id enim scelerisque
-                            sollicitudin. Suspendisse potenti.
+                        <text> _______________{{ observaciones }}
                         </text>
                     </foreignObject>
 
                     <foreignObject transform="matrix(1 0 0 1 37.0645 326)" class="box textarea2"
                         font-family="'ArialMT'" font-size="8px" width="250" height="110">
                         <text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor bibendum leo, vel
-                            consectetur libero cursus id. Aliquam at dui risus. Maecenas non nisi sit amet ligula
-                            fermentum varius. In vitae cursus justo. Proin vel urna sed velit bibendum vestibulum ac a
-                            nulla. Vivamus non felis id enim scelerisque sollicitudin. Suspendisse potenti.
+                            {{ obsevaciones_cliente }}
                         </text>
                     </foreignObject>
 
                     <foreignObject transform="matrix(1 0 0 1 37.0645 395)" class="box textarea2"
                         font-family="'ArialMT'" font-size="8px" width="250" height="110">
                         <text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor bibendum leo, vel
-                            consectetur libero cursus id. Aliquam at dui risus. Maecenas non nisi sit amet ligula
-                            fermentum varius. In vitae cursus justo. Proin vel urna sed velit bibendum vestibulum ac a
-                            nulla. Vivamus non felis id enim scelerisque sollicitudin. Suspendisse potenti.
+                            {{ trabajo_realizado }}
                         </text>
                     </foreignObject>
 
                     <foreignObject transform="matrix(1 0 0 1 310.6133 395)" class="box textarea2"
                         font-family="'ArialMT'" font-size="8px" width="250" height="110">
                         <text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor bibendum leo, vel
-                            consectetur libero cursus id. Aliquam at dui risus. Maecenas non nisi sit amet ligula
-                            fermentum varius. In vitae cursus justo. Proin vel urna sed velit bibendum vestibulum ac a
-                            nulla. Vivamus non felis id enim scelerisque sollicitudin. Suspendisse potenti.
+                            {{ repuesto_utilizado }}
                         </text>
                     </foreignObject>
 
                     <foreignObject transform="matrix(1 0 0 1 310.6133 326)" class="box textarea2"
                         font-family="'ArialMT'" font-size="8px" width="250" height="110">
                         <text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor bibendum leo, vel
-                            consectetur libero cursus id. Aliquam at dui risus. Maecenas non nisi sit amet ligula
-                            fermentum varius. In vitae cursus justo. Proin vel urna sed velit bibendum vestibulum ac a
-                            nulla. Vivamus non felis id enim scelerisque sollicitudin. Suspendisse potenti.
+                            {{ observaciones_sta }}
                         </text>
                     </foreignObject>
                 </svg>
@@ -199,48 +203,51 @@
         },
         data() {
             return {
+                accesorios_selected: JSON.parse(this.$attrs.accesorios_selected),
+                cotizacion: JSON.parse(this.$attrs.cotizacion),
                 is_modal_cortesia: false,
-                numero_orden:"",
-                servicio_tecnico:"",
-                dia1:"",
-                mes1:"",
-                ano1:"",
-                dia2:"",
-                mes2:"",
-                ano2:"",
-                dia3:"",
-                mes3:"",
-                ano3:"",
-                celular1:"",
-                celular2:"",
+                numero_orden: "",
+                servicio_tecnico: "",
+                celular_empresa: "",
+                dia1: "",
+                mes1: "",
+                ano1: "",
+                dia2: "",
+                mes2: "",
+                ano2: "",
+                dia3: "",
+                mes3: "",
+                ano3: "",
+                celular1: "",
+                celular2: "",
                 //datos del cliente
-                nombre:"",
-                direccion:"",
-                correo:"",
-                dni:"",
-                telefono:"",
-                distrito:"",
-                tipo_vehiculo:"",
+                nombre: "",
+                direccion: "",
+                correo: "",
+                dni: "",
+                telefono: "",
+                distrito: "",
+                departamento: "",
+                ciudad: "",
+                tipo_vehiculo: "",
                 //datos de la unidad
-                marca:"",
-                nchasis:"",
-                nmotor:"",
-                modelo:"",
-                color:"",
-                nplaca:"",
-                kilometraje:"",
-                cilindrada:"",
-                tipo_servicio:"",
-                obsevaciones_cliente:"",
-                observaciones_sta:"",
-                trabajo_realizado:"",
-                lubricante:"",
-                lubricante:"",
-                lubricante:"",
-                lubricante:"",
-                lubricante:"",
-                lubricante:"",
-                lubricante:"",
+                marca: "",
+                nchasis: "",
+                nmotor: "",
+                modelo: "",
+                color: "",
+                nplaca: "",
+                kilometraje: "",
+                cilindrada: "",
+                tipo_servicio: "",
+                obsevaciones_cliente: "",
+                observaciones_sta: "",
+                observaciones: "",
+                trabajo_realizado: "",
+                lubricante: "",
+                valor_gasolina: 0,
+                porcentaje_gasolina: 50,
+                repuesto_utilizado: "",
 
             }
         },
@@ -249,12 +256,240 @@
         },
         mounted() {
 
+            this.load_inventario();
+
+            this.load_gasolina();
+
+            this.load_accesorios();
+
+            this.load_servicio();
 
         },
         watch: {
 
         },
         methods: {
+            async load_inventario(){
+                console.log( this.cotizacion.cortesia.activaciones.moto.cliente);
+                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente.cli_telefono; 
+                
+                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente.cli_dni; 
+
+                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente.cli_nombre +" "+this.cotizacion.cortesia.activaciones.moto.cliente.cli_apellido; 
+
+                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente.cli_direccion ; 
+
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+
+                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito ;
+
+                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente.cli_departamento ;
+
+                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito ;
+
+                this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre ;
+
+                this.nchasis = this.cotizacion.cortesia.activaciones.moto.mtx_vin ;
+
+                this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor ;
+
+                this.modelo = this.cotizacion.cortesia.activaciones.moto.modelo.modelo_nombre;
+                console.log(this.cotizacion.cortesia.activaciones.moto.modelo);
+
+                this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color ;
+
+                this.nplaca = this.cotizacion.cortesia.activaciones.moto.mtx_placa;
+
+                this.kilometraje = this.cotizacion.inventario_moto_kilometraje ;
+
+                this.cilindrada = this.cotizacion.cortesia.activaciones.moto.modelo.cilindraje;
+
+                this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina ;
+
+                this.observaciones_sta = this.cotizacion.inventario_moto_obs_cliente;
+
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+                
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+            },
+            async load_gasolina() {
+                const valorMinimo = 171.9;
+                const valorMaximo = 238.2;
+                const porcentajeDeseado = this.porcentaje_gasolina;
+
+                // Calcular el valor correspondiente al 50% dentro del rango
+                this.valor_gasolina = valorMinimo + (porcentajeDeseado / 100) * (valorMaximo - valorMinimo);
+            },
+            async load_accesorios() {
+                // Número de elementos en la lista
+                const numItems = 15;
+
+                // Tamaño de cada elemento
+                const itemWidth = 90;
+                const itemHeight = 18;
+                const checkboxSize = 10; // Tamaño del cuadrado del checkbox
+
+                // Espacio entre elementos
+                const spaceBetween = 0.5;
+
+                // Número de columnas
+                const numColumns = 3;
+
+                // Crear un grupo para la lista
+                const groupList = document.getElementById('groupList');
+
+                // Generar la lista en forma de cuadrícula con checkboxes y "x"
+
+                this.accesorios_selected.forEach((element, index) => {
+                    console.log(`Elemento ${index}:`, element);
+                    const column = index % numColumns;
+                    const x = column * (itemWidth + spaceBetween);
+                    const y = Math.floor(index / numColumns) * (itemHeight + spaceBetween);
+
+                    // Crear cuadrado del checkbox
+                    const checkboxSquare = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    checkboxSquare.setAttribute('x', x);
+                    checkboxSquare.setAttribute('y', y);
+                    checkboxSquare.setAttribute('width', checkboxSize);
+                    checkboxSquare.setAttribute('height', checkboxSize);
+                    checkboxSquare.setAttribute('fill', '#f0f0f0');
+                    checkboxSquare.setAttribute('stroke', 'black');
+                    checkboxSquare.setAttribute('stroke-width', '1');
+                    checkboxSquare.setAttribute('data-index', index); // Añadir atributo de índice
+                    // Agregar evento de clic para alternar el checkbox
+                    groupList.appendChild(checkboxSquare);
+
+                    // Crear "x" dentro del cuadrado del checkbox
+                    const xSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    xSymbol.setAttribute('x', x + checkboxSize / 2 -
+                        4); // Ajustar la posición horizontal del texto "x"
+                    xSymbol.setAttribute('y', y + checkboxSize / 2 +
+                        5); // Ajustar la posición vertical del texto "x"
+                    xSymbol.setAttribute('fill', 'black');
+                    xSymbol.setAttribute('font-family', 'Arial');
+                    xSymbol.setAttribute('font-size', '12');
+                    xSymbol.setAttribute('data-index', index); // Añadir atributo de índice 
+                    xSymbol.textContent = element.check == "y" ? '✕' : '';
+                    groupList.appendChild(xSymbol);
+
+                    // Crear texto
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x + checkboxSize +
+                        5); // Ajustar el espacio a la izquierda del texto
+                    text.setAttribute('y', y + 4); // Ajustar la posición vertical del texto
+                    text.setAttribute('fill', 'black');
+                    text.textContent = `${element.item}`;
+
+                    if (element.check == "y") {
+                        const text_estado = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        text_estado.setAttribute('x', x + checkboxSize +
+                            5); // Ajustar el espacio a la izquierda del texto
+                        text_estado.setAttribute('y', y + 12); // Ajustar la posición vertical del texto
+                        text_estado.setAttribute('fill', 'black');
+                        text_estado.textContent = `Estado: ${element.estado}`;
+                        groupList.appendChild(text_estado);
+                    }
+
+                    groupList.appendChild(text);
+
+                });
+            },
+            async load_servicio() {
+                // Número de elementos en la lista
+                const numItems = 15;
+
+                // Tamaño de cada elemento
+                const itemWidth = 95;
+                const itemHeight = 30;
+                const checkboxSize = 10; // Tamaño del cuadrado del checkbox
+
+                // Espacio entre elementos
+                const spaceBetween = 0.5;
+
+                // Número de columnas
+                const numColumns = 4;
+
+                // Crear un grupo para la lista
+                const groupList = document.getElementById('groupTipoServicio');
+
+                // Generar la lista en forma de cuadrícula con checkboxes y "x"
+
+                const tipo_servicio = [{
+                        "item": "Mantenimiento",
+                        "check": "n"
+                    },
+                    {
+                        "item": "Garantia",
+                        "check": "n"
+                    }, {
+                        "item": "Cortesia Comercial",
+                        "check": "n"
+                    }
+                ]
+
+                switch (this.cotizacion.cortesia.tipo) {
+                    case "M":
+                        tipo_servicio[0].check = "y";
+                        break;
+                    case "C":
+                        tipo_servicio[2].check = "y";
+                        break;
+
+                    case "G":
+                        tipo_servicio[1].check = "y";
+                        break;
+                }
+
+                tipo_servicio.forEach((element, index) => {
+                    console.log(`Elemento ${index}:`, element);
+                    const column = index % numColumns;
+                    const x = column * (itemWidth + spaceBetween);
+                    const y = Math.floor(index / numColumns) * (itemHeight + spaceBetween);
+
+                    // Crear cuadrado del checkbox
+                    const checkboxSquare = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    checkboxSquare.setAttribute('x', x);
+                    checkboxSquare.setAttribute('y', y);
+                    checkboxSquare.setAttribute('width', checkboxSize);
+                    checkboxSquare.setAttribute('height', checkboxSize);
+                    checkboxSquare.setAttribute('fill', '#f0f0f0');
+                    checkboxSquare.setAttribute('stroke', 'black');
+                    checkboxSquare.setAttribute('stroke-width', '1');
+                    checkboxSquare.setAttribute('data-index', index); // Añadir atributo de índice
+                    // Agregar evento de clic para alternar el checkbox
+                    groupList.appendChild(checkboxSquare);
+
+                    // Crear "x" dentro del cuadrado del checkbox
+                    const xSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    xSymbol.setAttribute('x', x + checkboxSize / 2 -
+                        4); // Ajustar la posición horizontal del texto "x"
+                    xSymbol.setAttribute('y', y + checkboxSize / 2 +
+                        5); // Ajustar la posición vertical del texto "x"
+                    xSymbol.setAttribute('fill', 'black');
+                    xSymbol.setAttribute('font-family', 'Arial');
+                    xSymbol.setAttribute('font-size', '12');
+                    xSymbol.setAttribute('data-index', index); // Añadir atributo de índice 
+                    xSymbol.textContent = element.check == "y" ? '✕' : '';
+                    groupList.appendChild(xSymbol);
+
+                    // Crear texto
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x + checkboxSize +
+                        5); // Ajustar el espacio a la izquierda del texto
+                    text.setAttribute('y', y + 8); // Ajustar la posición vertical del texto
+                    text.setAttribute('fill', 'black');
+                    text.textContent = `${element.item}`;
+
+                    groupList.appendChild(text);
+
+                });
+            },
             exportToPDF() {
                 console.log("dsdasdad");
                 html2pdf(document.getElementById("prints"), {

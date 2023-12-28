@@ -14,7 +14,11 @@ class activaciones extends Model
     public $primaryKey = 'activaciones_id';
     protected $fillable = [];
     protected $guarded = [];
+    protected $appends = ['total'];
 
+    public function getTotalAttribute( ){ 
+        return $this->precio + $this->precio_gasolina ;
+    }
     public function moto(){
         return $this->belongsTo(motos::class,'moto_id')->withTrashed();
     }
@@ -34,5 +38,7 @@ class activaciones extends Model
 
     public function vendedor(){
         return $this->belongsTo(vendedor::class,'vendedor_id')->withTrashed();
-    }
+    } 
+
+    
 }

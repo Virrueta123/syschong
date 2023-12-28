@@ -7,11 +7,14 @@ use App\Models\caja_chica;
 use App\Models\compras;
 use App\Models\cortesias_activacion;
 use App\Models\cotizacion;
+use App\Models\producto;
 use App\Models\servicios;
 use App\Models\tienda_facturas;
 use App\Models\ventas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class datatables_controller extends Controller
@@ -54,17 +57,25 @@ class datatables_controller extends Controller
         return DataTables::of($activaciones)
             ->addIndexColumn()
             ->addColumn('cliente', function ($Data) {
-                if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->moto->cliente->cli_razon_social;
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    }
                 }
             })
             ->addColumn('dnioruc', function ($Data) {
-                if ($Data->moto->cliente->cli_ruc != 'no tiene') {
-                    return $Data->moto->cliente->cli_ruc;
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
                 } else {
-                    return $Data->moto->cliente->cli_dni;
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_dni;
+                    }
                 }
             })
             ->addColumn('vendedor', function ($Data) {
@@ -94,6 +105,101 @@ class datatables_controller extends Controller
             ->make(true);
     }
 
+    /* ******** tabla cotizacion para compras ************* */
+    public function cotizacion_by_compra()
+    {
+
+        try {
+            $cotizacion = cotizacion::select(DB::raw('*'))
+            ->with([
+                'mecanico',
+                'inventario' => function ($query) {
+                    $query->with([
+                        'cortesia',
+                        'moto' => function ($query) {
+                            $query->with(['cliente']);
+                        },
+                    ]);
+                },
+            ]) 
+            ->get();
+
+            $data = DataTables::of($cotizacion) 
+            ->addColumn('cliente', function ($Data) {
+                if(is_null($Data->inventario->moto->cliente)){
+                    return "Sin Cliente";
+                }else{
+                    if ($Data->inventario->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->inventario->moto->cliente->cli_razon_social;
+                    } else {
+                        if (is_null($Data->inventario->moto->cliente->cli_ruc)) {
+                            return $Data->inventario->moto->cliente->cli_nombre . ' ' . $Data->inventario->moto->cliente->cli_apellido;
+                        } else {
+                            return $Data->inventario->moto->cliente->cli_razon_social;
+                        }
+                    }
+                }
+                
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if(is_null($Data->inventario->moto->cliente)){
+                    return "Sin Cliente";
+                }else{
+                    if ($Data->inventario->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->inventario->moto->cliente->cli_ruc;
+                    } else {
+                        if (is_null($Data->inventario->moto->cliente->cli_ruc)) {
+                            return $Data->inventario->moto->cliente->cli_dni;
+                        } else {
+                            return $Data->inventario->moto->cliente->cli_ruc;
+                        }
+                    }
+                }
+               
+            })
+            ->addColumn('mecanico', function ($Data) {
+                 
+                    if (is_null($Data->mecanico)) {
+                        return "Sin Mecanico";
+                    } else {
+                        return $Data->mecanico->name . ' ' . $Data->mecanico->last_name; 
+                    }
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->inventario->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->inventario->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->inventario->moto->mtx_motor;
+            })
+            ->addColumn('vin', function ($Data) {
+                return $Data->inventario->moto->mtx_vin;
+            })
+            ->addColumn('fecha', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            }) 
+            ->toJson();
+
+                return response()->json([
+                    'message' => 'Trabajo finalizado',
+                    'error' => '',
+                    'success' => true,
+                    'data' => $data,
+                ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+       
+    }
+    /* *********************** */
     public function data_compras($id)
     {
         return DataTables::of(
@@ -328,6 +434,290 @@ class datatables_controller extends Controller
             ->make(true);
     }
 
+    //tabla activacion filtrar por parametros
+    public function tablas_activaciones_actual_por_tienda_by_factura(Request $request)
+    {
+        $datax = $request->all(); 
+
+        if (isset($datax["marca"])) {
+            
+            if (isset($datax["select_monto"])) {
+                $activaciones = activaciones::with([
+                    'moto' => function ($query)   {
+                        return $query->with([
+                            'cliente',
+                            'modelo' => function ($query)  {
+                                return $query->with(['marca']);
+                            },
+                        ]);
+                    },
+                    'vendedor',
+                    'tienda',
+                ])
+                    ->where('is_cobro', 'N')
+                    ->where('activado_taller', 'A')
+                    ->whereHas('moto.modelo.marca', function ($query) use ($datax){
+                        $query->whereIn('marca_id',$datax["marca"]);
+                    })
+                    ->where('tienda_id', decrypt_id($datax["tienda_id"]))
+                    ->whereIn("total",$datax["select_monto"])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }else{
+                $activaciones = activaciones::with([
+                    'moto' => function ($query)   {
+                        return $query->with([
+                            'cliente',
+                            'modelo' => function ($query)  {
+                                return $query->with(['marca']);
+                            },
+                        ]);
+                    },
+                    'vendedor',
+                    'tienda',
+                ])
+                    ->where('is_cobro', 'N')
+                    ->where('activado_taller', 'A')
+                    ->whereHas('moto.modelo.marca', function ($query) use ($datax){
+                        $query->whereIn('marca_id',$datax["marca"]);
+                    })
+                    ->where('tienda_id', decrypt_id($datax["tienda_id"])) 
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
+
+            
+        } else {
+            if (isset($datax["select_monto"])) {
+               $activaciones = activaciones::with([
+                'moto' => function ($query)   {
+                    return $query->with([
+                        'cliente',
+                        'modelo' => function ($query)  {
+                            return $query->with(['marca']);
+                        },
+                    ]);
+                },
+                'vendedor',
+                'tienda',
+            ])
+                ->where('is_cobro', 'N')
+                ->where('activado_taller', 'A') 
+                ->where('tienda_id', decrypt_id($datax["tienda_id"]))
+                ->whereIn("total",$datax["select_monto"])
+                ->orderBy('created_at', 'desc')
+                ->get();
+            } else {
+               $activaciones = activaciones::with([
+                'moto' => function ($query)   {
+                    return $query->with([
+                        'cliente',
+                        'modelo' => function ($query)  {
+                            return $query->with(['marca']);
+                        },
+                    ]);
+                },
+                'vendedor',
+                'tienda',
+            ])
+                ->where('is_cobro', 'N')
+                ->where('activado_taller', 'A') 
+                ->where('tienda_id', decrypt_id($datax["tienda_id"])) 
+                ->orderBy('created_at', 'desc')
+                ->get();
+            }
+            
+            
+        }
+        
+        
+           
+ 
+         
+
+        return DataTables::of($activaciones)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if (is_null($Data->moto->cliente->cli_ruc)) {
+                        return 'sin cliente';
+                    } else {
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_razon_social;
+                        } else {
+                            return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                        }
+                    }
+                }
+            })
+           
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if (is_null($Data->moto->cliente->cli_ruc)) {
+                        return 'sin cliente';
+                    } else {
+                        if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                            return $Data->moto->cliente->cli_ruc;
+                        } else {
+                            return $Data->moto->cliente->cli_dni;
+                        }
+                    }
+                }
+            })
+            ->addColumn('vendedor', function ($Data) {
+                return $Data->vendedor->vendedor_nombres;
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('tienda', function ($Data) {
+                return $Data->tienda->tienda_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->moto->mtx_motor;
+            })
+
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $activaciones_id = encrypt_id($Data->activaciones_id);
+                return view('buttons.activaciones', ['activaciones_id' => $activaciones_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+
+    //tabla cortesias filtrar por parametros
+
+     public function tablas_cortesias_actual_por_tienda_by_factura(Request $request)
+    {
+        $datax = $request->all(); 
+     
+        if (isset($datax["select_cortesia"])) {
+            
+            $cortesias = cortesias_activacion::with([
+                'activaciones' => function ($query)  {
+                    return $query->with([
+                        'tienda',
+                        'moto' => function ($query) {
+                            return $query->with([
+                                'cliente',
+                                'modelo' => function ($query) {
+                                    return $query->with(['marca']);
+                                },
+                            ]);
+                        },
+                    ]);
+                },
+            ])
+    
+                ->where('is_cobro', 'N')
+                ->where('tienda_cobrar', decrypt_id($datax["tienda_id"]))
+                ->where('tipo', 'C')
+                ->whereIn('numero_corterisa',$datax["select_cortesia"])
+                ->orderBy('created_at', 'desc')
+                ->get();
+             
+            
+        } else {
+             
+            $cortesias = cortesias_activacion::with([
+                'activaciones' => function ($query)  {
+                    return $query->with([
+                        'tienda',
+                        'moto' => function ($query) {
+                            return $query->with([
+                                'cliente',
+                                'modelo' => function ($query) {
+                                    return $query->with(['marca']);
+                                },
+                            ]);
+                        },
+                    ]);
+                },
+            ])
+    
+                ->where('is_cobro', 'N')
+                ->where('tienda_cobrar', decrypt_id($datax["tienda_id"]))
+                ->where('tipo', 'C') 
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+        } 
+
+        return DataTables::of($cortesias)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    }
+                }
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_dni;
+                    }
+                }
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->activaciones->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->activaciones->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->activaciones->moto->mtx_motor;
+            })
+            ->addColumn('numero_cortesia_letra', function ($Data) {
+                switch ($Data->numero_corterisa) {
+                    case 1:
+                        return 'PRIMER SERVICIO DE CORTESIA';
+                        break;
+                    case 2:
+                        return 'SEGUNDO SERVICIO DE CORTESIA';
+                        break;
+                    case 3:
+                        return 'TERCER SERVICIO DE CORTESIA';
+                        break;
+                    case 4:
+                        return 'CUARTO SERVICIO DE CORTESIA';
+                        break;
+                    case 5:
+                        return 'QUINTO SERVICIO DE CORTESIA';
+                        break;
+                    case 6:
+                        return 'SEXTO SERVICIO DE CORTESIA';
+                        break;
+                }
+            })
+
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            }) 
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -460,7 +850,7 @@ class datatables_controller extends Controller
     public function tablle_cotizacion_para_compra()
     {
         $facturas = cotizacion::with(['venta'])
-            ->whereNotIn('progreso', [5, 6])
+            ->whereNotIn('progreso', [3,4,5, 6])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -481,7 +871,9 @@ class datatables_controller extends Controller
 
     public function servicios_seleccionados_table()
     {
-        $servicios = servicios::where('estado', 'A')->orderBy('created_at', 'desc')->get();
+        $servicios = servicios::where('estado', 'A')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return DataTables::of($servicios)
             ->addIndexColumn()
@@ -489,8 +881,316 @@ class datatables_controller extends Controller
             ->addColumn('fecha_creacion', function ($Data) {
                 return Carbon::parse($Data->created_at)->format('d/m/Y');
             })
-            
+
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    public function productos_seleccionados_table()
+    {
+        $productos = producto::orderBy('created_at', 'desc')->get();
+
+        return DataTables::of($productos)
+            ->addIndexColumn()
+
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    /* ******** datatable para activacion y cortesias para avisar ************* */
+    //activaciones
+    public function tablas_activaciones_de_hoy(){
+        $activaciones = activaciones::
+            select("*",DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'))
+            ->with([
+            'moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            },
+            'vendedor',
+            'cortesias',
+            'tienda',
+        ])  
+            ->where('activado_taller', 'A')
+            ->where('is_aviso', 'S')
+            ->whereDate(DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'), '=',  Carbon::now()->format("Y-m-d"))
+            ->whereDoesntHave('cortesias') 
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return DataTables::of($activaciones)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                    }
+                }
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->moto->cliente->cli_dni;
+                    }
+                }
+            })
+            ->addColumn('vendedor', function ($Data) {
+                return $Data->vendedor->vendedor_nombres;
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('tienda', function ($Data) {
+                return $Data->tienda->tienda_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->moto->mtx_motor;
+            }) 
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $activaciones_id = encrypt_id($Data->activaciones_id);
+                return view('buttons.activaciones', ['activaciones_id' => $activaciones_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function tablas_activaciones_pendiente(){
+        $activaciones = activaciones::
+            select("*",DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'))
+            ->with([
+            'moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            },
+            'vendedor',
+            'cortesias',
+            'tienda',
+        ])  
+            ->where('activado_taller', 'A')
+            ->where('is_aviso', 'S')
+            ->whereDate(DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'), '>',  Carbon::now()->format("Y-m-d"))
+            ->whereDoesntHave('cortesias') 
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return DataTables::of($activaciones)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
+                    }
+                }
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->moto->cliente->cli_dni;
+                    }
+                }
+            })
+            ->addColumn('vendedor', function ($Data) {
+                return $Data->vendedor->vendedor_nombres;
+            })
+            ->addColumn('fecha_aviso', function ($Data) {
+                return Carbon::parse($Data->created_at)->addDays($Data->dias)->format("d/m/Y");
+            })
+            ->addColumn('marca', function ($Data) {
+                return $Data->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->moto->modelo->modelo_nombre;
+            })
+            ->addColumn('tienda', function ($Data) {
+                return $Data->tienda->tienda_nombre;
+            })
+            ->addColumn('motor', function ($Data) {
+                return $Data->moto->mtx_motor;
+            })
+
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                $activaciones_id = encrypt_id($Data->activaciones_id);
+                return view('buttons.activaciones', ['activaciones_id' => $activaciones_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+    
+    //cotesias
+    public function tablas_cortesias_de_hoy(){
+
+        $cortesias = cortesias_activacion::select("*")
+        ->with(['activaciones'=>function ($query) {
+            return $query->with(['moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            }]); 
+        }
+
+        ])
+        ->where('is_aviso', 'S')
+        ->where('cortesia_pasada', 'N')
+        ->whereDate(DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'), '=', Carbon::now()->format('Y-m-d')) 
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return DataTables::of($cortesias)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    }
+                }
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_dni;
+                    }
+                }
+            }) 
+            ->addColumn('marca', function ($Data) {
+                return $Data->activaciones->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->activaciones->moto->modelo->modelo_nombre;
+            }) 
+            ->addColumn('motor', function ($Data) {
+                return $Data->activaciones->moto->mtx_motor;
+            }) 
+            ->addColumn('fecha_aviso', function ($Data) {
+                return Carbon::parse($Data->created_at)->addDays($Data->dias)->format("d/m/Y");
+            })
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                return "config";
+                $activaciones_id = encrypt_id($Data->activaciones_id);
+                return view('buttons.activaciones', ['activaciones_id' => $activaciones_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function tablas_cortesias_pendiente(){
+
+        $cortesias = cortesias_activacion::select("*")
+        ->with(['activaciones'=>function ($query) {
+            return $query->with(['moto' => function ($query) {
+                return $query->with([
+                    'cliente',
+                    'modelo' => function ($query) {
+                        return $query->with(['marca']);
+                    },
+                ]);
+            }]); 
+        }
+
+        ])
+        ->where('is_aviso', 'S')
+        ->where('cortesia_pasada', 'N')
+        ->whereDate(DB::raw('DATE(DATE_ADD(created_at, INTERVAL dias DAY))'), '>', Carbon::now()->format('Y-m-d')) 
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return DataTables::of($cortesias)
+            ->addIndexColumn()
+            ->addColumn('cliente', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_razon_social;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_nombre . ' ' . $Data->activaciones->moto->cliente->cli_apellido;
+                    }
+                }
+            })
+            ->addColumn('dnioruc', function ($Data) {
+                if (is_null($Data->activaciones->moto->cliente)) {
+                    return 'sin cliente';
+                } else {
+                    if ($Data->activaciones->moto->cliente->cli_ruc != 'no tiene') {
+                        return $Data->activaciones->moto->cliente->cli_ruc;
+                    } else {
+                        return $Data->activaciones->moto->cliente->cli_dni;
+                    }
+                }
+            }) 
+            ->addColumn('marca', function ($Data) {
+                return $Data->activaciones->moto->modelo->marca->marca_nombre;
+            })
+            ->addColumn('modelo', function ($Data) {
+                return $Data->activaciones->moto->modelo->modelo_nombre;
+            }) 
+            ->addColumn('motor', function ($Data) {
+                return $Data->activaciones->moto->mtx_motor;
+            }) 
+            ->addColumn('fecha_aviso', function ($Data) {
+                return Carbon::parse($Data->created_at)->addDays($Data->dias)->format("d/m/Y");
+            })
+            ->addColumn('fecha_creacion', function ($Data) {
+                return Carbon::parse($Data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('action', static function ($Data) {
+                return "config";
+                $activaciones_id = encrypt_id($Data->activaciones_id);
+                return view('buttons.activaciones', ['activaciones_id' => $activaciones_id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+    
+    /* *********************** */
 }

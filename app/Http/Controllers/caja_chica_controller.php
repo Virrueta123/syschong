@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\caja_chica;
+use App\Models\compras;
 use App\Models\forma_pago;
 use App\Models\pagos_ventas;
+use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -277,6 +279,7 @@ class caja_chica_controller extends Controller
             $compras = $caja->pagos->where('tipo', 'C')->sum('monto');
             $ventas = $caja->pagos->where('tipo', 'V')->sum('monto');
             $caja->saldo_final = $caja->saldo_inicial + $ventas - $compras;
+            $caja->fecha_cierre = Carbon::now();
             $caja->cierre = Carbon::now();
             $caja->update();
             session()->flash('success', 'se cerró correctamente la caja');
@@ -289,17 +292,34 @@ class caja_chica_controller extends Controller
 
     public function reporte($id)
     {
-        
-
+         
         $get = caja_chica::with([
-             "usuario","pagos","ventas"
+             "usuario","pagos"
+             ,"ventas" => function ($query) {
+                $query->with(["pagos"=> function ($query) {
+                    $query->with(["forma_pago"]);
+                 }]);
+             },
+             "compras" => function ($query) {
+                $query->with(["pagos"=> function ($query) {
+                    $query->with(["forma_pago"]);
+                 }]);
+             },
+             "gastos" => function ($query) {
+                $query->with(["pagos"=> function ($query) {
+                    $query->with(["forma_pago"]);
+                 }]);
+             }
         ])->find(decrypt_id($id));
+ 
+        $calcular_ingresos =  ventas::whereIn("tipo_comprobante",["N","F", "B"])->where("caja_chica_id",decrypt_id($id))->whereIn("estado",["A","R"])->sum("SubTotal");
 
+        $calcular_gastos =  pagos_ventas::where("tipo","G")->where("caja_chica_id",decrypt_id($id))->sum("monto");
 
-        $calcular_ingresos = $get->pagos->where('tipo', 'C')->sum('monto');
-
+        $calcular_compras = pagos_ventas::where("tipo","C")->where("caja_chica_id",decrypt_id($id))->sum("monto");
+             
         if ($get) {
-            $pdf = Pdf::loadView('pdf.caja_chica', ['get' => $get, 'id' => $id]);
+            $pdf = Pdf::loadView('pdf.caja_chica', ['get' => $get, 'id' => $id,'calcular_ingresos' => $calcular_ingresos,'calcular_gastos' => $calcular_gastos,'calcular_compras' => $calcular_compras]);
 
             return $pdf->stream();
         } else {

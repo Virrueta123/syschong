@@ -3,12 +3,17 @@
     <div id="smartwizard">
         <div class="section-header">
             <div class="section-header-breadcrumb">
-
+                <button type="button" v-on:click="modal_create_img_click()"
+                    class="btn btn-info boton-color custom-next mr-2 pr-2">
+                    <i class="fa fa-picture"></i> Agregar imagen</button>
 
                 <a v-if="cotizacion . inventario . moto . cliente" type="button"
                     class="btn btn-info boton-color custom-next mr-2 pr-2" target="_blank"
                     :href="'/imprimir_inventario_moto/' + cotizacion.inventario.url">
                     Imprimir orden de servicio</a>
+
+
+
 
 
 
@@ -230,7 +235,7 @@
             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                 <div class="section-header">
                     <div class="section-header-breadcrumb">
- 
+
 
                         <button type="button" class="btn btn-info boton-color custom-next mr-2 pr-2"
                             v-on:click="pendiente_aprobacion()">
@@ -239,85 +244,96 @@
 
                         <button v-if="cotizacion . inventario . moto . cliente" type="button"
                             class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp()">
-                            enviar whatsapp normal</button> 
+                            enviar whatsapp normal</button>
 
                     </div>
                 </div>
 
                 <div class="section-body">
-                            <div class="card">
-                                <form id="form_crear_mantenimiento" method="POST" action="#">
+                    <div class="card">
+                        <form id="form_crear_mantenimiento" method="POST" action="#">
 
-                                    <div class="card-header">
-                                        <h2 class="section-title">Formulario para crear un mantenimiento</h2>
+                            <div class="card-header">
+                                <h2 class="section-title">Formulario para crear un mantenimiento</h2>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="form-row">
+
+                                    <div class="form-group col-md-8 p-0">
+                                        <label for="prod_codigo">Buscar la moto</label>
+
+                                        <search-moto-modelo :id="cotizacion.inventario.moto.mtx_id"
+                                            :selected="'Cliente : ' + cliente + ' | Moto : ' +
+                                                cotizacion.inventario.moto.modelo.marca.marca_nombre + ' modelo: ' +
+                                                cotizacion.inventario.moto.modelo.modelo_nombre + ' Clindraje: ' +
+                                                cotizacion.inventario.moto.modelo.cilindraje + ' Motor:' + cotizacion
+                                                .inventario.moto.mtx_motor"
+                                            name="mtx_id"></search-moto-modelo>
+
                                     </div>
-                                    <div class="card-body">
 
-                                        <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="prod_codigo">Kilometraje</label>
 
-                                            <div class="form-group col-md-8 p-0">
-                                                <label for="prod_codigo">Buscar la moto</label>
-
-                                                <search-moto-modelo :id="cotizacion.inventario.moto.mtx_id" :selected="'Cliente : '+cotizacion.inventario.moto.cliente.cli_nombre+' '+cotizacion.inventario.moto.cliente.cli_apellido+' | Moto : '+ cotizacion.inventario.moto.modelo.marca.marca_nombre +' modelo: ' + cotizacion.inventario.moto.modelo.modelo_nombre+ ' Clindraje: '+cotizacion.inventario.moto.modelo.cilindraje+' Motor:'+cotizacion.inventario.moto.mtx_motor" name="mtx_id"></search-moto-modelo>
-
-                                            </div>
-
-                                            <div class="form-group col-md-4">
-                                                <label for="prod_codigo">Kilometraje</label>
-
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            Km
-                                                        </div>
-                                                    </div>
-                                                    <input name="km" :value="cotizacion.inventario.inventario_moto_kilometraje" type="number" class="form-control">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    Km
                                                 </div>
                                             </div>
-
-
+                                            <input name="km"
+                                                :value="cotizacion.inventario.inventario_moto_kilometraje"
+                                                type="number" class="form-control">
                                         </div>
-
-                                        <div class="section-header">
-                                            <h1>Inventario</h1>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <mantenimiento-accesorios-edit :accesorios="accesorios" :selected_accesorios="cotizacion.inventario.accesorios_inventario"
-                                                @childEvent="add_accesorios">
-                                            </mantenimiento-accesorios-edit>
-                                        </div>
-
-                                        <h2 class="section-title">Mas datos de la moto</h2>
-                                        <div class="form-row">
-                                            <gasolina_inventario :valor="cotizacion.inventario.inventario_moto_nivel_gasolina"></gasolina_inventario>
-                                        </div>
-
-                                        <h2 class="section-title">Condiciones</h2>
-                                        <div class="form-row">
-                                            <mantenimiento-autorizaciones-edit @childAutorizacion="add_Autorizacion"
-                                                :autorizaciones="autorizaciones" :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimiento-autorizaciones-edit>
-                                        </div>
-
-
-                                       
-
-                                        <div class="section-header">
-                                            <h1>Cotizacion</h1>
-                                        </div>
-
-                                        <repuestos-edit :detalle="cotizacion.detalle" v-on:childEvent="handleChildEvent"></repuestos-edit>
- 
-
                                     </div>
-                                    <div class="card-footer">
-                                        <button type="submit" id="crear_cliente"
-                                            class="btn btn-danger boton-color">Editar
-                                            Mantenimiento</button>
-                                    </div>
-                                </form>
+
+
+                                </div>
+
+                                <div class="section-header">
+                                    <h1>Inventario</h1>
+                                </div>
+
+                                <div class="form-row">
+                                    <mantenimiento-accesorios-edit :accesorios="accesorios"
+                                        :selected_accesorios="cotizacion.inventario.accesorios_inventario"
+                                        @childEvent="add_accesorios">
+                                    </mantenimiento-accesorios-edit>
+                                </div>
+
+                                <h2 class="section-title">Mas datos de la moto</h2>
+                                <div class="form-row">
+                                    <gasolina_inventario :valor="cotizacion.inventario.inventario_moto_nivel_gasolina">
+                                    </gasolina_inventario>
+                                </div>
+
+                                <h2 class="section-title">Condiciones</h2>
+                                <div class="form-row">
+                                    <mantenimiento-autorizaciones-edit @childAutorizacion="add_Autorizacion"
+                                        :autorizaciones="autorizaciones"
+                                        :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimiento-autorizaciones-edit>
+                                </div>
+
+
+
+
+                                <div class="section-header">
+                                    <h1>Cotizacion</h1>
+                                </div>
+
+                                <repuestos-edit :detalle="cotizacion.detalle"
+                                    v-on:childEvent="handleChildEvent"></repuestos-edit>
+
+
                             </div>
-                        </div>
+                            <div class="card-footer">
+                                <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Editar
+                                    Mantenimiento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <div class="card text-left" v-if="!cotizacion . inventario . moto . cliente">
                     <div class="card-body">
@@ -1309,9 +1325,44 @@
         </div>
 
 
+        <!-- ******** modal para poner una Imagen ************* -->
+
+        <CModal size="xl" :visible="modal_create_img" @close="() => { modal_create_img = false }">
+
+            <CModalBody>
+                <div class="card text-left">
+                    <img class="card-img-top" :src="src_img" alt=""
+                        style="width: 60px; height: 60px;">
+
+                </div>
+                <div class="modal-header">
+                    <button type="button" class="close" @click="modal_create_img = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+
+                        <div>
+                            <input type="file" name="images[]" style="display: none;" id="images"
+                                ref="fileInput" @change="handleFileChange" multiple />
+                            <div ref="uppyContainer"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" v-on:click="insert_img_cotizacion()"
+                        class="btn btn-info boton-color custom-prev">Agregar Foto</button>
+                </div>
 
 
 
+
+            </CModalBody>
+        </CModal>
+
+        <!-- *********************** -->
 
 
     </div>
@@ -1337,13 +1388,9 @@
         CButton
     } from '@coreui/vue';
 
-
-
     import $ from "jquery";
     import "smartwizard/dist/css/smart_wizard_all.css";
     import smartWizard from 'smartwizard';
-
-
 
     import {
         myMixin
@@ -1363,11 +1410,16 @@
     import ImageEditor from '@uppy/image-editor';
     import '@uppy/image-editor/dist/style.min.css';
 
-
     import "@uppy/core/dist/style.css";
     import "@uppy/dashboard/dist/style.css";
     import "@uppy/image-editor/dist/style.css";
 
+    import ChildComponent from '../mantenimiento/prueba.vue';
+    import mantenimientoAccesorios from '../mantenimiento/autorizaciones_edit.vue';
+
+    import mantenimientoAutorizaciones from '../mantenimiento/mantenimiento_accesorios_edit.vue';
+
+ 
 
     import axios from 'axios';
 
@@ -1383,12 +1435,21 @@
             CButton,
             Button,
             "Checkbox": Checkbox,
-            VueDatePicker
+            VueDatePicker,
+            ChildComponent,
+            mantenimientoAccesorios,
+            mantenimientoAutorizaciones,
+           
         },
         data() {
             return {
+                //imagen
+                estado_imagen: "n", //s=seleccionado,c=creado,n=nulo
+                url_img: "",
+                src_img: "",
+                modal_create_img: false,
                 //edicion
-                autorizaciones:  JSON.parse(this.$attrs.autorizaciones),
+                autorizaciones: JSON.parse(this.$attrs.autorizaciones),
                 accesorios: JSON.parse(this.$attrs.accesorios),
                 select_acesorios: [],
                 select_autorizacion: [],
@@ -1430,6 +1491,7 @@
                 is_complete_pago_boleta: true,
                 modalVisible: true,
                 index_pago: 0,
+                cliente:"",
                 /* -- *********************** -- */
                 /* -- ******** correlativos ************* -- */
                 correlativo_factura: JSON.parse(this.$attrs.correlativo_factura),
@@ -1449,10 +1511,26 @@
                 }, 0);
                 this.pagos[0].monto = importeTotal;
                 this.pagos_boletas[0].monto = importeTotal;
-                return importeTotal;s
+                return importeTotal;
+
             }
         },
         mounted() {
+
+            if(this.cotizacion.inventario.moto.cliente){
+                if (this.cotizacion.inventario.moto.cliente.cli_ruc !== 'no tiene') {
+                this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
+            } else {
+                if (this.cotizacion.inventario.moto.cliente.cli_ruc === null) {
+                    this.cliente = this.cotizacion.inventario.moto.cliente.cli_nombre + ' ' + this.cotizacion.inventario.moto.cliente.cli_apellido;
+                } else {
+                    this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
+                }
+            } 
+            }else{
+                this.cliente = "no tiene";
+            }
+           
 
             console.log(this.cotizacion);
 
@@ -1546,7 +1624,7 @@
                             headers,
                         })
                         .then((response) => {
-                          
+
                             if (response.data.success) {
 
                                 Swal.fire({
@@ -1562,7 +1640,7 @@
                                 $('body').removeClass('modal-open');
                                 $('.modal-backdrop').remove();
 
-                            
+
                                 self.cotizacion.inventario.moto.cliente = response.data
 
 
@@ -1608,9 +1686,7 @@
                 submitHandler: function(form) {
 
                     console.log(this.select_acesorios.length);
-
-                    if (this.select_acesorios.length != 0) {
-                        if (this.select_autorizacion.length) {
+ 
                             try {
                                 const fileUploadForm = document.getElementById('form_crear_mantenimiento');
                                 const formData = new FormData(fileUploadForm);
@@ -1638,7 +1714,7 @@
                                     repuestos: this.repuestos
                                 };*/
                                 axios
-                                    .post("/create_vue_mantenimiento", data, {
+                                    .post("/editar_vue_mantenimiento", data, {
                                         headers,
                                     })
                                     .then((response) => {
@@ -1672,13 +1748,7 @@
                             } catch (error) {
                                 console.log(error)
                             }
-                        } else {
-                            Swal.fire("necesitas seleccionar al menos una autorizacion")
-                        }
-                    } else {
-                        Swal.fire("necesitas seleccionar al menos un accesorio")
-                    }
- 
+                         
                     return false;
                 }.bind(this)
             });
@@ -1742,18 +1812,88 @@
         },
         methods: {
             add_accesorios(data) {
-           
+                console.log(data)
                 this.select_acesorios = data;
-                
+                console.log(this.select_acesorios)
             },
             add_Autorizacion(data) {
                 this.select_autorizacion = data;
             },
             handleChildEvent(data) {
                 // Manejar datos enviados desde el hijo
-         
+                console.log('Datos del hijo:', data);
                 this.repuestos = data;
-           
+                console.log(this.repuestos)
+            },
+            /* -- ******** insertar imagen ************* -- */
+            insert_img_cotizacion() {
+                this.uppy.getFiles().forEach((file) => {
+
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                        const base64Data = reader.result.split(',')[1];
+
+                        this.src_img = file.preview;
+                        this.url_img = base64Data;
+
+                    };
+
+                    reader.readAsDataURL(file.data);
+                });
+
+                this.xlDemo = false;
+            },
+            /* -- *********************** -- */
+            /* -- ******** evento click para activar modal para crear imagenes ************* -- */
+            modal_create_img_click() {
+                this.modal_create_img = true;
+                this.$nextTick(() => {
+                    this.uppy = new Uppy({
+                            debug: true,
+                            locale: es,
+                            autoProceed: false,
+                            restrictions: {
+                                allowedFileTypes: ['image/*'],
+                                maxFileSize: 5242880,
+                                maxNumberOfFiles: 1
+                            },
+                        })
+                        .use(Dashboard, {
+                            target: this.$refs.uppyContainer,
+                            inline: true,
+                            width: '100%',
+                            proudlyDisplayPoweredByUppy: false,
+                            hideUploadButton: true,
+                        }).use(Webcam, {
+                            target: Dashboard
+                        })
+                        .use(ImageEditor, {
+                            target: Dashboard
+                        }).on('fileAdded', (file) => {
+                            // Obtener el contenido del archivo en forma de string
+                            const fileData = file.getData();
+
+                            // Imprimir el contenido del archivo
+                            console.log(fileData);
+                        });
+                });
+
+            },
+            /* -- *********************** -- */
+            add_accesorios(data) {
+
+                this.select_acesorios = data;
+
+            },
+            add_Autorizacion(data) {
+                this.select_autorizacion = data;
+            },
+            handleChildEvent(data) {
+                // Manejar datos enviados desde el hijo
+
+                this.repuestos = data;
+
             },
             actualizar_datos() {
                 this.send_axios_reponse(
@@ -1768,7 +1908,7 @@
                         },
                         "/actualizar_otros"
                     ).then((result) => {
-                    
+
                         if (result.success) {
 
                             Swal.fire({
@@ -1803,7 +1943,7 @@
             },
             /* -- ******** change forma de pago  ************* -- */
             forma_pago_boleta(index) {
-              
+
                 this.pagos_boletas[index].forma_pago_id = event.target.value;
             },
             /* -- *********************** -- */
@@ -1843,12 +1983,12 @@
                             const fileData = file.getData();
 
                             // Imprimir el contenido del archivo
-                          
+
                         });
                 });
             },
             addImage(index) {
-                
+
                 this.xlDemo = true;
                 this.index_pago = index;
 
@@ -1884,14 +2024,14 @@
                             const fileData = file.getData();
 
                             // Imprimir el contenido del archivo
-                          
+
                         });
                 });
 
                 /* -- *********************** -- */
             },
             insert_img() {
-        
+
                 this.uppy.getFiles().forEach((file) => {
 
                     const reader = new FileReader();
@@ -1900,12 +2040,12 @@
                         const base64Data = reader.result.split(',')[1];
 
                         if (this.index_factura) {
-                            
+
                             this.pagos[this.index_pago].src = file.preview;
                             this.pagos[this.index_pago].url = base64Data;
                         }
                         if (this.index_boleta) {
-                        
+
                             this.pagos_boletas[this.index_pago_boleta].src = file.preview;
                             this.pagos_boletas[this.index_pago_boleta].url = base64Data;
                         }
@@ -1944,7 +2084,7 @@
             /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
             monto_change(e, index) {
-             
+
                 this.pagos[index].monto = e.target.value;
                 this.pago_moto_total();
             },
@@ -1956,7 +2096,7 @@
             /* -- *********************** -- */
             /* -- ******** evento change para creacion fecha ************* -- */
             fecha_creacion_change(date) {
-                 
+
                 this.fecha_vencimiento_factura = this.fecha_creacion_factura
             },
             /* -- *********************** -- */
@@ -2041,7 +2181,7 @@
                         },
                         "/emitir_boleta_cotizacion"
                     ).then((result) => {
-                        
+
                         if (result.success) {
 
                             Swal.fire({
@@ -2357,7 +2497,7 @@
                             })
                             .then((response) => {
 
-                            
+
 
                                 if (response.data.success) {
 

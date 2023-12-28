@@ -14,4 +14,9 @@ class servicios_defecto extends Model
     public $primaryKey = 'servicios_defecto_id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function servicio()
+    { 
+        return $this->belongsTo(servicios::class,'servicios_id')->withTrashed();
+    }
 }

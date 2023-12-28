@@ -22,6 +22,6 @@ class tienda_facturas extends Model
 
     public function tienda_detalle_factura()
     {
-        return $this->belongsTo(tienda_detalle_factura::class, 'tienda_facturas_id')->withTrashed();
+        return $this->hasMany(tienda_detalle_factura::class, 'tienda_facturas_id')->withTrashed();
     }
 }

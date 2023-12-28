@@ -77,6 +77,8 @@ include 'web/service.php';
 include 'web/caja_chica.php';
 
 include 'web/gastos.php';
+
+include 'web/reporte.php';
 /* *********************** */
 
 

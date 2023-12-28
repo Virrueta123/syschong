@@ -112,4 +112,37 @@ class reportes_vue_controller extends Controller
             ]);
         }
     }
+
+    public function load_numero_comprobante()
+    {
+        try {
+            $monto_total_comprobantes = 0;
+
+            $monto_total_notas_ventas = 2;
+
+            $monto_total_general = 20;
+
+            $utilidad_neta = 10;
+
+            return response()->json([
+                'message' => 'datos encontrados',
+                'error' => '',
+                'success' => true,
+                'data' => [
+                    'monto_total_comprobantes' => $monto_total_comprobantes,
+                    'monto_total_notas_ventas' => $monto_total_notas_ventas,
+                    'monto_total_general' => $monto_total_general,
+                    'utilidad_neta' => $utilidad_neta,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al buscar los datos',
+                'error' => $th,
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
 }

@@ -28,6 +28,10 @@
                             <div class="profile-widget-item-label">Motor</div>
                             <div class="profile-widget-item-value"> {{ $get->moto->mtx_motor }}</div>
                         </div>
+                        <div class="profile-widget-item">
+                            <div class="profile-widget-item-label">Descargar</div>
+                            <div class="profile-widget-item-value"> <a type="button" href="{{route("pdf_activacion",$id)}}" name="" id="" class="btn btn-primary" btn-lg btn-block"><i class="fa fa-download" aria-hidden="true"></i></a> </div>
+                        </div>
                     </div>
                 </div>
 

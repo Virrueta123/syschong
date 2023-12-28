@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,21 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Obtener la fecha actual
+        // Obtén la fecha actual
+        $hoy = Carbon::now();
+
+        // Ajusta la fecha al último día de la semana (domingo)
+        $ultimoDiaSemana = $hoy->endOfWeek();
+
+        // Resta 6 días para obtener el primer día de la semana
+        $primerDiaSemana = $ultimoDiaSemana->copy()->subDays(6);
+
+        $ultimoDiaSemana = $ultimoDiaSemana->format('Y-m-d');
+
+        $primerDiaSemana = $primerDiaSemana->format('Y-m-d');
+
+       
+        return view('home', compact('primerDiaSemana', 'ultimoDiaSemana'));
     }
 }

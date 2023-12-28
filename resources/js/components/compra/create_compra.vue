@@ -3,6 +3,7 @@
     <div>
 
         <div class="card text-left">
+
             <center><img class="p-2" src="../../../../public/images/svg/invoce.svg" width="150" alt="">
             </center>
             <div class="card-body">
@@ -166,10 +167,38 @@
 
                                             <td scope="row">{{ repuesto . Cantidad }}</td>
                                             <td scope="row">{{ repuesto . Importe }}</td>
-                                            <td><button type="button" name="" id=""
+                                            <td>
+                                                <table v-if="repuesto.cotizaccion"
+                                                    class="table table-bordered table-striped table-hover table-sm display">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Numero de cotizaciones</th>
+                                                            <th>Motor</th>
+                                                            <th>cantidad</th>
+                                                            <th><i class="fa fa-plus" aria-hidden="true"></i></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(coti, index_coti) in repuesto.cotizaccion"
+                                                            :key="index_coti">
+                                                            <td>{{ coti . numero }}</td>
+                                                            <td>{{ coti . motor }}</td>
+                                                            <td>{{ coti . cantidad }}</td>
+                                                            <td>
+                                                                <center> <button class="btn btn-primary btn-sm"
+                                                                        v-on:click="eliminar_item_coti(index_coti,index)"
+                                                                        type="button"><i
+                                                                            class="fa fa-trash"></i></button></center>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <button v-else type="button" name="" id=""
                                                     v-on:click="agregar_cotizacion(index)"
                                                     class="btn btn-danger btn-sm"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></button></td>
+                                                        aria-hidden="true"></i></button>
+
+                                            </td>
 
                                             <td><button type="button" name="" id=""
                                                     v-on:click="eliminar_producto(repuesto . prod_id)"
@@ -430,19 +459,125 @@
         </CModal>
 
         <CModal size="xl" :visible="add_cotizacion_modal" @close="() => { add_cotizacion_modal = false }">
+            <CModalBody>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Elige la cotizacion para poner el producto</h3>
+                    </div>
+                    <div class="card-body">
 
-<CModalBody>
+                        <table class="table table-striped table-md">
+                            <tbody>
 
-    <div class="card text-left">
-      
-      <div class="card-body">
-        <h4 class="card-title">Title</h4>
-        <p class="card-text">Body</p>
-      </div>
-    </div>
-  
-</CModalBody>
-</CModal>
+                                <tr class="m-0 p-0">
+                                    <td>Codigo:</td>
+                                    <td>{{ producto_seleccionado . Codigo }}</td>
+                                </tr>
+                                <tr class="m-0 p-0">
+                                    <td>Codigo de fabrica:</td>
+                                    <td>{{ producto_seleccionado . Codigo }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Descripcion:</td>
+                                    <td>{{ producto_seleccionado . Descripcion }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Precio uni:</td>
+                                    <td>{{ producto_seleccionado . Precio }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Cantidad:</td>
+                                    <td>{{ producto_seleccionado . Cantidad }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table id="" ref="cotizacion_table"
+                            class="table table-bordered table-striped table-hover table-sm display"
+                            style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Numero de cotizaciones</th>
+                                    <th>Motor</th>
+                                    <th>cantidad</th>
+                                    <th><i class="fa fa-plus" aria-hidden="true"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(c_p_s, index_c_p_s) in cotizacion_producto_seleccionado"
+                                    :key="index_c_p_s">
+                                    <td>{{ c_p_s . numero }}</td>
+                                    <td>{{ c_p_s . motor }}</td>
+                                    <td>{{ c_p_s . cantidad }}</td>
+                                    <td>
+                                        <center> <button class="btn btn-primary btn-sm"
+                                                v-on:click="eliminar_item(index_c_p_s)" type="button"><i
+                                                    class="fa fa-trash"></i></button></center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <table id="cotizacion_table" ref="cotizacion_table"
+                            class="table table-bordered table-striped table-hover table-sm display"
+                            style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Numero</th>
+                                    <th>Cliente</th>
+                                    <th>Motor</th>
+                                    <th>Vin</th>
+                                    <th>Modelo</th>
+                                    <th>Marca</th>
+                                    <th>Total</th>
+                                    <th><i class="fa fa-plus" aria-hidden="true"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(c_d, index_c_d) in cotizaciones_data" :key="index_c_d">
+                                    <td>{{ c_d . cotizacion_serie }} - {{ c_d . cotizacion_correlativo }}</td>
+                                    <td>{{ c_d . cliente }}</td>
+                                    <td>{{ c_d . motor }}</td>
+                                    <td>{{ c_d . vin }}</td>
+                                    <td>{{ c_d . modelo }}</td>
+                                    <td>{{ c_d . marca }}</td>
+                                    <td>{{ c_d . total }}</td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <input type="number" class="form-control form-control-sm"
+                                                    name="" id="" aria-describedby="helpId"
+                                                    v-on:keyup="change_cantidad(index_c_d)" placeholder="">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary btn-sm"
+                                                        v-on:click="click_cantidad(index_c_d)" type="button"><i
+                                                            class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-6 pr-0">
+
+                            </div>
+                            <div class="col-6 pl-0">
+                                <button type="button" :v-if="cotizacion_producto_seleccionado.length!=0" v-on:click="agregar()"
+                                    class="btn btn-info boton-color mr-2 float-right"><i class="fa fa-plus"
+                                        aria-hidden="true"></i> Agregar </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </CModalBody>
+        </CModal>
 
     </div>
 
@@ -461,13 +596,11 @@
     import "imask";
     import "bootstrap"
 
-    import 'datatables.net-buttons-bs5';
-    import 'datatables.net-fixedcolumns-bs5';
-    import 'datatables.net-responsive-bs5';
-    import 'datatables.net-searchbuilder-bs5';
-    import 'datatables.net-searchpanes-bs5';
-    import 'datatables.net-select-bs5';
-    import 'datatables.net-staterestore-bs5';
+    import DataTable from 'primevue/datatable';
+    import Column from 'primevue/column';
+    import Paginator from 'primevue/paginator'
+    import ColumnGroup from 'primevue/columngroup'; // optional
+    import Row from 'primevue/row'; // optional
 
     import 'primevue/resources/themes/saga-blue/theme.css';
 
@@ -479,6 +612,7 @@
 
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
+
     import moment from 'moment';
     import 'moment-timezone';
 
@@ -514,6 +648,11 @@
             "p-inputnumber": InputNumber,
             "Checkbox": Checkbox,
             "Calendar": Calendar,
+            DataTable,
+            ColumnGroup,
+            Column,
+            Paginator,
+            Row,
             VueDatePicker,
             CModal,
             CForm,
@@ -526,6 +665,12 @@
         mixins: [myMixin],
         data() {
             return {
+                /* -- ******** variables para agregar productos a la cotizacion ************* -- */
+                cotizaciones_data: [],
+                producto_seleccionado: null,
+                cotizacion_producto_seleccionado: [],
+                index_seleccionado: 0,
+                /* -- *********************** -- */
                 serie: "",
                 correlativo: "",
                 forma_pago: JSON.parse(this.$attrs.forma_pago) || '',
@@ -537,7 +682,7 @@
                 porcentaje: 0,
                 total_descuento: 0,
                 //modal
-                add_cotizacion_modal:false,
+                add_cotizacion_modal: false,
                 xlDemo: false,
                 //---//
                 is_complete_pago: true,
@@ -597,12 +742,107 @@
             },
         },
         methods: {
+            agregar() {
+                this.repuestos[this.index_seleccionado].cotizaccion = this.cotizacion_producto_seleccionado;
+                this.cotizacion_producto_seleccionado = [];
+                console.log(this.repuestos[this.index_seleccionado].cotizaccion);
+            },
+            change_cantidad(index) {
+                this.cotizaciones_data[index].cantidad = event.target.value;
+            },
+            eliminar_item_coti(index,index_repuesto){
+                this.respuesto[index_repuesto].cotizacion.splice(index)
+            },
+            eliminar_item(index) {
+                this.cotizacion_producto_seleccionado.splice(index)
+            },
+            click_cantidad(index) {
+                if (this.cotizaciones_data[index].cantidad == "") {
+                    Swal.fire("esta vacio")
+                } else {
+                    if (this.cotizaciones_data[index].cantidad > this.producto_seleccionado.Cantidad) {
+                        Swal.fire("no hay suficientes productos para esta cotizacion")
+                    } else {
+                        this.cotizacion_producto_seleccionado.push({
+                            "numero": this.cotizaciones_data[index].cotizacion_serie + "-" + this
+                                .cotizaciones_data[index].cotizacion_correlativo,
+                            "cotizacion_id": this.cotizaciones_data[index].cotizacion_id,
+                            "cantidad": this.cotizaciones_data[index].cantidad,
+                            "motor": this.cotizaciones_data[index].motor
+                        })
+                    }
+                }
+
+            },
+            async cargar_cotizaciones() {
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                const data = {
+                    comodin: "comodin"
+                };
+                axios
+                    .post("/cotizacion_by_compra", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+                            console.log("cargar cotizaciones")
+                            console.log(response.data.data.original.data)
+                            this.cotizaciones_data = response.data.data.original.data;
+
+
+
+                            this.$nextTick(() => {
+                                if ($.fn.DataTable.isDataTable("#cotizacion_table")) {
+                                    $("#cotizacion_table").DataTable().destroy();
+                                }
+                                $("#cotizacion_table").DataTable({
+                                    language: {
+                                        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                                    },
+                                    "info": true,
+                                    processing: true,
+                                    fixedColumns: true,
+                                    keys: true,
+                                    colReorder: true,
+                                    "lengthChange": true,
+                                    'responsive': true,
+                                    "autoWidth": false,
+                                    "ordering": true,
+                                    paging: true, // Activa la paginación
+                                    lengthMenu: [5, 10, 25, 50],
+                                });
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+
+                    });
+            },
             /* -- ******** agregar a las cotizaciones los productos ************* -- */
-            agregar_cotizacion(index){
+            agregar_cotizacion(index) {
                 //agergado  a a cotizacion primero se abrira un model
                 this.add_cotizacion_modal = true;
                 var producto = this.repuestos[index];
-                
+                this.producto_seleccionado = producto;
+                this.index_seleccionado = index;
+                console.log(this.producto_seleccionado);
+                this.cargar_cotizaciones();
             },
             /* -- *********************** -- */
             /* -- ******** change monto ************* -- */
@@ -992,9 +1232,6 @@
                     return false;
                 }.bind(this)
             });
-
-
-
 
             $("#prod_id").on("change", () => {
                 this.$emit("select", $("#prod_id").val());

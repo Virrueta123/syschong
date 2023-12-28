@@ -7,6 +7,26 @@
         <div class="breadcrumb-item">Creando cliente</div>
     </div>
 @endsection
+@section('css')
+     <style>.color-radio {
+        display: none;
+      }
+  
+      .color-label {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+        cursor: pointer;
+      }
+  
+      /* Estilos para los colores */
+      #azul + .color-label { background-color: blue; }
+      #amarillo + .color-label { background-color: yellow; }
+      #rojo + .color-label { background-color: red; }
+      #negro + .color-label { background-color: black; color: white; }
+      #blanco + .color-label { background-color: white; border: 1px solid #ccc; }</style>   
+@endsection
 @section('content')
     <div class="section-body">
         <div class="card">
@@ -44,7 +64,25 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="mtx_color">Color</label>
-                                <input type="text" class="form-control" name="mtx_color" id="mtx_color">
+                                <div class="col-md-12">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary" id="#azul">
+                                          <input type="radio" name="mtx_color" checked value="azul"> Azul
+                                        </label>
+                                        <label class="btn btn-warning">
+                                          <input type="radio" name="mtx_color" value="amarillo"> Amarillo
+                                        </label>
+                                        <label class="btn btn-danger">
+                                          <input type="radio" name="mtx_color" value="rojo"> Rojo
+                                        </label>
+                                        <label class="btn btn-dark">
+                                          <input type="radio" name="mtx_color" value="negro"> Negro
+                                        </label>
+                                        <label class="btn btn-light">
+                                          <input type="radio" name="mtx_color" value="blanco"> Blanco
+                                        </label>
+                                      </div>
+                                </div>
                             </div> 
                         </div>
 
@@ -59,14 +97,11 @@
                                 </div>
  
                             </div>
+                         
                             <div class="form-group col-md-4">
                                 <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                <input type="date" class="form-control" name="mtx_fabricacion" id="mtx_fabricacion">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="mtx_chasis">Chasis</label>
-                                <input type="text" class="form-control" name="mtx_chasis" id="mtx_chasis">
-                            </div>
+                                <input type="date" class="form-control" value="{{ $fecha_actual }}" name="mtx_fabricacion" id="mtx_fabricacion">
+                            </div> 
                         </div>
  
                         <div class="card-header">
@@ -102,22 +137,8 @@
 
                             
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="prod_codigo">Vendedor</label>
-                                <div class="input-group">
-                                    <search-vendedor></search-vendedor>
-                                </div>
-                            </div>  
-                            <div class="form-group col-md-6">
-                                <label for="prod_codigo">Buscar Tienda</label>
-                                <div class="input-group">
-                                    <search-tienda></search-tienda>
-                                </div>  
-                            </div>  
-                        </div>
- 
+                        <search-tienda></search-tienda>
+                         
                      
                     </div>
                 </div>

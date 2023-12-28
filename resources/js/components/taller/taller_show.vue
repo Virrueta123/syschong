@@ -132,6 +132,7 @@
                                         <table class="table table-sm table-bordered table-hover" id="table-pendiente">
                                             <thead>
                                                 <tr>
+                                                    <th scope="col">Numero</th>
                                                     <th scope="col">Cliente</th>
                                                     <th scope="col">Dni/Ruc</th>
                                                     <th scope="col">Motor</th>
@@ -162,7 +163,7 @@
                                 <table class="table table-sm table-bordered table-hover" id="table-en-proceso">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Cliente</th>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
                                             <th scope="col">Vin</th>
@@ -193,6 +194,7 @@
                                     id="table-pendiente-aprobacion">
                                     <thead>
                                         <tr>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Cliente</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
@@ -221,6 +223,7 @@
                                 <table class="table table-sm table-bordered table-hover" id="table-aprobado">
                                     <thead>
                                         <tr>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Cliente</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
@@ -249,6 +252,7 @@
                                 <table class="table table-sm table-bordered table-hover" id="table-finalizado">
                                     <thead>
                                         <tr>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Cliente</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
@@ -277,7 +281,7 @@
                                 <table class="table table-sm table-bordered table-hover" id="table-avisado">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Cliente</th>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
                                             <th scope="col">Vin</th>
@@ -305,7 +309,7 @@
                                 <table class="table table-sm table-bordered table-hover" id="table-cerrado">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Cliente</th>
+                                            <th scope="col">Numero</th>
                                             <th scope="col">Dni/Ruc</th>
                                             <th scope="col">Motor</th>
                                             <th scope="col">Vin</th>
@@ -428,7 +432,12 @@
                         }
                     },
                     ajax: "/cotizacion_table_vue/" + progeso,
-                    columns: [{
+                    columns: [
+                    {
+                            data: 'numero',
+                            name: 'numero'
+                        },
+                        {
                             data: 'cliente',
                             name: 'cliente'
                         },

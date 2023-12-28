@@ -8,6 +8,8 @@ Route::get('/activaciones/{id}/cortesia', [App\Http\Controllers\activaciones_con
 
 Route::post('/activaciones/{id}/cortesia', [App\Http\Controllers\activaciones_controller::class, 'cortesia_store'])->name('activaciones.cortesia_store'); 
 
+Route::get('/pdf_activacion/{activacion_id}', [App\Http\Controllers\activaciones_controller::class, 'pdf_activacion'])->name('pdf_activacion'); 
+
 Route::post('/actualizar_otros', [App\Http\Controllers\activaciones_controller::class, 'actualizar_otros'])->name('actualizar_otros'); 
 
 Route::post('/importar_activaciones', [App\Http\Controllers\activaciones_controller::class, 'importar_activaciones'])->name('activaciones.importar_activaciones'); 
