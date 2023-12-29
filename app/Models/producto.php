@@ -51,7 +51,7 @@ class producto extends Model
     public function getStockAttribute( ){
         $compras = detalle_compra::where('prod_id', $this->prod_id)->sum('cantidad');
         $ventas = detalle_venta::where('prod_id', $this->prod_id)->where('tipo', "p")->sum('Cantidad');
-        $stock = $this->prod_stock_inicial + $compras - $ventas   ;
+        $stock = $this->prod_stock_inicial  ;
         return $stock; 
     }
     public function getPrecioAttribute( ){

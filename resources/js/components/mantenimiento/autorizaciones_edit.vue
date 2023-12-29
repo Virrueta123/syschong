@@ -48,7 +48,7 @@
                 } else {
                     this.get_autorizaciones[index].check = true;
                 }
-                this.$emit('add_Autorizacion', this.get_autorizaciones);
+                this.$emit('childAutorizacion', this.get_autorizaciones);
             },
         },
         mounted() {
@@ -68,7 +68,7 @@
                 
             });
 
-            this.$emit('add_Autorizacion', this.get_autorizaciones);
+            this.$emit('childAutorizacion', this.get_autorizaciones);
 
         },
     };

@@ -19,7 +19,7 @@
         data() {
             return {
                 selected: this.$attrs.selected || "",
-                producto_modelo: this.$attrs.producto_modelo,
+                producto_modelo: this.$attrs.modelos,
                 array_motos: []
             }
         },

@@ -1,10 +1,6 @@
-<template>
-
-
-    <div class="card">
-
-        <div class="card-body">
-
+<template> 
+    <div class="card"> 
+        <div class="card-body"> 
             <div class="row">
                 <div class="col-md-4">
                     <img width="100" src="../../../../public/images/empresa/logo.png" class="img-fluid" alt="">
@@ -30,8 +26,7 @@
                             <h6 class="text-center">F003- {{ correlativo_factura }}</h6>
                         </div>
                         <div class="text-muted text-small"></div>
-                    </div>
-
+                    </div> 
                 </div>
             </div>
 

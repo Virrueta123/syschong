@@ -296,10 +296,9 @@
                                 </div>
 
                                 <div class="form-row">
-                                    <mantenimiento-accesorios-edit :accesorios="accesorios"
-                                        :selected_accesorios="cotizacion.inventario.accesorios_inventario"
-                                        @childEvent="add_accesorios">
-                                    </mantenimiento-accesorios-edit>
+                                    <mantenimientoAccesorios  v-on:childAccesorios="add_accesorios" :accesorios="accesorios"
+                                        :selected_accesorios="cotizacion.inventario.accesorios_inventario" >
+                                    </mantenimientoAccesorios>
                                 </div>
 
                                 <h2 class="section-title">Mas datos de la moto</h2>
@@ -310,9 +309,9 @@
 
                                 <h2 class="section-title">Condiciones</h2>
                                 <div class="form-row">
-                                    <mantenimiento-autorizaciones-edit @childAutorizacion="add_Autorizacion"
+                                    <mantenimientoAutorizaciones v-on:childAutorizacion="add_Autorizacion"
                                         :autorizaciones="autorizaciones"
-                                        :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimiento-autorizaciones-edit>
+                                        :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimientoAutorizaciones>
                                 </div>
 
 
@@ -1415,9 +1414,9 @@
     import "@uppy/image-editor/dist/style.css";
 
     import ChildComponent from '../mantenimiento/prueba.vue';
-    import mantenimientoAccesorios from '../mantenimiento/autorizaciones_edit.vue';
+    import mantenimientoAccesorios from '../mantenimiento/mantenimiento_accesorios_edit.vue';
 
-    import mantenimientoAutorizaciones from '../mantenimiento/mantenimiento_accesorios_edit.vue';
+    import mantenimientoAutorizaciones from '../mantenimiento/autorizaciones_edit.vue';
 
  
 
@@ -1817,6 +1816,7 @@
                 console.log(this.select_acesorios)
             },
             add_Autorizacion(data) {
+                console.log(data)
                 this.select_autorizacion = data;
             },
             handleChildEvent(data) {

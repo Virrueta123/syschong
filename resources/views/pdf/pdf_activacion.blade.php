@@ -185,14 +185,7 @@
                     </th>
                 </tr>
 
-                <tr align= "left">
-                    <th style="text-align: right;">
-                        Placa
-                    </th>
-                    <th>
-                        {{ $get->moto->mtx_placa }}
-                    </th>
-                </tr>
+              
 
                 <tr align= "left">
                     <th style="text-align: right;">
@@ -202,15 +195,7 @@
                         {{ $get->moto->mtx_color }}
                     </th>
                 </tr>
-
-                <tr align= "left">
-                    <th style="text-align: right;">
-                        Fecha De fabricacion
-                    </th>
-                    <th> 
-                        {{ \Carbon\Carbon::parse($get->moto->mtx_fabricacion)->format('d/m/Y H:i') }}
-                    </th>
-                </tr>
+ 
 
                 <tr align= "left">
                     <th style="text-align: right;">

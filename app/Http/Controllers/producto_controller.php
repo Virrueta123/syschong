@@ -87,6 +87,7 @@ class producto_controller extends Controller
 
     public function index(Builder $builder)
     {
+        
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
             return DataTables::of(
@@ -127,8 +128,8 @@ class producto_controller extends Controller
                 Column::make('prod_nombre')->title('Nombre'),
                 Column::make('prod_descripcion')->title('descripcion'),
                 Column::make('prod_precio_venta')->title('precio venta'),
-                Column::make('stock')->title('cantidad'),
-                Column::computed('calidad')->title('Calidad'),
+                Column::computed('stock')->title('cantidad'),
+                Column::make('calidad')->title('Calidad'),
                 Column::make('unidad.unidades_nombre')->title('unidad'),
                 Column::make('categoria.categoria_nombre')->title('categoria'),
                 Column::make('marca.marca_prod_nombre')->title('marca'),

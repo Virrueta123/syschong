@@ -71,11 +71,12 @@
                     this.get_accesorios[index].check = true;
                     this.get_accesorios[index].estado = "b";
                 }
-                this.$emit('add_accesorios', this.get_accesorios); 
+                console.log(this.get_accesorios);
+                this.$emit('childAccesorios', this.get_accesorios); 
             },
             change_estado(estado, index) {
                 this.get_accesorios[index].estado = estado;
-                this.$emit('add_accesorios', this.get_accesorios);
+                this.$emit('childAccesorios', this.get_accesorios);
             }
         },
         mounted() {
@@ -99,7 +100,7 @@
                 }
             });
             
-            this.$emit('add_accesorios', this.get_accesorios);
+            this.$emit('childAccesorios', this.get_accesorios);
  
         },
     };
