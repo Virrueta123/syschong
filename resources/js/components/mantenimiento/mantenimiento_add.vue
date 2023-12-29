@@ -194,6 +194,7 @@
 
                     if (this.select_acesorios.length != 0) {
                         if (this.select_autorizacion.length) {
+                           if(this.repuestos.length != 0){
                             try {
                                 const fileUploadForm = document.getElementById('form_crear_mantenimiento');
                                 const formData = new FormData(fileUploadForm);
@@ -255,6 +256,10 @@
                             } catch (error) {
                                 console.log(error)
                             }
+                            
+                           }else{
+                            Swal.fire("selecciona un repuesto o una servicio")
+                           }
                         } else {
                             Swal.fire("necesitas seleccionar al menos una autorizacion")
                         }

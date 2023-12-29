@@ -4,7 +4,10 @@
 
         <div class="card-header">
             <h4>Taller</h4>
-
+            <div class="card-header-action">
+                <a :href="url_crear_orden_de_servicio" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                        aria-hidden="true"></i> Orden de servicio</a> 
+            </div>
         </div>
         <div class="card-body main-wrapper">
             <div class="row">
@@ -342,11 +345,7 @@
 
 
 
-        </div>
-
-
-
-
+        </div> 
     </div>
 
 
@@ -397,7 +396,8 @@
         mixins: [myMixin],
         data() {
             return {
-                datos: []
+                datos: [],
+                url_crear_orden_de_servicio: this.$attrs.url_crear_orden_de_servicio || '',
             }
         },
         computed: {

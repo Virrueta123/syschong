@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -37,8 +38,19 @@ class HomeController extends Controller
         $ultimoDiaSemana = $ultimoDiaSemana->format('Y-m-d');
 
         $primerDiaSemana = $primerDiaSemana->format('Y-m-d');
+      
+     
+       $destinatario = 'juan_AVC789@hotmail.com';
+       $mensaje = 'Este es un mensaje de prueba enviado desde Laravel.';
 
-       
+       $mensaje = Mail::send('pdf.prueba', ['mensaje' => $mensaje], function ($message) use ($destinatario) {
+           $message->to($destinatario)
+                   ->subject('Asunto del mensaje');
+       });
+
+       dd( $mensaje );
         return view('home', compact('primerDiaSemana', 'ultimoDiaSemana'));
+
+ 
     }
 }

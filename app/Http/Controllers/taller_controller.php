@@ -18,7 +18,8 @@ class taller_controller extends Controller
      */
     public function index()
     {
-        return view('modules.taller.index');
+        $url_crear_orden_de_servicio = route("orden_de_servicio.create");
+        return view('modules.taller.index',compact("url_crear_orden_de_servicio"));
     }
 
     /**

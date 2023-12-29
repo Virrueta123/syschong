@@ -192,9 +192,7 @@ class compras_controller extends Controller
             $compra->user_id = Auth::user()->id;
             $compra->is_pago = $Datax['is_pago'] ? 'Y' : 'N';
             $compra->caja_chica_id = $caja_chica;
-
-            
-  
+ 
             if ($compra->save()) {
                 foreach ($Datax['repuestos'] as $detalle) {
 
@@ -208,8 +206,7 @@ class compras_controller extends Controller
                         $lote++;
                     }
 
-                    $detalle_compra = new detalle_compra();
-
+                    $detalle_compra = new detalle_compra(); 
                     $detalle_compra->compra_id = $compra->compra_id;
                     $detalle_compra->lote = $lote;
                     $detalle_compra->prod_id = $detalle['prod_id'];
@@ -243,10 +240,7 @@ class compras_controller extends Controller
         
                         // Guardar el registro en la base de datos
                         $cotizaion_detalle->save();
-                    }
-
-                     
-
+                    } 
                 }
 
                 foreach ($Datax['pagos'] as $pago) {

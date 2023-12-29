@@ -517,8 +517,8 @@ class mantenimiento_controller extends Controller
         $select_autorizacion = json_decode($datax['select_autorizacion']);
 
         $validate = $request->validate([
-            'inventario_moto_obs_cliente' => 'required',
-            'inventario_moto_nivel_gasolina' => 'required',
+            'inventario_moto_obs_cliente' => 'nullable',
+            'inventario_moto_nivel_gasolina' => 'nullable',
         ]);
 
         $validate['inventario_numero'] = $ultimo_registro;
@@ -646,11 +646,9 @@ class mantenimiento_controller extends Controller
 
     public function editar_vue_mantenimiento(Request $request)
     {
-       
-         
-   
+        
         $datax = $request->all();
-        dd($datax );
+       
 
         $select_acesorios = json_decode($datax['select_acesorios']);
         $select_autorizacion = json_decode($datax['select_autorizacion']);

@@ -79,6 +79,8 @@ include 'web/caja_chica.php';
 include 'web/gastos.php';
 
 include 'web/reporte.php';
+ 
+include 'web/orden_de_servicio.php';
 /* *********************** */
 
 
@@ -145,6 +147,8 @@ Route::resource('tipo_cliente', App\Http\Controllers\tipo_cliente_controller::cl
 Route::resource('gastos', App\Http\Controllers\gastos_controller::class);
 
 Route::resource('tipo_gastos', App\Http\Controllers\tipo_gastos_controller::class);
+
+Route::resource('orden_de_servicio', App\Http\Controllers\orden_de_servicio_controller::class);
 
 include 'web/empresa.php';
 

@@ -11,7 +11,7 @@
 
 @section('content')
     <div id="app">
-        <taller-show></taller-show>
+        <taller-show url_crear_orden_de_servicio="{{$url_crear_orden_de_servicio}}"></taller-show>
     </div>
 @endsection
 
