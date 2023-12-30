@@ -587,10 +587,7 @@
 
                 $select.append($option).trigger('change'); 
             }
-
-
-
-
+ 
             $(this.$refs.select_moto).select2({
                 language: this.languajeSelect,
                 ajax: {

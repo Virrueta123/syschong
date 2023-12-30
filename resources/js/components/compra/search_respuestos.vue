@@ -19,6 +19,12 @@
                 id: this.$attrs.id || 0,
             }
         },
+        methods: {
+            change_repuesto_select(valor){ 
+                var prod_id = valor.target.value
+                this.$emit('childSearchRepuesto', prod_id);
+            }     
+        },
         mounted() { 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             $.ajaxSetup({
@@ -79,7 +85,7 @@
                 },
             });
 
-
+            $(this.$refs.repuesto).on("change", this.change_repuesto_select);
         },
     };
 </script>

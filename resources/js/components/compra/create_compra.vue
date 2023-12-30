@@ -357,8 +357,9 @@
                                         <label for="cli_telefono">Buscar Repuesto </label>
 
                                         <div class="input-group">
-                                            <search-respuestos ref="prod_id" name="prod_id" id="prod_id">
-                                            </search-respuestos>
+                                            <searchRespuestos v-on:childSearchRepuesto="add_precio" ref="prod_id"
+                                                name="prod_id" id="prod_id">
+                                            </searchRespuestos>
                                             <!-- ********  <crear-cliente select_element="#cliente_select">
                                             </crear-cliente> -->
                                         </div>
@@ -399,7 +400,7 @@
 
 
                                     <div class="form-group col-5">
-                                        <label>Actualizar precio de compra</label>
+                                        <label>Actualizar precio de venta</label>
                                         <div class="p-inputgroup flex-1">
                                             <span class="p-inputgroup-addon">
                                                 <Checkbox v-model="is_precio_venta" :binary="true" />
@@ -569,9 +570,9 @@
 
                             </div>
                             <div class="col-6 pl-0">
-                                <button type="button" :v-if="cotizacion_producto_seleccionado.length!=0" v-on:click="agregar()"
-                                    class="btn btn-info boton-color mr-2 float-right"><i class="fa fa-plus"
-                                        aria-hidden="true"></i> Agregar </button>
+                                <button type="button" :v-if="cotizacion_producto_seleccionado.length != 0"
+                                    v-on:click="agregar()" class="btn btn-info boton-color mr-2 float-right"><i
+                                        class="fa fa-plus" aria-hidden="true"></i> Agregar </button>
                             </div>
                         </div>
                     </div>
@@ -580,8 +581,6 @@
         </CModal>
 
     </div>
-
-
 
 
 </template>
@@ -616,6 +615,8 @@
     import moment from 'moment';
     import 'moment-timezone';
 
+    import searchRespuestos from '../compra/search_respuestos.vue';
+
     import Uppy from '@uppy/core';
     import Webcam from '@uppy/webcam';
     import Dashboard from '@uppy/dashboard';
@@ -630,7 +631,7 @@
         CInputGroup,
         CFormSelect,
         CFormCheck,
-        CButton
+        CButton,
     } from '@coreui/vue';
 
 
@@ -661,6 +662,7 @@
             CFormSelect,
             CFormCheck,
             CButton,
+            searchRespuestos
         },
         mixins: [myMixin],
         data() {
@@ -742,6 +744,55 @@
             },
         },
         methods: {
+            add_precio(valor) {
+                console.log("producto", valor);
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+                const data = {
+                    prod_id: valor
+                };
+                axios
+                    .post("/get_producto", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+                            var datos = response.data.data;
+                            console.log(datos);
+                            console.log(this.calcularPrecioDeVenta(datos.precio, 15));
+                            this.precio_compra = datos.precio;
+                            this.precio_venta = datos.precio ;
+
+
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
+            calcularPrecioDeVenta(costo, porcentajeGanancia) {
+                const precioVenta = costo + (costo * (porcentajeGanancia / 100));
+                return this.round(precioVenta, 2);
+            },
+             round(value, decimals) {
+                return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+            },
             agregar() {
                 this.repuestos[this.index_seleccionado].cotizaccion = this.cotizacion_producto_seleccionado;
                 this.cotizacion_producto_seleccionado = [];
@@ -750,7 +801,7 @@
             change_cantidad(index) {
                 this.cotizaciones_data[index].cantidad = event.target.value;
             },
-            eliminar_item_coti(index,index_repuesto){
+            eliminar_item_coti(index, index_repuesto) {
                 this.respuesto[index_repuesto].cotizacion.splice(index)
             },
             eliminar_item(index) {
@@ -1076,6 +1127,8 @@
                                 Importe: this.cantidad * this.precio_compra,
                             })
 
+
+
                             if (this.repuestos.length == 1) {
                                 this.pagos.push({
                                     monto: this.sumar_total,
@@ -1088,9 +1141,6 @@
                                 this.pagos[0].monto = this.sumar_total;
                                 console.log(this.pagos);
                             }
-
-
-
                         } else {
                             Swal.fire({
                                 icon: "error",
