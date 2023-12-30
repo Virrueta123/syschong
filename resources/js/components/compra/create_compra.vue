@@ -763,10 +763,7 @@
                             console.log(datos);
                             console.log(this.calcularPrecioDeVenta(datos.precio, 15));
                             this.precio_compra = datos.precio;
-                            this.precio_venta = datos.precio ;
-
-
-
+                            this.precio_venta = datos.precio ; 
                         } else {
                             Swal.fire({
                                 icon: "error",

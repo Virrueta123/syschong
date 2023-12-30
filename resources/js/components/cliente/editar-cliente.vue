@@ -2,15 +2,24 @@
     
     <div class="input-group-append">
 
-        <button class="btn btn-primary boton-color" v-on:click="modal_start"  type="button" data-toggle="modal"
+        <button class="btn btn-primary boton-color" v-on:click="modal_start()"  type="button" data-toggle="modal"
         data-target="#modal-crear-cliente"><i class="fa fa-plus" aria-hidden="true"></i> Editar Cliente</button>
     
-    <!-- Modal para crear cliente-->
-    <div class="modal fade" id="modal-crear-cliente" tabindex="-1" role="dialog"
-        aria-labelledby="modal-crear-cliente-label" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <form id="form_cliente" method="POST" action="#">
+        <CModal size="xl" :visible="modal_asignar_cliente"
+                        @close="() => { modal_asignar_cliente = false }">
+
+                        <CModalBody>
+                            <div class="card text-left">
+                            </div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para editar un cliente
+                                </h5>
+                                <button type="button" class="close" @click="modal_asignar_cliente = false">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="body">
+                                <form id="form_cliente" method="POST" action="#">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para editar un cliente</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -50,9 +59,11 @@
                         <button type="submit" class="btn btn-primary" id="crear_cliente">Editar Cliente</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+    <!-- Modal para crear cliente-->
+     
 </div>
 
 </template>
@@ -66,18 +77,36 @@ import "jquery-validation/dist/localization/messages_es"
 import "select2";
 import "imask";
  
-
+import {
+        CModal,
+        CForm,
+        CFormInput,
+        CInputGroup,
+        CFormSelect,
+        CFormCheck,
+        CButton
+    } from '@coreui/vue';
 import {
     myMixin
 } from "../../mixin.js";
 
 export default {
     mixins: [myMixin],
+    components: {
+            CModal,
+            CForm,
+            CFormInput,
+            CInputGroup,
+            CFormSelect,
+            CFormCheck,
+            CButton
+        },
     data() {
         return {
             select_element: this.$attrs.select_element,
             mtx_id:this.$attrs.mtx_id,
-            cliente: JSON.parse(this.$attrs.cliente)
+            cliente: JSON.parse(this.$attrs.cliente),
+            modal_asignar_cliente: false,
         }
     },
     methods: {
@@ -85,15 +114,10 @@ export default {
             console.log($(this.select_element).val());
         },
         modal_start() {
-            
-        }
-    },
-    mounted() {
-        /* -- ******** Imask ************* -- */
-        console.log(this.cliente);
-        /* -- ******** filtro para el dni ************* -- */
-
-        var cli_telefono = document.getElementById('cli_telefono');
+                this.modal_asignar_cliente = true;
+                /* -- ******** Imask ************* -- */
+                this.$nextTick(() => {
+                    var cli_telefono = document.getElementById('cli_telefono');
 
         var zipMask = IMask(cli_telefono, {
             mask: '###-###-###',
@@ -103,10 +127,9 @@ export default {
                 '#': /[0-9]/
             }
         });
+                    var cli_dni = document.getElementById('cli_dni');
 
-
-        var cli_dni = document.getElementById('cli_dni');
-
+                    
         var zipMask = IMask(cli_dni, {
             mask: '########',
             definitions: {
@@ -236,6 +259,19 @@ export default {
                 return false;
             }
         });
+
+                });
+            },
+    },
+    mounted() {
+        /* -- ******** Imask ************* -- */
+        console.log(this.cliente);
+        /* -- ******** filtro para el dni ************* -- */
+
+        
+
+
+       
         /* -- *********************** -- */
     },
 };
