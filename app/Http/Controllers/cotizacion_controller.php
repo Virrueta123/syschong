@@ -173,6 +173,7 @@ class cotizacion_controller extends Controller
         $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
         $cotizacion->mecanico_id = $Datax['mecanico_id']; // ID del mecánico relacionado
         $cotizacion->trabajo_realizar = $Datax['trabajo_realizar'];
+        
 
         if ($cotizacion->save()) {
             foreach ($Datax['cotizacion'] as $ps) {
@@ -238,8 +239,7 @@ class cotizacion_controller extends Controller
                         $query->with(['accesorios']);
                     },
                 ]);
-            },
-                
+            }, 
             'mecanico',
             'detalle' => function ($query) {
                 $query->with([
@@ -274,6 +274,10 @@ class cotizacion_controller extends Controller
 
         $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
 
+        $fecha = Carbon::now()->format("Y");
+
+        
+
         if ($get) {
             return view('modules.cotizacion.show', [
                 'get' => $get,
@@ -285,7 +289,8 @@ class cotizacion_controller extends Controller
                 'correlativo_boleta' => $correlativo_boleta,
                 'forma_pago' => $forma_pago,
                 'url_whatsapp' => asset('/') . 'cotizacion/' . $id . '/cliente',
-                'url_raiz' => asset('/')
+                'url_raiz' => asset('/'),
+                'fecha' => $fecha 
             ]);
         } else {
             return view('errors.404');
@@ -1061,13 +1066,14 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
+ 
         return view('modules.cotizacion.show_cliente', ['get' => $get]);
     }
 
     public function venta_show_cliente($venta)
     {
         $cuentas = cuentas::where('estado', 'A')->get();
-
+ 
         $get = ventas::with([
             'vendedor',
             'detalle' => function ($query) {
@@ -1081,8 +1087,7 @@ class cotizacion_controller extends Controller
         ])->find(decrypt_id($venta));
 
         if ($get) {
-            $pdf = Pdf::loadView('pdf.comprobante', ['get' => $get, 'id' => $venta, 'cuentas' => $cuentas]);
-
+            $pdf = Pdf::loadView('pdf.comprobante', ['get' => $get, 'id' => $venta, 'cuentas' => $cuentas]); 
             return $pdf->stream();
         } else {
             return view('errors.404');

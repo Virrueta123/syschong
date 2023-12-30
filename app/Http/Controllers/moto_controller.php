@@ -53,7 +53,7 @@ class moto_controller extends Controller
                     } 
                 })
                 ->addColumn('fecha_creacion', function ($Data) {
-                    return Carbon::parse($Data->created_at)->format('d/m/Y');
+                    return Carbon::parse($Data->created_at)->format('Y-m-d');
                 })
                 ->addColumn('estado', static function ($Data) {
                     $estado  = $Data->mtx_estado;
@@ -77,7 +77,8 @@ class moto_controller extends Controller
      */
     public function create()
     {
-        return view('modules.moto.create');
+        $fecha = Carbon::now()->format("Y");
+        return view('modules.moto.create',compact("fecha"));
     }
 
     /**
@@ -88,9 +89,10 @@ class moto_controller extends Controller
      */
     public function store(Request $request)
     {
-        try {
+       
             $datax = $request->all();
 
+             
             $validate = $request->validate([
                 'mtx_placa' => 'required|string|max:50',
 
@@ -100,11 +102,9 @@ class moto_controller extends Controller
 
                 'mtx_motor' => 'required',
 
-                'mtx_fabricacion' => 'required|date',
+                'mtx_fabricacion' => 'required',
 
-                'mtx_estado' => 'required|max:1',
-
-                'mtx_chasis' => 'required|max:200',
+                'mtx_estado' => 'required|max:1', 
 
                 'mtx_color' => 'required|string|max:200', 
 
@@ -112,7 +112,8 @@ class moto_controller extends Controller
             ]);
 
             $validate['user_id'] = Auth::user()->id;
-
+           
+             
             $create = motos::create($validate);
 
             if ($create) {
@@ -123,11 +124,7 @@ class moto_controller extends Controller
                 session()->flash('error', 'error al registrar en la base de datos');
                 return redirect()->route('moto.index');
             }
-        } catch (\Throwable $th) {
-            Log::error($th);
-            session()->flash('error', 'error al registrar');
-            return redirect()->route('moto.index');
-        }
+        
     }
 
     /**
@@ -158,8 +155,10 @@ class moto_controller extends Controller
             ])
             ->where('mtx_id', decrypt_id($id))->first();
 
+            $fecha = $show->mtx_fabricacion;
+
             if ($show) {
-                return view('modules.moto.editar', ['show' => $show, 'id' => $id]);
+                return view('modules.moto.editar', ['show' => $show, 'id' => $id,'fecha' => $fecha]);
             } else {
                 return view('errors.404');
             }
@@ -334,11 +333,9 @@ class moto_controller extends Controller
 
                 'modelo_id' => 'required', 
 
-                'mtx_fabricacion' => 'required|date',
+                'mtx_fabricacion' => 'required',
 
-                'mtx_estado' => 'required|max:1',
-
-                'mtx_chasis' => 'required|max:200',
+                'mtx_estado' => 'required|max:1', 
 
                 'mtx_color' => 'required|string|max:200', 
 

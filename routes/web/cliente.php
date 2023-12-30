@@ -7,6 +7,8 @@ Route::post('/cliente_search_pos', [App\Http\Controllers\clienteController::clas
 Route::post('/store_vue_cliente', [App\Http\Controllers\clienteController::class, 'store_vue'])->name('store_vue');
 Route::post('/update_vue_cliente', [App\Http\Controllers\clienteController::class, 'update_vue_cliente'])->name('update_vue_cliente');
 
+Route::post('/asignar_cliente_moto', [App\Http\Controllers\clienteController::class, 'asignar_cliente_moto'])->name('asignar_cliente_moto');
+
 Route::post('/update_vue_cli', [App\Http\Controllers\clienteController::class, 'update_vue_cli'])->name('update_vue_cli');
 
 Route::post('/store_vue_cliente_ruc', [App\Http\Controllers\clienteController::class, 'store_vue_cliente_ruc'])->name('store_vue_cliente_ruc');

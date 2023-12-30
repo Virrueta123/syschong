@@ -123,7 +123,8 @@ class activaciones_controller extends Controller
     public function create()
     {
         $fecha_actual = Carbon::now()->format("Y-m-d");
-        return view('modules.activaciones.create',compact("fecha_actual"));
+        $fecha = Carbon::now()->format("Y");
+        return view('modules.activaciones.create',compact("fecha_actual","fecha"));
     }
 
     /**
@@ -145,6 +146,7 @@ class activaciones_controller extends Controller
         $moto->mtx_color = $datax['mtx_color'];
         $moto->modelo_id = $datax['modelo_id'];
         $moto->mtx_fabricacion = $datax['mtx_fabricacion']; 
+        
         $created = $moto->save();
 
         if ($created) {
@@ -154,6 +156,9 @@ class activaciones_controller extends Controller
             $activaciones->moto_id = $moto->mtx_id;
             $activaciones->precio = $datax['precio'];
             $activaciones->precio_gasolina = $datax['precio_gasolina'];
+            $activaciones->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
+            $activaciones->dias = $datax['dias'];
+            $activaciones->date_aviso = Carbon::now()->addDays($datax['dias']);
             $activaciones->total = $datax['precio_gasolina'] + $datax['precio'];
             $activaciones->user_id = auth()->user()->id;
         }

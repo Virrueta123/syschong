@@ -28,7 +28,7 @@ class cotizacion extends Model
 
     public function detalle()
     {
-        return $this->hasMany(cotizacioncotizacion_detalle::class, 'cotizacion_id')->withTrashed();
+        return $this->hasMany(cotizacioncotizacion_detalle::class, 'cotizacion_id');
     }
 
     public function getUrlAttribute()

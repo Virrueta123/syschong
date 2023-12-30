@@ -83,12 +83,9 @@
                             </div>
                             <div class="form-group col-md-4">  
                                 <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                <input type="date" class="form-control" value="{{ \Carbon\Carbon::parse($show->mtx_fabricacion)->format("Y-m-d") }}" name="mtx_fabricacion" id="mtx_fabricacion">
+                                <fecha-fabricacion fecha="{{$fecha}}" name="mtx_fabricacion"></fecha-fabricacion>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="mtx_chasis">Chasis</label>
-                                <input type="text" class="form-control" value="{{ $show->mtx_chasis }}" name="mtx_chasis" id="mtx_chasis">
-                            </div>
+                           
                         </div>
 
                         <div class="form-group">
@@ -112,10 +109,30 @@
                                 </label>
                             </div>
                         </div>
+
+                        
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="mtx_color">Color</label>
-                                <input type="text" class="form-control" value="{{$show->mtx_color}}" name="mtx_color" id="mtx_color">
+                                <div class="col-md-12">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary" id="#azul">
+                                          <input type="radio" name="mtx_color"  {{ $show->mtx_color == "azul" ? "checked" : "" }}  value="azul"> Azul
+                                        </label>
+                                        <label class="btn btn-warning">
+                                          <input type="radio" name="mtx_color" {{ $show->mtx_color == "amarillo" ? "checked" : "" }} value="amarillo"> Amarillo
+                                        </label>
+                                        <label class="btn btn-danger">
+                                          <input type="radio" name="mtx_color" {{ $show->mtx_color == "rojo" ? "checked" : "" }} value="rojo"> Rojo
+                                        </label>
+                                        <label class="btn btn-dark">
+                                          <input type="radio" name="mtx_color" {{ $show->mtx_color == "negro" ? "checked" : "" }} value="negro"> Negro
+                                        </label>
+                                        <label class="btn btn-light">
+                                          <input type="radio" name="mtx_color" {{ $show->mtx_color == "blanco" ? "checked" : "" }} value="blanco"> Blanco
+                                        </label>
+                                      </div>
+                                </div>
                             </div> 
                         </div>
                     </div>
@@ -123,7 +140,7 @@
 
 
                 <div class="card-footer">
-                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Editar Cliente</button>
+                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Editar Moto</button>
                 </div>
             </form>
         </div>

@@ -202,6 +202,7 @@
                                 console.log(this.select_acesorios)
 
                                 formData.append('is_aviso', this.is_aviso);
+                                
                                 formData.append('dias', this.dias);
                                 formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
                                 formData.append('select_autorizacion', JSON.stringify(this
@@ -250,9 +251,7 @@
                                             footer: "-------",
                                         });
                                         console.error(error);
-                                    });
-
-
+                                    }); 
                             } catch (error) {
                                 console.log(error)
                             }

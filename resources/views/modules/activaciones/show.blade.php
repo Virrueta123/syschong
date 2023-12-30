@@ -34,8 +34,7 @@
                         </div>
                     </div>
                 </div>
-
-
+ 
                 <div id="app">
                     <div class="card-body">
                         <table class="table table-striped table-md">
@@ -63,7 +62,7 @@
                                         <td>
                                             <h4>Sin cliente</h4>
                                         </td>
-                                        <td style="float: right;"><asignar-cliente
+                                        <td  ><asignar-cliente
                                                 mtx_id="{{ $get->moto->mtx_id }}"></asignar-cliente></td>
                                     </tr>
                                 @else

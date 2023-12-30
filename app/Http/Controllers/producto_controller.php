@@ -232,7 +232,16 @@ class producto_controller extends Controller
 
         $cod_categoria = substr(str_replace(' ', '', $categoria->categoria_nombre), 0, 3);
 
-        $codigo = substr(str_replace(' ', '',$request->input('prod_nombre')), 0, 3) . '' . $cod_marca . '' . $cod_categoria."".Carbon::now()->format("d");
+        
+        $correlativo_producto = producto::max('prod_id');
+
+        if (is_null($correlativo_producto)) {
+            $correlativo_producto = 1;
+        } else {
+            $correlativo_producto++;
+        } 
+        
+        $codigo = substr(str_replace(' ', '',$request->input('prod_nombre')), 0, 3) . '' . $cod_marca . '' . $cod_categoria."".Carbon::now()->format("d")."".$correlativo_producto;
         
         $producto->prod_codigo_barra =  $codigo;
  

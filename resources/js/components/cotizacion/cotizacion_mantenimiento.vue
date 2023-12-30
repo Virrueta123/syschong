@@ -296,8 +296,9 @@
                                 </div>
 
                                 <div class="form-row">
-                                    <mantenimientoAccesorios  v-on:childAccesorios="add_accesorios" :accesorios="accesorios"
-                                        :selected_accesorios="cotizacion.inventario.accesorios_inventario" >
+                                    <mantenimientoAccesorios v-on:childAccesorios="add_accesorios"
+                                        :accesorios="accesorios"
+                                        :selected_accesorios="cotizacion.inventario.accesorios_inventario">
                                     </mantenimientoAccesorios>
                                 </div>
 
@@ -311,7 +312,8 @@
                                 <div class="form-row">
                                     <mantenimientoAutorizaciones v-on:childAutorizacion="add_Autorizacion"
                                         :autorizaciones="autorizaciones"
-                                        :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones"></mantenimientoAutorizaciones>
+                                        :selected_autorizaciones="cotizacion.inventario.inventario_autorizaciones">
+                                    </mantenimientoAutorizaciones>
                                 </div>
 
 
@@ -1418,7 +1420,7 @@
 
     import mantenimientoAutorizaciones from '../mantenimiento/autorizaciones_edit.vue';
 
- 
+
 
     import axios from 'axios';
 
@@ -1438,7 +1440,7 @@
             ChildComponent,
             mantenimientoAccesorios,
             mantenimientoAutorizaciones,
-           
+
         },
         data() {
             return {
@@ -1490,7 +1492,8 @@
                 is_complete_pago_boleta: true,
                 modalVisible: true,
                 index_pago: 0,
-                cliente:"",
+                cliente: "",
+                is_show: true,
                 /* -- *********************** -- */
                 /* -- ******** correlativos ************* -- */
                 correlativo_factura: JSON.parse(this.$attrs.correlativo_factura),
@@ -1498,12 +1501,14 @@
                 /* -- *********************** -- */
             }
         },
+        
         computed: {
 
             detallesAprobados() {
                 return this.cotizacion.detalle.filter(detalle => detalle.aprobar);
             },
             sumar_total() {
+                this.is_show = false
                 const importeTotal = this.cotizacion.detalle.filter(detalle => detalle.aprobar).reduce((total,
                     detalle) => {
                     return parseFloat(total) + parseFloat(detalle.Importe);
@@ -1514,25 +1519,9 @@
 
             }
         },
+
         mounted() {
-
-            if(this.cotizacion.inventario.moto.cliente){
-                if (this.cotizacion.inventario.moto.cliente.cli_ruc !== 'no tiene') {
-                this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
-            } else {
-                if (this.cotizacion.inventario.moto.cliente.cli_ruc === null) {
-                    this.cliente = this.cotizacion.inventario.moto.cliente.cli_nombre + ' ' + this.cotizacion.inventario.moto.cliente.cli_apellido;
-                } else {
-                    this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
-                }
-            } 
-            }else{
-                this.cliente = "no tiene";
-            }
-           
-
-            console.log(this.cotizacion);
-
+            const self = this;
             this.pagos_boletas.push({
                 monto: this.cotizacion.total,
                 forma_pago_id: 1,
@@ -1547,6 +1536,26 @@
                 url: false
             });
 
+
+
+            if (this.cotizacion.inventario.moto.cliente) {
+                if (this.cotizacion.inventario.moto.cliente.cli_ruc !== 'no tiene') {
+                    this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
+                } else {
+                    if (this.cotizacion.inventario.moto.cliente.cli_ruc === null) {
+                        this.cliente = this.cotizacion.inventario.moto.cliente.cli_nombre + ' ' + this.cotizacion
+                            .inventario.moto.cliente.cli_apellido;
+                    } else {
+                        this.cliente = this.cotizacion.inventario.moto.cliente.cli_razon_social;
+                    }
+                }
+            } else {
+                this.cliente = "no tiene";
+            }
+
+
+
+
             this.pago_moto_total()
             this.pago_moto_total_boleta()
 
@@ -1554,7 +1563,7 @@
             this.fecha_creacion_boleta = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
 
             /* -- ******** validation  ************* -- */
-            const self = this;
+
 
             this.mtx_id = this.cotizacion.inventario.moto.mtx_id
 
@@ -1685,69 +1694,70 @@
                 submitHandler: function(form) {
 
                     console.log(this.select_acesorios.length);
- 
-                            try {
-                                const fileUploadForm = document.getElementById('form_crear_mantenimiento');
-                                const formData = new FormData(fileUploadForm);
 
-                                console.log(this.select_acesorios)
+                    try {
+                        const fileUploadForm = document.getElementById('form_crear_mantenimiento');
+                        const formData = new FormData(fileUploadForm);
 
-                                formData.append('is_aviso', this.is_aviso);
-                                formData.append('dias', this.dias);
-                                formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
-                                formData.append('select_autorizacion', JSON.stringify(this
-                                    .select_autorizacion));
-                                formData.append('repuestos', JSON.stringify(this.repuestos));
+                        formData.append('is_aviso', this.is_aviso);
+                        formData.append('dias', this.dias);
+                        formData.append('cotizacion_id', this.cotizacion.cotizacion_id);
+                        formData.append('inventario_moto_id', this.cotizacion.inventario_moto_id);
+                        formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
+                        formData.append('sumar_total', this.sumar_total);
+                        formData.append('select_autorizacion', JSON.stringify(this
+                            .select_autorizacion));
+                        formData.append('repuestos', JSON.stringify(this.repuestos));
 
 
-                                const headers = {
-                                    "Content-Type": "application/json",
-                                };
-                                const data = formData;
-                                /*const data = {
-                                    data: this.formData,
-                                    is_aviso: this.is_aviso,
-                                    dias: this.dias,
-                                    select_acesorios: this.select_acesorios,
-                                    select_autorizacion: this.select_autorizacion,
-                                    repuestos: this.repuestos
-                                };*/
-                                axios
-                                    .post("/editar_vue_mantenimiento", data, {
-                                        headers,
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+                        const data = formData;
+                        /*const data = {
+                            data: this.formData,
+                            is_aviso: this.is_aviso,
+                            dias: this.dias,
+                            select_acesorios: this.select_acesorios,
+                            select_autorizacion: this.select_autorizacion,
+                            repuestos: this.repuestos
+                        };*/
+                        axios
+                            .post("/editar_vue_mantenimiento", data, {
+                                headers,
+                            })
+                            .then((response) => {
+
+
+                                if (response.data.success) {
+
+                                    window.location.href = response.data.data;
+
+                                } else {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'error',
+                                        title: 'Error al registrar el mantenimiento, intentelo otra vez',
+                                        showConfirmButton: false,
+                                        timer: 3000
                                     })
-                                    .then((response) => {
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
 
 
-                                        if (response.data.success) {
+                    } catch (error) {
+                        console.log(error)
+                    }
 
-                                            window.location.href = response.data.data;
-
-                                        } else {
-                                            Swal.fire({
-                                                position: 'center',
-                                                icon: 'error',
-                                                title: 'Error al registrar el mantenimiento, intentelo otra vez',
-                                                showConfirmButton: false,
-                                                timer: 3000
-                                            })
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: "Error 500",
-                                            text: "Error en el servidor, vuelva a intentar",
-                                            footer: "-------",
-                                        });
-                                        console.error(error);
-                                    });
-
-
-                            } catch (error) {
-                                console.log(error)
-                            }
-                         
                     return false;
                 }.bind(this)
             });
@@ -1803,9 +1813,6 @@
         },
         watch: {
             is_ruc(newValue, oldValue) {
-                // Aquí puedes realizar acciones basadas en el cambio de la propiedad 'message'
-                //console.log('El valor anterior era:', oldValue);
-                //console.log('El nuevo valor es:', newValue);
 
             },
         },
@@ -1880,21 +1887,7 @@
                 });
 
             },
-            /* -- *********************** -- */
-            add_accesorios(data) {
 
-                this.select_acesorios = data;
-
-            },
-            add_Autorizacion(data) {
-                this.select_autorizacion = data;
-            },
-            handleChildEvent(data) {
-                // Manejar datos enviados desde el hijo
-
-                this.repuestos = data;
-
-            },
             actualizar_datos() {
                 this.send_axios_reponse(
                         "Desear actulizar?",
@@ -1979,11 +1972,7 @@
                         .use(ImageEditor, {
                             target: Dashboard
                         }).on('fileAdded', (file) => {
-                            // Obtener el contenido del archivo en forma de string
                             const fileData = file.getData();
-
-                            // Imprimir el contenido del archivo
-
                         });
                 });
             },

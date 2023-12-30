@@ -143,6 +143,14 @@
                 </tr>
                 <tr>
                     <th style="text-align: right;" align= "left">
+                        Vendedor
+                    </th>
+                    <th align= "left">
+                        {{ $get->vendedor->vendedor_nombres }}
+                    </th>
+                </tr>
+                <tr>
+                    <th style="text-align: right;" align= "left">
                         Modelo
                     </th>
                     <th align= "left">
@@ -184,9 +192,7 @@
                         {{ $get->moto->mtx_vin }}
                     </th>
                 </tr>
-
-              
-
+ 
                 <tr align= "left">
                     <th style="text-align: right;">
                         Color

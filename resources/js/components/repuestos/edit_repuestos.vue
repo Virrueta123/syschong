@@ -628,7 +628,7 @@
 
                 
             });
-            
+            this.calcular_total()
             // Coloca aquí el código que deseas ejecutar después del temporizador
             const headers = {
                 "Content-Type": "application/json",

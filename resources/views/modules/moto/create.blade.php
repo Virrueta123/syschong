@@ -95,48 +95,68 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                <input type="date" class="form-control" name="mtx_fabricacion" id="mtx_fabricacion">
+                                <fecha-fabricacion fecha="{{$fecha}}" name="mtx_fabricacion"></fecha-fabricacion>
                             </div>
+
                             <div class="form-group col-md-4">
-                                <label for="mtx_chasis">Chasis</label>
-                                <input type="text" class="form-control" name="mtx_chasis" id="mtx_chasis">
+                                <label for="mtx_color">Color</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary" id="#azul">
+                                          <input type="radio" name="mtx_color" checked value="azul"> Azul
+                                        </label>
+                                        <label class="btn btn-warning">
+                                          <input type="radio" name="mtx_color" value="amarillo"> Amarillo
+                                        </label>
+                                        <label class="btn btn-danger">
+                                          <input type="radio" name="mtx_color" value="rojo"> Rojo
+                                        </label>
+                                        <label class="btn btn-dark">
+                                          <input type="radio" name="mtx_color" value="negro"> Negro
+                                        </label>
+                                        <label class="btn btn-light">
+                                          <input type="radio" name="mtx_color" value="blanco"> Blanco
+                                        </label>
+                                      </div>
+                                </div>
+                            </div> 
+
+
+                            <div class="form-group">
+                                <label class="form-label">Estado</label>
+                                <div class="selectgroup w-100">
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="mtx_estado" value="N"
+                                            class="selectgroup-input" checked="">
+                                        <span class="selectgroup-button">Nuevo</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="mtx_estado" value="B"
+                                            class="selectgroup-input">
+                                        <span class="selectgroup-button">Bueno</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="mtx_estado" value="R"
+                                            class="selectgroup-input">
+                                        <span class="selectgroup-button">Regular</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="mtx_estado" value="D"
+                                            class="selectgroup-input">
+                                        <span class="selectgroup-button">Deficiente</span>
+                                    </label>
+                                </div>
                             </div>
+                             
                         </div>
 
-                        <div class="form-group">
-                            <label for="mtx_color">Color</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-primary" id="#azul">
-                                      <input type="radio" name="mtx_color" checked value="azul"> Azul
-                                    </label>
-                                    <label class="btn btn-warning">
-                                      <input type="radio" name="mtx_color" value="amarillo"> Amarillo
-                                    </label>
-                                    <label class="btn btn-danger">
-                                      <input type="radio" name="mtx_color" value="rojo"> Rojo
-                                    </label>
-                                    <label class="btn btn-dark">
-                                      <input type="radio" name="mtx_color" value="negro"> Negro
-                                    </label>
-                                    <label class="btn btn-light">
-                                      <input type="radio" name="mtx_color" value="blanco"> Blanco
-                                    </label>
-                                  </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="mtx_color">Color</label>
-                                <input type="text" class="form-control" name="mtx_color" id="mtx_color">
-                            </div> 
-                        </div>
+                       
                     </div>
                 </div>
 
 
                 <div class="card-footer">
-                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear Cliente</button>
+                    <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Crear Moto</button>
                 </div>
             </form>
         </div>

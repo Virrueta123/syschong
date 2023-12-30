@@ -1,13 +1,9 @@
 <template>
 
-
-
+ 
     <select name="cli_id" id="cliente_select" ref="cliente_select" class="form-control select2" aria-hidden="true"
         language="es" placeholder="seleccionar un cliente">
-    </select>
-
-
-
+    </select> 
 
 </template>
 

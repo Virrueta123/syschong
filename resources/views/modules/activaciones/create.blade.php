@@ -85,7 +85,7 @@
                                 </div>
                             </div> 
                         </div>
-
+                        <is-dias></is-dias>
                         <div class="form-row">
                             <div class="form-group col-md-4">
 
@@ -100,7 +100,7 @@
                          
                             <div class="form-group col-md-4">
                                 <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                <input type="date" class="form-control" value="{{ $fecha_actual }}" name="mtx_fabricacion" id="mtx_fabricacion">
+                                <fecha-fabricacion fecha="{{$fecha}}"></fecha-fabricacion> 
                             </div> 
                         </div>
  

@@ -478,6 +478,47 @@ class clienteController extends Controller
         }
     }
 
+    function asignar_cliente_moto(Request $req){
+        try {
+            $datax = $req->all();
+ 
+            $cli_id = $datax["cli_id"];
+
+            $cliente = cliente::find($datax["cli_id"]);
+
+        
+
+            $moto = motos::find($datax['mtx_id']);
+
+            $moto->cli_id = $cli_id;
+
+            if ($moto->update()) {
+                return response()->json([
+                    'message' => 'se actualizo correctamente el  cliente',
+                    'error' => '',
+                    'success' => true,
+                    'data' => $cliente,
+                ]);
+            } else {
+                Log::error('error al actualizar el cliente');
+                return response()->json([
+                    'message' => 'error al actualizar el cliente',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error al actualizar el cliente',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
     function update_vue_cli(Request $req)
     {
         try {

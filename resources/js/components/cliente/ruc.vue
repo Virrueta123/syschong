@@ -32,7 +32,7 @@
             <div class="form-group col-md-12">
                 <label for="inputEmail4">Buscar Ubigeo</label>
                 <select id="ubigeo_select_ruc" ref="ubigeo_select_ruc" class="form-control select2" style="width: 100%;"
-                    tabindex="-1" aria-hidden="true" language="es" placeholder="seleccionar un ubigueo">
+                    tabindex="2"   language="es" placeholder="seleccionar un ubigueo">
                 </select>
             </div>
         </div>
@@ -81,7 +81,7 @@
         },
         methods: {
             change_ubigeo_select_ruc(event) {  
-                var ubigeo = event.target[this.conteo].innerText.split(" / ")
+                var ubigeo =  event.target.selectedOptions[0].innerText.split(" / ")
                 this.cli_departamento_ruc = ubigeo[1]
                 this.cli_distrito_ruc = ubigeo[3]
                 this.cli_provincia_ruc = ubigeo[2]
@@ -170,6 +170,7 @@
                     },
                 },
             });
+           
 
             // Agregar un listener para el evento "change" de Select2
             $(this.$refs.ubigeo_select_ruc).on("change", this.change_ubigeo_select_ruc);

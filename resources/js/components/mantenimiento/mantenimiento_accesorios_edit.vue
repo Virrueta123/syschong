@@ -3,7 +3,7 @@
         <div class="row">
             <div v-for="(accesorio, index) in get_accesorios" :key="index" class="col-sm-6">
                 <label class="custom-switch mt-2">
-                    <input type="checkbox" v-on:change="change_checked($event,index)" name="custom-switch-checkbox"
+                    <input type="checkbox" :checked="accesorio.check" v-on:change="change_checked($event,index)" name="custom-switch-checkbox"
                         class="custom-switch-input">
                     <span class="custom-switch-indicator"></span>
                     <span class="custom-switch-description">{{ accesorio . accesorios_nombre }}</span>
@@ -98,10 +98,9 @@
                     self.get_accesorios[indice].check = true; 
                     self.get_accesorios[indice].estado = currentValue.estado;  
                 }
-            });
+            }) 
             
-            this.$emit('childAccesorios', this.get_accesorios);
- 
+            this.$emit('childAccesorios', this.get_accesorios); 
         },
     };
 </script>

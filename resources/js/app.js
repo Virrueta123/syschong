@@ -16,6 +16,9 @@ app.component('ruc', require('./components/cliente/ruc.vue').default);
 
 app.component('add-factura', require('./components/taller/add_factura_tienda.vue').default)
 
+app.component('fecha-fabricacion', require('./components/complementos/fecha_fabricacion.vue').default)
+
+
 /* -- ********  componentes tienda ************* -- */
 app.component('ruc-tienda', require('./components/tienda/ruc_tienda.vue').default);
 app.component('agregar-precios', require('./components/tienda/agregar_precio.vue').default);

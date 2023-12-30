@@ -39,8 +39,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <address>
-                                    <strong>Mecanico : </strong>{{ cotizacion . mecanico . name }} -
-                                    {{ cotizacion . mecanico . lastname }}<br>
+                                     
                                     <strong>Color : </strong>{{ cotizacion . inventario . moto . mtx_color }}<br>
                                     <strong>Marca :
                                     </strong> <span v-if="cotizacion . inventario . moto . marca">

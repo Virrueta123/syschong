@@ -183,6 +183,7 @@
         CButton
     } from '@coreui/vue';
 
+   
     import axios from 'axios';
 
     export default {
@@ -207,7 +208,7 @@
                 cotizacion: JSON.parse(this.$attrs.cotizacion),
                 is_modal_cortesia: false,
                 numero_orden: "",
-                servicio_tecnico: "",
+                servicio_tecnico: "REPUESTO Y SERVICIOS CHONG",
                 celular_empresa: "",
                 dia1: "",
                 mes1: "",
@@ -294,7 +295,9 @@
                 this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor ;
 
                 this.modelo = this.cotizacion.cortesia.activaciones.moto.modelo.modelo_nombre;
-                console.log(this.cotizacion.cortesia.activaciones.moto.modelo);
+
+                
+                 this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
 
                 this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color ;
 
@@ -306,17 +309,20 @@
 
                 this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina ;
 
-                this.observaciones_sta = this.cotizacion.inventario_moto_obs_cliente;
+                this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
 
                 this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
 
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
-                
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
-
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
-
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+                this.dia1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
+                 
+                this.mes1 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
+                this.ano1 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
+                this.dia2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
+                this.mes2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
+                this.ano2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYY');
+                this.dia3 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
+                this.mes3 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
+                this.ano3 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
             },
             async load_gasolina() {
                 const valorMinimo = 171.9;

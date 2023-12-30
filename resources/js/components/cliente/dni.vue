@@ -33,7 +33,14 @@
                     id="cli_direccion" placeholder="Direccion" />
             </div>
         </div>
-
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="inputEmail4">Buscar Ubigeo Dni</label>
+                <select id="ubigeo_select_dni" ref="ubigeo_select_dni" class="form-control select2" style="width: 100%;"
+                    tabindex="-1" aria-hidden="true" language="es" placeholder="seleccionar un ubigueo">
+                </select>
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="inputEmail4">Departamento</label>
@@ -59,6 +66,8 @@
     import {
         myMixin
     } from "../../mixin.js";
+    import $ from "jquery";
+    import "select2";
     import Swal from "sweetalert2";
 
     export default {
@@ -109,16 +118,75 @@
                             this.hideLoadingSpinner();
                         })
                         .catch((error) => {
-                          this.alert_error("Error del servidor, por favor recargue la pagina")
-                            
+                            this.alert_error("Error del servidor, por favor recargue la pagina")
+
                             this.hideLoadingSpinner();
                         });
                 } else {
-                  this.alert_error("Datos incompletos, El dni tiene que tener 8 digitos")
-                     
+                    this.alert_error("Datos incompletos, El dni tiene que tener 8 digitos")
+
                 }
             },
+            change_ubigeo_select_dni(event) {
+                console.dir(event.target);
+                var ubigeo = event.target.selectedOptions[0].innerText.split(" / ")
+                this.cli_departamento = ubigeo[1]
+                this.cli_distrito = ubigeo[3]
+                this.cli_provincia = ubigeo[2]
+                this.conteo++;
+            },
         },
-        mounted() {},
+        mounted() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
+
+            $(this.$refs.ubigeo_select_dni).select2({
+                language: this.languajeSelect,
+                ajax: {
+                    type: 'POST',
+                    url: "/ubigeo_search", // Replace with your API endpoint URL
+                    dataType: "json",
+                    data: function(params) {
+                        var search = "";
+                        if (params.term === undefined) {
+                            var search = ""
+                        } else {
+                            var search = params.term
+                        }
+                        var query = {
+                            search: search,
+                        };
+                        // Query parameters will be ?search=[search]&_type=query&q=q
+                        return query;
+                    },
+                    error: function(jqXHR, status, error) {
+                        return {
+                            results: [],
+                        }; // Return dataset to load after error
+                    },
+                    processResults: (data) => {
+                        // Tranforms the top-level key of the response object from 'items' to 'results'
+
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name,
+                                };
+                            }),
+                        };
+                    },
+                },
+            });
+
+
+            // Agregar un listener para el evento "change" de Select2
+            $(this.$refs.ubigeo_select_dni).on("change", this.change_ubigeo_select_dni);
+
+        },
     };
 </script>

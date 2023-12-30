@@ -79,14 +79,10 @@
 
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="mtx_fabricacion">Fecha de Fabricacion</label>
-                                        <input type="date" class="form-control" name="mtx_fabricacion"
-                                            id="mtx_fabricacion">
+                                        <label for="mtx_fabricacion">Fecha de Fabricacion</label> 
+                                        <fecha-fabricacion :fecha="fecha" name="mtx_fabricacion"></fecha-fabricacion>
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <label for="mtx_chasis">Chasis</label>
-                                        <input type="text" class="form-control" name="mtx_chasis" id="mtx_chasis">
-                                    </div>
+                                    
                                 </div>
 
                                 <div class="form-group">
@@ -115,10 +111,28 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="mtx_color">Color</label>
-                                        <input type="text" class="form-control" name="mtx_color" id="mtx_color">
-                                    </div>
+                                    <div class="form-group col-md-4">
+                                <label for="mtx_color">Color</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary" id="#azul">
+                                          <input type="radio" name="mtx_color"   value="azul"> Azul
+                                        </label>
+                                        <label class="btn btn-warning">
+                                          <input type="radio" name="mtx_color" value="amarillo"> Amarillo
+                                        </label>
+                                        <label class="btn btn-danger">
+                                          <input type="radio" name="mtx_color"  value="rojo"> Rojo
+                                        </label>
+                                        <label class="btn btn-dark">
+                                          <input type="radio" name="mtx_color" value="negro"> Negro
+                                        </label>
+                                        <label class="btn btn-light">
+                                          <input type="radio" name="mtx_color" value="blanco"> Blanco
+                                        </label>
+                                      </div>
+                                </div>
+                            </div> 
                                 </div>
                             </div>
                         </div>
@@ -275,7 +289,8 @@
     import {
         myMixin
     } from "../../mixin.js";
-
+    import moment from 'moment';
+    import 'moment-timezone';
     import {
         CModal,
         CForm,
@@ -308,12 +323,12 @@
                 moto: [],
                 selected: this.$attrs.selected || '',
                 id: this.$attrs.id || 0,
+                fecha:null
             }
         },
         methods: {
             modal_modal_view_moto() {
-                this.is_modal_view_moto = true;
-
+                this.is_modal_view_moto = true; 
             },
             modal_create() {
                 this.is_modal_create = true;
@@ -357,10 +372,7 @@
                                 required: true,
                             }
                         },
-                        submitHandler: function(form) {
-
-
-
+                        submitHandler: function(form) { 
                             try {
                                 const fileUploadForm = document.getElementById(
                                     'form_moto');
@@ -524,6 +536,8 @@
             },
         },
         mounted() {
+            this.fecha = moment().tz('America/Lima').format('YYYY')
+
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             $.ajaxSetup({
                 headers: {

@@ -11,6 +11,12 @@
     <div class="card">
         <div class="card-header">
             <h4>Todo las Motos registradas</h4>
+            <div class="card-header-action">
+                <a href="{{ route('moto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
+                        aria-hidden="true"></i> Crear una moto</a>
+ 
+            </div>
+
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -121,6 +127,7 @@
 
             var table = $('#table_mtx').DataTable({
                 initComplete: search_input_by_column,
+                order: [[11, 'desc']],
                 language: {
                     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
                 },

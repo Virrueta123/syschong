@@ -65,22 +65,22 @@ class mantenimiento_controller extends Controller
                     if ($Data->moto->cliente->cli_ruc != 'no tiene') {
                         return $Data->moto->cliente->cli_razon_social;
                     } else {
-                        if(is_null($Data->moto->cliente->cli_ruc)){
+                        if (is_null($Data->moto->cliente->cli_ruc)) {
                             return $Data->moto->cliente->cli_nombre . ' ' . $Data->moto->cliente->cli_apellido;
-                        }else{
+                        } else {
                             return $Data->moto->cliente->cli_razon_social;
-                        } 
+                        }
                     }
                 })
                 ->addColumn('dnioruc', function ($Data) {
                     if ($Data->moto->cliente->cli_ruc != 'no tiene') {
                         return $Data->moto->cliente->cli_ruc;
                     } else {
-                        if(is_null($Data->moto->cliente->cli_ruc)){
+                        if (is_null($Data->moto->cliente->cli_ruc)) {
                             return $Data->moto->cliente->cli_dni;
-                        }else{
+                        } else {
                             return $Data->moto->cliente->cli_ruc;
-                        }  
+                        }
                     }
                 })
                 ->addColumn('marca', function ($Data) {
@@ -191,11 +191,15 @@ class mantenimiento_controller extends Controller
         $accesorios = accesorios::all();
         $autorizaciones = autorizaciones::all();
 
-        $servicios_defecto = servicios_defecto::with(["servicio"])->orderBy("created_at")->get();
-  
-        $productos_defecto = productos_defecto::with(["producto"])->orderBy("created_at")->get();
+        $servicios_defecto = servicios_defecto::with(['servicio'])
+            ->orderBy('created_at')
+            ->get();
 
-        return view('modules.mantenimiento.create', compact('accesorios', 'autorizaciones',"servicios_defecto","productos_defecto"));
+        $productos_defecto = productos_defecto::with(['producto'])
+            ->orderBy('created_at')
+            ->get();
+
+        return view('modules.mantenimiento.create', compact('accesorios', 'autorizaciones', 'servicios_defecto', 'productos_defecto'));
     }
 
     /**
@@ -500,8 +504,6 @@ class mantenimiento_controller extends Controller
 
     public function create_vue_mantenimiento(Request $request)
     {
-
-         
         $ultimo_registro = inventario_moto::max('inventario_numero');
 
         if ($ultimo_registro) {
@@ -511,7 +513,6 @@ class mantenimiento_controller extends Controller
         }
 
         $datax = $request->all();
- 
 
         $select_acesorios = json_decode($datax['select_acesorios']);
         $select_autorizacion = json_decode($datax['select_autorizacion']);
@@ -624,8 +625,6 @@ class mantenimiento_controller extends Controller
 
                 // Actualizar el registro con los nuevos datos
                 $cortesias_activacion->update(['cotizacion_id' => $cotizacion->cotizacion_id]);
-
-                
             }
 
             session()->flash('success', 'Mantenimiento Particular | Registro creado correctamente');
@@ -646,137 +645,98 @@ class mantenimiento_controller extends Controller
 
     public function editar_vue_mantenimiento(Request $request)
     {
-        
         $datax = $request->all();
-       
 
         $select_acesorios = json_decode($datax['select_acesorios']);
         $select_autorizacion = json_decode($datax['select_autorizacion']);
 
-        $validate = $request->validate([
-            'inventario_moto_obs_cliente' => 'required',
-            'inventario_moto_nivel_gasolina' => 'required',
-        ]);
- 
-        $validate['inventario_moto_kilometraje'] = $datax['km'];
-        $validate['mtx_id'] = $datax['moto_id'];
+        $inventario = inventario_moto::find($datax['inventario_moto_id']);
 
-        $create = inventario_moto::create($validate);
+        $inventario->inventario_moto_kilometraje = $datax['km'];
+        $inventario->mtx_id = $datax['moto_id'];
 
-        if ($create) {
-            // Crear una nueva instancia del modelo
-            $activaciones = new activaciones();
-            // Establecer los valores de los campos
-            $activaciones->moto_id = $datax['moto_id'];
-            $activaciones->activado_taller = 'N';
-            $activaciones->user_id = auth()->user()->id;
-            $activaciones->start_cortesia = 1;
-            $activaciones->tienda_cobrar = 0;
-            $activaciones->save();
+        $update = $inventario->save();
 
-            $numero_corterisa = cortesias_activacion::where('activaciones_id', $activaciones->activaciones_id)
-                ->select('numero_corterisa')
-                ->max('numero_corterisa');
-            if (is_null($numero_corterisa)) {
-                $numero_corterisa = 1;
-            } else {
-                $numero_corterisa++;
-            }
+        if ($update) {
+            $autorizacion = inventario_autorizaciones::where('inventario_moto_id', $datax['inventario_moto_id'])->delete();
 
-            $cortesias_activacion = new cortesias_activacion();
-            $cortesias_activacion->activaciones_id = $activaciones->activaciones_id; // Reemplaza con el valor deseado
-            $cortesias_activacion->km = $datax['km']; // Reemplaza con el valor deseado
-            $cortesias_activacion->user_id = auth()->user()->id; // Reemplaza con el valor deseado
-            // Reemplaza con el valor deseado
-            $cortesias_activacion->tipo = 'M'; // Si no deseas eliminar lógicamente el registro
-            $cortesias_activacion->numero_corterisa = $numero_corterisa; // Reemplaza con el valor deseado
-            $cortesias_activacion->inventario_moto_id = $create->inventario_moto_id; // Reemplaza con el valor deseado
-            $cortesias_activacion->mecanico_id = 0; // Reemplaza con el valor deseado
-            $cortesias_activacion->mtx_id = $datax['moto_id']; // Reemplaza con el valor deseado
-            $cortesias_activacion->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
-            $cortesias_activacion->dias = $datax['dias'];
-            $cortesias_activacion->date_aviso = Carbon::now()->addDays($datax['dias']);
-            $cortesias_activacion->aceite_id = 0;
-            $cortesias_activacion->save();
+            $accesorios_inventario_detalle = accesorios_inventario_detalle::where('inventario_moto_id', $datax['inventario_moto_id'])->delete();
 
             foreach ($select_autorizacion as $autorizacion) {
-                $create_autorizaciones = new inventario_autorizaciones();
-                $create_autorizaciones->inventario_moto_id = $create->inventario_moto_id;
-                $create_autorizaciones->aut_id = $autorizacion->identificador;
-                $create_autorizaciones->save();
+                if (!empty($autorizacion->check)) {
+                    if ($autorizacion->check) {
+                        $create_autorizaciones = new inventario_autorizaciones();
+                        $create_autorizaciones->inventario_moto_id = $datax['inventario_moto_id'];
+                        $create_autorizaciones->aut_id = $autorizacion->aut_id;
+                        $create_autorizaciones->save();
+                    }
+                }
             }
             foreach ($select_acesorios as $accesorio) {
-                $accesorios_inventario_detalle = new accesorios_inventario_detalle();
-                $accesorios_inventario_detalle->inventario_moto_id = $create->inventario_moto_id;
-                $accesorios_inventario_detalle->accesorios_inventario_id = $accesorio->identificador;
-                $accesorios_inventario_detalle->estado = $accesorio->estado;
-                $accesorios_inventario_detalle->save();
+                if (!empty($accesorio->check)) {
+                    if ($accesorio->check) {
+                        $accesorios_inventario_detalle = new accesorios_inventario_detalle();
+                        $accesorios_inventario_detalle->inventario_moto_id = $datax['inventario_moto_id'];
+                        $accesorios_inventario_detalle->accesorios_inventario_id = $accesorio->accesorios_id;
+                        $accesorios_inventario_detalle->estado = $accesorio->estado;
+                        $accesorios_inventario_detalle->save();
+                    }
+                }
             }
-            // Crear una nueva instancia del modelo
-            $cotizacion = new cotizacion();
-
-            $correlativo = cotizacion::max('cotizacion_correlativo');
-            if (is_null($correlativo)) {
-                $correlativo = 1;
-            } else {
-                $correlativo++;
-            }
-
-            $cotizacion->inventario_moto_id = $cortesias_activacion->inventario_moto_id;
-            $cotizacion->observacion_sta = $datax['observacion_sta'];
-            $cotizacion->total = $datax['total'];
-            $cotizacion->cotizacion_correlativo = $correlativo;
-            $cotizacion->total_descuento = 0;
-            $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
-            $cotizacion->mecanico_id = 0; // ID del mecánico relacionado
-            $cotizacion->trabajo_realizar = $datax['trabajo_realizar'];
+    
+            $cotizacion = cotizacion::find($datax['cotizacion_id']);
+ 
+ 
+            $cotizacion->total = $datax['sumar_total']; 
 
             if ($cotizacion->save()) {
-                foreach ($datax['cotizacion'] as $ps) {
-                    // Crear una nueva instancia del modelo
-                    $cotizaion_detalle = new cotizacioncotizacion_detalle();
-
-                    // Asignar valores a los campos
-                    $cotizaion_detalle->cotizacion_id = $cotizacion->cotizacion_id; // ID de la cotización relacionada
-                    $cotizaion_detalle->prod_id = $ps['prod_id']; // ID del producto relacionado
-                    $cotizaion_detalle->servicios_id = $ps['servicios_id']; // ID del servicio relacionado
-                    $cotizaion_detalle->tipo = $ps['tipo']; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
-                    $cotizaion_detalle->Precio = $ps['Precio'];
-                    $cotizaion_detalle->Importe = $ps['Importe'];
-                    $cotizaion_detalle->ImporteDescuento = 0;
-                    $cotizaion_detalle->Descuento = 0;
-                    $cotizaion_detalle->Descripcion = $ps['Descripcion'];
-                    $cotizaion_detalle->Codigo = $ps['Codigo'];
-                    $cotizaion_detalle->Cantidad = $ps['Cantidad'];
-                    $cotizaion_detalle->ValorDescuento = 0;
-                    $cotizaion_detalle->Detalle = $ps['Detalle'];
-
-                    // Guardar el registro en la base de datos
-                    $cotizaion_detalle->save();
+                if(!empty($datax['cotizacion'])){
+                    $autorizacion = cotizacioncotizacion_detalle::where('cotizacion_id', $datax['cotizacion_id'])->delete();
+                    foreach ($datax['cotizacion'] as $ps) {
+                        
+                        // Crear una nueva instancia del modelo
+                        $cotizaion_detalle = new cotizacioncotizacion_detalle(); 
+                        // Asignar valores a los campos
+                        $cotizaion_detalle->cotizacion_id = $cotizacion->cotizacion_id; // ID de la cotización relacionada
+                        $cotizaion_detalle->prod_id = $ps['prod_id']; // ID del producto relacionado
+                        $cotizaion_detalle->servicios_id = $ps['servicios_id']; // ID del servicio relacionado
+                        $cotizaion_detalle->tipo = $ps['tipo']; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
+                        $cotizaion_detalle->Precio = $ps['Precio'];
+                        $cotizaion_detalle->Importe = $ps['Importe'];
+                        $cotizaion_detalle->ImporteDescuento = 0;
+                        $cotizaion_detalle->Descuento = 0;
+                        $cotizaion_detalle->Descripcion = $ps['Descripcion'];
+                        $cotizaion_detalle->Codigo = $ps['Codigo'];
+                        $cotizaion_detalle->Cantidad = $ps['Cantidad'];
+                        $cotizaion_detalle->ValorDescuento = 0;
+                        $cotizaion_detalle->Detalle = $ps['Detalle'];
+    
+                        // Guardar el registro en la base de datos
+                        $cotizaion_detalle->save();
+                    }
                 }
-
-                // Encontrar el registro por su ID
-                $cortesias_activacion = cortesias_activacion::findOrFail($cortesias_activacion->cortesias_activacion_id);
-
-                // Actualizar el registro con los nuevos datos
-                $cortesias_activacion->update(['cotizacion_id' => $cotizacion->cotizacion_id]);
-
-                
+             
+ 
             }
+         
 
-            session()->flash('success', 'Mantenimiento Particular | Registro creado correctamente');
+            session()->flash('success', 'Mantenimiento Particular | Registro actualizado correctamente');
 
             return response()->json([
-                'message' => 'se creo correctamente el mantenimiento',
+                'message' => 'se edito correctamente el mantenimiento',
                 'error' => '',
                 'success' => true,
-                'data' => route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id)),
+                'data' => route('cotizaciones.show', encrypt_id( $datax['cotizacion_id'])),
             ]);
         } else {
-            Log::error('no se pudo registrar el inventario de la moto');
-            session()->flash('error', 'error al registrar en la base de datos');
-            dd('error');
-            return redirect()->route('inventario_moto.index');
+            Log::error('no se pudo editar la cotizacion');
+ 
+            return response()->json([
+                'message' => 'se edito correctamente el mantenimiento',
+                'error' => '',
+                'success' => false,
+                'data' => "",
+            ]);
         }
     }
     /* *********************** */
