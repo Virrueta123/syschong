@@ -12,11 +12,7 @@
                     :href="'/imprimir_inventario_moto/' + cotizacion.inventario.url">
                     Imprimir orden de servicio</a>
 
-
-
-
-
-
+  
 
             </div>
         </div>
@@ -2039,10 +2035,11 @@
                             this.pagos_boletas[this.index_pago_boleta].url = base64Data;
                         }
 
-                    };
-
+                    }; 
                     reader.readAsDataURL(file.data);
                 });
+
+                
 
                 this.xlDemo = false;
             },

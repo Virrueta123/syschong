@@ -39,16 +39,15 @@ class HomeController extends Controller
 
         $primerDiaSemana = $primerDiaSemana->format('Y-m-d');
       
-     
+     /*
        $destinatario = 'juan_AVC789@hotmail.com';
        $mensaje = 'Este es un mensaje de prueba enviado desde Laravel.';
 
        $mensaje = Mail::send('pdf.prueba', ['mensaje' => $mensaje], function ($message) use ($destinatario) {
            $message->to($destinatario)
                    ->subject('Asunto del mensaje');
-       });
-
-       dd( $mensaje );
+       });*/
+ 
         return view('home', compact('primerDiaSemana', 'ultimoDiaSemana'));
 
  
