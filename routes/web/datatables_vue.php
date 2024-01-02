@@ -31,6 +31,8 @@ Route::get('/tablas_cortesias_de_hoy', [App\Http\Controllers\datatables_controll
 
 Route::get('/tablas_cortesias_pendiente', [App\Http\Controllers\datatables_controller::class, 'tablas_cortesias_pendiente'])->name('tablas_cortesias_pendiente');
 
+Route::get('/tablas_ventas', [App\Http\Controllers\datatables_controller::class, 'tablas_ventas'])->name('tablas_ventas');
+
 /* *********************** */
 
 /* ******** tabla cotizacion para compras ************* */

@@ -180,6 +180,7 @@ app.component('tablas-activaciones-anterior-por-tienda', require('./components/t
 app.component('tablas-activaciones-actual-por-tienda', require('./components/tablas/tablas_activaciones_actual_por_tienda.vue').default);
 app.component('tablas-cortesias-actual-por-tienda', require('./components/tablas/tablas_cortesias_actual_por_tienda.vue').default);
 app.component('tablas-factura-tienda', require('./components/tablas/tablas_factura_tienda.vue').default);
+app.component('tablas-ventas', require('./components/tablas/tablas_ventas.vue').default);
 /* -- *********************** -- */
 
 app.component('is-dias', require('./components/complementos/is_dias.vue').default);

@@ -461,8 +461,7 @@ class producto_controller extends Controller
             }
 
             $eliminar = producto_modelo::where('prod_id', decrypt_id($id))->delete();
-
-           
+ 
             if( $array_modelo = explode(',', $request->input('modelo_moto'))){
                 foreach ($array_modelo as $modelo) {
                     $producto_modelo = new producto_modelo();

@@ -138,7 +138,7 @@ class activaciones_controller extends Controller
         $datax = $request->all();
         // Crear una nueva instancia del modelo
         $activaciones = new activaciones();
-
+      
         //crear la moto
         $moto = new motos();
         $moto->mtx_vin = $datax['mtx_vin'];
@@ -156,7 +156,7 @@ class activaciones_controller extends Controller
             $activaciones->moto_id = $moto->mtx_id;
             $activaciones->precio = $datax['precio'];
             $activaciones->precio_gasolina = $datax['precio_gasolina'];
-            $activaciones->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
+            $activaciones->is_aviso = !empty($request->all()['is_aviso']) == 'true' ? 'S' : 'A';
             $activaciones->dias = $datax['dias'];
             $activaciones->date_aviso = Carbon::now()->addDays($datax['dias']);
             $activaciones->total = $datax['precio_gasolina'] + $datax['precio'];

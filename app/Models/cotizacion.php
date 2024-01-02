@@ -25,6 +25,10 @@ class cotizacion extends Model
     {
         return $this->belongsTo(User::class, 'mecanico_id')->withTrashed();
     }
+    public function cotizacion_image()
+    {
+        return $this->hasOne(cotizacion_image::class, 'cotizacion_id');
+    }
 
     public function detalle()
     {

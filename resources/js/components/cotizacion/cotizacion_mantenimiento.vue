@@ -1,18 +1,55 @@
 <template>
     <div></div>
     <div id="smartwizard">
+
+        <!-- ******** view imagen ************* -->
+        <CModal size="xl" :visible="modal_view_img" @close="() => { modal_view_img = false }">
+
+            <CModalBody>
+
+                <div class="modal-header">
+                 <h3 class="text-center">Visualizar Imagen</h3>
+                    <button type="button" class="close" @click="modal_view_img = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="card text-left">
+                
+                    <div class="card-body">
+                       <center> <img class="d-block w-100"   :src="'../../../../storage/' + imagen_cotizacion.url" alt=""></center>
+                        <h4 class="card-title text-center">{{ imagen_cotizacion . created_at }}</h4>
+
+                    </div>
+                </div>
+
+            </CModalBody>
+        </CModal>
+        <!-- *********************** -->
+
+
         <div class="section-header">
             <div class="section-header-breadcrumb">
-                <button type="button" v-on:click="modal_create_img_click()"
-                    class="btn btn-info boton-color custom-next mr-2 pr-2">
-                    <i class="fa fa-picture"></i> Agregar imagen</button>
+                <div v-if="!is_imagen_cotizacion">
+                    <button type="button" v-on:click="modal_create_img_click()"
+                        class="btn btn-info boton-color custom-next mr-2 pr-2">
+                        <i class="fa fa-picture"></i> Agregar imagen</button>
+                </div>
+                <div v-else>
+                    <button type="button" v-on:click="modal_view_img_click()"
+                        class="btn btn-info boton-color custom-next mr-2 pr-2">
+                        <i class="fa fa-eyes"></i> Mirar imagen</button>
+                    <button type="button" v-on:click="modal_create_img_click()"
+                        class="btn btn-info boton-color custom-next mr-2 pr-2">
+                        <i class="fa fa-edit"></i> Editar imagen</button>
+                </div>
 
                 <a v-if="cotizacion . inventario . moto . cliente" type="button"
                     class="btn btn-info boton-color custom-next mr-2 pr-2" target="_blank"
                     :href="'/imprimir_inventario_moto/' + cotizacion.inventario.url">
                     Imprimir orden de servicio</a>
 
-  
+
 
             </div>
         </div>
@@ -1353,9 +1390,6 @@
                         class="btn btn-info boton-color custom-prev">Agregar Foto</button>
                 </div>
 
-
-
-
             </CModalBody>
         </CModal>
 
@@ -1440,6 +1474,11 @@
         },
         data() {
             return {
+                is_created:false,
+                modal_view_img: false,
+                modal_edit_img: false,
+                imagen_cotizacion: null,
+                is_imagen_cotizacion: false,
                 //imagen
                 estado_imagen: "n", //s=seleccionado,c=creado,n=nulo
                 url_img: "",
@@ -1497,7 +1536,7 @@
                 /* -- *********************** -- */
             }
         },
-        
+
         computed: {
 
             detallesAprobados() {
@@ -1518,6 +1557,16 @@
 
         mounted() {
             const self = this;
+            console.log(this.cotizacion);
+            if(this.cotizacion.cotizacion_image){
+                this.is_imagen_cotizacion = true;
+                this.imagen_cotizacion = this.cotizacion.cotizacion_image;
+                this.is_created=true;
+                console.log("coti"+ this.is_imagen_cotizacion);
+                console.log("coti"+ this.imagen_cotizacion);
+
+            }
+ 
             this.pagos_boletas.push({
                 monto: this.cotizacion.total,
                 forma_pago_id: 1,
@@ -1531,8 +1580,6 @@
                 referencia: "",
                 url: false
             });
-
-
 
             if (this.cotizacion.inventario.moto.cliente) {
                 if (this.cotizacion.inventario.moto.cliente.cli_ruc !== 'no tiene') {
@@ -1549,9 +1596,6 @@
                 this.cliente = "no tiene";
             }
 
-
-
-
             this.pago_moto_total()
             this.pago_moto_total_boleta()
 
@@ -1559,7 +1603,6 @@
             this.fecha_creacion_boleta = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss')
 
             /* -- ******** validation  ************* -- */
-
 
             this.mtx_id = this.cotizacion.inventario.moto.mtx_id
 
@@ -1705,19 +1748,11 @@
                             .select_autorizacion));
                         formData.append('repuestos', JSON.stringify(this.repuestos));
 
-
                         const headers = {
                             "Content-Type": "application/json",
                         };
                         const data = formData;
-                        /*const data = {
-                            data: this.formData,
-                            is_aviso: this.is_aviso,
-                            dias: this.dias,
-                            select_acesorios: this.select_acesorios,
-                            select_autorizacion: this.select_autorizacion,
-                            repuestos: this.repuestos
-                        };*/
+
                         axios
                             .post("/editar_vue_mantenimiento", data, {
                                 headers,
@@ -1813,6 +1848,12 @@
             },
         },
         methods: {
+            modal_view_img_click() {
+                this.modal_view_img = true;
+            },
+            modal_edit_img_click() {
+                
+            },
             add_accesorios(data) {
                 console.log(data)
                 this.select_acesorios = data;
@@ -1839,13 +1880,94 @@
 
                         this.src_img = file.preview;
                         this.url_img = base64Data;
+ 
+                        //insertar imagenes
+                        var self = this
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+
+                        console.log(this.url_img);
+
+                        const data = {
+                            cotizacion_id: self.cotizacion.cotizacion_id,
+                            url_img: base64Data
+                        };
+
+                        if(this.is_created){
+                            axios
+                            .post("/edit_cotizacion_image", data, {
+                                headers,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                console.log(response.data)
+                                if (response.data.success) {
+                                    this.modal_create_img = false;
+
+                                    this.imagen_cotizacion = response.data.data;
+                                    this.is_imagen_cotizacion = true;
+
+                                    console.log(this.imagen_cotizacion);
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                        }else{
+
+                        axios
+                            .post("/add_cotizacion_image", data, {
+                                headers,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                console.log(response.data)
+                                if (response.data.success) {
+                                    this.modal_create_img = false;
+
+                                    this.imagen_cotizacion = response.data.data;
+                                    this.is_imagen_cotizacion = true;
+
+                                    console.log(this.imagen_cotizacion);
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.message,
+                                        footer: "-------",
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                        }
 
                     };
 
                     reader.readAsDataURL(file.data);
                 });
 
-                this.xlDemo = false;
             },
             /* -- *********************** -- */
             /* -- ******** evento click para activar modal para crear imagenes ************* -- */
@@ -2035,11 +2157,11 @@
                             this.pagos_boletas[this.index_pago_boleta].url = base64Data;
                         }
 
-                    }; 
+                    };
                     reader.readAsDataURL(file.data);
                 });
 
-                
+
 
                 this.xlDemo = false;
             },

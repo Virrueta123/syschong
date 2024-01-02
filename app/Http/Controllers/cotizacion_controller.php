@@ -7,6 +7,7 @@ use App\Models\accesorios_inventario_detalle;
 use App\Models\autorizaciones;
 use App\Models\caja_chica;
 use App\Models\cotizacion;
+use App\Models\cotizacion_image;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
 use App\Models\detalle_venta;
@@ -71,6 +72,98 @@ class cotizacion_controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function add_cotizacion_image(Request $request){ 
+        try{
+
+            $Datax = $request->all();
+        
+            $created = new cotizacion_image(); 
+            $base64Data = $Datax['url_img'];
+            $decodedData = base64_decode($base64Data);
+            $filename = Carbon::now()->format('Ymdhis') . '.jpg'; // Set the desired filename here
+            $path = 'fotos_cotizacion/' . $filename;
+
+            $add = Storage::disk('local')->put('public/' . $path, $decodedData);
+
+            $created->url = $path;
+            $created->cotizacion_id = $Datax['cotizacion_id'];
+
+            if($created->save()){  
+                return response()->json([
+                    'message' => "se inserto correctamente la imagen",
+                    'error' => '',
+                    'success' => true,
+                    'data' => $created,
+                ]);
+            } else {
+                Log::error('no se pudo insertar la imagen');
+                return response()->json([
+                    'message' => 'no se pudo insertar la imagen',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        } 
+     }
+
+     public function edit_cotizacion_image(Request $request){
+ 
+        try{
+
+            $Datax = $request->all();
+        
+            $cotizacion_image = cotizacion_image::where("cotizacion_id",$Datax['cotizacion_id'])->first(); 
+
+            $base64Data = $Datax['url_img'];
+            $decodedData = base64_decode($base64Data); // Set the desired filename here
+            $path = $cotizacion_image->url;
+
+            $add = Storage::disk('local')->put('public/' . $path, $decodedData);
+
+            $update = cotizacion_image::where("cotizacion_id",$Datax['cotizacion_id'])->first(); 
+            $update->url = $path; 
+
+            $cotizacion_image_actualizado = cotizacion_image::where("cotizacion_id",$Datax['cotizacion_id'])->first();
+            
+            if($update->save()){  
+                return response()->json([
+                    'message' => "se inserto correctamente la imagen",
+                    'error' => '',
+                    'success' => true,
+                    'data' => $cotizacion_image_actualizado,
+                ]);
+            } else {
+                Log::error('no se pudo insertar la imagen');
+                return response()->json([
+                    'message' => 'no se pudo insertar la imagen',
+                    'error' => '',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+
+        
+     }
+
     public function index(Request $request)
     {
         $fecha_actual = Carbon::now();
@@ -222,7 +315,8 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-        $get = cotizacion::with([
+        $get = cotizacion::with([ 
+            'cotizacion_image',
             'inventario' => function ($query) {
                 $query->with([
                     'moto' => function ($query) {
@@ -250,6 +344,8 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
+
+        
   
         $correlativo_factura = ventas::where('tipo_comprobante', 'F')->max('venta_correlativo');
 

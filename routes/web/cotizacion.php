@@ -23,6 +23,9 @@ Route::post('/avisado', [App\Http\Controllers\cotizacion_controller::class, 'avi
 
 Route::post('/cerrado', [App\Http\Controllers\cotizacion_controller::class, 'cerrado'])->name('cerrado');
 
+Route::post('/add_cotizacion_image', [App\Http\Controllers\cotizacion_controller::class, 'add_cotizacion_image'])->name('add_cotizacion_image');
+
+Route::post('/edit_cotizacion_image', [App\Http\Controllers\cotizacion_controller::class, 'edit_cotizacion_image'])->name('edit_cotizacion_image');
 
 Route::post('/cotizacion_enviada_whatsapp', [App\Http\Controllers\cotizacion_controller::class, 'cotizacion_enviada_whatsapp'])->name('cotizacion_enviada_whatsapp');  
 

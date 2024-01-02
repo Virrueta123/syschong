@@ -21,13 +21,14 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                {{ $html->table() }}  
+                <div id="app">
+                    <tablas-ventas></tablas-ventas>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @section('js')
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
-    {{ $html->scripts() }}
+    
 @endsection
