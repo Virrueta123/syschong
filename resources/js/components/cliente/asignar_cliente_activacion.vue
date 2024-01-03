@@ -313,9 +313,7 @@
                                 text: response.data.message,
                                 footer: "-------",
                             });
-
-
-                           
+ 
                             window.location.reload();
 
                         } else {

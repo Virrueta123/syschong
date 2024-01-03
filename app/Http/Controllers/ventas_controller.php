@@ -9,6 +9,10 @@ use App\Models\empresa;
 use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Greenter\Model\Company\Address;
+use Greenter\Model\Company\Company;
+use Greenter\Model\Summary\Summary;
+use Greenter\Model\Summary\SummaryDetail;
 use Greenter\Model\Voided\Voided;
 use Greenter\Model\Voided\VoidedDetail;
 use Illuminate\Http\Request;
@@ -18,6 +22,7 @@ use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Html\Column;
 use Greenter\Ws\Services\SoapClient;
 use Greenter\Ws\Services\BillSender;
+use Illuminate\Support\Facades\Mail;
 
 class ventas_controller extends Controller
 {
@@ -28,7 +33,10 @@ class ventas_controller extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except([
+            'ventas_cliente',
+            // Adicione aqui o nome das rotas que você deseja excluir do middleware "auth"
+        ]);
     }
     /**
      * Display a listing of the resource.
@@ -37,9 +45,10 @@ class ventas_controller extends Controller
      */
     public function index()
     {
+        $url = asset('/');
         $fecha_actual = Carbon::now();
 
-        return view('modules.ventas.index',compact("fecha_actual"));
+        return view('modules.ventas.index', compact('fecha_actual', 'url'));
     }
     /**
      * Display a listing of the resource.
@@ -260,16 +269,16 @@ class ventas_controller extends Controller
         $detail1 = new VoidedDetail();
         $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
         $detail1
-            ->setTipoDoc( $tipo_doc) // Factura
+            ->setTipoDoc($tipo_doc) // Factura
             ->setSerie($get->venta_serie)
             ->setCorrelativo($get->venta_correlativo)
             ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
-  
+
         $cDeBaja = new Voided();
         $cDeBaja
             ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
             ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
-            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
+            ->setFecComunicacion(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envio de la C. de baja
             ->setCompany($firma->company())
             ->setDetails([$detail1]);
 
@@ -284,7 +293,7 @@ class ventas_controller extends Controller
         }
 
         $ticket = $result->getTicket();
-        dd ('Ticket : ' . $ticket . PHP_EOL);
+        dd('Ticket : ' . $ticket . PHP_EOL);
 
         $statusResult = $see->getStatus($ticket);
         if (!$statusResult->isSuccess()) {
@@ -293,103 +302,98 @@ class ventas_controller extends Controller
             return;
         }
 
-        dd ($statusResult->getCdrResponse()->getDescription());
+        dd($statusResult->getCdrResponse()->getDescription());
         // Guardar CDR
         file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
     }
 
+    public function ventas_baja($id)
+    {
+        $ventas = ventas::where('venta_id', decrypt_id($id))->first();
 
-    public function ventas_baja($id){
-        $get = ventas::find(decrypt_id($id));
+        $company = new Company();
 
-        $firma = new firma_sunat_controller();
-        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+        $company
+            ->setRuc('10464579481')
+            ->setRazonSocial('ROSA LUZ INGA TORRES')
+            ->setNombreComercial('ROSA LUZ INGA TORRES')
+            ->setAddress(
+                (new Address())
+                    ->setUbigueo('210601')
+                    ->setDepartamento('SAN MARTIN')
+                    ->setProvincia('SAN MARTIN')
+                    ->setDistrito('TARAPOTO')
+                    ->setUrbanizacion('-')
+                    ->setDireccion('PJ. UNION 126B LOZA BELAUNDE'),
+            );
 
-        $detail1 = new VoidedDetail();
-        $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
-        $detail1
-            ->setTipoDoc( $tipo_doc) // Factura
-            ->setSerie($get->venta_serie)
-            ->setCorrelativo($get->venta_correlativo)
-            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
-  
-        $cDeBaja = new Voided();
-        $cDeBaja
-            ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
-            ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
-            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
-            ->setCompany($firma->company())
-            ->setDetails([$detail1]);
+        $tipo_doc = $ventas->tipo_comprobante == 'B' ? '01' : '03';
 
-        $result = $see->send($cDeBaja);
-        // Guardar XML
-        file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
+        $detail2 = new SummaryDetail();
+        $detail2
+            ->setTipoDoc($tipo_doc)
+            ->setSerieNro($ventas->venta_serie . '-' . $ventas->venta_correlativo)
+            ->setEstado('3')
+            ->setClienteTipo('1')
+            ->setClienteNro($ventas->dni)
+            ->setTotal($ventas->venta_total)
+            ->setMtoOperGravadas($ventas->venta_total)
+            ->setMtoOperInafectas(0)
+            ->setMtoOperExoneradas($ventas->venta_total)
+            ->setMtoOtrosCargos(0)
+            ->setMtoIGV(0);
 
-        if (!$result->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
-            dd($result->getError());
-            exit();
-        }
-
-        $ticket = $result->getTicket();
-        dd ('Ticket : ' . $ticket . PHP_EOL);
-
-        $statusResult = $see->getStatus($ticket);
-        if (!$statusResult->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
-            dd($statusResult->getError());
-            return;
-        }
-
-        dd ($statusResult->getCdrResponse()->getDescription());
-        // Guardar CDR
-        file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
-
-        
-
+        $resumen = new Summary();
+        $resumen
+            ->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de las boletas.
+            ->setFecResumen(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envío del resumen diario.
+            ->setCorrelativo('0000000000' . $ventas->venta_correlativo) // Correlativo, necesario para diferenciar de otros Resumen diario del mismo día.
+            ->setCompany($company)
+            ->setDetails([$detail2]);
 
         $firma = new firma_sunat_controller();
         $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
 
-        $detail1 = new VoidedDetail();
-        $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
-        $detail1
-            ->setTipoDoc( $tipo_doc) // Factura
-            ->setSerie($get->venta_serie)
-            ->setCorrelativo($get->venta_correlativo)
-            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
-  
-        $cDeBaja = new Voided();
-        $cDeBaja
-            ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
-            ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
-            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
-            ->setCompany($firma->company())
-            ->setDetails([$detail1]);
-
-        $result = $see->send($cDeBaja);
+        $result = $see->send($resumen);
         // Guardar XML
-        file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
 
         if (!$result->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
             dd($result->getError());
-            exit();
+            return response()->json([
+                'message' => 'error sunat',
+                'error' => 'error sunat',
+                'success' => false,
+                'data' => '',
+            ]);
         }
 
         $ticket = $result->getTicket();
-        dd ('Ticket : ' . $ticket . PHP_EOL);
 
         $statusResult = $see->getStatus($ticket);
         if (!$statusResult->isSuccess()) {
             // Si hubo error al conectarse al servicio de SUNAT.
-            dd($statusResult->getError());
-            return;
+            dd($result->getError());
+            return response()->json([
+                'message' => 'error sunat',
+                'error' => 'error sunat',
+                'success' => false,
+                'data' => '',
+            ]);
         }
 
-        dd ($statusResult->getCdrResponse()->getDescription());
+        $ventas->venta_estado = 'B';
+        $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
+        $ventas->save();
         // Guardar CDR
-        file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
+        file_put_contents($resumen->getName() . '.xml', $see->getFactory()->getLastXml());
+        file_put_contents('R-' . $resumen->getName() . '.zip', $statusResult->getCdrZip());
+
+        return response()->json([
+            'message' => 'se dio de baja este comprobante exitosamente',
+            'error' => '',
+            'success' => true,
+            'data' => '',
+        ]);
     }
 
     /* ******** registrar la venta con vue ************* */
@@ -466,6 +470,59 @@ class ventas_controller extends Controller
             return $pdf->stream();
         } else {
             return view('errors.404');
+        }
+    }
+
+    public function ventas_cliente($id)
+    {
+        $cuentas = cuentas::where('estado', 'A')->get();
+
+        $get = ventas::with([
+            'vendedor',
+            'detalle' => function ($query) {
+                $query->with([
+                    'servicio',
+                    'producto' => function ($query) {
+                        $query->with(['unidad']);
+                    },
+                ]);
+            },
+        ])->find(decrypt_id($id));
+
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.comprobante', ['get' => $get, 'id' => $id, 'cuentas' => $cuentas]);
+
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
+    }
+
+    public function send_correo(Request $request)
+    {
+        try {
+            $destinatario = $request->all()['correo'];
+            $ruta = asset('/') . 'ventas_cliente/' . $request->all()['id'];
+            $mensaje = 'Puede ver el comprante F001-10 en la siguiente ruta';
+
+            $mensaje = Mail::send('pdf.enviar_correo', ['mensaje' => $mensaje,"ruta"=>$ruta], function ($message) use ($destinatario) {
+                $message->to($destinatario)->subject('Asunto del mensaje');
+            });
+
+            return response()->json([
+                'message' => 'se envio el correo',
+                'error' => '',
+                'success' => true,
+                'data' => '',
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
         }
     }
 }

@@ -43,6 +43,10 @@
                                     Visualizar
                                 </a>
 
+                                <a href="#" class="dropdown-item"
+                                    v-on:click="enviar_comprobante_modal(v_t.id,index_v_t)" role="button"><i class="fa-solid fa-share-from-square"></i>
+                                    Enviar comprobante</a>
+
                                 <a href="#" class="dropdown-item" v-on:click="delete_venta(v_t.id,index_v_t)"
                                     role="button"><i class="fa fa-trash fa-1x"></i>
                                     Dar de baja</a>
@@ -52,6 +56,52 @@
                 </tr>
             </tbody>
         </table>
+
+        <CModal size="xl" :visible="is_enviar_comprobante_modal"
+            @close="() => { is_enviar_comprobante_modal = false }">
+
+            <CModalBody>
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar el comprobante
+                    </h5>
+                    <button type="button" class="close" @click="is_enviar_comprobante_modal = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="body">
+                    <form id="form_cliente" method="POST" action="#">
+                        
+                        <div class="modal-body">
+
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-sm-12">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" v-model="celular" placeholder="" aria-label="">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" v-on:click="send_whatsapp()" type="button"><i class="fa-brands fa-whatsapp"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" v-model="correo" placeholder="" aria-label="">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" v-on:click="send_correo()" type="button"><i class="fa-solid fa-envelope"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                         
+                    </form>
+                </div>
+            </CModalBody>
+        </CModal>
     </div>
 </template>
 
@@ -63,6 +113,15 @@
     import ColumnGroup from 'primevue/columngroup'; // optional
     import Row from 'primevue/row'; // optional
 
+    import {
+        CModal,
+        CForm,
+        CFormInput,
+        CInputGroup,
+        CFormSelect,
+        CFormCheck,
+        CButton
+    } from '@coreui/vue';
 
     import {
         myMixin
@@ -74,21 +133,95 @@
         data() {
             return {
                 id: this.$attrs.id,
-                tabla: []
+                url: this.$attrs.url,
+                index_id:0,
+                index:0,
+                tabla: [],
+                is_enviar_comprobante_modal: false,
+                correo:"",
+                celular:0
             }
         },
+        components: {
+            CModal,
+            CForm,
+            CFormInput,
+            CInputGroup,
+            CFormSelect,
+            CFormCheck,
+            CButton
+        },
         methods: {
+            enviar_comprobante_modal(id, index){
+                this.is_enviar_comprobante_modal = true;
+                this.index_id = id;
+                this.index = index;
+            },
             delete_venta(id, index) {
-                //eliminar
-                console.log("dsadas");
+                //eliminar 
+                Swal.fire({
+                    title: "Desea dar de baja este comprobante?",
+                    text: "No se podra revertir esto!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Si, deseo dar de baja!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios
+                            .delete("/ventas_baja/" + id)
+                            .then((response) => {
+
+                                if (response.data.success) {
+                                    this.alert_error(response.data.message)
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: response.data.error,
+                                        footer: "-------",
+                                    });
+                                    console.error(response.data);
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error 500",
+                                    text: "Error en el servidor, vuelva a intentar",
+                                    footer: "-------",
+                                });
+                                console.error(error);
+                            });
+                    }
+                });
+            },
+            send_whatsapp(){
+                var documento = this.tabla[this.index].venta_serie +"-"+ this.tabla[this.index].venta_correlativo;
+                this.venta_whatsapp("Puede ver el comprante "+documento+" en la siguiente ruta = ",this.url+"ventas_cliente/"+this.index_id, "+51" + this.celular)
+            },
+            send_correo(){
+
+                const headers = {
+                                "Content-Type": "application/json",
+                            };
+                             
+                            const data = {
+                                correo : this.correo,
+                                id:this.index_id
+                            };
+                                  
                 axios
-                .delete("/ventas_baja/"+id)
+                .post("/send_correo", data, {
+                                    headers,
+                                })
                 .then((response) => {
 
                     if (response.data.success) {
-                        console.log(response.data.data.original.data);
-                        this.tabla = response.data.data.original.data
-                       
+                         
+                        this.alert_success("se envio el correo "+this.correo+" exitosamente");
+                        
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -107,7 +240,7 @@
                         footer: "-------",
                     });
                     console.error(error);
-                });
+                });    
             }
         },
         created() {
@@ -116,9 +249,9 @@
                 .then((response) => {
 
                     if (response.data.success) {
-                        console.log(response.data.data.original.data);
-                        this.tabla = response.data.data.original.data
-                       
+                         
+                        this.tabla = response.data.data.original.data;
+                        
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -141,7 +274,7 @@
         },
         mounted() {
 
-           
+
 
         },
 

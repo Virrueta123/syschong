@@ -22,7 +22,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <div id="app">
-                    <tablas-ventas></tablas-ventas>
+                    <tablas-ventas url="{{$url}}"></tablas-ventas>
                 </div>
             </div>
         </div>

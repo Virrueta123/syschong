@@ -75,6 +75,12 @@ export const myMixin = {
         // Abre la URL en una nueva ventana o pestaña del navegador
         window.open(ruta, '_blank');
       },
+      async venta_whatsapp(texto,url, phone) {
+        var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text='+texto+' url='+url;
+
+        // Abre la URL en una nueva ventana o pestaña del navegador
+        window.open(ruta, '_blank');
+      },
       async venta_url(url, phone) {
         var ruta = 'https://api.whatsapp.com/send?phone='+phone+'&text=Hola su moto esta lista, su boleta lo puede ver en esta url='+url;
 
