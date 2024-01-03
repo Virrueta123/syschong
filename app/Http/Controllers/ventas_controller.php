@@ -503,7 +503,7 @@ class ventas_controller extends Controller
         try {
             $destinatario = $request->all()['correo'];
             $ruta = asset('/') . 'ventas_cliente/' . $request->all()['id'];
-            $mensaje = 'Puede ver el comprante F001-10 en la siguiente ruta';
+            $mensaje = 'Puede ver el comprante '.$request->all()['documento'].' en la siguiente ruta';
 
             $mensaje = Mail::send('pdf.enviar_correo', ['mensaje' => $mensaje,"ruta"=>$ruta], function ($message) use ($destinatario) {
                 $message->to($destinatario)->subject('Asunto del mensaje');

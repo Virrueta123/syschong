@@ -202,14 +202,15 @@
                 this.venta_whatsapp("Puede ver el comprante "+documento+" en la siguiente ruta = ",this.url+"ventas_cliente/"+this.index_id, "+51" + this.celular)
             },
             send_correo(){
-
+                var documento = this.tabla[this.index].venta_serie +"-"+ this.tabla[this.index].venta_correlativo;
                 const headers = {
                                 "Content-Type": "application/json",
                             };
                              
                             const data = {
                                 correo : this.correo,
-                                id:this.index_id
+                                id:this.index_id,
+                                documento:documento
                             };
                                   
                 axios
