@@ -11,7 +11,7 @@
 
 <div class="container mt-4">
   <div class="card" style="width: 18rem;">
-    <img src="{{asset('/')}}images/empresa/logo-chong.png" class="card-img-top" alt="Imagen">
+    <img src="{{asset('/')}}images/empresa/logo-chong.png" width="80" class="card-img-top" alt="Imagen">
     <div class="card-body">
       <h5 class="card-title">{{$mensaje}}</h5> 
       <a href="{{$ruta}}" class="btn btn-primary">Mirar Comprobante</a>
