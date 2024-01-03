@@ -46,9 +46,7 @@
                 </div>
                 <div class="card-body">
                     <div id="app">
-
-                  
-
+ 
                         <div class="card-header">
                             <h2 class="section-title">Datos de la moto</h2>
                         </div>
@@ -66,7 +64,7 @@
                                 <label for="mtx_color">Color</label>
                                 <div class="col-md-12">
                                     <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-primary" id="#azul">
+                                        <label class="btn btn-primary " id="#azul">
                                           <input type="radio" name="mtx_color" checked value="azul"> Azul
                                         </label>
                                         <label class="btn btn-warning">

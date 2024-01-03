@@ -759,6 +759,11 @@ class datatables_controller extends Controller
                         return $Data->ruc;
                     }
                 })
+                
+            ->addColumn('id', static function ($Data) {
+                $venta_id = encrypt_id($Data->venta_id);
+                return $venta_id;
+            })
                 ->addColumn('forma_pago', static function ($Data) {
                     switch ($Data->forma_pago) {
                         case 'CO':
@@ -786,7 +791,9 @@ class datatables_controller extends Controller
                 'success' => false,
                 'data' => '',
             ]);
-        } 
+        }
+
+       
 
         /*
         $html = $builder

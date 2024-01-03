@@ -1531,19 +1531,9 @@ class cotizacion_controller extends Controller
                 return view('buttons.cotizacion', ['cotizacion_id' => $cotizacion_id]);
             })
             ->addColumn('cliente', function ($Data) {
-                if(is_null($Data->inventario->moto->cliente)){
-                    return "Sin Cliente";
-                }else{
-                    if ($Data->inventario->moto->cliente->cli_ruc != 'no tiene') {
-                        return $Data->inventario->moto->cliente->cli_razon_social;
-                    } else {
-                        if (is_null($Data->inventario->moto->cliente->cli_ruc)) {
-                            return $Data->inventario->moto->cliente->cli_nombre . ' ' . $Data->inventario->moto->cliente->cli_apellido;
-                        } else {
-                            return $Data->inventario->moto->cliente->cli_razon_social;
-                        }
-                    }
-                }
+                
+
+                return view("complementos.activacion_cliente",compact("Data"));
                 
             })
             ->addColumn('numero', function ($Data) {

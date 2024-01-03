@@ -13,11 +13,11 @@
                     <th>Venta Total</th>
                     <th>MtoOperGravadas</th>
                     <th>SubTotal</th>
-                    <th>forma pago</th> 
+                    <th>forma pago</th>
                     <th><i class="fa fa-plus" aria-hidden="true"></i></th>
                 </tr>
             </thead>
-            <tbody> 
+            <tbody>
                 <tr v-for="(v_t, index_v_t) in tabla" :key="index_v_t">
                     <td>{{ v_t . fecha_creacion }}</td>
                     <td>{{ v_t . tipo_venta }}</td>
@@ -30,19 +30,24 @@
                     <td>{{ v_t . SubTotal }}</td>
                     <td>{{ v_t . forma_pago }}</td>
                     <td>
-                        <!--  
-                        <div class="form-group">
-                            <div class="input-group mb-3">
-                                <input type="number" class="form-control form-control-sm" name="" id=""
-                                    aria-describedby="helpId" v-on:keyup="change_cantidad(index_v_t)" placeholder="">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary btn-sm" v-on:click="click_cantidad(index_v_t)"
-                                        type="button"><i class="fa fa-plus"></i></button>
-                                </div>
+
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-cogs"></i>
+                            </button>
+                            <div class="dropdown-menu" x-placement="bottom-start"
+                                style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+
+                                <a class="dropdown-item" :href="'/ventas/' + v_t.id"> <i class="fa fa-eye fa-1x"></i>
+                                    Visualizar
+                                </a>
+
+                                <a href="#" class="dropdown-item" v-on:click="delete_venta(v_t.id,index_v_t)"
+                                    role="button"><i class="fa fa-trash fa-1x"></i>
+                                    Dar de baja</a>
                             </div>
                         </div>
-                     -->
-                       
                     </td>
                 </tr>
             </tbody>
@@ -69,40 +74,21 @@
         data() {
             return {
                 id: this.$attrs.id,
-                tabla:[]
+                tabla: []
             }
         },
         methods: {
-
-        },
-        mounted() {
- 
-            axios
-                .get("/tablas_ventas")
+            delete_venta(id, index) {
+                //eliminar
+                console.log("dsadas");
+                axios
+                .delete("/ventas_baja/"+id)
                 .then((response) => {
 
                     if (response.data.success) {
-                        console.log( response.data.data.original.data );
+                        console.log(response.data.data.original.data);
                         this.tabla = response.data.data.original.data
-                        this.$nextTick(() => {
-                        $("#table_venta").DataTable({
-                            language: {
-                                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                            },
-                            "info": true,
-                            processing: true,
-                            fixedColumns: true,
-                            keys: true,
-                            colReorder: true,
-                            "lengthChange": true,
-                            'responsive': true,
-                            "autoWidth": false,
-                            "ordering": true,
-                            paging: true, // Activa la paginación
-                            lengthMenu: [5, 10, 25, 50],
-                        });
-
-                    });
+                       
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -122,10 +108,40 @@
                     });
                     console.error(error);
                 });
+            }
+        },
+        created() {
+            axios
+                .get("/tablas_ventas")
+                .then((response) => {
 
+                    if (response.data.success) {
+                        console.log(response.data.data.original.data);
+                        this.tabla = response.data.data.original.data
+                       
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: response.data.message,
+                            footer: "-------",
+                        });
+                        console.error(response.data);
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error 500",
+                        text: "Error en el servidor, vuelva a intentar",
+                        footer: "-------",
+                    });
+                    console.error(error);
+                });
+        },
+        mounted() {
 
-
-        
+           
 
         },
 

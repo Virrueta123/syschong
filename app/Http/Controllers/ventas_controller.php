@@ -298,6 +298,100 @@ class ventas_controller extends Controller
         file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
     }
 
+
+    public function ventas_baja($id){
+        $get = ventas::find(decrypt_id($id));
+
+        $firma = new firma_sunat_controller();
+        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+
+        $detail1 = new VoidedDetail();
+        $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
+        $detail1
+            ->setTipoDoc( $tipo_doc) // Factura
+            ->setSerie($get->venta_serie)
+            ->setCorrelativo($get->venta_correlativo)
+            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
+  
+        $cDeBaja = new Voided();
+        $cDeBaja
+            ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
+            ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
+            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
+            ->setCompany($firma->company())
+            ->setDetails([$detail1]);
+
+        $result = $see->send($cDeBaja);
+        // Guardar XML
+        file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
+
+        if (!$result->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($result->getError());
+            exit();
+        }
+
+        $ticket = $result->getTicket();
+        dd ('Ticket : ' . $ticket . PHP_EOL);
+
+        $statusResult = $see->getStatus($ticket);
+        if (!$statusResult->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($statusResult->getError());
+            return;
+        }
+
+        dd ($statusResult->getCdrResponse()->getDescription());
+        // Guardar CDR
+        file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
+
+        
+
+
+        $firma = new firma_sunat_controller();
+        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+
+        $detail1 = new VoidedDetail();
+        $tipo_doc = $get->tipo_comprobante == 'B' ? '01' : '03';
+        $detail1
+            ->setTipoDoc( $tipo_doc) // Factura
+            ->setSerie($get->venta_serie)
+            ->setCorrelativo($get->venta_correlativo)
+            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
+  
+        $cDeBaja = new Voided();
+        $cDeBaja
+            ->setCorrelativo(generarNumeroConsecutivo(app('empresa')->nro_baja())) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
+            ->setFecGeneracion(new \DateTime($get->fecha_creacion)) // Fecha de emisión de los comprobantes a dar de baja
+            ->setFecComunicacion(new \DateTime(Carbon::now()->format("Y-m-d"))) // Fecha de envio de la C. de baja
+            ->setCompany($firma->company())
+            ->setDetails([$detail1]);
+
+        $result = $see->send($cDeBaja);
+        // Guardar XML
+        file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
+
+        if (!$result->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($result->getError());
+            exit();
+        }
+
+        $ticket = $result->getTicket();
+        dd ('Ticket : ' . $ticket . PHP_EOL);
+
+        $statusResult = $see->getStatus($ticket);
+        if (!$statusResult->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($statusResult->getError());
+            return;
+        }
+
+        dd ($statusResult->getCdrResponse()->getDescription());
+        // Guardar CDR
+        file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
+    }
+
     /* ******** registrar la venta con vue ************* */
     /**
      * Store a newly created resource in storage.
