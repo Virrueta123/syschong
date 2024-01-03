@@ -44,7 +44,7 @@
                         <i class="fa fa-edit"></i> Editar imagen</button>
                 </div>
 
-                <a v-if="cotizacion . inventario . moto . cliente" type="button"
+                <a   type="button"
                     class="btn btn-info boton-color custom-next mr-2 pr-2" target="_blank"
                     :href="'/imprimir_inventario_moto/' + cotizacion.inventario.url">
                     Imprimir orden de servicio</a>

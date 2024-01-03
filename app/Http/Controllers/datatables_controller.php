@@ -304,6 +304,9 @@ class datatables_controller extends Controller
                     case 'R':
                         return 'Rechazado';
                         break;
+                        case 'B':
+                            return 'Dado de baja';
+                            break;
                 }
             })
             ->addColumn('cliente', static function ($Data) {

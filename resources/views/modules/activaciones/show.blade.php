@@ -236,7 +236,7 @@
 
 
                                                     <a class="dropdown-item"
-                                                        href="{{ route('cotizaciones.show', $cotesia->cortesias_activacion_id) }}">
+                                                        href="{{ route('cotizaciones.show', encrypt_id($cotesia->cotizacion->cotizacion_id)) }}">
                                                         <i class="fa fa-eye fa-1x"></i>Ver Proceso
                                                     </a>
                                                     <!-- ********   

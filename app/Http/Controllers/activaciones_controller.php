@@ -193,7 +193,7 @@ class activaciones_controller extends Controller
                 ]);
             },
             'cortesias' => function ($query) {
-                return $query->with(['tcobrar']);
+                return $query->with(['tcobrar','cotizacion']);
             },
             'vendedor',
         ])->find(decrypt_id($id));
@@ -343,6 +343,7 @@ class activaciones_controller extends Controller
 
     public function create_vue_cortesia(Request $request)
     {
+      
         $ultimo_registro = inventario_moto::max('inventario_numero');
 
         if ($ultimo_registro) {
@@ -352,14 +353,15 @@ class activaciones_controller extends Controller
         }
 
         $datax = $request->all();
+     
         $activaciones = json_decode($datax['activaciones']);
 
         $select_acesorios = json_decode($datax['select_acesorios']);
         $select_autorizacion = json_decode($datax['select_autorizacion']);
 
         $validate = $request->validate([
-            'inventario_moto_obs_cliente' => 'required',
-            'inventario_moto_nivel_gasolina' => 'required',
+            'inventario_moto_obs_cliente' => 'nullable',
+            'inventario_moto_nivel_gasolina' => 'nullable',
         ]);
 
         $validate['inventario_numero'] = $ultimo_registro;

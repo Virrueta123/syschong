@@ -29,6 +29,7 @@
                     <td>{{ v_t . MtoOperGravadas }}</td>
                     <td>{{ v_t . SubTotal }}</td>
                     <td>{{ v_t . forma_pago }}</td>
+
                     <td>
 
                         <div class="dropdown d-inline">
@@ -44,7 +45,8 @@
                                 </a>
 
                                 <a href="#" class="dropdown-item"
-                                    v-on:click="enviar_comprobante_modal(v_t.id,index_v_t)" role="button"><i class="fa-solid fa-share-from-square"></i>
+                                    v-on:click="enviar_comprobante_modal(v_t.id,index_v_t)" role="button"><i
+                                        class="fa-solid fa-share-from-square"></i>
                                     Enviar comprobante</a>
 
                                 <a href="#" class="dropdown-item" v-on:click="delete_venta(v_t.id,index_v_t)"
@@ -61,7 +63,7 @@
             @close="() => { is_enviar_comprobante_modal = false }">
 
             <CModalBody>
-                
+
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar el comprobante
                     </h5>
@@ -71,24 +73,28 @@
                 </div>
                 <div class="body">
                     <form id="form_cliente" method="POST" action="#">
-                        
+
                         <div class="modal-body">
 
                             <div class="card-body">
                                 <div class="form-row">
                                     <div class="form-group col-sm-12">
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" v-model="celular" placeholder="" aria-label="">
+                                            <input type="text" class="form-control" v-model="celular" placeholder=""
+                                                aria-label="">
                                             <div class="input-group-append">
-                                                <button class="btn btn-primary" v-on:click="send_whatsapp()" type="button"><i class="fa-brands fa-whatsapp"></i></button>
+                                                <button class="btn btn-primary" v-on:click="send_whatsapp()"
+                                                    type="button"><i class="fa-brands fa-whatsapp"></i></button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-12">
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" v-model="correo" placeholder="" aria-label="">
+                                            <input type="text" class="form-control" v-model="correo" placeholder=""
+                                                aria-label="">
                                             <div class="input-group-append">
-                                                <button class="btn btn-primary" v-on:click="send_correo()" type="button"><i class="fa-solid fa-envelope"></i></button>
+                                                <button class="btn btn-primary" v-on:click="send_correo()"
+                                                    type="button"><i class="fa-solid fa-envelope"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -97,7 +103,7 @@
 
 
                         </div>
-                         
+
                     </form>
                 </div>
             </CModalBody>
@@ -134,12 +140,12 @@
             return {
                 id: this.$attrs.id,
                 url: this.$attrs.url,
-                index_id:0,
-                index:0,
+                index_id: 0,
+                index: 0,
                 tabla: [],
                 is_enviar_comprobante_modal: false,
-                correo:"",
-                celular:0
+                correo: "",
+                celular: 0
             }
         },
         components: {
@@ -152,7 +158,25 @@
             CButton
         },
         methods: {
-            enviar_comprobante_modal(id, index){
+            async load_data() {
+                $("#table_venta").DataTable({
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    },
+                    "info": true,
+                    processing: true,
+                    fixedColumns: true,
+                    keys: true,
+                    colReorder: true,
+                    "lengthChange": true,
+                    'responsive': true,
+                    "autoWidth": false,
+                    "ordering": true,
+                    paging: true, // Activa la paginación
+                    lengthMenu: [5, 10, 25, 50],
+                });
+            },
+            enviar_comprobante_modal(id, index) {
                 this.is_enviar_comprobante_modal = true;
                 this.index_id = id;
                 this.index = index;
@@ -197,62 +221,66 @@
                     }
                 });
             },
-            send_whatsapp(){
-                var documento = this.tabla[this.index].venta_serie +"-"+ this.tabla[this.index].venta_correlativo;
-                this.venta_whatsapp("Puede ver el comprante "+documento+" en la siguiente ruta = ",this.url+"ventas_cliente/"+this.index_id, "+51" + this.celular)
+            send_whatsapp() {
+                var documento = this.tabla[this.index].venta_serie + "-" + this.tabla[this.index].venta_correlativo;
+                this.venta_whatsapp("Puede ver el comprante " + documento + " en la siguiente ruta = ", this.url +
+                    "ventas_cliente/" + this.index_id, "+51" + this.celular)
             },
-            send_correo(){
-                var documento = this.tabla[this.index].venta_serie +"-"+ this.tabla[this.index].venta_correlativo;
+            send_correo() {
+                var documento = this.tabla[this.index].venta_serie + "-" + this.tabla[this.index].venta_correlativo;
                 const headers = {
-                                "Content-Type": "application/json",
-                            };
-                             
-                            const data = {
-                                correo : this.correo,
-                                id:this.index_id,
-                                documento:documento
-                            };
-                                  
-                axios
-                .post("/send_correo", data, {
-                                    headers,
-                                })
-                .then((response) => {
+                    "Content-Type": "application/json",
+                };
 
-                    if (response.data.success) {
-                         
-                        this.alert_success("se envio el correo "+this.correo+" exitosamente");
-                        
-                    } else {
+                const data = {
+                    correo: this.correo,
+                    id: this.index_id,
+                    documento: documento
+                };
+
+                axios
+                    .post("/send_correo", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+
+                            this.alert_success("se envio el correo " + this.correo + " exitosamente");
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            console.error(response.data);
+                        }
+                    })
+                    .catch((error) => {
                         Swal.fire({
                             icon: "error",
-                            title: "Error",
-                            text: response.data.message,
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
                             footer: "-------",
                         });
-                        console.error(response.data);
-                    }
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error 500",
-                        text: "Error en el servidor, vuelva a intentar",
-                        footer: "-------",
+                        console.error(error);
                     });
-                    console.error(error);
-                });    
             }
         },
         created() {
+         
+        },
+        mounted() { 
             axios
                 .get("/tablas_ventas")
                 .then((response) => {
 
                     if (response.data.success) {
-                         
+
                         this.tabla = response.data.data.original.data;
-                        
+ 
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -262,6 +290,8 @@
                         });
                         console.error(response.data);
                     }
+                }).then((response) => {
+                  
                 })
                 .catch((error) => {
                     Swal.fire({
@@ -271,15 +301,8 @@
                         footer: "-------",
                     });
                     console.error(error);
-                });
-        },
-        mounted() {
-
-
-
-        },
-
-
+                }); 
+        }, 
     }
 </script>
 

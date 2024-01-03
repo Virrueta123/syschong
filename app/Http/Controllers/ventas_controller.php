@@ -309,7 +309,89 @@ class ventas_controller extends Controller
 
     public function ventas_baja($id)
     {
+        
         $ventas = ventas::where('venta_id', decrypt_id($id))->first();
+
+        $firma = new firma_sunat_controller();
+        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
+
+        $company = new Company();
+
+        $company
+            ->setRuc('10464579481')
+            ->setRazonSocial('ROSA LUZ INGA TORRES')
+            ->setNombreComercial('ROSA LUZ INGA TORRES')
+            ->setAddress(
+                (new Address())
+                    ->setUbigueo('210601')
+                    ->setDepartamento('SAN MARTIN')
+                    ->setProvincia('SAN MARTIN')
+                    ->setDistrito('TARAPOTO')
+                    ->setUrbanizacion('-')
+                    ->setDireccion('PJ. UNION 126B LOZA BELAUNDE'),
+            );
+
+ 
+        $detail1 = new VoidedDetail();
+        $detail1->setTipoDoc("01") // Factura
+            ->setSerie($ventas->venta_serie)
+            ->setCorrelativo($ventas->venta_correlativo)
+            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
+   
+        
+        $cDeBaja = new Voided();
+        $cDeBaja->setCorrelativo('00001') // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
+            ->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de los comprobantes a dar de baja
+            ->setFecComunicacion(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envio de la C. de baja
+            ->setCompany($company)
+            ->setDetails([$detail1]);
+        
+        $result = $see->send($cDeBaja);
+        // Guardar XML
+        file_put_contents($cDeBaja->getName().'.xml',
+                          $see->getFactory()->getLastXml());
+        
+        if (!$result->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($result->getError());
+            return response()->json([
+                'message' => 'error sunat',
+                'error' => 'error al conectarse a la sunat',
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+        
+        $ticket = $result->getTicket();
+        dd('Ticket : '.$ticket.PHP_EOL);
+        
+        $statusResult = $see->getStatus($ticket);
+        if (!$statusResult->isSuccess()) {
+            // Si hubo error al conectarse al servicio de SUNAT.
+            dd($statusResult->getError());
+            return response()->json([
+                'message' => 'error sunat',
+                'error' => 'error al conectarse a la sunat',
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+        
+       //dd($statusResult->getCdrResponse()->getDescription()) ;
+        // Guardar CDR
+        file_put_contents('R-'.$cDeBaja->getName().'.zip', $statusResult->getCdrZip());
+
+        $ventas->venta_estado = 'B';
+        $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
+        $ventas->save();
+    
+        return response()->json([
+            'message' => 'se dio de baja este comprobante exitosamente',
+            'error' => '',
+            'success' => true,
+            'data' => '',
+        ]);
+        //
 
         $company = new Company();
 
@@ -330,18 +412,26 @@ class ventas_controller extends Controller
         $tipo_doc = $ventas->tipo_comprobante == 'B' ? '01' : '03';
 
         $detail2 = new SummaryDetail();
-        $detail2
+
+        
+            $detail2
             ->setTipoDoc($tipo_doc)
             ->setSerieNro($ventas->venta_serie . '-' . $ventas->venta_correlativo)
-            ->setEstado('3')
-            ->setClienteTipo('1')
-            ->setClienteNro($ventas->dni)
+            ->setEstado('3') 
             ->setTotal($ventas->venta_total)
             ->setMtoOperGravadas($ventas->venta_total)
             ->setMtoOperInafectas(0)
             ->setMtoOperExoneradas($ventas->venta_total)
             ->setMtoOtrosCargos(0)
             ->setMtoIGV(0);
+       
+            $detail1 = new VoidedDetail();
+            $detail1->setTipoDoc('01') // Factura
+                ->setSerie('F001')
+                ->setCorrelativo('1')
+                ->setDesMotivoBaja('ERROR EN CÁLCULOS');    
+
+        
 
         $resumen = new Summary();
         $resumen

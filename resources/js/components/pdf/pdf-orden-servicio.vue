@@ -272,21 +272,22 @@
         methods: {
             async load_inventario(){
                 console.log( this.cotizacion.cortesia.activaciones.moto.cliente);
-                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente.cli_telefono; 
+
+                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_telefono : "sin cliente"; 
                 
-                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente.cli_dni; 
+                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_dni : "sin cliente"; 
 
-                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente.cli_nombre +" "+this.cotizacion.cortesia.activaciones.moto.cliente.cli_apellido; 
+                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_nombre +" "+this.cotizacion.cortesia.activaciones.moto.cliente.cli_apellido: "sin cliente"; 
 
-                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente.cli_direccion ; 
+                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_direccion : "sin cliente"; 
 
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo : "sin cliente";
 
-                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito ;
+                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito : "sin cliente";
 
-                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente.cli_departamento ;
+                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_departamento : "sin cliente";
 
-                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito ;
+                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito: "sin cliente" ;
 
                 this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre ;
 
@@ -310,8 +311,7 @@
                 this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina ;
 
                 this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
-
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo ;
+ 
 
                 this.dia1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
                  
