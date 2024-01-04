@@ -467,7 +467,7 @@ class activaciones_controller extends Controller
                 'message' => 'se creo correctamente la cortesia',
                 'error' => '',
                 'success' => true,
-                'data' => route('activaciones.show', encrypt_id($activaciones->activaciones_id)),
+                'data' => route('cotizaciones.show', encrypt_id($cotizacion->cotizacion_id)),
             ]);
         } else {
             Log::error('no se pudo registrar el inventario de la moto');

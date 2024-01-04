@@ -444,12 +444,16 @@ class clienteController extends Controller
             $cliente->cli_provincia_ruc = $datax['cli_provincia_ruc'];
             $cliente->cli_departamento_ruc = $datax['cli_departamento_ruc'];
             $cliente->cli_distrito_ruc = $datax['cli_distrito_ruc'];
+ 
             $cliente->save();
             $cli_id = $cliente->cli_id;
 
+          
             $moto = motos::find($datax['mtx_id']);
 
             $moto->cli_id = $cli_id;
+
+            
 
             if ($moto->update()) {
                 return response()->json([
