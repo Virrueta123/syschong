@@ -168,8 +168,7 @@
                     fixedColumns: true,
                     keys: true,
                     colReorder: true,
-                    "lengthChange": true,
-                    'responsive': true,
+                    "lengthChange": true, 
                     "autoWidth": false,
                     "ordering": true,
                     paging: true, // Activa la paginación
@@ -280,7 +279,7 @@
                     if (response.data.success) {
 
                         this.tabla = response.data.data.original.data;
- 
+                       
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -291,7 +290,7 @@
                         console.error(response.data);
                     }
                 }).then((response) => {
-                  
+                    this.load_data()
                 })
                 .catch((error) => {
                     Swal.fire({

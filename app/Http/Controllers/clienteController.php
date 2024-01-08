@@ -577,9 +577,10 @@ class clienteController extends Controller
     {
         try {
             $datax = $req->all();
-
+        
             $cliente = cliente::find($datax['cli_id']);
-            $cliente->cli_telefono = $datax['cli_telefono'];
+        
+            $cliente->cli_telefono =  $req->all()['cli_telefono']; 
 
             if ($cliente->update()) {
                 return response()->json([

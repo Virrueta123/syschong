@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\accesorios;
+use App\Models\autorizaciones;
+use App\Models\empresa;
+use App\Models\producto;
+use App\Models\productos_defecto;
+use App\Models\servicios_defecto;
 use Illuminate\Http\Request;
 
 class orden_de_servicio_controller extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +23,6 @@ class orden_de_servicio_controller extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -23,7 +32,25 @@ class orden_de_servicio_controller extends Controller
      */
     public function create()
     {
-        
+        $accesorios = accesorios::all();
+        $autorizaciones = autorizaciones::all();
+
+        $servicios_defecto = servicios_defecto::with(['servicio'])
+            ->orderBy('created_at')
+            ->get();
+
+
+        //agregar aceite 
+        $productos_defecto = producto::with(['producto_modelo', "unidad"])
+            ->where('unidades_id', 65)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
+        $empresa = empresa::first();
+ 
+
+        return view('modules.order_de_servicio.create', compact('accesorios', 'autorizaciones', "servicios_defecto", "productos_defecto", "empresa"));
     }
 
     /**

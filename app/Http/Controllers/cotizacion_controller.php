@@ -50,6 +50,7 @@ use Greenter\Model\Voided\VoidedDetail;
 use Greenter\Model\Summary\Summary;
 use Greenter\Model\Summary\SummaryDetail;
 use Greenter\Model\Sale\Document;
+use Illuminate\Support\Facades\Mail;
 
 class cotizacion_controller extends Controller
 {
@@ -319,6 +320,7 @@ class cotizacion_controller extends Controller
             'cotizacion_image',
             'inventario' => function ($query) {
                 $query->with([
+                    'cortesia',
                     'moto' => function ($query) {
                         $query->with(['cliente', 
                         'modelo'=>function ($query) {
@@ -344,8 +346,7 @@ class cotizacion_controller extends Controller
                 ]);
             },
         ])->find(decrypt_id($id));
-
-        
+ 
   
         $correlativo_factura = ventas::where('tipo_comprobante', 'F')->max('venta_correlativo');
 
@@ -1623,6 +1624,37 @@ class cotizacion_controller extends Controller
         ];
 
         return response()->json($responseData);
+    }
+    /* *********************** */
+
+    /* ******** enviar cotizacion correo ************* */
+    public function send_correo_cotizacion(Request $request)
+    {
+        try {
+            
+            $destinatario = $request->all()['correo'];
+            $ruta = asset('/') . 'cotizacion/' . encrypt_id($request->all()['id'])."/cliente";
+            $mensaje = 'Somos de Repuestos & Servicios Chong. Le enviamos esta cotizacion de su moto.Lo puede revisar en la siguiente ruta ';
+
+            $mensaje = Mail::send('pdf.enviar_correo', ['mensaje' => $mensaje,"ruta"=>$ruta], function ($message) use ($destinatario) {
+                $message->to($destinatario)->subject('Asunto del mensaje');
+            });
+
+            return response()->json([
+                'message' => 'se envio el correo',
+                'error' => '',
+                'success' => true,
+                'data' => '',
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
     /* *********************** */
 }

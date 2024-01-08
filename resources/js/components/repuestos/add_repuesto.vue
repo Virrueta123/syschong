@@ -13,107 +13,105 @@
 
         <div class="row">
             <div class="col-sm-6">
+                <h4>Servicios seleccionado</h4>
                 <table class="table table-striped table-inverse table-sm">
-                                        <thead class="thead-inverse">
-                                            <tr>
-                                                <th>Descripcion</th>
-                                                <th>Codigo </th>
-                                                <th>Precio</th>
-                                                <th>cantidad</th>
-                                                <th>Agregar</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(ser, index) in servicios_defecto" :key="index">
-                                                <td scope="row">
-                                                    <div class="text-job text-muted">{{ ser.servicio . servicios_nombre }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="media-title">SER-{{ ser.servicio . servicios_codigo }}
-                                                    </div>
-                                                </td>
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th>Descripcion</th>
+                            <th>Codigo </th>
+                            <th>Precio</th>
+                            <th>cantidad</th>
+                            <th>Agregar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(ser, index_s_d) in servicios_defecto" :key="index_s_d">
+                            <td scope="row">
+                                <div class="text-job text-muted">{{ ser . servicio . servicios_nombre }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="media-title">SER-{{ ser . servicio . servicios_codigo }}
+                                </div>
+                            </td>
 
-                                                <td>
-                                                    <div class="media-title">{{ ser.servicio . servicios_precio }}</div>
-                                                </td>
+                            <td>
+                                <div class="media-title">{{ ser . servicio . servicios_precio }}</div>
+                            </td>
 
-                                                <td>
-                                                    <div class="media-item">
-                                                        <div class="media-value"><input
-                                                                :id="'cantidad_servicios' + index"
-                                                                v-on:change="cantidad_servicios_change($event,index)"
-                                                                type="number" value="1"
-                                                                class="form-control text-center"></div>
-                                                        <div class="media-label">cantidad</div>
-                                                    </div>
-                                                </td>
+                            <td>
+                                <div class="media-item">
+                                    <div class="media-value"><input :id="'cantidad_servicios' + index_s_d"
+                                            v-on:change="cantidad_servicios_change($event,index_s_d)" type="number"
+                                            value="1" class="form-control text-center form-xs input-xs"></div> 
+                                </div>
+                            </td>
+                            <td>
+                                <div class="media-item">
+                                    <button v-on:click="agregar_servicio_seleccionado( index_s_d)" type="button"
+                                        class="btn btn-primary boton-color"><i class="fa fa-plus"
+                                            aria-hidden="true"></i></button>
+                                </div>
+                            </td>
+                        </tr>
 
-
-                                                <td>
-                                                    <div class="media-item">
-                                                        <button v-on:click="agregar_servicio( index,ser.servicio.servicios_id)"
-                                                            type="button" class="btn btn-primary boton-color"><i
-                                                                class="fa fa-plus" aria-hidden="true"></i></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
+                    </tbody>
+                </table>
             </div>
             <div class="col-sm-6">
-                <table class="table table-striped table-inverse table-responsive">
-                                    <thead class="thead-inverse">
-                                        <tr>
-                                            <th>Descripcion</th>
-                                            <th>Codigo del sistema</th>
-                                            <th>Codigo de fabrica</th>
-                                            <th>Precio</th>
-                                            <th>Stock</th>
-                                            <th>cantidad</th>
-                                            <th>Agregar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(prod, index) in productos_defecto" :key="index">
-                                            <td scope="row">
-                                                <div class="text-job text-muted">{{ prod.producto.prod_nombre }} </div>
-                                            </td>
-                                            <td>
-                                                <div class="media-title">{{ prod.producto.prod_codigo }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="media-title">{{ prod.producto.prod_codigo_barra }}</div>
-                                            </td>
+                <h4>Buscar aceites</h4>
+                <table id="aceites" class="table table-striped table-inverse table-sm">
+                    <thead>
+                        <tr>
+                            <th>Descripcion</th>
+                            <th>Codigo del sistema</th>
+                            <th>Codigo de fabrica</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>cantidad</th>
+                            <th>Agregar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(prod, index_aceite) in productos_defecto" :key="index_aceite">
+                            <td scope="row">
+                                <div class="text-job text-muted">{{ prod . prod_nombre }} </div>
+                            </td>
+                            <td>
+                                <div class="media-title">{{ prod . prod_codigo }}</div>
+                            </td>
+                            <td>
+                                <div class="media-title">{{ prod . prod_codigo_barra }}</div>
+                            </td>
 
-                                            <td>
-                                                <div class="media-title">{{ prod.producto.precio }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="media-title">{{ prod.producto.stock }}</div>
-                                            </td>
-                                            <td v-if="parseInt(prod.producto.stock) != 0">
-                                                <div class="media-value"><input type="number"
-                                                        :id="'cantidad' + index"
-                                                        v-on:change="cantidad_change(prod.producto.stock,$event,index)"
-                                                        class="form-control text-center" value="1"></div>
-                                            </td>
-                                            <td colspan="2" v-else align="center">
-                                                <span class="badge badge-danger">Sin stock</span>
-                                            </td>
+                            <td>
+                                <div class="media-title">S/.{{ prod . precio }}</div>
+                            </td>
+                            <td>
+                                <div class="media-title">{{ prod . stock }}</div>
+                            </td>
+                            <td v-if="parseInt(prod.stock) != 0">
+                                <div class="media-value"><input type="number" :id="'cantidad' + index_aceite"
+                                        v-on:change="cantidad_change(prod.stock,$event,index_aceite)"
+                                        class="form-control text-center" value="1"></div>
+                            </td>
+                            <td colspan="1" v-else align="center">
+                                <span class="badge badge-danger">Sin stock</span>
+                            </td>
 
-                                            <td v-if="parseInt(prod.producto.stock) != 0">
-                                                <div class="media-item">
-                                                    <button type="button" :id="'button_add' + index"
-                                                        v-on:click="agregar_producto(prod.producto.stock,$event,index,prod.producto.prod_id)"
-                                                        class="btn btn-primary boton-color"><i class="fa fa-plus"
-                                                            aria-hidden="true"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <td v-if="parseInt(prod.stock) != 0">
+                                <div class="media-item">
+                                    <center><button type="button" :id="'button_add' + index_aceite"
+                                            v-on:click="agregar_aceite(index_aceite)"
+                                            class="btn btn-primary boton-color"><i class="fa fa-plus"
+                                                aria-hidden="true"></i></button></center>
+                                </div>
+                            </td>
+                            <td v-else class="text-center text-danger"> <i class="fa fa-ban" aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -143,7 +141,8 @@
                                     :value="repuesto.prod_id">
                                 <input type="hidden" :name="'cotizacion[' + index + '][servicios_id]'"
                                     :value="repuesto.servicios_id">
-                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'" :value="repuesto.tipo">
+                                <input type="hidden" :name="'cotizacion[' + index + '][tipo]'"
+                                    :value="repuesto.tipo">
                                 <input type="hidden" :name="'cotizacion[' + index + '][Precio]'"
                                     :value="repuesto.Precio">
                                 <input type="hidden" :name="'cotizacion[' + index + '][Importe]'"
@@ -178,7 +177,7 @@
 
 
                                 <td scope="row">{{ repuesto . Cantidad }}</td>
-                                <td scope="row">{{ repuesto . Importe }}</td>
+                                <td scope="row">S/.{{ repuesto . Importe }}</td>
                                 <td><button type="button" name="" id=""
                                         v-on:click="eliminar_producto(repuesto . prod_id)"
                                         class="btn btn-danger btn-sm"><i class="fa fa-trash"
@@ -198,7 +197,6 @@
                                             alt="">
                                         <h6>Agregue productos para continuar</h6>
                                     </center>
-
                                 </td>
                             </tr>
 
@@ -354,7 +352,13 @@
                                             v-on:keyup="buscando_servicio($event)">
                                     </div>
 
-                                    <table class="table table-striped table-inverse table-responsive">
+
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <div class=" table-responsive">  
+                                <table class="table table-striped table-inverse">
                                         <thead class="thead-inverse">
                                             <tr>
                                                 <th>Descripcion</th>
@@ -385,8 +389,7 @@
                                                                 :id="'cantidad_servicios' + index"
                                                                 v-on:change="cantidad_servicios_change($event,index)"
                                                                 type="number" value="1"
-                                                                class="form-control text-center"></div>
-                                                        <div class="media-label">cantidad</div>
+                                                                class="form-control text-center form-sm"></div> 
                                                     </div>
                                                 </td>
 
@@ -405,16 +408,7 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                    </table>
-
-
-                                </div>
-
-
-
-
-
-
+                                    </table></div>
                             </div>
 
                         </div>
@@ -440,6 +434,7 @@
     import "imask";
     import "bootstrap"
 
+
     import {
         myMixin
     } from "../../mixin.js";
@@ -463,6 +458,23 @@
             }
         },
         methods: {
+            async load_aceite() {
+                $("#aceites").DataTable({
+                    language: {
+                        "url": "/spanish_datatable"
+                    },
+                    "info": true,
+                    processing: true,
+                    fixedColumns: true,
+                    keys: true,
+                    colReorder: true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "ordering": true,
+                    paging: true, // Activa la paginación
+                    lengthMenu: [5, 10, 25, 50],
+                });
+            },
             change_precio(index) {
                 this.repuestos[index].Precio = event.target.value;
                 this.repuestos[index].Importe = this.repuestos[index].Precio * this.repuestos[index].Cantidad;
@@ -499,8 +511,33 @@
                 this.calcular_total();
                 this.$emit('childEvent', this.repuestos);
             },
+            agregar_aceite(index) {
 
-            agregar_servicio(index, identificador) {
+                console.log(this.show_productos)
+
+                var cantidad = $("#cantidad" + index).val();
+
+                this.repuestos.push({
+                    prod_id: this.productos_defecto[index].prod_id,
+                    tipo: "p",
+                    servicios_id: 0,
+                    Codigo: this.productos_defecto[index].prod_codigo,
+                    Descripcion: this.productos_defecto[index].prod_nombre,
+                    Detalle: "",
+                    unidad: this.productos_defecto[index].unidad.unidades_nombre,
+                    Precio: this.productos_defecto[index].precio,
+                    Descuento: 0,
+                    ValorDescuento: 0,
+                    Cantidad: cantidad,
+                    Importe: cantidad * this.productos_defecto[index].precio,
+                    ImporteDescuento: 0
+                })
+
+                this.calcular_total();
+                this.$emit('childEvent', this.repuestos);
+            },
+
+            agregar_servicio(index,identificador) {
 
                 var indice = this.show_servicios.findIndex(
                     (elemento) => elemento.servicios_id === identificador
@@ -526,6 +563,28 @@
                     })
 
                 }
+                this.calcular_total();
+                this.$emit('childEvent', this.repuestos);
+            },
+            agregar_servicio_seleccionado(index) {
+
+                var cantidad = $("#cantidad_servicios" + index).val();
+
+                this.repuestos.push({
+                    prod_id: 0,
+                    tipo: "s",
+                    servicios_id: this.servicios_defecto[index].servicio.servicios_id,
+                    Codigo: this.servicios_defecto[index].servicio.servicios_codigo,
+                    Descripcion: this.servicios_defecto[index].servicio.servicios_nombre,
+                    Detalle: "",
+                    unidad: "servicio",
+                    Precio: this.servicios_defecto[index].servicio.servicios_precio,
+                    Descuento: 0,
+                    ValorDescuento: 0,
+                    Cantidad: cantidad,
+                    Importe: cantidad * this.servicios_defecto[index].servicio.servicios_precio,
+                    ImporteDescuento: 0
+                })
                 this.calcular_total();
                 this.$emit('childEvent', this.repuestos);
             },
@@ -694,6 +753,11 @@
 
         },
         mounted() {
+            this.load_aceite();
+            /* -- ******** cargar los productos aceites ************* -- */
+
+            /* -- *********************** -- */
+
             console.log(this.servicios_defecto);
 
             var self = this

@@ -1,7 +1,7 @@
   
  <template>
     
-      <input ref="input" :name="name_precio" v-model="inputValue" @keyup="formatCurrency" class="form-control currency" @blur="formatCurrency('blur')" placeholder="Ingrese el monto" />
+      <input ref="input" :name="name_precio" v-model="inputValue" @keyup="formatCurrency" class="form-control currency " @blur="formatCurrency('blur')" placeholder="Ingrese el monto" />
     
   </template>
   

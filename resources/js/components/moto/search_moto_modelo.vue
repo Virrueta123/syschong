@@ -15,7 +15,7 @@
                 type="button" data-toggle="modal" data-target="#modal-crear-marca"><i class="fa fa-eye"
                     aria-hidden="true"></i></button>
             <div v-if="is_select">
-                <h6> Telefono: {{  moto . cliente ? moto . cliente . cli_telefono :"" }}</h6>
+                <h6> Telefono: {{ moto . cliente ? moto . cliente . cli_telefono : '' }}</h6>
                 <button class="btn btn-primary boton-color" v-on:click="modal_edit_celular()" type="button"><i
                         class="fa-solid fa-phone"></i> Actualizar telefono</button>
             </div>
@@ -79,10 +79,11 @@
 
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="mtx_fabricacion">Fecha de Fabricacion</label> 
-                                        <fecha-fabricacion :fecha="fecha" name="mtx_fabricacion"></fecha-fabricacion>
+                                        <label for="mtx_fabricacion">Fecha de Fabricacion</label>
+                                        <fecha-fabricacion :fecha="fecha"
+                                            name="mtx_fabricacion"></fecha-fabricacion>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="form-group">
@@ -112,27 +113,27 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                <label for="mtx_color">Color</label>
-                                <div class="col-md-12">
-                                    <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-primary" id="#azul">
-                                          <input type="radio" name="mtx_color"   value="azul"> Azul
-                                        </label>
-                                        <label class="btn btn-warning">
-                                          <input type="radio" name="mtx_color" value="amarillo"> Amarillo
-                                        </label>
-                                        <label class="btn btn-danger">
-                                          <input type="radio" name="mtx_color"  value="rojo"> Rojo
-                                        </label>
-                                        <label class="btn btn-dark">
-                                          <input type="radio" name="mtx_color" value="negro"> Negro
-                                        </label>
-                                        <label class="btn btn-light">
-                                          <input type="radio" name="mtx_color" value="blanco"> Blanco
-                                        </label>
-                                      </div>
-                                </div>
-                            </div> 
+                                        <label for="mtx_color">Color</label>
+                                        <div class="col-md-12">
+                                            <div class="btn-group" data-toggle="buttons">
+                                                <label class="btn btn-primary" id="#azul">
+                                                    <input type="radio" name="mtx_color" value="azul"> Azul
+                                                </label>
+                                                <label class="btn btn-warning">
+                                                    <input type="radio" name="mtx_color" value="amarillo"> Amarillo
+                                                </label>
+                                                <label class="btn btn-danger">
+                                                    <input type="radio" name="mtx_color" value="rojo"> Rojo
+                                                </label>
+                                                <label class="btn btn-dark">
+                                                    <input type="radio" name="mtx_color" value="negro"> Negro
+                                                </label>
+                                                <label class="btn btn-light">
+                                                    <input type="radio" name="mtx_color" value="blanco"> Blanco
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +251,8 @@
 
         <!-- ******** visualizar moto ************* -->
 
-        <CModal size="xl" :visible="is_modal_edit_celular_moto" @close="() => { is_modal_edit_celular_moto = false }">
+        <CModal size="xl" :visible="is_modal_edit_celular_moto"
+            @close="() => { is_modal_edit_celular_moto = false }">
             <CModalBody>
 
                 <div class="card">
@@ -260,12 +262,14 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="cli_telefono">telefono</label>
-                                     
+                                    <input type="text" name="cli_telefono" id="cli_telefono" class="form-control"
+                                        :value="telefono">
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Actualizar Telefono
+                            <button type="submit" id="crear_cliente" class="btn btn-danger boton-color">Actualizar
+                                Telefono
                             </button>
                         </div>
                     </form>
@@ -319,16 +323,17 @@
                 conteo: 0,
                 is_modal_create: false,
                 is_modal_view_moto: false,
-                is_modal_edit_celular_moto:false,
+                is_modal_edit_celular_moto: false,
+                telefono: 0,
                 moto: [],
                 selected: this.$attrs.selected || '',
                 id: this.$attrs.id || 0,
-                fecha:null
+                fecha: null
             }
         },
         methods: {
             modal_modal_view_moto() {
-                this.is_modal_view_moto = true; 
+                this.is_modal_view_moto = true;
             },
             modal_create() {
                 this.is_modal_create = true;
@@ -372,11 +377,11 @@
                                 required: true,
                             }
                         },
-                        submitHandler: function(form) { 
+                        submitHandler: function(form) {
                             try {
                                 const fileUploadForm = document.getElementById(
                                     'form_moto');
-                                const formData = new FormData(fileUploadForm); 
+                                const formData = new FormData(fileUploadForm);
 
                                 const headers = {
                                     "Content-Type": "application/json",
@@ -422,7 +427,7 @@
 
                             } catch (error) {
                                 console.log(error)
-                            } 
+                            }
 
 
                             return false;
@@ -439,20 +444,20 @@
                 this.$nextTick(() => {
                     $("#form_edit_celular").validate({
                         rules: {
-                            cli_celular: {
-                                maxlength: 10,
+                            cli_telefono: {
+                                maxlength: 9,
                                 required: true,
-                            } 
+                            }
                         },
                         submitHandler: function(form) {
- 
+
                             try {
-                                 
+
                                 const headers = {
                                     "Content-Type": "application/json",
                                 };
                                 const data = {
-                                    cli_telefono:$("#cli_telefono").val(),
+                                    cli_telefono: $("#cli_telefono").val(),
                                     cli_id: self.moto.cliente.cli_id
                                 };
 
@@ -465,10 +470,11 @@
 
                                             self.alert_success(response.data.message)
 
-                                          
-                                            this.moto.cliente.cli_telefono = response.data.data;
 
-                                       
+                                            this.moto.cliente.cli_telefono = response.data.data;
+                                            this.telefono = response.data.data;
+
+
                                             self.is_modal_edit_celular_moto = false;
 
                                         } else {
@@ -486,12 +492,7 @@
 
                             } catch (error) {
                                 console.log(error)
-                            }
-
-
-
-
-
+                            } 
 
 
                             return false;
@@ -501,7 +502,7 @@
                 });
 
             },
-            change_select(event) { 
+            change_select(event) {
                 var moto_id = event.target.value
 
                 const data = {
@@ -520,6 +521,12 @@
                             this.moto = response.data.data
                             this.conteo++;
                             this.alert_success(response.data.message)
+                            if (this.moto.cliente) { 
+                                console.log(this.moto.cliente);
+                                this.telefono = this.moto.cliente.cli_telefono;
+                            } else {
+                                this.telefono = 0;
+                            }
 
                         } else {
                             this.alert_error(response.data.message)
@@ -536,6 +543,9 @@
             },
         },
         mounted() {
+
+
+
             this.fecha = moment().tz('America/Lima').format('YYYY')
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -552,7 +562,7 @@
 
                 var $select = $(this.$refs.select_moto);
 
-                var $option = $('<option selected>' + valor + '</option>').val(this.id );
+                var $option = $('<option selected>' + valor + '</option>').val(this.id);
 
                 var moto_id = this.id;
 
@@ -572,6 +582,14 @@
                             this.moto = response.data.data
                             this.conteo++;
                             this.alert_success(response.data.message)
+                            
+                            if (this.moto.cliente) { 
+                                console.log(this.moto.cliente);
+                                this.telefono = this.moto.cliente.cli_telefono;
+                            } else {
+                                this.telefono = 0;
+                            }
+
 
                         } else {
                             this.alert_error(response.data.message)
@@ -585,9 +603,9 @@
                     });
 
 
-                $select.append($option).trigger('change'); 
+                $select.append($option).trigger('change');
             }
- 
+
             $(this.$refs.select_moto).select2({
                 language: this.languajeSelect,
                 ajax: {

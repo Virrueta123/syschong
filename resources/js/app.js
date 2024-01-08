@@ -171,6 +171,7 @@ app.component('autorizaciones', require('./components/inventario_moto/autorizaci
 /* -- ******** repuestos componentes ************* -- */
 
 app.component('repuestos_add', require('./components/repuestos/add_repuesto.vue').default);
+app.component('repuestos-add-garantia', require('./components/repuestos/add_repuesto_garantia.vue').default);
 app.component('repuestos-edit', require('./components/repuestos/edit_repuestos.vue').default);
 
 /* -- *********************** -- */
@@ -181,6 +182,15 @@ app.component('tablas-activaciones-actual-por-tienda', require('./components/tab
 app.component('tablas-cortesias-actual-por-tienda', require('./components/tablas/tablas_cortesias_actual_por_tienda.vue').default);
 app.component('tablas-factura-tienda', require('./components/tablas/tablas_factura_tienda.vue').default);
 app.component('tablas-ventas', require('./components/tablas/tablas_ventas.vue').default);
+/* -- *********************** -- */
+
+/* -- ******** orden de servicio ************* -- */
+app.component('crear-orden-servicio', require('./components/orden_servicio/crear-orden-servicio.vue').default);
+app.component('crear-cortesia', require('./components/orden_servicio/crear-cortesia.vue').default);
+app.component('crear-cortesia-orden', require('./components/orden_servicio/crear-cortesia-orden.vue').default);
+app.component('crear-cortesia-orden-tercero', require('./components/orden_servicio/crear-cortesia-orden-tercero.vue').default);
+app.component('search-activacion', require('./components/orden_servicio/search-activacion.vue').default);
+app.component('garantia', require('./components/orden_servicio/garantia.vue').default);
 /* -- *********************** -- */
 
 app.component('is-dias', require('./components/complementos/is_dias.vue').default);

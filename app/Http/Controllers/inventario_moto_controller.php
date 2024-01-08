@@ -262,19 +262,15 @@ class inventario_moto_controller extends Controller
         ])->find(decrypt_id($id));
 
         if ($get) {
-            $accesorios = accesorios_inventario_detalle::with('accesorios')
-                ->where('inventario_moto_id', decrypt_id($id))
-                ->get();
+            $accesorios = accesorios::all();
 
-            $autorizaciones = inventario_autorizaciones::with('autorizaciones')
-                ->where('inventario_moto_id', decrypt_id($id))
-                ->get();
+            $autorizaciones = inventario_autorizaciones::with('autorizaciones')->get();
 
             $accesorios_selected = [];
 
-            foreach ($get->accesorios_inventario as $a_i) {
-                foreach ($accesorios as $cc) {
-                    if ($a_i->accesorios_inventario_id == $cc->accesorios_inventario_id) {
+            foreach ($accesorios as $cc) {
+                foreach ($get->accesorios_inventario as $a_i) {
+                    if ($a_i->accesorios_inventario_id == $cc->accesorios_id) {
                         switch ($a_i->estado) {
                             case 'b':
                                 $estado = 'Bueno';
@@ -288,13 +284,17 @@ class inventario_moto_controller extends Controller
                                 $estado = 'Malo';
                                 break;
                         }
-
-                        array_push($accesorios_selected, ['item' => $cc->accesorios->accesorios_nombre, 'check' => 'y', 'estado' => $estado]);
+                        array_push($accesorios_selected, ['item' => $cc->accesorios_nombre, 'check' => 'y', 'estado' => $estado]);
                     } else {
-                        array_push($accesorios_selected, ['item' => $cc->accesorios->accesorios_nombre, 'check' => 'n']);
+                       
                     }
                 }
+
+                 array_push($accesorios_selected, ['item' => $cc->accesorios_nombre, 'check' => 'n']);
+                 
             }
+ 
+
             return view('pdf.orden_servicio', ['accesorios_selected' => json_encode($accesorios_selected), 'get' => $get, 'accesorios' => $accesorios, 'autorizaciones' => $autorizaciones, 'id' => $id]);
         } else {
             return view('errors.404');

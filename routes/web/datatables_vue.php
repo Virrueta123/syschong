@@ -33,6 +33,8 @@ Route::get('/tablas_cortesias_pendiente', [App\Http\Controllers\datatables_contr
 
 Route::get('/tablas_ventas', [App\Http\Controllers\datatables_controller::class, 'tablas_ventas'])->name('tablas_ventas');
 
+Route::get('/spanish_datatable', [App\Http\Controllers\datatables_controller::class, 'spanish_datatable'])->name('spanish_datatable');
+
 /* *********************** */
 
 /* ******** tabla cotizacion para compras ************* */

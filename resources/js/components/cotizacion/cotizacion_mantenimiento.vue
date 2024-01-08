@@ -2,12 +2,7 @@
     <div></div>
     <div id="smartwizard">
         <!-- ******** view imagen ************* -->
-        <CModal size="xl" :visible="modal_view_img"
-            @close="
-        () => {
-          modal_view_img = false;
-        }
-      ">
+        <CModal size="xl" :visible="modal_view_img" @close=" () => { modal_view_img = false; } ">
             <CModalBody>
                 <div class="modal-header">
                     <h3 class="text-center">Visualizar Imagen</h3>
@@ -183,7 +178,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-sm" id="table-repuestos">
+                                    <table class="table table-sm" id="table-repuestos" v-if="cotizacion.inventario.cortesia.is_garantia=='N'">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Codigo</th>
@@ -229,6 +224,54 @@
                                             </tr>
                                         </tbody>
                                     </table>
+
+                                    <table class="table table-sm" id="table-repuestos" v-else>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Garantia</th>
+                                                <th scope="col">Codigo</th>
+                                                <th scope="col">Descripcion</th>
+                                                <th scope="col">Detalle</th>
+                                                <th scope="col">unidad</th>
+                                                <th scope="col">Precio</th>
+                                                <th scope="col">Descuento</th>
+                                                <th scope="col">V.Descuento</th>
+                                                <th scope="col">Cantidad</th>
+                                                <th scope="col">Importe</th>
+                                                <th scope="col">Importe Decuento</th>
+                                                <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(detalle, index) in cotizacion.detalle" :key="index">
+                                                 
+                                                <td scope="row" v-if="detalle.garantia=='y'"><i class="fa fa-check"></i></td>
+                                                <td scope="row" v-else> </td>
+                                                <td scope="row">{{ detalle . Codigo }}</td>
+                                                <td scope="row">{{ detalle . Descripcion }}</td>
+
+                                                <td scope="row">{{ detalle . Detalle }}</td>
+
+                                                <td v-if="detalle.tipo == 'p'" scope="row">
+                                                    {{ detalle . producto . unidad . unidades_nombre }}
+                                                </td>
+
+                                                <td v-else scope="row">servicio</td>
+
+                                                <td scope="row">{{ detalle . Precio }}</td>
+
+                                                <td scope="row">{{ detalle . Descuento }}</td>
+
+                                                <td scope="row">{{ detalle . ValorDescuento }}</td>
+
+                                                <td scope="row">{{ detalle . Cantidad }}</td>
+                                                <td scope="row">{{ detalle . Importe }}</td>
+                                                <td scope="row">{{ detalle . ImporteDescuento }}</td> 
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
                                 </div>
 
                                 <div class="row mt-4">
@@ -270,10 +313,66 @@
                             cambiar a Pendiente Aprobacion
                         </button>
 
-                        <button v-if="cotizacion.inventario.moto.cliente" type="button"
-                            class="btn btn-info boton-color custom-next pr-2" v-on:click="enviado_whatsapp()">
-                            enviar whatsapp normal
+                        <button type="button" class="btn btn-info boton-color custom-next pr-2"
+                            v-on:click="enviar_cotizacion()">
+                            Enviar cotizacion
                         </button>
+                        <!-- ******** modal para veniar coti ************* -->
+                        <CModal size="xl" :visible="is_enviar_cotizacion_modal"
+                            @close="() => { is_enviar_cotizacion_modal = false }">
+
+                            <CModalBody>
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar el
+                                        comprobante
+                                    </h5>
+                                    <button type="button" class="close"
+                                        @click="is_enviar_cotizacion_modal = false">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="body">
+                                    <form id="form_cliente" method="POST" action="#">
+
+                                        <div class="modal-body">
+
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-sm-12">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control"
+                                                                v-model="celular" placeholder="" aria-label="">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary"
+                                                                    v-on:click="send_whatsapp()" type="button"><i
+                                                                        class="fa-brands fa-whatsapp"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-sm-12">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control"
+                                                                v-model="correo" placeholder="" aria-label="">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary"
+                                                                    v-on:click="send_correo()" type="button"><i
+                                                                        class="fa-solid fa-envelope"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </CModalBody>
+                        </CModal>
+                        <!-- *********************** -->
+
                     </div>
                 </div>
 
@@ -282,7 +381,7 @@
                         <form id="form_crear_mantenimiento" method="POST" action="#">
                             <div class="card-header">
                                 <h2 class="section-title">
-                                    Formulario para crear un mantenimiento
+                                    Formulario de ediccion
                                 </h2>
                             </div>
                             <div class="card-body">
@@ -462,32 +561,27 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(detalle, index) in cotizacion.detalle" :key="index">
-                                                <td>
+                                                <td v-if="detalle.garantia=='n'">
                                                     <Checkbox v-model="detalle.aprobar" :binary="true" />
                                                 </td>
 
-                                                <td scope="row">{{ detalle . Codigo }}</td>
-                                                <td scope="row">{{ detalle . Descripcion }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Codigo }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Descripcion }}</td>
 
-                                                <td scope="row">{{ detalle . Detalle }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Detalle }}</td>
 
-                                                <td v-if="detalle.tipo == 'p'" scope="row">
+                                                <td v-if="detalle.tipo == 'p' && detalle.garantia=='n'" scope="row">
                                                     {{ detalle . producto . unidad . unidades_nombre }}
                                                 </td>
 
-                                                <td v-else scope="row">servicio</td>
+                                                <td v-else-if="detalle.garantia=='n'" scope="row">servicio</td>
 
-                                                <td scope="row">{{ detalle . Precio }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Precio }}</td>
 
-                                                <td scope="row">{{ detalle . ValorDescuento }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . ValorDescuento }}</td>
 
-                                                <td scope="row">{{ detalle . Cantidad }}</td>
-                                                <td scope="row">{{ detalle . Importe }}</td>
-                                                <!-- ********
-                                                            <td><button type="button" name="" id=""
-                                                                    
-                                                                    class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                                                                        aria-hidden="true"></i></button></td>-->
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Cantidad }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Importe }}</td> 
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1374,6 +1468,8 @@
     export default {
         mixins: [myMixin],
         components: {
+            correo: "",
+            celular: 0,
             CModal,
             CForm,
             CFormInput,
@@ -1390,6 +1486,9 @@
         },
         data() {
             return {
+                is_enviar_cotizacion_modal: false,
+                correo: "",
+                celular: 0,
                 is_created: false,
                 modal_view_img: false,
                 modal_edit_img: false,
@@ -1456,12 +1555,12 @@
 
         computed: {
             detallesAprobados() {
-                return this.cotizacion.detalle.filter((detalle) => detalle.aprobar);
+                return this.cotizacion.detalle.filter((detalle) => detalle.aprobar && detalle.garantia=="n");
             },
             sumar_total() {
                 this.is_show = false;
                 const importeTotal = this.cotizacion.detalle
-                    .filter((detalle) => detalle.aprobar)
+                    .filter((detalle) => detalle.aprobar && detalle.garantia=="n")
                     .reduce((total, detalle) => {
                         return parseFloat(total) + parseFloat(detalle.Importe);
                     }, 0);
@@ -1663,6 +1762,46 @@
             is_ruc(newValue, oldValue) {},
         },
         methods: {
+            send_correo() {
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                const data = {
+                    correo: this.correo,
+                    id: this.cotizacion.cotizacion_id,
+                };
+
+                axios
+                    .post("/send_correo_cotizacion", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+
+                            this.alert_success("se envio al correo " + this.correo + " exitosamente");
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            console.error(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
             modal_start() {
                 const self = this;
                 this.is_modal_crear_cliente = true;
@@ -1746,7 +1885,7 @@
 
                                         self.cotizacion.inventario.moto.cliente = response.data
                                             .data;
-                                            window.location.reload();
+                                        window.location.reload();
 
                                         $("#smartwizard").smartWizard("next");
                                         $("#smartwizard").smartWizard("prev");
@@ -2369,6 +2508,18 @@
                         console.log("Error: " + error);
                     });
             },
+            enviar_cotizacion() {
+                console.log("probando")
+                this.is_enviar_cotizacion_modal = true;
+            },
+
+            send_whatsapp() {
+
+                this.venta_whatsapp(
+                    "Somos de Repuestos & Servicios Chong. Le enviamos esta cotizacion de su moto.Lo puede revisar en la siguiente ruta = ",
+                    this.url +
+                    "cotizacion/" + this.cotizacion.cotizacion_id + "/cliente", "+51" + this.celular)
+            },
             enviado_whatsapp() {
                 this.sendUrl(
                     this.url_whatsapp,
@@ -2820,3 +2971,4 @@
         --sw-loader-background-wrapper-color: rgba(255, 255, 255, 0.7);
     }
 </style>
+ 

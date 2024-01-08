@@ -91,7 +91,7 @@
                         font-size="7.7904px">{{ modelo }}</text>
                     <text transform="matrix(1 0 0 1 113.9032 620.1202)" font-family="'MyriadPro-Regular'"
                         font-size="7.7904px">{{ nplaca }}</text>
-
+                <rect x="284.6" y="565.4" fill="#FFFFFF" width="288" height="111.5"/>
                     <g>
                         <line fill="none" stroke="#000000" stroke-miterlimit="10"
                             stroke-dasharray="1.5237,1.5237" x1="171.9" y1="582.2" :x2="valor_gasolina"
@@ -183,7 +183,7 @@
         CButton
     } from '@coreui/vue';
 
-   
+
     import axios from 'axios';
 
     export default {
@@ -265,64 +265,92 @@
 
             this.load_servicio();
 
+            var garantia = "";
+            var repuesto = "";
+            this.cotizacion.cotizacion.detalle.forEach(element => {
+                if (element.servicios_id == 0) {
+                    if (element.garantia == "n") {
+                        repuesto += element.Cantidad + " " + element.Descripcion + "/";
+                    } else {
+                        garantia += element.Cantidad + " " + element.Descripcion + "/";
+                    }
+                } else {
+                    this.trabajo_realizado += " | " + element.Descripcion
+                }
+            });
+            this.repuesto_utilizado += repuesto + " | garantia " + garantia;
+
+
         },
         watch: {
 
         },
         methods: {
-            async load_inventario(){
-                console.log( this.cotizacion.cortesia.activaciones.moto.cliente);
+            async load_inventario() {
+                console.log(this.cotizacion.cortesia.activaciones.moto.cliente);
 
-                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_telefono : "sin cliente"; 
-                
-                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_dni : "sin cliente"; 
+                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_telefono : "sin cliente";
 
-                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_nombre +" "+this.cotizacion.cortesia.activaciones.moto.cliente.cli_apellido: "sin cliente"; 
+                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_dni : "sin cliente";
 
-                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_direccion : "sin cliente"; 
+                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_nombre + " " + this.cotizacion.cortesia.activaciones.moto.cliente
+                    .cli_apellido : "sin cliente";
 
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_correo : "sin cliente";
+                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_direccion : "sin cliente";
 
-                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito : "sin cliente";
+                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_correo : "sin cliente";
 
-                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_departamento : "sin cliente";
+                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_distrito : "sin cliente";
 
-                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia.activaciones.moto.cliente.cli_distrito: "sin cliente" ;
+                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_departamento : "sin cliente";
 
-                this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre ;
+                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                    .activaciones.moto.cliente.cli_distrito : "sin cliente";
 
-                this.nchasis = this.cotizacion.cortesia.activaciones.moto.mtx_vin ;
+                this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre;
 
-                this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor ;
+                this.nchasis = this.cotizacion.cortesia.activaciones.moto.mtx_vin;
+
+                this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor;
 
                 this.modelo = this.cotizacion.cortesia.activaciones.moto.modelo.modelo_nombre;
 
-                
-                 this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
 
-                this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color ;
+                this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
+
+                this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color;
 
                 this.nplaca = this.cotizacion.cortesia.activaciones.moto.mtx_placa;
 
-                this.kilometraje = this.cotizacion.inventario_moto_kilometraje ;
+                this.kilometraje = this.cotizacion.inventario_moto_kilometraje;
 
                 this.cilindrada = this.cotizacion.cortesia.activaciones.moto.modelo.cilindraje;
 
-                this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina ;
+                this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina;
 
                 this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
- 
+
 
                 this.dia1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
-                 
-                this.mes1 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
-                this.ano1 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
-                this.dia2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
-                this.mes2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
-                this.ano2 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYY');
-                this.dia3 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
+
+                this.mes1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
+                this.ano1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
+                this.dia2 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
+                this.mes2 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
+                this.ano2 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYY');
+                this.dia3 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
                 this.mes3 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('MM');
-                this.ano3 =  moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
+                this.ano3 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('YYYY');
+
+
+
             },
             async load_gasolina() {
                 const valorMinimo = 171.9;
@@ -338,11 +366,11 @@
 
                 // Tamaño de cada elemento
                 const itemWidth = 90;
-                const itemHeight = 18;
-                const checkboxSize = 10; // Tamaño del cuadrado del checkbox
+                const itemHeight = 12;
+                const checkboxSize = 8; // Tamaño del cuadrado del checkbox
 
                 // Espacio entre elementos
-                const spaceBetween = 0.5;
+                const spaceBetween = 0.3;
 
                 // Número de columnas
                 const numColumns = 3;
@@ -376,10 +404,10 @@
                     xSymbol.setAttribute('x', x + checkboxSize / 2 -
                         4); // Ajustar la posición horizontal del texto "x"
                     xSymbol.setAttribute('y', y + checkboxSize / 2 +
-                        5); // Ajustar la posición vertical del texto "x"
+                        3.5); // Ajustar la posición vertical del texto "x"
                     xSymbol.setAttribute('fill', 'black');
                     xSymbol.setAttribute('font-family', 'Arial');
-                    xSymbol.setAttribute('font-size', '12');
+                    xSymbol.setAttribute('font-size', '10');
                     xSymbol.setAttribute('data-index', index); // Añadir atributo de índice 
                     xSymbol.textContent = element.check == "y" ? '✕' : '';
                     groupList.appendChild(xSymbol);
@@ -390,14 +418,16 @@
                         5); // Ajustar el espacio a la izquierda del texto
                     text.setAttribute('y', y + 4); // Ajustar la posición vertical del texto
                     text.setAttribute('fill', 'black');
+                     text.setAttribute('font-size', '4');
                     text.textContent = `${element.item}`;
 
                     if (element.check == "y") {
                         const text_estado = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                         text_estado.setAttribute('x', x + checkboxSize +
                             5); // Ajustar el espacio a la izquierda del texto
-                        text_estado.setAttribute('y', y + 12); // Ajustar la posición vertical del texto
+                        text_estado.setAttribute('y', y + 8); // Ajustar la posición vertical del texto
                         text_estado.setAttribute('fill', 'black');
+                         text_estado.setAttribute('font-size', '3.5');
                         text_estado.textContent = `Estado: ${element.estado}`;
                         groupList.appendChild(text_estado);
                     }
@@ -441,10 +471,37 @@
 
                 switch (this.cotizacion.cortesia.tipo) {
                     case "M":
+                        this.trabajo_realizado = 'Mantenimiento';
                         tipo_servicio[0].check = "y";
                         break;
                     case "C":
                         tipo_servicio[2].check = "y";
+
+                        switch (this.cotizacion.cortesia.numero_corterisa) {
+                            case 1:
+                                this.trabajo_realizado = 'PRIMER SERVICIO DE CORTESIA';
+                                break;
+                            case 2:
+                                this.trabajo_realizado = 'SEGUNDO SERVICIO DE CORTESIA';
+                                break;
+                            case 3:
+                                this.trabajo_realizado = 'TERCER SERVICIO DE CORTESIA';
+                                break;
+                            case 4:
+                                this.trabajo_realizado = 'CUARTO SERVICIO DE CORTESIA';
+                                break;
+                            case 5:
+                                this.trabajo_realizado = 'QUINTO SERVICIO DE CORTESIA';
+                                break;
+                            case 6:
+                                this.trabajo_realizado = 'SEXTO SERVICIO DE CORTESIA';
+                                break;
+                        }
+
+                        if (this.cotizacion.cortesia.is_garantia == "Y") {
+                            tipo_servicio[1].check = "y";
+                            this.trabajo_realizado += " | GARANTIA"
+                        }
                         break;
 
                     case "G":
@@ -484,7 +541,7 @@
                     xSymbol.textContent = element.check == "y" ? '✕' : '';
                     groupList.appendChild(xSymbol);
 
-                    // Crear texto
+                    // Crear texto  ||
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', x + checkboxSize +
                         5); // Ajustar el espacio a la izquierda del texto

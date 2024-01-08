@@ -41,3 +41,4 @@ Route::post('/emitir_factura_cotizacion', [App\Http\Controllers\cotizacion_contr
 
 Route::post('/emitir_boleta_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'emitir_boleta_cotizacion'])->name('emitir_boleta_cotizacion'); 
 
+Route::post('/send_correo_cotizacion', [App\Http\Controllers\cotizacion_controller::class, 'send_correo_cotizacion'])->name('send_correo_cotizacion');
