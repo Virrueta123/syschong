@@ -68,7 +68,7 @@ class clienteController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+    
             $datax = $request->all();
             $validate = $request->validate([
                 'cli_nombre' => 'required|string|max:255',
@@ -95,27 +95,16 @@ class clienteController extends Controller
             $create = cliente::create($validate);
 
             if ($create) {
-                if (is_null($datax['api'])) {
-                    return response()->json([
-                        'message' => 'se creo correctamente un cliente',
-                        'error' => '',
-                        'success' => true,
-                        'data' => ['value' => $create->cli_id, 'title' => $create->cli_nombre . ' ' . $create->cli_apellido . ' - ' . $create->cli_dni],
-                    ]);
-                } else {
+                 
                     session()->flash('success', 'Registro creado correctamente');
                     return redirect()->route('cliente.index');
-                }
+                
             } else {
                 Log::error('no se pudo registrar el cliente');
                 session()->flash('error', 'error al registrar en la base de datos');
                 return redirect()->route('cliente.index');
             }
-        } catch (\Throwable $th) {
-            Log::error($th);
-            session()->flash('error', 'error al registrar');
-            return redirect()->route('cliente.index');
-        }
+         
     }
 
     public function store_vue_cliente_ruc(Request $request)

@@ -137,11 +137,11 @@ class AppServiceProvider extends ServiceProvider
                             [
                                 'name' => 'Clientes',
                                 'url' => 'cliente.index',
-                            ],
+                            ], 
                             [
-                                'name' => 'Tipo',
-                                'url' => 'tipo_cliente.index',
-                            ],
+                                'name' => 'crear Clientes',
+                                'url' => 'cliente.create',
+                            ], 
                         ],
                     ],
                     [
