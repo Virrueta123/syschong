@@ -654,7 +654,7 @@ class activaciones_controller extends Controller
             $cortesias_activacion->numero_corterisa =  $datax['cortesia_de_empezar']; // Reemplaza con el valor deseado
             $cortesias_activacion->inventario_moto_id = $create->inventario_moto_id; // Reemplaza con el valor deseado
             $cortesias_activacion->mecanico_id = 0; // Reemplaza con el valor deseado
-            $cortesias_activacion->mtx_id = $activaciones->moto->mtx_id; // Reemplaza con el valor deseado
+            $cortesias_activacion->mtx_id = $datax['moto_id']; // Reemplaza con el valor deseado
             $cortesias_activacion->is_aviso = $request->all()['is_aviso'] == 'true' ? 'S' : 'A';
             $cortesias_activacion->dias = $datax['dias'];
             $cortesias_activacion->date_aviso = Carbon::now()->addDays($datax['dias']);

@@ -300,7 +300,7 @@
         <div class="form-group col-md-4">
             <label for="inputEmail4">Cortesia de donde empezar</label>
             <input v-model="cortesia_de_empezar" type="number" class="form-control" name="cortesia_de_empezar"
-                id="cortesia_de_empezar" placeholder="Direccion" />
+                id="cortesia_de_empezar" placeholder="numero de cortesia" />
         </div>
     </div>
 
