@@ -2552,7 +2552,9 @@
                                 confirmButtonText: "ver el comprobante",
                             }).then((result_swal) => {
                                 this.print_comprobante = true;
-                                this.rutaPDF = "/ventas_pdf/" + result.data;
+                                this.cotizacion.venta = result.data.id;
+                                this.cotizacion.ventas = result.data.ventas;
+                                this.rutaPDF = "/ventas_pdf/" + result.data.id;
                             });
                         } else {
                             Swal.fire({
@@ -2565,7 +2567,9 @@
                                 confirmButtonText: "ver el comprobante",
                             }).then((result_swal) => {
                                 this.print_comprobante = true;
-                                this.rutaPDF = "/ventas_pdf/" + result.data;
+                                 this.cotizacion.venta = result.data.id;
+                                this.cotizacion.ventas = result.data.ventas;
+                                this.rutaPDF = "/ventas_pdf/" + result.data.id;
                             });
                         }
                     })
