@@ -2489,8 +2489,9 @@
                             }).then((result_swal) => {
                                 this.cotizacion.venta_id = result.data;
                                 this.print_comprobante = true;
-                                this.cotizacion.venta= result.data.id;
-                                this.cotizacion.ventas= result.data.ventas;
+                                this.cotizacion.venta = result.data.id;
+                                this.cotizacion.ventas = result.data.ventas;
+
                                 this.rutaPDF = "/ventas_pdf/" + result.data.id;
                             });
                         } else {
@@ -2505,8 +2506,8 @@
                             }).then((result_swal) => {
                                 this.print_comprobante = true;
                                 this.cotizacion.venta_id = result.data.id;
-                                this.cotizacion.venta= result.data.id;
-                                this.cotizacion.ventas= result.data.ventas;
+                                this.cotizacion.venta = result.data.id;
+                                this.cotizacion.ventas = result.data.ventas;
                                 this.rutaPDF = "/ventas_pdf/" + result.data.id;
                             });
                         }
@@ -2788,7 +2789,8 @@
                                         text: response.data.message,
                                         footer: "-------",
                                     });
-
+                                    $("#smartwizard").smartWizard("next");
+                                    $("#smartwizard").smartWizard("prev");
                                     this.tiene_ruc = true;
                                 } else {
                                     Swal.fire({
