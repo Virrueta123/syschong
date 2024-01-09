@@ -82,33 +82,7 @@
                                         <td>{{ detalle . MtoPrecioUnitario }}</td>
                                         <td>{{ detalle . Cantidad }}</td>
                                         <td>{{ detalle . MtoValorVenta }}</td>
-                                    </tr>
-                                    @foreach ($get->detalle as $detalle)
-                                        @if ($detalle->tipo == 'p')
-                                            <tr>
-
-                                                <td> {{ $detalle->CodProducto }} </td>
-                                                <td>{{ $detalle->Descripcion }}</td>
-
-                                                <td> {{ $detalle->Detalle }} </td>
-
-
-                                                @if ($detalle->tipo == 'p')
-                                                    <td>{{ $detalle->producto->unidad->unidades_nombre }}</td>
-                                                @else
-                                                    <td>servicio</td>
-                                                @endif
-
-
-                                                <td>{{ $detalle->MtoPrecioUnitario }}</td>
-
-                                                <td>{{ $detalle->Cantidad }}</td>
-                                                <td>{{ $detalle->MtoValorVenta }}</td>
-
-                                            </tr>
-                                        @endif
-                                    @endforeach
-
+                                    </tr> 
 
 
                                     <tr>
