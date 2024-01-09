@@ -14,9 +14,21 @@ class motos extends Model
     public $primaryKey = 'mtx_id';
     protected $fillable = [];
     protected $guarded = [];
+        protected $appends = ["cortesia"];
 
     public function marca( ){
         return $this->belongsTo(marca::class,"marca_id")->withTrashed();
+    }
+    public function getCortesiaAttribute( ){
+        
+        $get = cortesias_activacion::where('mtx_id', $this->mtx_id)->get();
+
+        if ($get) {
+          $maximo = cortesias_activacion::where('mtx_id', $this->mtx_id)->max('numero_corterisa');
+          return $maximo;
+        } else { 
+            return 1;
+        }  
     }
 
     public function modelo( ){

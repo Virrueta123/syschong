@@ -10,12 +10,8 @@
                         <div id="app">
 
                             <h2 class="section-title">Seleccionar Moto</h2>
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <search-moto-modelo ></search-moto-modelo>
-                                </div>
-                            </div>
-
+                             
+                            <search-moto-modelo-cortesia ></search-moto-modelo-cortesia>
 
                             <!-- ******** creando cortesia ************* -->
 
@@ -156,6 +152,7 @@
     import searchActivacion from '../orden_servicio/search-activacion.vue';
 
     import repuestos_add from "../repuestos/add_repuesto.vue"
+import Search_moto_modelo_cortesia from '../moto/search_moto_modelo_cortesia.vue';
 
     export default {
         mixins: [myMixin],
@@ -164,7 +161,7 @@
                 is_aviso: false,
                 dias: 0,
                 fecha: moment().tz('America/Lima').format('YYYY'),
-                empresa: JSON.parse(this.$attrs.empresa),
+                empresa: this.$attrs.empresa,
                 is_cortesia_creando_activacion: false,
                 is_cortesia_de_una_activacion_existente: true,
                 is_cortesia_de_una_activacion_de_otra_tienda: false,
@@ -190,7 +187,8 @@
             mantenimientoAccesorios,
             mantenimientoAutorizaciones,
             repuestos_add,
-            searchActivacion
+            searchActivacion,
+                Search_moto_modelo_cortesia
         },
 
         methods: {
@@ -253,7 +251,7 @@
                         if (this.select_autorizacion.length) {
                             try {
                                 const fileUploadForm = document.getElementById(
-                                    'form_cortesia_creando_activacion');
+                                    'form_cortesia_de_una_activacion_de_otra_tienda');
                                 console.log(fileUploadForm)
                                 const formData = new FormData(fileUploadForm);
                                 console.log(formData)
@@ -264,10 +262,8 @@
                                 formData.append('select_acesorios', JSON.stringify(this.select_acesorios));
                                 formData.append('select_autorizacion', JSON.stringify(this
                                     .select_autorizacion));
-                                formData.append('repuestos', JSON.stringify(this.repuestos));
-                                formData.append('activaciones', JSON.stringify(this.activacion));
-
-                                console.log(this.activacion);
+                                formData.append('repuestos', JSON.stringify(this.repuestos)); 
+ 
 
                                 const headers = {
                                     "Content-Type": "application/json",
@@ -275,7 +271,7 @@
                                 const data = formData;
 
                                 axios
-                                    .post("/create_vue_cortesia_orden", data, {
+                                    .post("/create_vue_cortesia_orden_tercero", data, {
                                         headers,
                                     })
                                     .then((response) => {

@@ -135,6 +135,7 @@
 
             var table = $('#table_mtx').DataTable({
                 initComplete: search_input_by_column,
+                order: [[12, 'desc']],
                 language: {
                     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
                 },

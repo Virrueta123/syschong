@@ -22,6 +22,8 @@ Route::post('/importar_activaciones', [App\Http\Controllers\activaciones_control
 
   Route::post('/create_vue_cortesia_orden', [App\Http\Controllers\activaciones_controller::class, 'create_vue_cortesia_orden'])->name('create_vue_cortesia_orden'); 
 
+  Route::post('/create_vue_cortesia_orden_tercero', [App\Http\Controllers\activaciones_controller::class, 'create_vue_cortesia_orden_tercero'])->name('create_vue_cortesia_orden_tercero'); 
+
  Route::delete('/cortesia/{id}', [App\Http\Controllers\activaciones_controller::class, 'cortesia_destroy'])->name('cortesia.delete'); 
 
  

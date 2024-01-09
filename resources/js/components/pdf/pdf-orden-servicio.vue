@@ -39,6 +39,8 @@
 
                     <g transform="translate(150, 250)" font-size="10" id="groupTipoServicio">
                     </g>
+                    <text transform="matrix(1 0 0 1 117.5653 288.4233)" font-family="'ArialMT'"
+                        font-size="7.9092px">{{ lubricante }}</text>
                     <text transform="matrix(1 0 0 1 142.4525 110.4517)" class="st0 st1">{{ servicio_tecnico }}</text>
                     <text transform="matrix(1 0 0 1 142.4525 123.2904)" class="st0 st1">{{ ciudad }}</text>
                     <text transform="matrix(1 0 0 1 83.5947 149.2808)" class="st0 st2">{{ nombre }}</text>
@@ -91,7 +93,7 @@
                         font-size="7.7904px">{{ modelo }}</text>
                     <text transform="matrix(1 0 0 1 113.9032 620.1202)" font-family="'MyriadPro-Regular'"
                         font-size="7.7904px">{{ nplaca }}</text>
-                <rect x="284.6" y="565.4" fill="#FFFFFF" width="288" height="111.5"/>
+                    <rect x="284.6" y="565.4" fill="#FFFFFF" width="288" height="111.5" />
                     <g>
                         <line fill="none" stroke="#000000" stroke-miterlimit="10"
                             stroke-dasharray="1.5237,1.5237" x1="171.9" y1="582.2" :x2="valor_gasolina"
@@ -278,64 +280,127 @@
                     this.trabajo_realizado += " | " + element.Descripcion
                 }
             });
-            this.repuesto_utilizado += repuesto + " | garantia " + garantia;
-
-
+            if (garantia   != "") {
+                this.repuesto_utilizado += repuesto + " | garantia " + garantia;
+            }else{
+                this.repuesto_utilizado += repuesto;
+            }
+  
         },
         watch: {
 
         },
         methods: {
             async load_inventario() {
-                console.log(this.cotizacion.cortesia.activaciones.moto.cliente);
+                console.log(this.cotizacion);
+                this.lubricante = this.cotizacion.cotizacion.lubricante;
 
-                this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_telefono : "sin cliente";
+                if (this.cotizacion.cortesia.activaciones === null) {
+                    console.log("activacion");
+                    console.log(this.cotizacion.cortesia.moto);
+                    this.telefono = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_telefono : "sin cliente";
 
-                this.dni = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_dni : "sin cliente";
+                    this.dni = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_dni : "sin cliente";
 
-                this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_nombre + " " + this.cotizacion.cortesia.activaciones.moto.cliente
-                    .cli_apellido : "sin cliente";
+                    this.nombre = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_nombre + " " + this.cotizacion.cortesia.moto.cliente
+                        .cli_apellido : "sin cliente";
 
-                this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_direccion : "sin cliente";
+                    this.direccion = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_direccion : "sin cliente";
 
-                this.correo = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_correo : "sin cliente";
+                    this.correo = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_correo : "sin cliente";
 
-                this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_distrito : "sin cliente";
+                    this.distrito = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_distrito : "sin cliente";
 
-                this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_departamento : "sin cliente";
+                    this.departamento = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_departamento : "sin cliente";
 
-                this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
-                    .activaciones.moto.cliente.cli_distrito : "sin cliente";
+                    this.ciudad = this.cotizacion.cortesia.moto.cliente ? this.cotizacion.cortesia
+                        .moto.cliente.cli_distrito : "sin cliente";
 
-                this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre;
+                    this.marca = this.cotizacion.cortesia.moto.modelo.marca.marca_nombre;
 
-                this.nchasis = this.cotizacion.cortesia.activaciones.moto.mtx_vin;
+                    this.nchasis = this.cotizacion.cortesia.moto.mtx_vin;
 
-                this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor;
+                    this.nmotor = this.cotizacion.cortesia.moto.mtx_motor;
 
-                this.modelo = this.cotizacion.cortesia.activaciones.moto.modelo.modelo_nombre;
+                    this.modelo = this.cotizacion.cortesia.moto.modelo.modelo_nombre;
 
 
-                this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
+                    this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
 
-                this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color;
+                    this.color = this.cotizacion.cortesia.moto.mtx_color;
 
-                this.nplaca = this.cotizacion.cortesia.activaciones.moto.mtx_placa;
+                    this.nplaca = this.cotizacion.cortesia.moto.mtx_placa;
 
-                this.kilometraje = this.cotizacion.inventario_moto_kilometraje;
+                    this.kilometraje = this.cotizacion.inventario_moto_kilometraje;
 
-                this.cilindrada = this.cotizacion.cortesia.activaciones.moto.modelo.cilindraje;
+                    this.cilindrada = this.cotizacion.cortesia.moto.modelo.cilindraje;
 
-                this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina;
+                    this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina;
 
-                this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
+                    this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
+
+
+
+                } else {
+                    this.telefono = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_telefono : "sin cliente";
+
+                    this.dni = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_dni : "sin cliente";
+
+                    this.nombre = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_nombre + " " + this.cotizacion.cortesia.activaciones.moto
+                        .cliente
+                        .cli_apellido : "sin cliente";
+
+                    this.direccion = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_direccion : "sin cliente";
+
+                    this.correo = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_correo : "sin cliente";
+
+                    this.distrito = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_distrito : "sin cliente";
+
+                    this.departamento = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion
+                        .cortesia
+                        .activaciones.moto.cliente.cli_departamento : "sin cliente";
+
+                    this.ciudad = this.cotizacion.cortesia.activaciones.moto.cliente ? this.cotizacion.cortesia
+                        .activaciones.moto.cliente.cli_distrito : "sin cliente";
+
+                    this.marca = this.cotizacion.cortesia.activaciones.moto.modelo.marca.marca_nombre;
+
+                    this.nchasis = this.cotizacion.cortesia.activaciones.moto.mtx_vin;
+
+                    this.nmotor = this.cotizacion.cortesia.activaciones.moto.mtx_motor;
+
+                    this.modelo = this.cotizacion.cortesia.activaciones.moto.modelo.modelo_nombre;
+
+
+                    this.obsevaciones_cliente = this.cotizacion.inventario_moto_obs_cliente
+
+                    this.color = this.cotizacion.cortesia.activaciones.moto.mtx_color;
+
+                    this.nplaca = this.cotizacion.cortesia.activaciones.moto.mtx_placa;
+
+                    this.kilometraje = this.cotizacion.inventario_moto_kilometraje;
+
+                    this.cilindrada = this.cotizacion.cortesia.activaciones.moto.modelo.cilindraje;
+
+                    this.porcentaje_gasolina = this.cotizacion.inventario_moto_nivel_gasolina;
+
+                    this.observaciones_sta = this.cotizacion.cotizacion.observacion_sta;
+                }
+
+
 
 
                 this.dia1 = moment(this.cotizacion.created_at, 'DD-MM-YYYY').tz('America/Lima').format('DD');
@@ -418,7 +483,7 @@
                         5); // Ajustar el espacio a la izquierda del texto
                     text.setAttribute('y', y + 4); // Ajustar la posición vertical del texto
                     text.setAttribute('fill', 'black');
-                     text.setAttribute('font-size', '4');
+                    text.setAttribute('font-size', '4');
                     text.textContent = `${element.item}`;
 
                     if (element.check == "y") {
@@ -427,7 +492,7 @@
                             5); // Ajustar el espacio a la izquierda del texto
                         text_estado.setAttribute('y', y + 8); // Ajustar la posición vertical del texto
                         text_estado.setAttribute('fill', 'black');
-                         text_estado.setAttribute('font-size', '3.5');
+                        text_estado.setAttribute('font-size', '3.5');
                         text_estado.textContent = `Estado: ${element.estado}`;
                         groupList.appendChild(text_estado);
                     }

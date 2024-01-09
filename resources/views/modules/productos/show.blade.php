@@ -13,9 +13,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <!-- Imagen del Producto -->
-
-
+            <!-- Imagen del Producto --> 
             <img src="{{ is_null($get->imagen) ? asset("images/svg/sin_imagen.svg") : asset('storage/'.$get->imagen->url) }}" alt="Producto" class="img-fluid">
         </div>
         <div class="col-md-6">
@@ -87,13 +85,7 @@
                         </tr>
 
                         <tr>
-                            <td>Marca de motos que se usar este producto:</td>
-                            <td>
-                               
-                                @foreach ($get->producto_marcas  as $prod)
-                                    <span class="badge badge-danger">{{$prod->marca->marca_nombre}}</span>
-                                @endforeach  
-                            </td>
+                           
                         </tr>
 
 

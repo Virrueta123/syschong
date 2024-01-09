@@ -316,8 +316,9 @@ class cotizacion_controller extends Controller
      */
     public function show($id)
     {
-        $get = cotizacion::with([ 
+        $get = cotizacion::with([  
             'cotizacion_image',
+            "ventas",
             'inventario' => function ($query) {
                 $query->with([
                     'cortesia',
@@ -372,8 +373,7 @@ class cotizacion_controller extends Controller
         $empresa = empresa::select('ruc', 'celular', 'razon_social', 'direccion', 'ruc')->first();
 
         $fecha = Carbon::now()->format("Y");
-
-        
+ 
 
         if ($get) {
             return view('modules.cotizacion.show', [

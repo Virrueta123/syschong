@@ -12,3 +12,6 @@ Route::get('/ventas_cliente/{id}', [App\Http\Controllers\ventas_controller::clas
 Route::post('/send_correo', [App\Http\Controllers\ventas_controller::class, 'send_correo'])->name('send_correo');
 
 Route::delete('/ventas_baja/{id}', [App\Http\Controllers\ventas_controller::class, 'ventas_baja'])->name('ventas.baja');
+
+Route::delete('/destroy_nota/{id}', [App\Http\Controllers\ventas_controller::class, 'destroy_nota'])->name('ventas.destroy_nota');
+

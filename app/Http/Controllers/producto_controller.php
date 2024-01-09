@@ -103,6 +103,9 @@ class producto_controller extends Controller
                     'imagen',
                 ]),
             )
+             ->editColumn('created_at', static function ($Data) {
+                    return Carbon::parse($Data->created_at)->format("Y-m-d");
+                })
                 ->addColumn('action', static function ($Data) {
                     $prod_id = encrypt_id($Data->prod_id);
                     return view('buttons.productos', ['prod_id' => $prod_id]);
@@ -118,6 +121,7 @@ class producto_controller extends Controller
                             break;
                     }
                 })
+               
                 ->toJson();
         }
 
@@ -134,7 +138,7 @@ class producto_controller extends Controller
                 Column::make('categoria.categoria_nombre')->title('categoria'),
                 Column::make('marca.marca_prod_nombre')->title('marca'),
                 Column::make('zona.zona_nombre')->title('zona'),
-
+                Column::make('created_at')->title('Fecha creacion'),
                 Column::computed('action')
                     ->title('Opcion')
                     ->exportable(false)
@@ -142,6 +146,7 @@ class producto_controller extends Controller
             ])
             ->parameters([
                 'dom' => 'Bfrtip',
+                'order' => [[11, 'desc']],
                 'buttons' => [
                     [
                         'text' => '<i class="fa fa-bars"></i> columnas visibles',
@@ -329,10 +334,7 @@ class producto_controller extends Controller
     public function show($id)
     {
         $get = producto::with([
-            'marca_producto',
-            'producto_marcas' => function ($query) {
-                $query->with(['marca']);
-            },
+            'marca_producto', 
             'unidad',
             'categoria',
             'marca',
@@ -373,7 +375,7 @@ class producto_controller extends Controller
             $producto_modelo =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
             ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
             ->get();
-            
+                
 
             return view('modules.productos.edit', ['get' => $get, 'id' => $id, 'producto_modelo' => $producto_modelo]);
         } else {

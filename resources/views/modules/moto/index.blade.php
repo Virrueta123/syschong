@@ -13,8 +13,7 @@
             <h4>Todo las Motos registradas</h4>
             <div class="card-header-action">
                 <a href="{{ route('moto.create') }}" class="btn btn-primary boton-color"><i class="fa fa-plus"
-                        aria-hidden="true"></i> Crear una moto</a>
- 
+                        aria-hidden="true"></i> Crear una moto</a> 
             </div>
 
         </div>

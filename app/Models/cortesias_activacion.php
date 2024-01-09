@@ -30,6 +30,11 @@ class cortesias_activacion extends Model
         return $this->belongsTo(tiendas::class, 'tienda_cobrar');
     }
 
+     public function moto()
+    {
+        return $this->belongsTo(motos::class, 'mtx_id');
+    }
+
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');

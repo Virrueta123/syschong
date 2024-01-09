@@ -93,11 +93,11 @@
                             <div class="form-row">
 
                                 <div class="form-group col-md-12">
-                                    <label>Seleccionar marcas de motos</label>
-                                    <p>Selecciona las marcas en donde el producto funciona</p>
+                                   <label>Seleccionar modelos de motos</label>
+                                    <p>Selecciona los modelos en donde el producto funciona</p>
 
                                     <seleccionar-marcas :selected="productos.producto_modelo"
-                                        :producto_modelo="producto_modelo"></seleccionar-marcas>
+                                        :modelos="producto_modelo"></seleccionar-marcas>
                                 </div> 
                             </div>
 
@@ -203,8 +203,7 @@
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
-
-          
+  
 
             // Initialize Uppy with desired options
             this.uppy = new Uppy({

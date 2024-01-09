@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-
-
+<html> 
+<head> 
     <title>Cotizacion</title>
     <!-- Cargar los estilos de Bootstrap  -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-
-
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"> 
     <style>
         .table {
             margin: 0;
@@ -99,10 +94,7 @@
 </head>
 
 <body>
-
-
-
-
+ 
     <table class="table-head" width="100">
         <tbody>
             <tr>
@@ -342,11 +334,7 @@
                 </tbody>
             </table>
 
-        </div>
-
- 
-
-
+        </div> 
 
 </body>
 

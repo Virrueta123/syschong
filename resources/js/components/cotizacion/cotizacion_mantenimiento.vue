@@ -178,7 +178,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-sm" id="table-repuestos" v-if="cotizacion.inventario.cortesia.is_garantia=='N'">
+                                    <table class="table table-sm" id="table-repuestos"
+                                        v-if="cotizacion.inventario.cortesia.is_garantia=='N'">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Codigo</th>
@@ -244,8 +245,9 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(detalle, index) in cotizacion.detalle" :key="index">
-                                                 
-                                                <td scope="row" v-if="detalle.garantia=='y'"><i class="fa fa-check"></i></td>
+
+                                                <td scope="row" v-if="detalle.garantia=='y'"><i
+                                                        class="fa fa-check"></i></td>
                                                 <td scope="row" v-else> </td>
                                                 <td scope="row">{{ detalle . Codigo }}</td>
                                                 <td scope="row">{{ detalle . Descripcion }}</td>
@@ -266,7 +268,7 @@
 
                                                 <td scope="row">{{ detalle . Cantidad }}</td>
                                                 <td scope="row">{{ detalle . Importe }}</td>
-                                                <td scope="row">{{ detalle . ImporteDescuento }}</td> 
+                                                <td scope="row">{{ detalle . ImporteDescuento }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -565,23 +567,31 @@
                                                     <Checkbox v-model="detalle.aprobar" :binary="true" />
                                                 </td>
 
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Codigo }}</td>
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Descripcion }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Codigo }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Descripcion }}</td>
 
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Detalle }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Detalle }}</td>
 
-                                                <td v-if="detalle.tipo == 'p' && detalle.garantia=='n'" scope="row">
+                                                <td v-if="detalle.tipo == 'p' && detalle.garantia=='n'"
+                                                    scope="row">
                                                     {{ detalle . producto . unidad . unidades_nombre }}
                                                 </td>
 
                                                 <td v-else-if="detalle.garantia=='n'" scope="row">servicio</td>
 
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Precio }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Precio }}</td>
 
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . ValorDescuento }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . ValorDescuento }}</td>
 
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Cantidad }}</td>
-                                                <td v-if="detalle.garantia=='n'" scope="row">{{ detalle . Importe }}</td> 
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Cantidad }}</td>
+                                                <td v-if="detalle.garantia=='n'" scope="row">
+                                                    {{ detalle . Importe }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -657,6 +667,67 @@
                         <button type="button" class="btn btn-info boton-color custom-next" v-on:click="avisado()">
                             Avisar
                         </button>
+
+                        <button v-if="print_comprobante" type="button" class="btn btn-info boton-color custom-next"
+                            v-on:click="enviar_comprobante_modal()">
+                            enviar comprobante
+                        </button>
+
+                        <CModal size="xl" :visible="is_enviar_comprobante_modal"
+                            @close="() => { is_enviar_comprobante_modal = false }">
+
+                            <CModalBody>
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar el
+                                        comprobante
+                                    </h5>
+                                    <button type="button" class="close"
+                                        @click="is_enviar_comprobante_modal = false">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="body">
+                                    <form id="form_cliente" method="POST" action="#">
+
+                                        <div class="modal-body">
+
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-sm-12">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control"
+                                                                v-model="celular" placeholder="" aria-label="">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary"
+                                                                    v-on:click="send_whatsapp_comprobante()"
+                                                                    type="button"><i
+                                                                        class="fa-brands fa-whatsapp"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-sm-12">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control"
+                                                                v-model="correo" placeholder="" aria-label="">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary"
+                                                                    v-on:click="send_correo_comprobante()"
+                                                                    type="button"><i
+                                                                        class="fa-solid fa-envelope"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </CModalBody>
+                        </CModal>
                     </div>
                 </div>
 
@@ -1262,6 +1333,8 @@
                     </div>
                 </div>
 
+
+
                 <!-- *********************** -->
             </div>
             <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-6">
@@ -1486,6 +1559,11 @@
         },
         data() {
             return {
+                /* -- ******** variables para enviar comprobantes ************* -- */
+                correo: "",
+                celular: 0,
+                is_enviar_comprobante_modal: false,
+                /* -- *********************** -- */
                 is_enviar_cotizacion_modal: false,
                 correo: "",
                 celular: 0,
@@ -1555,12 +1633,12 @@
 
         computed: {
             detallesAprobados() {
-                return this.cotizacion.detalle.filter((detalle) => detalle.aprobar && detalle.garantia=="n");
+                return this.cotizacion.detalle.filter((detalle) => detalle.aprobar && detalle.garantia == "n");
             },
             sumar_total() {
                 this.is_show = false;
                 const importeTotal = this.cotizacion.detalle
-                    .filter((detalle) => detalle.aprobar && detalle.garantia=="n")
+                    .filter((detalle) => detalle.aprobar && detalle.garantia == "n")
                     .reduce((total, detalle) => {
                         return parseFloat(total) + parseFloat(detalle.Importe);
                     }, 0);
@@ -1572,6 +1650,17 @@
 
         mounted() {
             const self = this;
+
+            /* -- ******** cargar cotizaciones venta************* -- */
+            if (this.cotizacion.ventas) {
+                this.print_comprobante = true;
+                this.rutaPDF = "/ventas_pdf/" + this.cotizacion.venta;
+            }
+
+
+
+            /* -- *********************** -- */
+
             console.log(this.cotizacion);
             if (this.cotizacion.cotizacion_image) {
                 this.is_imagen_cotizacion = true;
@@ -1762,6 +1851,65 @@
             is_ruc(newValue, oldValue) {},
         },
         methods: {
+            enviar_comprobante_modal() {
+                this.is_enviar_comprobante_modal = true;
+
+            },
+            send_whatsapp_comprobante() {
+
+                var documento = this.cotizacion.ventas.venta_serie + "-" + this.cotizacion.ventas.venta_correlativo;
+                this.venta_whatsapp("Puede ver el comprante " + documento + " en la siguiente ruta = ", this.url_raiz +
+                    "ventas_cliente/" + this.cotizacion.venta, "+51" + this.celular)
+
+                this.avisado()
+            },
+            send_correo_comprobante() {
+                this.showLoadingSpinner();
+                var documento = this.cotizacion.ventas.venta_serie + "-" + this.cotizacion.ventas.venta_correlativo;
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                const data = {
+                    correo: this.correo,
+                    id: this.cotizacion.venta,
+                    documento: documento
+                };
+
+                axios
+                    .post("/send_correo", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+
+                            this.alert_success("se envio el correo " + this.correo + " exitosamente");
+                            this.avisado()
+                            this.hideLoadingSpinner();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            console.error(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
+
+            /* -- ********  ************* -- */
+            /* -- *********************** -- */
             send_correo() {
                 const headers = {
                     "Content-Type": "application/json",
@@ -2514,11 +2662,10 @@
             },
 
             send_whatsapp() {
-
                 this.venta_whatsapp(
-                    "Somos de Repuestos & Servicios Chong. Le enviamos esta cotizacion de su moto.Lo puede revisar en la siguiente ruta = ",
-                    this.url +
-                    "cotizacion/" + this.cotizacion.cotizacion_id + "/cliente", "+51" + this.celular)
+                    "Somos de Repuestos y Servicios Chong. Le enviamos esta cotizacion de su moto.Lo puede revisar en la siguiente ruta = ",
+                    this.url_raiz +
+                    "cotizacion/" + this.cotizacion.url + "/cliente", "+51" + this.celular)
             },
             enviado_whatsapp() {
                 this.sendUrl(
@@ -2527,10 +2674,7 @@
                 );
             },
             avisado() {
-                this.venta_url(
-                    this.url_raiz + "venta/" + this.cotizacion.venta_id + "/cliente",
-                    "+51" + this.cotizacion.inventario.moto.cliente.cli_telefono
-                );
+
 
                 const headers = {
                     "Content-Type": "application/json",
@@ -2971,4 +3115,3 @@
         --sw-loader-background-wrapper-color: rgba(255, 255, 255, 0.7);
     }
 </style>
- 

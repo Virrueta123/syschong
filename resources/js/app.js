@@ -156,6 +156,7 @@ app.component('search-respuestos', require('./components/compra/search_respuesto
 
 app.component('search-moto', require('./components/moto/search_moto.vue').default);
 app.component('search-moto-modelo', require('./components/moto/search_moto_modelo.vue').default);
+app.component('search-moto-modelo-cortesia', require('./components/moto/search_moto_modelo_cortesia.vue').default);
 
 //seleccionar aceites
 app.component('seleccionar-aceites', require('./components/moto/seleccionar_aceites.vue').default);
@@ -186,9 +187,11 @@ app.component('tablas-ventas', require('./components/tablas/tablas_ventas.vue').
 
 /* -- ******** orden de servicio ************* -- */
 app.component('crear-orden-servicio', require('./components/orden_servicio/crear-orden-servicio.vue').default);
+app.component('crear-cortesia-orden-activacion', require('./components/orden_servicio/crear-cortesia-orden-activacion.vue').default);
+app.component('crear-cortesia-orden-tercero', require('./components/orden_servicio/crear-cortesia-orden-tercero.vue').default);
 app.component('crear-cortesia', require('./components/orden_servicio/crear-cortesia.vue').default);
 app.component('crear-cortesia-orden', require('./components/orden_servicio/crear-cortesia-orden.vue').default);
-app.component('crear-cortesia-orden-tercero', require('./components/orden_servicio/crear-cortesia-orden-tercero.vue').default);
+
 app.component('search-activacion', require('./components/orden_servicio/search-activacion.vue').default);
 app.component('garantia', require('./components/orden_servicio/garantia.vue').default);
 /* -- *********************** -- */

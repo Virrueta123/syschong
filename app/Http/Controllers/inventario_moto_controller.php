@@ -241,6 +241,14 @@ class inventario_moto_controller extends Controller
             },
             'cortesia' => function ($query) {
                 $query->with([
+                    'moto' => function ($query) {
+                        $query->with([
+                            'cliente',
+                            'modelo' => function ($query) {
+                                return $query->with(['marca']);
+                            },
+                        ]);
+                    },
                     'activaciones' => function ($query) {
                         $query->with([
                             'moto' => function ($query) {
@@ -286,14 +294,11 @@ class inventario_moto_controller extends Controller
                         }
                         array_push($accesorios_selected, ['item' => $cc->accesorios_nombre, 'check' => 'y', 'estado' => $estado]);
                     } else {
-                       
                     }
                 }
 
-                 array_push($accesorios_selected, ['item' => $cc->accesorios_nombre, 'check' => 'n']);
-                 
+                array_push($accesorios_selected, ['item' => $cc->accesorios_nombre, 'check' => 'n']);
             }
- 
 
             return view('pdf.orden_servicio', ['accesorios_selected' => json_encode($accesorios_selected), 'get' => $get, 'accesorios' => $accesorios, 'autorizaciones' => $autorizaciones, 'id' => $id]);
         } else {

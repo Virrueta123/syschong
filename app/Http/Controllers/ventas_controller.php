@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\cotizacion;
 use App\Models\cotizacioncotizacion_detalle;
 use App\Models\cuentas;
+use App\Models\detalle_venta;
 use App\Models\empresa;
 use App\Models\ventas;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -66,7 +67,7 @@ class ventas_controller extends Controller
             )
                 ->addColumn('action', static function ($Data) {
                     $venta_id = encrypt_id($Data->venta_id);
-                    return view('buttons.venta', ['venta_id' => $venta_id]);
+                    return view('buttons.nota_de_venta', ['venta_id' => $venta_id]);
                 })
 
                 ->addColumn('numero', static function ($Data) {
@@ -484,6 +485,18 @@ class ventas_controller extends Controller
             'success' => true,
             'data' => '',
         ]);
+    }
+
+    public function destroy_nota($id)
+    { 
+        $ventas = ventas::where('venta_id', decrypt_id($id))->first();
+        $ventas->delete();
+
+        detalle_venta::where('venta_id', decrypt_id($id))->delete();
+        
+        session()->flash('success', 'Registro eliminado correctamente');
+        return redirect()->route('ventas.notas_venta');
+ 
     }
 
     /* ******** registrar la venta con vue ************* */

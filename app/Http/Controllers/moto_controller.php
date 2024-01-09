@@ -270,8 +270,7 @@ class moto_controller extends Controller
                     ->orWhere('cliente.cli_apellido', 'like', '%' . $search . '%')
                     ->orWhere('marca.marca_nombre', 'like', '%' . $search . '%')
                     ->orWhere('modelo.modelo_nombre', 'like', '%' . $search . '%')
-                    ->orWhere('motos.mtx_motor', 'like', '%' . $search . '%')
-                    ->orWhere('cliente.deleted_at', '=', null);
+                    ->orWhere('motos.mtx_motor', 'like', '%' . $search . '%');
             })
             ->limit(15) 
             ->get();
@@ -294,11 +293,14 @@ class moto_controller extends Controller
 
     public function get_moto(Request $req)
     {
-        try {
-            $show = motos::with(["cliente",'modelo' => function ($query) {
+ 
+            $show = motos::with([
+                "cliente", 
+                'modelo' => function ($query) {
                 $query->with(['marca']);
             }])->find($req->all()['id']);
 
+            
        
             if ($show) {
                 return response()->json([
@@ -316,15 +318,7 @@ class moto_controller extends Controller
                     'data' => '',
                 ]);
             }
-        } catch (\Throwable $th) {
-            Log::error($th);
-            return response()->json([
-                'message' => 'error al mostrar los datos, cargue el navegador nuevamente',
-                'error' => $th,
-                'success' => false,
-                'data' => '',
-            ]);
-        }
+        
     }
 
     public function store_moto_vue(Request $req){
