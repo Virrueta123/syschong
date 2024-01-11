@@ -44,12 +44,11 @@
                                     Visualizar
                                 </a>
 
-                                <a href="#" class="dropdown-item"
+                                <a href="#" class="dropdown-item" 
                                     v-on:click="enviar_comprobante_modal(v_t.id,index_v_t)" role="button"><i
                                         class="fa-solid fa-share-from-square"></i>
-                                    Enviar comprobante</a>
-
-                                <a href="#" class="dropdown-item" v-on:click="delete_venta(v_t.id,index_v_t)"
+                                    Enviar comprobante</a> 
+                                <a href="#" v-if="v_t.estado!='B'" class="dropdown-item" v-on:click="delete_venta(v_t.id,index_v_t)"
                                     role="button"><i class="fa fa-trash fa-1x"></i>
                                     Dar de baja</a>
                             </div>
@@ -195,17 +194,18 @@
                         axios
                             .delete("/ventas_baja/" + id)
                             .then((response) => {
-
+                                console.log(response.data);
                                 if (response.data.success) {
-                                    this.alert_error(response.data.message)
+                                
+                                    this.alert_success(response.data.message)
+                                    this.tabla[index].venta_estado = "Dado de baja";
                                 } else {
                                     Swal.fire({
                                         icon: "error",
                                         title: "Error",
                                         text: response.data.error,
                                         footer: "-------",
-                                    });
-                                    console.error(response.data);
+                                    }); 
                                 }
                             })
                             .catch((error) => {

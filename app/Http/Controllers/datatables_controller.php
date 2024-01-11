@@ -709,7 +709,11 @@ class datatables_controller extends Controller
             )
                 ->addColumn('action', static function ($Data) {
                     $venta_id = encrypt_id($Data->venta_id);
-                    return view('buttons.venta', ['venta_id' => $venta_id]);
+                    $estado = $Data->venta_estado;
+                    return view('buttons.venta', ['venta_id' => $venta_id,'estado' => $estado]);
+                })
+                ->addColumn('estado', static function ($Data) { 
+                    return $Data->venta_estado;
                 })
                 ->addColumn('tipo_venta', static function ($Data) {
                     switch ($Data->tipo_venta) {
@@ -746,6 +750,10 @@ class datatables_controller extends Controller
                         case 'R':
                             return 'Rechazado';
                             break;
+
+                            case 'B':
+                                return 'Da de baja';
+                                break;
                     }
                 })
                 ->addColumn('cliente', static function ($Data) {

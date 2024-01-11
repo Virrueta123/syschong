@@ -8,11 +8,11 @@
          
          <a class="dropdown-item" href="{{ route('ventas.show', $venta_id) }}"> <i class="fa fa-eye fa-1x"></i>
              Visualizar
-         </a>
-         
+         </a> 
          <a class="dropdown-item" href="{{ route('ventas.edit', $venta_id) }}"> <i class="fa fa-edit fa-1x"></i> editar
-             venta
-         </a>
+            venta
+        </a>
+   
          
          <a class="dropdown-item p-0 pl-2">
              <form method="POST" id="formdeletetx{{ $venta_id }}"

@@ -310,8 +310,11 @@ class ventas_controller extends Controller
 
     public function ventas_baja($id)
     {
-        
+        $empresa = empresa::first();
+
         $ventas = ventas::where('venta_id', decrypt_id($id))->first();
+
+        $codigo = sprintf('%05d', $empresa->nro_baja);
 
         $firma = new firma_sunat_controller();
         $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
@@ -332,79 +335,137 @@ class ventas_controller extends Controller
                     ->setDireccion('PJ. UNION 126B LOZA BELAUNDE'),
             );
 
- 
-        $detail1 = new VoidedDetail();
-        $detail1->setTipoDoc("01") // Factura
-            ->setSerie($ventas->venta_serie)
-            ->setCorrelativo($ventas->venta_correlativo)
-            ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
-   
-        
-        $cDeBaja = new Voided();
-        $cDeBaja->setCorrelativo('00001') // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
-            ->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de los comprobantes a dar de baja
-            ->setFecComunicacion(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envio de la C. de baja
-            ->setCompany($company)
-            ->setDetails([$detail1]);
-        
-        $result = $see->send($cDeBaja);
-        // Guardar XML
-        file_put_contents($cDeBaja->getName().'.xml',
-                          $see->getFactory()->getLastXml());
-        
-        if (!$result->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
-            dd($result->getError());
-            return response()->json([
-                'message' => 'error sunat',
-                'error' => 'error al conectarse a la sunat',
-                'success' => false,
-                'data' => '',
-            ]);
-        }
-
-        dd( $result);
-        
-        $ticket = $result->getTicket();
-        
-        dd($ticket.PHP_EOL);
-        
-        $statusResult = $see->getStatus($ticket);
-        if (!$statusResult->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
-            dd($statusResult->getError());
-            return response()->json([
-                'message' => 'error sunat',
-                'error' => 'error al conectarse a la sunat',
-                'success' => false,
-                'data' => '',
-            ]);
-        }
-        
-   
-        file_put_contents('R-'.$cDeBaja->getName().'.zip', $statusResult->getCdrZip());
-
-     
+        if ($ventas->tipo_comprobante == "F") {
+            $detail1 = new VoidedDetail();
+            $detail1
+                ->setTipoDoc('01') // Factura
+                ->setSerie($ventas->venta_serie)
+                ->setCorrelativo($ventas->venta_correlativo)
+                ->setDesMotivoBaja('ERROR EN CÁLCULOS'); // Motivo por el cual se da de baja.
     
-        return response()->json([
-            'message' => 'se dio de baja este comprobante exitosamente '.$ticket.PHP_EOL,
-            'error' => '',
-            'success' => true,
-            'data' => '',
-        ]); 
-        
+            $cDeBaja = new Voided();
+            $cDeBaja
+                ->setCorrelativo($codigo) // Correlativo, necesario para diferenciar c. de baja de en un mismo día.
+                ->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de los comprobantes a dar de baja
+                ->setFecComunicacion(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envio de la C. de baja
+                ->setCompany($company)
+                ->setDetails([$detail1]);
+    
+            $result = $see->send($cDeBaja);
+            // Guardar XML
+            file_put_contents($cDeBaja->getName() . '.xml', $see->getFactory()->getLastXml());
+    
+            if (!$result->isSuccess()) {
+                // Si hubo error al conectarse al servicio de SUNAT.
+                return response()->json([
+                    'message' => 'error sunat',
+                    'error' => 'error al conectarse a la sunat',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+    
+            $ticket = $result->getTicket();
+      
+            $statusResult = $see->getStatus($ticket);
+            if (!$statusResult->isSuccess()) {
+                return response()->json([
+                    'message' => 'error sunat',
+                    'error' => 'error al conectarse a la sunat',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+            file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
+    
+            $ventas->venta_estado = "B";
+            $ventas->save();
+    
+            $empresa->nro_baja = $empresa->nro_baja + 1;
+            $empresa->save();
+     
+            return response()->json([
+                'message' => $statusResult->getCdrResponse()->getDescription(),
+                'error' => '',
+                'success' => true,
+                'data' => '',
+            ]); 
+        } else {
+             
+            $detail = new SummaryDetail();
+            $detail->setTipoDoc('03') // Boleta
+                ->setSerieNro($ventas->venta_serie.'-'.$ventas->venta_correlativo)
+                ->setEstado('3') // Anulación
+                ->setClienteTipo('1')
+                ->setClienteNro($ventas->Dni)
+                ->setTotal($ventas->SubTotal) 
+                ->setMtoOperExoneradas($ventas->SubTotal) 
+                ->setMtoIGV(0);
+            
+            $codigo = sprintf('%03d', $empresa->nro_baja);
+            $resumen = new Summary();
+            $resumen->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de las boletas.
+                ->setFecResumen(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envío del resumen diario.
+                ->setCorrelativo($codigo ) // Correlativo, necesario para diferenciar de otros Resumen diario del mismo día.
+                ->setCompany($company)
+                ->setDetails([$detail]);
+            
+            $result = $see->send($resumen);
+            // Guardar XML
+            file_put_contents($resumen->getName().'.xml',
+                              $see->getFactory()->getLastXml());
+            
+            if (!$result->isSuccess()) {
+                // Si hubo error al conectarse al servicio de SUNAT.
+                return response()->json([
+                    'message' => 'error sunat',
+                    'error' => 'error al conectarse a la sunat',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+            
+            $ticket = $result->getTicket();
+            
+            $statusResult = $see->getStatus($ticket);
+            if (!$statusResult->isSuccess()) {
+                return response()->json([
+                    'message' => 'error sunat',
+                    'error' => 'error al conectarse a la sunat',
+                    'success' => false,
+                    'data' => '',
+                ]);
+            }
+             
+            // Guardar CDR
+            file_put_contents('R-'.$resumen->getName().'.zip', $statusResult->getCdrZip());
+
+            $ventas->venta_estado = "B";
+            $ventas->save();
+    
+            $empresa->nro_baja = $empresa->nro_baja + 1;
+            $empresa->save();
+     
+            return response()->json([
+                'message' => $statusResult->getCdrResponse()->getDescription(),
+                'error' => '',
+                'success' => true,
+                'data' => '',
+            ]); 
+        }
+              
+
     }
 
     public function destroy_nota($id)
-    { 
+    {
         $ventas = ventas::where('venta_id', decrypt_id($id))->first();
         $ventas->delete();
 
         detalle_venta::where('venta_id', decrypt_id($id))->delete();
-        
+
         session()->flash('success', 'Registro eliminado correctamente');
         return redirect()->route('ventas.notas_venta');
- 
     }
 
     /* ******** registrar la venta con vue ************* */
@@ -514,9 +575,9 @@ class ventas_controller extends Controller
         try {
             $destinatario = $request->all()['correo'];
             $ruta = asset('/') . 'ventas_cliente/' . $request->all()['id'];
-            $mensaje = 'Puede ver el comprante '.$request->all()['documento'].' en la siguiente ruta';
+            $mensaje = 'Puede ver el comprante ' . $request->all()['documento'] . ' en la siguiente ruta';
 
-            $mensaje = Mail::send('pdf.enviar_correo', ['mensaje' => $mensaje,"ruta"=>$ruta], function ($message) use ($destinatario) {
+            $mensaje = Mail::send('pdf.enviar_correo', ['mensaje' => $mensaje, 'ruta' => $ruta], function ($message) use ($destinatario) {
                 $message->to($destinatario)->subject('Asunto del mensaje');
             });
 
