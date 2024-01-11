@@ -664,10 +664,78 @@
                             Anterior
                         </button>
                         <div class="mr-2"></div>
+                        <!--
                         <button type="button" class="btn btn-info boton-color custom-next" v-on:click="avisado()">
                             Avisar
-                        </button>
+                        </button> -->
+                    </div>
+                </div>
 
+                <div class="container mt-5">
+                    <div class="card">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12">
+                                <!-- Imagen centrada -->
+                                <img width="100" src="../../../../public/images/svg/repair.svg"
+                                    class="img-fluid mx-auto d-block" alt="Imagen Centrada" />
+
+                                <!-- Título centrado debajo de la imagen -->
+                                <h2 class="titulo-centrado mt-3 text-center">Moto Reparada</h2>
+                            </div>
+                            <form id="s" method="POST" action="#">
+
+                                <div class="modal-body">
+                                    <div class="card-foorter">
+                                        <h5 class="text-center" id="modal-crear-cliente-label">Formulario para enviar
+                                            aviso
+                                        </h5>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="form-row">
+                                            <div class="form-group col-sm-12">
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" v-model="celular"
+                                                        placeholder="" aria-label="">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-primary"
+                                                            v-on:click="send_whatsapp_aviso()" type="button"><i
+                                                                class="fa-brands fa-whatsapp"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" v-model="correo"
+                                                        placeholder="" aria-label="">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-primary"
+                                                            v-on:click="send_correo_aviso()" type="button"><i
+                                                                class="fa-solid fa-envelope"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-6">
+                <div class="section-header">
+                    <div class="section-header-breadcrumb">
+                        <button type="button" class="btn btn-info boton-color custom-prev">
+                            Anterior
+                        </button>
+                        <button type="button" class="btn btn-info boton-color custom-next" v-on:click="cerrado()">
+                            Siguiente
+                        </button>
                         <button v-if="print_comprobante" type="button" class="btn btn-info boton-color custom-next"
                             v-on:click="enviar_comprobante_modal()">
                             enviar comprobante
@@ -688,7 +756,7 @@
                                     </button>
                                 </div>
                                 <div class="body">
-                                    <form id="form_cliente" method="POST" action="#">
+                                    <form id="s" method="POST" action="#">
 
                                         <div class="modal-body">
 
@@ -730,625 +798,7 @@
                         </CModal>
                     </div>
                 </div>
-
-                <div class="container mt-5">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <!-- Imagen centrada -->
-                            <img width="100" src="../../../../public/images/svg/repair.svg"
-                                class="img-fluid mx-auto d-block" alt="Imagen Centrada" />
-
-                            <!-- Título centrado debajo de la imagen -->
-                            <h2 class="titulo-centrado mt-3 text-center">Moto Reparada</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ******** generar comprobante electronico ************* -->
-
-                <div v-if="print_comprobante" class="form-row">
-                    <div class="form-group col-md-12">
-                        <h2 class="text-center">Imprimir comprobante</h2>
-                        <iframe :src="rutaPDF" width="100%" height="600px"></iframe>
-                    </div>
-                </div>
-
-                <div v-else class="card">
-                    <div class="card-header">
-                        <h4 class="text-center">Generar Comprobante Electronico</h4>
-                    </div>
-
-                    <div v-if="cotizacion.inventario.moto.cliente">
-                        <div class="card-body" id="factura">
-                            <div class="form-group">
-                                <label class="form-label">Elige el comprobante electronico</label>
-                                <div class="selectgroup w-100">
-                                    <label class="selectgroup-item">
-                                        <input type="radio" name="value" value="100"
-                                            class="selectgroup-input" v-on:click="factura()" />
-                                        <span class="selectgroup-button">Factura</span>
-                                    </label>
-                                    <label class="selectgroup-item">
-                                        <input type="radio" name="value" value="150"
-                                            class="selectgroup-input" v-on:click="boleta()" />
-                                        <span class="selectgroup-button">Boleta electronica</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <form v-if="is_ruc" id="form_add_ruc_cliente" method="POST" action="#">
-                                <ruc></ruc>
-                                <button type="submit" class="btn btn-primary" id="crear_cliente">
-                                    Actualizar Ruc
-                                </button>
-                            </form>
-
-                            <form v-if="is_dni" id="form_add_dni_cliente" method="POST" action="#">
-                                <dni></dni>
-                                <button type="submit" class="btn btn-primary" id="crear_cliente">
-                                    Actualizar Dni
-                                </button>
-                            </form>
-
-                            <!-- ******** factura electronica ************* -->
-
-                            <div v-if="tiene_ruc" class="card text-left">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <img width="100" src="../../../../public/images/empresa/logo.png"
-                                                class="img-fluid" alt="" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="product-details">
-                                                <div class="product-name">
-                                                    {{ empresa . razon_social }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Ruc : {{ empresa . ruc }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Direccion :
-                                                    {{ empresa . direccion }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Celular : {{ empresa . celular }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="container border border-secondary rounded">
-                                                <div class="product-name">
-                                                    <h3 class="text-center">Factura Electronica</h3>
-                                                </div>
-                                                <div class="product-name">
-                                                    <h5 class="text-center">Ruc : {{ empresa . ruc }}</h5>
-                                                </div>
-                                                <div class="product-name">
-                                                    <h6 class="text-center">
-                                                        F003- {{ correlativo_factura }}
-                                                    </h6>
-                                                </div>
-                                                <div class="text-muted text-small"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group col-6">
-                                            <label for="">Cliente</label>
-                                            <select class="form-control" name="" id="" disabled>
-                                                <option selected>
-                                                    ruc :
-                                                    {{ cotizacion . inventario . moto . cliente . cli_ruc }} |
-                                                    R.social :
-                                                    {{ cotizacion . inventario . moto . cliente . cli_razon_social }}
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group col-3">
-                                            <label>Fecha creacion</label>
-                                            <VueDatePicker @internal-model-change="fecha_creacion_change"
-                                                emit-timezone="UTC" locale="es" v-model="fecha_creacion_factura"
-                                                placeholder="fecha creacion ..." format="dd/MM/yyyy HH:mm" />
-                                        </div>
-
-                                        <div class="form-group col-3">
-                                            <label>Fecha vencimiento</label>
-                                            <VueDatePicker emit-timezone="UTC" locale="es"
-                                                v-model="fecha_vencimiento_factura"
-                                                placeholder="fecha vencimiento ..." format="dd/MM/yyyy HH:mm" />
-                                        </div>
-                                    </div>
-
-                                    <hr />
-
-                                    <div class="form-row">
-                                        <div class="form-group col-md-12">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm" id="table-repuestos">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Codigo</th>
-                                                            <th scope="col">Descripcion</th>
-                                                            <th scope="col">Detalle</th>
-                                                            <th scope="col">unidad</th>
-                                                            <th scope="col">Precio</th>
-                                                            <th scope="col">Descuento</th>
-                                                            <th scope="col">V.Descuento</th>
-                                                            <th scope="col">Cantidad</th>
-                                                            <th scope="col">Importe</th>
-                                                            <th scope="col">Importe Decuento</th>
-                                                            <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, index) in detallesAprobados"
-                                                            :key="index">
-                                                            <td scope="row">{{ detalle . Codigo }}</td>
-                                                            <td scope="row">{{ detalle . Descripcion }}</td>
-                                                            <td scope="row">{{ detalle . Detalle }}</td>
-
-                                                            <td v-if="detalle.tipo == 'p'" scope="row">
-                                                                {{ detalle . producto . unidad . unidades_nombre }}
-                                                            </td>
-
-                                                            <td scope="row">servicio</td>
-                                                            <td scope="row">{{ detalle . Precio }}</td>
-                                                            <td scope="row">{{ detalle . Descuento }}</td>
-                                                            <td scope="row">{{ detalle . ValorDescuento }}</td>
-                                                            <td scope="row">{{ detalle . Cantidad }}</td>
-                                                            <td scope="row">{{ detalle . Importe }}</td>
-                                                            <td scope="row">
-                                                                {{ detalle . ImporteDescuento }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="2">OP.EXONERADAS:</td>
-                                                            <td scope="row" colspan="2">
-                                                                {{ sumar_total }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="2">TOTAL A PAGAR:</td>
-                                                            <td scope="row" colspan="2">
-                                                                {{ sumar_total }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <th scope="row">Imagen</th>
-                                                            <th scope="row">Método de pago</th>
-                                                            <th scope="row">Referencia</th>
-                                                            <th scope="row">Monto</th>
-                                                        </tr>
-
-                                                        <tr v-for="(pago, pg) in pagos" :key="pg">
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <button v-if="!pagos[pg].url" type="button"
-                                                                        name="" @click="addImage(pg)"
-                                                                        id=""
-                                                                        class="btn btn-info boton-color"
-                                                                        style="width: 100%; height: 100%">
-                                                                        <i class="fa fa-camera"
-                                                                            aria-hidden="true"></i>
-                                                                    </button>
-                                                                    <img @click="addImage(pg)"
-                                                                        style="width: 100%; height: 100%" v-else
-                                                                        :src="pagos[pg].src" class="img-fluid"
-                                                                        alt="Responsive image" />
-                                                                </div>
-                                                            </td>
-                                                            <td scope="row">
-                                                                <div class="form-group">
-                                                                    <select class="custom-select">
-                                                                        <option v-for="(f_g, fg) in forma_pago"
-                                                                            :key="fg"
-                                                                            :selected="f_g.forma_pago_id == pago.forma_pago_id"
-                                                                            value="f_g.forma_pago_id">
-                                                                            {{ f_g . forma_pago_nombre }}
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                            </td>
-
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control"
-                                                                        v-model="pagos[pg].referencia" />
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control"
-                                                                        :value="pago.monto"
-                                                                        v-on:keyup="monto_change($event, pg)" />
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <button type="button" name=""
-                                                                        @click="delete_forma_pago(pg)"
-                                                                        style="width: 100%; height: 100%"
-                                                                        id=""
-                                                                        class="btn btn-info boton-color">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr v-if="is_complete_pago">
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="4">
-                                                                <button type="button" name=""
-                                                                    @click="add_forma_pago()"
-                                                                    style="width: 100%; height: 100%" id=""
-                                                                    class="btn btn-info boton-color">
-                                                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button type="button" v-on:click="crear_factura()"
-                                        class="btn btn-info boton-color">
-                                        Crear Factura
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- ******** crear boleta ************* -->
-
-                            <div v-if="tiene_dni" class="card text-left">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <img width="100" src="../../../../public/images/empresa/logo.png"
-                                                class="img-fluid" alt="" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="product-details">
-                                                <div class="product-name">
-                                                    {{ empresa . razon_social }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Ruc : {{ empresa . ruc }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Direccion :
-                                                    {{ empresa . direccion }}
-                                                </div>
-                                                <div class="text-muted text-small">
-                                                    Celular : {{ empresa . celular }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="container border border-secondary rounded">
-                                                <div class="product-name">
-                                                    <h3 class="text-center">Boleta Electronica</h3>
-                                                </div>
-                                                <div class="product-name">
-                                                    <h5 class="text-center">Ruc : {{ empresa . ruc }}</h5>
-                                                </div>
-                                                <div class="product-name">
-                                                    <h6 class="text-center">
-                                                        B001 - {{ correlativo_boleta }}
-                                                    </h6>
-                                                </div>
-                                                <div class="text-muted text-small"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group col-6">
-                                            <label for="">Cliente</label>
-                                            <select class="form-control" name="" id="" disabled>
-                                                <option selected>
-                                                    Dni :
-                                                    {{ cotizacion . inventario . moto . cliente . cli_dni }} |
-                                                    Nombres :
-                                                    {{ cotizacion . inventario . moto . cliente . cli_nombre }}
-                                                    {{ cotizacion . inventario . moto . cliente . cli_apellido }}
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group col-6">
-                                            <label>Fecha creacion</label>
-                                            <VueDatePicker emit-timezone="UTC" locale="es"
-                                                v-model="fecha_creacion_boleta" placeholder="fecha creacion ..."
-                                                format="dd/MM/yyyy HH:mm" />
-                                        </div>
-                                    </div>
-
-                                    <hr />
-
-                                    <div class="form-row">
-                                        <div class="form-group col-md-12">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm" id="table-repuestos">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Codigo</th>
-                                                            <th scope="col">Descripcion</th>
-                                                            <th scope="col">Detalle</th>
-                                                            <th scope="col">unidad</th>
-                                                            <th scope="col">Precio</th>
-                                                            <th scope="col">Cantidad</th>
-                                                            <th scope="col">Importe</th>
-                                                            <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, index) in detallesAprobados"
-                                                            :key="index">
-                                                            <td scope="row">{{ detalle . Codigo }}</td>
-                                                            <td scope="row">{{ detalle . Descripcion }}</td>
-                                                            <td scope="row">{{ detalle . Detalle }}</td>
-
-                                                            <td v-if="detalle.tipo == 'p'" scope="row">
-                                                                {{ detalle . producto . unidad . unidades_nombre }}
-                                                            </td>
-
-                                                            <td scope="row">servicio</td>
-                                                            <td scope="row">{{ detalle . Precio }}</td>
-                                                            <td scope="row">{{ detalle . Cantidad }}</td>
-                                                            <td scope="row" class="text-right">
-                                                                {{ detalle . Importe }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="2">OP.EXONERADAS:</td>
-                                                            <td scope="row" class="text-right" colspan="2">
-                                                                {{ sumar_total }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="2">TOTAL A PAGAR:</td>
-                                                            <td scope="row" class="text-right" colspan="2">
-                                                                {{ sumar_total }}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <th scope="row">Imagen</th>
-                                                            <th scope="row">Método de pago</th>
-                                                            <th scope="row">Referencia</th>
-                                                            <th scope="row">Monto</th>
-                                                        </tr>
-
-                                                        <tr v-for="(pagob, pgb) in pagos_boletas"
-                                                            :key="pgb">
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <button v-if="!pagos_boletas[pgb].url"
-                                                                        type="button" name=""
-                                                                        @click="addImage_boleta(pgb)" id=""
-                                                                        class="btn btn-info boton-color"
-                                                                        style="width: 100%; height: 100%">
-                                                                        <i class="fa fa-camera"
-                                                                            aria-hidden="true"></i>
-                                                                    </button>
-                                                                    <img @click="addImage(pgb)"
-                                                                        style="width: 100%; height: 100%" v-else
-                                                                        :src="pagos_boletas[pgb].src"
-                                                                        class="img-fluid" alt="Responsive image" />
-                                                                </div>
-                                                            </td>
-                                                            <td scope="row">
-                                                                <div class="form-group">
-                                                                    <select class="custom-select"
-                                                                        v-on:change="forma_pago_boleta(pgb)">
-                                                                        <option v-for="(f_g, fg) in forma_pago"
-                                                                            :key="fg"
-                                                                            :selected="f_g.forma_pago_id == pagob.forma_pago_id"
-                                                                            :value="f_g.forma_pago_id">
-                                                                            {{ f_g . forma_pago_nombre }}
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                            </td>
-
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control"
-                                                                        v-model="pagos_boletas[pgb].referencia" />
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control"
-                                                                        :value="pagob.monto"
-                                                                        v-on:keyup="monto_change($event, pgb)" />
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <button type="button" name=""
-                                                                        @click="delete_forma_pago_boleta(pgb)"
-                                                                        style="width: 100%; height: 100%"
-                                                                        id=""
-                                                                        class="btn btn-info boton-color">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr v-if="is_complete_pago">
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row"></td>
-                                                            <td scope="row" colspan="4">
-                                                                <button type="button" name=""
-                                                                    @click="add_forma_pago_boleta()"
-                                                                    style="width: 100%; height: 100%" id=""
-                                                                    class="btn btn-info boton-color">
-                                                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button type="button" v-on:click="crear_boleta()"
-                                        class="btn btn-info boton-color">
-                                        Crear Boleta
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- *********************** -->
-
-                            <!-- *********************** -->
-                        </div>
-                    </div>
-                    <div v-else>
-                        <div class="input-group-append">
-                            <button class="btn btn-primary boton-color m-4" v-on:click="modal_start()" type="button"
-                                data-toggle="modal" data-target="#modal-crear-cliente">
-                                <i class="fa fa-plus" aria-hidden="true"></i> Agregar Cliente
-                            </button>
-
-                            <!-- Modal para crear cliente-->
-
-
-
-                            <CModal size="xl" :visible="is_modal_crear_cliente"
-                                @close="() => { is_modal_crear_cliente = false; }">
-                                <CModalBody>
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modal-crear-cliente-label">
-                                            Formulario para crear un cliente
-                                        </h5>
-                                        <button type="button" class="close"
-                                            @click="is_modal_crear_cliente = false">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="body">
-                                        <div class="modal-content">
-                                            <form id="form_cliente_asignar" method="POST" action="#">
-
-                                                <div class="modal-body">
-                                                    <div class="card-body">
-                                                        <div id="app">
-                                                            <dni cli_dni="" cli_nombre="" cli_apellido=""
-                                                                cli_direccion="" cli_departamento="" cli_provincia=""
-                                                                cli_distrito=""></dni>
-                                                            <ruc cli_ruc="" cli_razon_social=""
-                                                                cli_direccion_ruc="" cli_departamento_ruc=""
-                                                                cli_provincia_ruc="" cli_distrito_ruc=""></ruc>
-                                                        </div>
-                                                        <h2 class="section-title">Contactos</h2>
-                                                        <div class="form-row">
-                                                            <div class="form-group col-md-6">
-                                                                <label for="cli_telefono">Celular</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="cli_telefono" id="cli_telefono" />
-                                                            </div>
-
-                                                            <div class="form-group col-md-6">
-                                                                <label for="cli_correo">Correo Electronico</label>
-                                                                <input type="email" class="form-control"
-                                                                    name="cli_correo" id="cli_correo" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-secondary" id="crear_cliente_cerrar"
-                                                        data-dismiss="modal">
-                                                        Cerrar Formulario
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary"
-                                                        id="crear_cliente">
-                                                        Crear Cliente
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </CModalBody>
-                            </CModal>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- *********************** -->
-            </div>
-            <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-6">
-                <div class="section-header">
-                    <div class="section-header-breadcrumb">
-                        <button type="button" class="btn btn-info boton-color custom-prev">
-                            Anterior
-                        </button>
-                        <button type="button" class="btn btn-info boton-color custom-next" v-on:click="cerrado()">
-                            Siguiente
-                        </button>
-                    </div>
-                </div>
-                <div class="container mt-5">
+                <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-12">
                             <!-- Imagen centrada -->
@@ -1358,6 +808,625 @@
                             <!-- Título centrado debajo de la imagen -->
                             <h2 class="titulo-centrado mt-3 text-center">Trabajo Avisado</h2>
                         </div>
+
+                        <!-- ******** generar comprobante electronico ************* -->
+
+                        <div v-if="print_comprobante" class="form-row">
+                            <div class="form-group col-md-12">
+                                <h2 class="text-center">Imprimir comprobante</h2>
+                                <iframe :src="rutaPDF" width="100%" height="600px"></iframe>
+                            </div>
+                        </div>
+
+                        <div v-else class="card">
+                            <div class="card-header">
+                                <h4 class="text-center">Generar Comprobante Electronico</h4>
+                            </div>
+
+                            <div v-if="cotizacion.inventario.moto.cliente">
+                                <div class="card-body" id="factura">
+                                    <div class="form-group">
+                                        <label class="form-label">Elige el comprobante electronico</label>
+                                        <div class="selectgroup w-100">
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="value" value="100"
+                                                    class="selectgroup-input" v-on:click="factura()" />
+                                                <span class="selectgroup-button">Factura</span>
+                                            </label>
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="value" value="150"
+                                                    class="selectgroup-input" v-on:click="boleta()" />
+                                                <span class="selectgroup-button">Boleta electronica</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <form v-if="is_ruc" id="form_add_ruc_cliente" method="POST" action="#">
+                                        <ruc></ruc>
+                                        <button type="submit" class="btn btn-primary" id="crear_cliente">
+                                            Actualizar Ruc
+                                        </button>
+                                    </form>
+
+                                    <form v-if="is_dni" id="form_add_dni_cliente" method="POST" action="#">
+                                        <dni></dni>
+                                        <button type="submit" class="btn btn-primary" id="crear_cliente">
+                                            Actualizar Dni
+                                        </button>
+                                    </form>
+
+                                    <!-- ******** factura electronica ************* -->
+
+                                    <div v-if="tiene_ruc" class="card text-left">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img width="100"
+                                                        src="../../../../public/images/empresa/logo.png"
+                                                        class="img-fluid" alt="" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="product-details">
+                                                        <div class="product-name">
+                                                            {{ empresa . razon_social }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Ruc : {{ empresa . ruc }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Direccion :
+                                                            {{ empresa . direccion }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Celular : {{ empresa . celular }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="container border border-secondary rounded">
+                                                        <div class="product-name">
+                                                            <h3 class="text-center">Factura Electronica</h3>
+                                                        </div>
+                                                        <div class="product-name">
+                                                            <h5 class="text-center">Ruc : {{ empresa . ruc }}</h5>
+                                                        </div>
+                                                        <div class="product-name">
+                                                            <h6 class="text-center">
+                                                                F003- {{ correlativo_factura }}
+                                                            </h6>
+                                                        </div>
+                                                        <div class="text-muted text-small"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-6">
+                                                    <label for="">Cliente</label>
+                                                    <select class="form-control" name="" id=""
+                                                        disabled>
+                                                        <option selected>
+                                                            ruc :
+                                                            {{ cotizacion . inventario . moto . cliente . cli_ruc }} |
+                                                            R.social :
+                                                            {{ cotizacion . inventario . moto . cliente . cli_razon_social }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-3">
+                                                    <label>Fecha creacion</label>
+                                                    <VueDatePicker @internal-model-change="fecha_creacion_change"
+                                                        emit-timezone="UTC" locale="es"
+                                                        v-model="fecha_creacion_factura"
+                                                        placeholder="fecha creacion ..." format="dd/MM/yyyy HH:mm" />
+                                                </div>
+
+                                                <div class="form-group col-3">
+                                                    <label>Fecha vencimiento</label>
+                                                    <VueDatePicker emit-timezone="UTC" locale="es"
+                                                        v-model="fecha_vencimiento_factura"
+                                                        placeholder="fecha vencimiento ..."
+                                                        format="dd/MM/yyyy HH:mm" />
+                                                </div>
+                                            </div>
+
+                                            <hr />
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm" id="table-repuestos">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Codigo</th>
+                                                                    <th scope="col">Descripcion</th>
+                                                                    <th scope="col">Detalle</th>
+                                                                    <th scope="col">unidad</th>
+                                                                    <th scope="col">Precio</th>
+                                                                    <th scope="col">Descuento</th>
+                                                                    <th scope="col">V.Descuento</th>
+                                                                    <th scope="col">Cantidad</th>
+                                                                    <th scope="col">Importe</th>
+                                                                    <th scope="col">Importe Decuento</th>
+                                                                    <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(detalle, index) in detallesAprobados"
+                                                                    :key="index">
+                                                                    <td scope="row">{{ detalle . Codigo }}</td>
+                                                                    <td scope="row">{{ detalle . Descripcion }}
+                                                                    </td>
+                                                                    <td scope="row">{{ detalle . Detalle }}</td>
+
+                                                                    <td v-if="detalle.tipo == 'p'" scope="row">
+                                                                        {{ detalle . producto . unidad . unidades_nombre }}
+                                                                    </td>
+
+                                                                    <td scope="row">servicio</td>
+                                                                    <td scope="row">{{ detalle . Precio }}</td>
+                                                                    <td scope="row">{{ detalle . Descuento }}</td>
+                                                                    <td scope="row">{{ detalle . ValorDescuento }}
+                                                                    </td>
+                                                                    <td scope="row">{{ detalle . Cantidad }}</td>
+                                                                    <td scope="row">{{ detalle . Importe }}</td>
+                                                                    <td scope="row">
+                                                                        {{ detalle . ImporteDescuento }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="2">OP.EXONERADAS:
+                                                                    </td>
+                                                                    <td scope="row" colspan="2">
+                                                                        {{ sumar_total }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="2">TOTAL A PAGAR:
+                                                                    </td>
+                                                                    <td scope="row" colspan="2">
+                                                                        {{ sumar_total }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <th scope="row">Imagen</th>
+                                                                    <th scope="row">Método de pago</th>
+                                                                    <th scope="row">Referencia</th>
+                                                                    <th scope="row">Monto</th>
+                                                                </tr>
+
+                                                                <tr v-for="(pago, pg) in pagos"
+                                                                    :key="pg">
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <button v-if="!pagos[pg].url"
+                                                                                type="button" name=""
+                                                                                @click="addImage(pg)" id=""
+                                                                                class="btn btn-info boton-color"
+                                                                                style="width: 100%; height: 100%">
+                                                                                <i class="fa fa-camera"
+                                                                                    aria-hidden="true"></i>
+                                                                            </button>
+                                                                            <img @click="addImage(pg)"
+                                                                                style="width: 100%; height: 100%"
+                                                                                v-else :src="pagos[pg].src"
+                                                                                class="img-fluid"
+                                                                                alt="Responsive image" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td scope="row">
+                                                                        <div class="form-group">
+                                                                            <select class="custom-select">
+                                                                                <option v-for="(f_g, fg) in forma_pago"
+                                                                                    :key="fg"
+                                                                                    :selected="f_g.forma_pago_id == pago
+                                                                                        .forma_pago_id"
+                                                                                    value="f_g.forma_pago_id">
+                                                                                    {{ f_g . forma_pago_nombre }}
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control"
+                                                                                v-model="pagos[pg].referencia" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control"
+                                                                                :value="pago.monto"
+                                                                                v-on:keyup="monto_change($event, pg)" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <button type="button" name=""
+                                                                                @click="delete_forma_pago(pg)"
+                                                                                style="width: 100%; height: 100%"
+                                                                                id=""
+                                                                                class="btn btn-info boton-color">
+                                                                                <i class="fa fa-trash"
+                                                                                    aria-hidden="true"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr v-if="is_complete_pago">
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="4">
+                                                                        <button type="button" name=""
+                                                                            @click="add_forma_pago()"
+                                                                            style="width: 100%; height: 100%"
+                                                                            id=""
+                                                                            class="btn btn-info boton-color">
+                                                                            <i class="fa fa-plus"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button type="button" v-on:click="crear_factura()"
+                                                class="btn btn-info boton-color">
+                                                Crear Factura
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- ******** crear boleta ************* -->
+
+                                    <div v-if="tiene_dni" class="card text-left">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img width="100"
+                                                        src="../../../../public/images/empresa/logo.png"
+                                                        class="img-fluid" alt="" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="product-details">
+                                                        <div class="product-name">
+                                                            {{ empresa . razon_social }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Ruc : {{ empresa . ruc }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Direccion :
+                                                            {{ empresa . direccion }}
+                                                        </div>
+                                                        <div class="text-muted text-small">
+                                                            Celular : {{ empresa . celular }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="container border border-secondary rounded">
+                                                        <div class="product-name">
+                                                            <h3 class="text-center">Boleta Electronica</h3>
+                                                        </div>
+                                                        <div class="product-name">
+                                                            <h5 class="text-center">Ruc : {{ empresa . ruc }}</h5>
+                                                        </div>
+                                                        <div class="product-name">
+                                                            <h6 class="text-center">
+                                                                B001 - {{ correlativo_boleta }}
+                                                            </h6>
+                                                        </div>
+                                                        <div class="text-muted text-small"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-6">
+                                                    <label for="">Cliente</label>
+                                                    <select class="form-control" name="" id=""
+                                                        disabled>
+                                                        <option selected>
+                                                            Dni :
+                                                            {{ cotizacion . inventario . moto . cliente . cli_dni }} |
+                                                            Nombres :
+                                                            {{ cotizacion . inventario . moto . cliente . cli_nombre }}
+                                                            {{ cotizacion . inventario . moto . cliente . cli_apellido }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-6">
+                                                    <label>Fecha creacion</label>
+                                                    <VueDatePicker emit-timezone="UTC" locale="es"
+                                                        v-model="fecha_creacion_boleta"
+                                                        placeholder="fecha creacion ..." format="dd/MM/yyyy HH:mm" />
+                                                </div>
+                                            </div>
+
+                                            <hr />
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm" id="table-repuestos">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Codigo</th>
+                                                                    <th scope="col">Descripcion</th>
+                                                                    <th scope="col">Detalle</th>
+                                                                    <th scope="col">unidad</th>
+                                                                    <th scope="col">Precio</th>
+                                                                    <th scope="col">Cantidad</th>
+                                                                    <th scope="col">Importe</th>
+                                                                    <!-- ******** <th scope="col" class="text-center"><i class="fa fa-cog" aria-hidden="true"></i></th>-->
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(detalle, index) in detallesAprobados"
+                                                                    :key="index">
+                                                                    <td scope="row">{{ detalle . Codigo }}</td>
+                                                                    <td scope="row">{{ detalle . Descripcion }}
+                                                                    </td>
+                                                                    <td scope="row">{{ detalle . Detalle }}</td>
+
+                                                                    <td v-if="detalle.tipo == 'p'" scope="row">
+                                                                        {{ detalle . producto . unidad . unidades_nombre }}
+                                                                    </td>
+
+                                                                    <td scope="row">servicio</td>
+                                                                    <td scope="row">{{ detalle . Precio }}</td>
+                                                                    <td scope="row">{{ detalle . Cantidad }}</td>
+                                                                    <td scope="row" class="text-right">
+                                                                        {{ detalle . Importe }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="2">OP.EXONERADAS:
+                                                                    </td>
+                                                                    <td scope="row" class="text-right"
+                                                                        colspan="2">
+                                                                        {{ sumar_total }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="2">TOTAL A PAGAR:
+                                                                    </td>
+                                                                    <td scope="row" class="text-right"
+                                                                        colspan="2">
+                                                                        {{ sumar_total }}
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <th scope="row">Imagen</th>
+                                                                    <th scope="row">Método de pago</th>
+                                                                    <th scope="row">Referencia</th>
+                                                                    <th scope="row">Monto</th>
+                                                                </tr>
+
+                                                                <tr v-for="(pagob, pgb) in pagos_boletas"
+                                                                    :key="pgb">
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <button v-if="!pagos_boletas[pgb].url"
+                                                                                type="button" name=""
+                                                                                @click="addImage_boleta(pgb)"
+                                                                                id=""
+                                                                                class="btn btn-info boton-color"
+                                                                                style="width: 100%; height: 100%">
+                                                                                <i class="fa fa-camera"
+                                                                                    aria-hidden="true"></i>
+                                                                            </button>
+                                                                            <img @click="addImage(pgb)"
+                                                                                style="width: 100%; height: 100%"
+                                                                                v-else :src="pagos_boletas[pgb].src"
+                                                                                class="img-fluid"
+                                                                                alt="Responsive image" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td scope="row">
+                                                                        <div class="form-group">
+                                                                            <select class="custom-select"
+                                                                                v-on:change="forma_pago_boleta(pgb)">
+                                                                                <option v-for="(f_g, fg) in forma_pago"
+                                                                                    :key="fg"
+                                                                                    :selected="f_g.forma_pago_id == pagob
+                                                                                        .forma_pago_id"
+                                                                                    :value="f_g.forma_pago_id">
+                                                                                    {{ f_g . forma_pago_nombre }}
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control"
+                                                                                v-model="pagos_boletas[pgb].referencia" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control"
+                                                                                :value="pagob.monto"
+                                                                                v-on:keyup="monto_change($event, pgb)" />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <button type="button" name=""
+                                                                                @click="delete_forma_pago_boleta(pgb)"
+                                                                                style="width: 100%; height: 100%"
+                                                                                id=""
+                                                                                class="btn btn-info boton-color">
+                                                                                <i class="fa fa-trash"
+                                                                                    aria-hidden="true"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr v-if="is_complete_pago">
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row"></td>
+                                                                    <td scope="row" colspan="4">
+                                                                        <button type="button" name=""
+                                                                            @click="add_forma_pago_boleta()"
+                                                                            style="width: 100%; height: 100%"
+                                                                            id=""
+                                                                            class="btn btn-info boton-color">
+                                                                            <i class="fa fa-plus"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button type="button" v-on:click="crear_boleta()"
+                                                class="btn btn-info boton-color">
+                                                Crear Boleta
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- *********************** -->
+
+                                    <!-- *********************** -->
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary boton-color m-4" v-on:click="modal_start()"
+                                        type="button" data-toggle="modal" data-target="#modal-crear-cliente">
+                                        <i class="fa fa-plus" aria-hidden="true"></i> Agregar Cliente
+                                    </button>
+
+                                    <!-- Modal para crear cliente-->
+
+                                    <CModal size="xl" :visible="is_modal_crear_cliente"
+                                        @close="() => { is_modal_crear_cliente = false; }">
+                                        <CModalBody>
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modal-crear-cliente-label">
+                                                    Formulario para crear un cliente
+                                                </h5>
+                                                <button type="button" class="close"
+                                                    @click="is_modal_crear_cliente = false">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="body">
+                                                <div class="modal-content">
+                                                    <form id="form_cliente_asignar" method="POST" action="#">
+
+                                                        <div class="modal-body">
+                                                            <div class="card-body">
+                                                                <div id="app">
+                                                                    <dni cli_dni="" cli_nombre=""
+                                                                        cli_apellido="" cli_direccion=""
+                                                                        cli_departamento="" cli_provincia=""
+                                                                        cli_distrito=""></dni>
+                                                                    <ruc cli_ruc="" cli_razon_social=""
+                                                                        cli_direccion_ruc="" cli_departamento_ruc=""
+                                                                        cli_provincia_ruc="" cli_distrito_ruc="">
+                                                                    </ruc>
+                                                                </div>
+                                                                <h2 class="section-title">Contactos</h2>
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="cli_telefono">Celular</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="cli_telefono" id="cli_telefono" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="cli_correo">Correo
+                                                                            Electronico</label>
+                                                                        <input type="email" class="form-control"
+                                                                            name="cli_correo" id="cli_correo" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-secondary"
+                                                                id="crear_cliente_cerrar" data-dismiss="modal">
+                                                                Cerrar Formulario
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary"
+                                                                id="crear_cliente">
+                                                                Crear Cliente
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </CModalBody>
+                                    </CModal>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- *********************** -->
                     </div>
                 </div>
             </div>
@@ -1861,7 +1930,7 @@
                 this.venta_whatsapp("Puede ver el comprante " + documento + " en la siguiente ruta = ", this.url_raiz +
                     "ventas_cliente/" + this.cotizacion.venta, "+51" + this.celular)
 
-                this.avisado()
+                this.cerrado()
             },
             send_correo_comprobante() {
                 this.showLoadingSpinner();
@@ -1885,7 +1954,7 @@
                         if (response.data.success) {
 
                             this.alert_success("se envio el correo " + this.correo + " exitosamente");
-                            this.avisado()
+                            this.cerrado()
                             this.hideLoadingSpinner();
                         } else {
                             Swal.fire({
@@ -1907,7 +1976,60 @@
                         console.error(error);
                     });
             },
+            /* -- ********  ************* -- */
+            /* -- *********************** -- */
+            send_whatsapp_aviso() { 
+                console.log(this.cotizacion.inventario);
+                this.aviso_whatsapp("Somos de "+this.empresa.razon_social+", su moto ("+this.cotizacion.inventario.moto.modelo.marca.marca_nombre+" "+this.cotizacion.inventario.moto.modelo.modelo_nombre+") ha sido reparada", "+51" + this.celular)
 
+                this.avisado()
+            },
+            send_correo_aviso() {
+                this.showLoadingSpinner();
+               
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                const data = {
+                    moto: this.cotizacion.inventario.moto,
+                    correo: this.correo,
+                    id: this.cotizacion.venta 
+                };
+
+                axios
+                    .post("/send_correo_aviso", data, {
+                        headers,
+                    })
+                    .then((response) => {
+
+                        if (response.data.success) {
+
+                            this.alert_success("se envio el correo " + this.correo + " exitosamente");
+                            this.avisado()
+                            this.hideLoadingSpinner();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            console.error(response.data);
+                            this.hideLoadingSpinner();
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                        this.hideLoadingSpinner();
+                    });
+            },
             /* -- ********  ************* -- */
             /* -- *********************** -- */
             send_correo() {
@@ -2567,7 +2689,7 @@
                                 confirmButtonText: "ver el comprobante",
                             }).then((result_swal) => {
                                 this.print_comprobante = true;
-                                 this.cotizacion.venta = result.data.id;
+                                this.cotizacion.venta = result.data.id;
                                 this.cotizacion.ventas = result.data.ventas;
                                 this.rutaPDF = "/ventas_pdf/" + result.data.id;
                             });

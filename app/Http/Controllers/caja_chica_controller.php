@@ -262,6 +262,7 @@ class caja_chica_controller extends Controller
                     return redirect()->route('caja.index');
                 }
             }
+             
         } catch (\Throwable $th) {
             Log::error($th);
             session()->flash('error', 'no se creo correctamente la caja');

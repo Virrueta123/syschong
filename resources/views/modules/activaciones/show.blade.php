@@ -196,7 +196,7 @@
                                 <tr>
                                     <th scope="col">N°Cortesia</th>
                                     <th scope="col">Km</th>
-                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Fecha de creacion</th>
                                     <th scope="col">Proxima Cortesia</th>
                                     <th scope="col">Precio</th>
                                     <th scope="col">Tienda a cobrar</th>
@@ -207,19 +207,19 @@
 
                                 @forelse  ($get->cortesias as $cotesia)
                                     @php
-                                        $otraFecha = \Carbon\Carbon::parse($cotesia->created_at); // Sustituye '2023-08-31' con tu fecha deseada
-
-                                        $hoy = \Carbon\Carbon::now(); // Obtiene la fecha y hora actual
-
-                                        $diferenciaEnDias = $hoy->diffInDays($otraFecha);
+                                    if ($cotesia->is_aviso=="S") {
+                                       $proxima_fecha = \Carbon\Carbon::parse($cotesia->created_at)->addDays($get->dias)->format("d/m/Y");
+                                    } else {
+                                       $proxima_fecha = "sin aviso";
+                                    } 
                                     @endphp
 
                                     <tr>
                                         <th scope="row">{{ $cotesia->numero_corterisa }}</th>
                                         <td>{{ $cotesia->km }} Km </td>
                                         <td>{{ \Carbon\Carbon::parse($cotesia->created_at)->format('d/m/Y') }}</td>
-                                        <td>{{ $diferenciaEnDias }} dias</td>
-                                        <td>{{ $cotesia->precio }} dias</td>
+                                        <td>{{ $proxima_fecha }}</td>
+                                        <td>S/.{{ $cotesia->precio }}</td>
                                         <td>{{ $cotesia->tcobrar->tienda_nombre }} </td>
                                         <td>
 

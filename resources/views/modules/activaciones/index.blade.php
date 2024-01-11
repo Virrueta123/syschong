@@ -27,6 +27,12 @@
                         <table class="table dataTable table-bordered table-hover " id="table_mtx">
                             <thead>
                                 <tr>
+                                     <th>
+                                        Motor
+                                    </th>
+                                    <th>
+                                        Vin
+                                    </th>
                                     <th>
                                         Tienda
                                     </th>
@@ -45,12 +51,7 @@
                                     <th>
                                         Modelo
                                     </th>
-                                    <th>
-                                        Motor
-                                    </th>
-                                    <th>
-                                        Vin
-                                    </th>
+                                   
                                     <th>
                                         Chasis
                                     </th>
@@ -137,10 +138,19 @@
                 initComplete: search_input_by_column,
                 order: [[12, 'desc']],
                 language: {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    "url": "/spanish_datatable"
                 },
                 ajax: "{{ route('activaciones.index') }}",
-                columns: [{
+                columns: [
+                  {
+                        data: 'motor',
+                        name: 'motor'
+                    },
+                    {
+                        data: 'moto.mtx_vin',
+                        name: 'moto.mtx_vin'
+                    },
+                    {
                         data: 'tienda',
                         name: 'tienda'
                     },
@@ -164,14 +174,7 @@
                         data: 'modelo',
                         name: 'modelo'
                     },
-                    {
-                        data: 'motor',
-                        name: 'motor'
-                    },
-                    {
-                        data: 'moto.mtx_vin',
-                        name: 'moto.mtx_vin'
-                    },
+                  
                     {
                         data: 'moto.mtx_chasis',
                         name: 'moto.mtx_chasis'
@@ -199,8 +202,8 @@
                         name: 'precio'
                     },
                     {
-                        data: 'fecha_creacion',
-                        name: 'fecha_creacion'
+                        data: 'created_at',
+                        name: 'created_at'
                     },
 
                     {
@@ -213,8 +216,7 @@
                     processing: '<div id="loading-indicator">Cargando datos...</div>',
                 },        
                 fixedColumns: {
-                    left: 2,
-                    right :1 
+                    left: 2, 
                 },
                 pageLength: 5,
                 dom: 'Bfrtip',

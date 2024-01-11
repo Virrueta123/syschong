@@ -99,9 +99,9 @@ class activaciones_controller extends Controller
                 })
                 ->addColumn('motor', function ($Data) {
                     return $Data->moto->mtx_motor;
-                }) 
-                ->addColumn('fecha_creacion', function ($Data) {
-                    return Carbon::parse($Data->created_at)->format('d/m/Y');
+                })
+                ->editColumn('created_at', function ($Data) {
+                    return Carbon::parse($Data->created_at)->format('Y-m-d');
                 })
                 ->addColumn('action', static function ($Data) {
                     $activaciones_id = encrypt_id($Data->activaciones_id);
@@ -109,7 +109,6 @@ class activaciones_controller extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-                
         } else {
             return view('modules.activaciones.index', ['fecha_actual' => $fecha_actual]);
         }
@@ -122,9 +121,9 @@ class activaciones_controller extends Controller
      */
     public function create()
     {
-        $fecha_actual = Carbon::now()->format("Y-m-d");
-        $fecha = Carbon::now()->format("Y");
-        return view('modules.activaciones.create',compact("fecha_actual","fecha"));
+        $fecha_actual = Carbon::now()->format('Y-m-d');
+        $fecha = Carbon::now()->format('Y');
+        return view('modules.activaciones.create', compact('fecha_actual', 'fecha'));
     }
 
     /**
@@ -138,15 +137,15 @@ class activaciones_controller extends Controller
         $datax = $request->all();
         // Crear una nueva instancia del modelo
         $activaciones = new activaciones();
-      
+
         //crear la moto
         $moto = new motos();
         $moto->mtx_vin = $datax['mtx_vin'];
         $moto->mtx_motor = $datax['mtx_motor'];
         $moto->mtx_color = $datax['mtx_color'];
         $moto->modelo_id = $datax['modelo_id'];
-        $moto->mtx_fabricacion = $datax['mtx_fabricacion']; 
-        
+        $moto->mtx_fabricacion = $datax['mtx_fabricacion'];
+
         $created = $moto->save();
 
         if ($created) {
@@ -193,7 +192,7 @@ class activaciones_controller extends Controller
                 ]);
             },
             'cortesias' => function ($query) {
-                return $query->with(['tcobrar','cotizacion']);
+                return $query->with(['tcobrar', 'cotizacion']);
             },
             'vendedor',
         ])->find(decrypt_id($id));
@@ -232,7 +231,27 @@ class activaciones_controller extends Controller
      */
     public function destroy($id)
     {
-        //
+          try {
+            $activacion = activaciones::findOrFail(decrypt_id($id));
+
+            if ($activacion->pagos()->exists()) {
+                session()->flash('warning', 'No se puede eliminar esta caja por que ya tiene compras o ventas');
+                return redirect()->route('caja.index');
+            } else {
+                $delete = $activacion->delete();
+                if ($delete) {
+                    session()->flash('success', 'se elimino correctamente la activacion');
+                    return redirect()->route('caja.index');
+                } else {
+                    session()->flash('success', 'error al eliminar la caja');
+                    return redirect()->route('caja.index');
+                }
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            session()->flash('error', 'no se elimino correctamente la activacion');
+            return redirect()->route('activaciones.index');
+        }
     }
 
     public function cortesia_destroy($id)
@@ -240,36 +259,34 @@ class activaciones_controller extends Controller
         try {
             $cortesia = cortesias_activacion::find($id);
             $activaciones_id = $cortesia->activaciones_id;
-           
+
             $delete = $cortesia->delete();
             if ($delete) {
                 $cotizacion = cotizacion::find($cortesia->cotizacion_id);
                 if ($cotizacion) {
                     $delete = $cotizacion->delete();
 
-                if ($delete) {
-                    session()->flash('success', 'se elimino correctamente la cortesia');
-                     
-                    return redirect()->route('activaciones.show',encrypt_id($activaciones_id) );
+                    if ($delete) {
+                        session()->flash('success', 'se elimino correctamente la cortesia');
+
+                        return redirect()->route('activaciones.show', encrypt_id($activaciones_id));
+                    } else {
+                        session()->flash('success', 'error al eliminar la cortesia');
+                        return redirect()->route('activaciones.show', encrypt_id($activaciones_id));
+                    }
                 } else {
-                    session()->flash('success', 'error al eliminar la cortesia');
-                    return redirect()->route('activaciones.show',encrypt_id($activaciones_id) );
-                }
-                } else {
                     session()->flash('success', 'se elimino correctamente la cortesia');
-                     
-                    return redirect()->route('activaciones.show',encrypt_id($activaciones_id) );
+
+                    return redirect()->route('activaciones.show', encrypt_id($activaciones_id));
                 }
-                
-               
             } else {
                 session()->flash('success', 'error al eliminar la cortesia');
-                return redirect()->route('activaciones.index',encrypt_id($activaciones_id) );
+                return redirect()->route('activaciones.index', encrypt_id($activaciones_id));
             }
         } catch (\Throwable $th) {
             Log::error($th);
             session()->flash('error', 'no se creo correctamente la cortesia');
-            return redirect()->route('activaciones.show',encrypt_id($activaciones_id) );
+            return redirect()->route('activaciones.show', encrypt_id($activaciones_id));
         }
     }
 
@@ -298,11 +315,15 @@ class activaciones_controller extends Controller
             },
         ])->find(decrypt_id($id));
 
-        $servicios_defecto = servicios_defecto::with(["servicio"])->orderBy("created_at")->get();
-  
-        $productos_defecto = productos_defecto::with(["producto"])->orderBy("created_at")->get();
+        $servicios_defecto = servicios_defecto::with(['servicio'])
+            ->orderBy('created_at')
+            ->get();
 
-        return view('modules.cortesia.create', compact('id', 'accesorios', 'autorizaciones', 'activacion',"servicios_defecto","productos_defecto"));
+        $productos_defecto = productos_defecto::with(['producto'])
+            ->orderBy('created_at')
+            ->get();
+
+        return view('modules.cortesia.create', compact('id', 'accesorios', 'autorizaciones', 'activacion', 'servicios_defecto', 'productos_defecto'));
     }
 
     public function cortesia_store($id, Request $request)
@@ -343,7 +364,6 @@ class activaciones_controller extends Controller
 
     public function create_vue_cortesia(Request $request)
     {
-      
         $ultimo_registro = inventario_moto::max('inventario_numero');
 
         if ($ultimo_registro) {
@@ -353,7 +373,7 @@ class activaciones_controller extends Controller
         }
 
         $datax = $request->all();
-     
+
         $activaciones = json_decode($datax['activaciones']);
 
         $select_acesorios = json_decode($datax['select_acesorios']);
@@ -428,7 +448,7 @@ class activaciones_controller extends Controller
             $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
             $cotizacion->mecanico_id = 0; // ID del mecánico relacionado
             $cotizacion->trabajo_realizar = $datax['trabajo_realizar'];
-            $cotizacion->tipo_cotizacion = "C";
+            $cotizacion->tipo_cotizacion = 'C';
 
             if ($cotizacion->save()) {
                 foreach ($datax['cotizacion'] as $ps) {
@@ -477,10 +497,8 @@ class activaciones_controller extends Controller
         }
     }
 
-
     public function create_vue_cortesia_orden(Request $request)
     {
-        
         $ultimo_registro = inventario_moto::max('inventario_numero');
 
         if ($ultimo_registro) {
@@ -490,7 +508,7 @@ class activaciones_controller extends Controller
         }
 
         $datax = $request->all();
-     
+
         $activaciones = json_decode($datax['activaciones']);
 
         $select_acesorios = json_decode($datax['select_acesorios']);
@@ -565,7 +583,7 @@ class activaciones_controller extends Controller
             $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
             $cotizacion->mecanico_id = 0; // ID del mecánico relacionado
             $cotizacion->trabajo_realizar = $datax['trabajo_realizar'];
-            $cotizacion->tipo_cotizacion = "C";
+            $cotizacion->tipo_cotizacion = 'C';
 
             if ($cotizacion->save()) {
                 foreach ($datax['cotizacion'] as $ps) {
@@ -616,7 +634,6 @@ class activaciones_controller extends Controller
 
     public function create_vue_cortesia_orden_tercero(Request $request)
     {
-        
         $ultimo_registro = inventario_moto::max('inventario_numero');
 
         if ($ultimo_registro) {
@@ -625,8 +642,7 @@ class activaciones_controller extends Controller
             $ultimo_registro = 1;
         }
 
-        $datax = $request->all(); 
-      
+        $datax = $request->all();
 
         $select_acesorios = json_decode($datax['select_acesorios']);
         $select_autorizacion = json_decode($datax['select_autorizacion']);
@@ -643,15 +659,13 @@ class activaciones_controller extends Controller
         $create = inventario_moto::create($validate);
 
         if ($create) {
-           
-
             $cortesias_activacion = new cortesias_activacion();
-            $cortesias_activacion->activaciones_id =0; // Reemplaza con el valor deseado
+            $cortesias_activacion->activaciones_id = 0; // Reemplaza con el valor deseado
             $cortesias_activacion->km = $datax['km']; // Reemplaza con el valor deseado
             $cortesias_activacion->user_id = auth()->user()->id; // Reemplaza con el valor deseado
             // Reemplaza con el valor deseado
             $cortesias_activacion->tipo = 'C'; // Si no deseas eliminar lógicamente el registro
-            $cortesias_activacion->numero_corterisa =  $datax['cortesia_de_empezar']; // Reemplaza con el valor deseado
+            $cortesias_activacion->numero_corterisa = $datax['cortesia_de_empezar']; // Reemplaza con el valor deseado
             $cortesias_activacion->inventario_moto_id = $create->inventario_moto_id; // Reemplaza con el valor deseado
             $cortesias_activacion->mecanico_id = 0; // Reemplaza con el valor deseado
             $cortesias_activacion->mtx_id = $datax['moto_id']; // Reemplaza con el valor deseado
@@ -693,7 +707,7 @@ class activaciones_controller extends Controller
             $cotizacion->user_id = Auth::id(); // ID del usuario relacionado
             $cotizacion->mecanico_id = 0; // ID del mecánico relacionado
             $cotizacion->trabajo_realizar = $datax['trabajo_realizar'];
-            $cotizacion->tipo_cotizacion = "C";
+            $cotizacion->tipo_cotizacion = 'C';
 
             if ($cotizacion->save()) {
                 foreach ($datax['cotizacion'] as $ps) {
@@ -742,7 +756,6 @@ class activaciones_controller extends Controller
         }
     }
 
-
     /* *********************** */
 
     public function importar_activaciones(Request $request)
@@ -750,14 +763,14 @@ class activaciones_controller extends Controller
         Excel::import(new ActivacionesImport(), $request->file('file'));
     }
     /* *********************** */
-    public function actualizar_otros(Request $request){
-       
+    public function actualizar_otros(Request $request)
+    {
         // Crear un nuevo registro
         $update = cotizacion::find($request->input('cotizacion_id'));
- 
+
         $update->mecanico_id = $request->input('mecanico_id');
         $update->observacion_sta = $request->input('observacion_sta');
-        $update->trabajo_realizar = $request->input('trabajo_realizar');  
+        $update->trabajo_realizar = $request->input('trabajo_realizar');
         $update = $update->save();
 
         $update_inventario = inventario_moto::find($request->input('inventario_moto_id'));
@@ -765,13 +778,11 @@ class activaciones_controller extends Controller
         $update_inventario = $update_inventario->save();
 
         if ($update) {
-             
-      
             return response()->json([
                 'message' => 'actualizado correctamente',
                 'error' => '',
                 'success' => true,
-                'data' =>  ''
+                'data' => '',
             ]);
         } else {
             Log::error('no se pudo registrar el producto');
@@ -784,7 +795,8 @@ class activaciones_controller extends Controller
         }
     }
 
-    public function pdf_activacion($activaciones_id){
+    public function pdf_activacion($activaciones_id)
+    {
         $get = activaciones::with([
             'moto' => function ($query) {
                 return $query->with([
@@ -797,17 +809,17 @@ class activaciones_controller extends Controller
             'cortesias' => function ($query) {
                 return $query->with(['tcobrar']);
             },
-            'vendedor',"tienda"
+            'vendedor',
+            'tienda',
         ])->find(decrypt_id($activaciones_id));
 
-      
-       if ($get) {
-           $pdf = Pdf::loadView('pdf.pdf_activacion', ['get' => $get, 'id' => $activaciones_id])->setPaper('a5');
+        if ($get) {
+            $pdf = Pdf::loadView('pdf.pdf_activacion', ['get' => $get, 'id' => $activaciones_id])->setPaper('a5');
 
-           return $pdf->stream();
-       } else {
-           return view('errors.404');
-       }
+            return $pdf->stream();
+        } else {
+            return view('errors.404');
+        }
     }
 
     /* ******** search_activaciones ************* */
@@ -827,7 +839,7 @@ class activaciones_controller extends Controller
                     ->orWhere('modelo.modelo_nombre', 'like', '%' . $search . '%')
                     ->orWhere('motos.mtx_motor', 'like', '%' . $search . '%');
             })
-            ->limit(15) 
+            ->limit(15)
             ->get();
 
         echo json_encode($moto);
@@ -837,8 +849,6 @@ class activaciones_controller extends Controller
     public function get_activacion(Request $req)
     {
         try {
-
-           
             $show = activaciones::with([
                 'moto' => function ($query) {
                     return $query->with([
@@ -849,11 +859,10 @@ class activaciones_controller extends Controller
                     ]);
                 },
                 'cortesias' => function ($query) {
-                    return $query->with(['tcobrar','cotizacion']);
+                    return $query->with(['tcobrar', 'cotizacion']);
                 },
                 'vendedor',
-            ])->find( $req->all()["activaciones_id"] );
-      
+            ])->find($req->all()['activaciones_id']);
 
             if ($show) {
                 return response()->json([
@@ -881,6 +890,4 @@ class activaciones_controller extends Controller
             ]);
         }
     }
-
-
 }

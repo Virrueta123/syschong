@@ -1583,7 +1583,13 @@ class cotizacion_controller extends Controller
                 if ($Data->inventario->cortesia->tipo == 'M') {
                     return 'Mantenimiento particular';
                 } else {
-                    $title = 'Cortesia';
+                    if ($Data->inventario->cortesia->is_garantia == "Y") {
+                        $title = 'Cortesia ';
+                    } else {
+                        $title = 'Cortesia | Garantia';
+                    }
+                     
+                    
                     $title_sub = 'N° Cortesia = ' . $Data->inventario->cortesia->numero_corterisa;
                     return view('complementos.title', ['title' => $title, 'title_sub'=>$title_sub]);
                 }
@@ -1657,4 +1663,41 @@ class cotizacion_controller extends Controller
         }
     }
     /* *********************** */
+  /* ******** enviar aviso correo ************* */
+    public function send_correo_aviso(Request $request)
+    {
+        try {
+            
+            $destinatario = $request->all()['correo'];
+
+            $empresa = empresa::first();
+
+            $moto = $request->all()['moto']; 
+            
+            $mensaje = "Somos de ".$empresa->razon_social.", su moto (".$moto['modelo']['marca']['marca_nombre']." ".$moto['modelo']['modelo_nombre'].") ha sido reparada";
+           
+
+
+            $mensaje = Mail::send('pdf.enviar_correo_aviso', ['mensaje' => $mensaje], function ($message) use ($destinatario) {
+                $message->to($destinatario)->subject('Asunto del mensaje');
+            });
+
+            return response()->json([
+                'message' => 'se envio el correo',
+                'error' => '',
+                'success' => true,
+                'data' => '',
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+    /* *********************** */
+    
 }

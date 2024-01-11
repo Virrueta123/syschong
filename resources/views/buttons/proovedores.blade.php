@@ -15,7 +15,7 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input name="_method" type="hidden" value="DELETE">
             <button type="submit" style="width: 100%"
-                onclick="FormDelete('tx{{ $proveedor_id }}','esta segur@ que desea eliminar esta producto',event)"
+                onclick="FormDelete('tx{{ $proveedor_id }}','esta segur@ que desea eliminar este prooveedor',event)"
                 class="btn btn-ligth btn-sm m-1 text-left"><i class="fa fa-trash fa-1x"> </i> Eliminar Producto</button>
         </form> </a>
     </div>

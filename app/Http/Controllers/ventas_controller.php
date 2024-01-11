@@ -362,9 +362,12 @@ class ventas_controller extends Controller
                 'data' => '',
             ]);
         }
+
+        dd( $result);
         
         $ticket = $result->getTicket();
-        dd('Ticket : '.$ticket.PHP_EOL);
+        
+        dd($ticket.PHP_EOL);
         
         $statusResult = $see->getStatus($ticket);
         if (!$statusResult->isSuccess()) {
@@ -378,113 +381,18 @@ class ventas_controller extends Controller
             ]);
         }
         
-       //dd($statusResult->getCdrResponse()->getDescription()) ;
-        // Guardar CDR
+   
         file_put_contents('R-'.$cDeBaja->getName().'.zip', $statusResult->getCdrZip());
 
-        $ventas->venta_estado = 'B';
-        $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
-        $ventas->save();
+     
     
         return response()->json([
-            'message' => 'se dio de baja este comprobante exitosamente',
+            'message' => 'se dio de baja este comprobante exitosamente '.$ticket.PHP_EOL,
             'error' => '',
             'success' => true,
             'data' => '',
-        ]);
-        //
-
-        $company = new Company();
-
-        $company
-            ->setRuc('10464579481')
-            ->setRazonSocial('ROSA LUZ INGA TORRES')
-            ->setNombreComercial('ROSA LUZ INGA TORRES')
-            ->setAddress(
-                (new Address())
-                    ->setUbigueo('210601')
-                    ->setDepartamento('SAN MARTIN')
-                    ->setProvincia('SAN MARTIN')
-                    ->setDistrito('TARAPOTO')
-                    ->setUrbanizacion('-')
-                    ->setDireccion('PJ. UNION 126B LOZA BELAUNDE'),
-            );
-
-        $tipo_doc = $ventas->tipo_comprobante == 'B' ? '01' : '03';
-
-        $detail2 = new SummaryDetail();
-
+        ]); 
         
-            $detail2
-            ->setTipoDoc($tipo_doc)
-            ->setSerieNro($ventas->venta_serie . '-' . $ventas->venta_correlativo)
-            ->setEstado('3') 
-            ->setTotal($ventas->venta_total)
-            ->setMtoOperGravadas($ventas->venta_total)
-            ->setMtoOperInafectas(0)
-            ->setMtoOperExoneradas($ventas->venta_total)
-            ->setMtoOtrosCargos(0)
-            ->setMtoIGV(0);
-       
-            $detail1 = new VoidedDetail();
-            $detail1->setTipoDoc('01') // Factura
-                ->setSerie('F001')
-                ->setCorrelativo('1')
-                ->setDesMotivoBaja('ERROR EN CÁLCULOS');    
-
-        
-
-        $resumen = new Summary();
-        $resumen
-            ->setFecGeneracion(new \DateTime(Carbon::parse($ventas->fecha_creacion)->format('Y-m-d'))) // Fecha de emisión de las boletas.
-            ->setFecResumen(new \DateTime(Carbon::now()->format('Y-m-d'))) // Fecha de envío del resumen diario.
-            ->setCorrelativo('0000000000' . $ventas->venta_correlativo) // Correlativo, necesario para diferenciar de otros Resumen diario del mismo día.
-            ->setCompany($company)
-            ->setDetails([$detail2]);
-
-        $firma = new firma_sunat_controller();
-        $see = env('APP_ENV') == 'local' ? $firma->firma_digital_beta() : $firma->firma_digital_produccion();
-
-        $result = $see->send($resumen);
-        // Guardar XML
-
-        if (!$result->isSuccess()) {
-            dd($result->getError());
-            return response()->json([
-                'message' => 'error sunat',
-                'error' => 'error sunat',
-                'success' => false,
-                'data' => '',
-            ]);
-        }
-
-        $ticket = $result->getTicket();
-
-        $statusResult = $see->getStatus($ticket);
-        if (!$statusResult->isSuccess()) {
-            // Si hubo error al conectarse al servicio de SUNAT.
-            dd($result->getError());
-            return response()->json([
-                'message' => 'error sunat',
-                'error' => 'error sunat',
-                'success' => false,
-                'data' => '',
-            ]);
-        }
-
-        $ventas->venta_estado = 'B';
-        $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
-        $ventas->save();
-        // Guardar CDR
-        file_put_contents($resumen->getName() . '.xml', $see->getFactory()->getLastXml());
-        file_put_contents('R-' . $resumen->getName() . '.zip', $statusResult->getCdrZip());
-
-        return response()->json([
-            'message' => 'se dio de baja este comprobante exitosamente',
-            'error' => '',
-            'success' => true,
-            'data' => '',
-        ]);
     }
 
     public function destroy_nota($id)

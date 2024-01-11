@@ -61,9 +61,9 @@ class producto_controller extends Controller
 
     public function search_aceites()
     {
-        $producto = producto::with(['producto_modelo',"unidad"])
-            ->where('unidades_id',65)
-            ->orderBy('created_at', 'desc') 
+        $producto = producto::with(['producto_modelo', 'unidad'])
+            ->where('unidades_id', 65)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($producto)
@@ -87,7 +87,33 @@ class producto_controller extends Controller
 
     public function index(Builder $builder)
     {
-        
+        $productos = producto::all();
+        $correlativo_producto = producto::max('prod_id');
+        if (is_null($correlativo_producto)) {
+            $correlativo_producto = 1;
+        } else {
+            $correlativo_producto++;
+        }
+        foreach ($productos as $pd) {
+            if (is_null($pd->prod_codigo_barra)) {
+                $producto = producto::find($pd->prod_id);
+
+                $marca = marca_producto::find($pd->marca_id);
+
+                $cod_marca = substr(str_replace(' ', '', $marca->marca_prod_nombre), 0, 3);
+
+                $categoria = categoria_producto::find($pd->categoria_id);
+
+                $cod_categoria = substr(str_replace(' ', '', $categoria->categoria_nombre), 0, 3);
+
+                $codigo = substr(str_replace(' ', '', $pd->prod_nombre), 0, 3) . '' . $cod_marca . '' . $cod_categoria . '' . rand(1, 1000) . '' . $correlativo_producto;
+                $producto->prod_codigo_barra = $codigo;
+                $producto->save();
+
+                $correlativo_producto++;
+            }
+        }
+
         $fecha_actual = Carbon::now();
         if (request()->ajax()) {
             return DataTables::of(
@@ -103,8 +129,8 @@ class producto_controller extends Controller
                     'imagen',
                 ]),
             )
-             ->editColumn('created_at', static function ($Data) {
-                    return Carbon::parse($Data->created_at)->format("Y-m-d");
+                ->editColumn('created_at', static function ($Data) {
+                    return Carbon::parse($Data->created_at)->format('Y-m-d');
                 })
                 ->addColumn('action', static function ($Data) {
                     $prod_id = encrypt_id($Data->prod_id);
@@ -121,7 +147,7 @@ class producto_controller extends Controller
                             break;
                     }
                 })
-               
+
                 ->toJson();
         }
 
@@ -198,9 +224,9 @@ class producto_controller extends Controller
      */
     public function create()
     {
-        $modelos =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
-        ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
-        ->get();
+        $modelos = modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
+            ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
+            ->get();
         return view('modules.productos.create', ['modelos' => $modelos]);
     }
 
@@ -212,7 +238,6 @@ class producto_controller extends Controller
      */
     public function store(Request $request)
     {
-        
         // Crear un nuevo registro
         $producto = new producto();
         $producto->categoria_id = $request->input('categoria_id');
@@ -237,19 +262,18 @@ class producto_controller extends Controller
 
         $cod_categoria = substr(str_replace(' ', '', $categoria->categoria_nombre), 0, 3);
 
-        
         $correlativo_producto = producto::max('prod_id');
 
         if (is_null($correlativo_producto)) {
             $correlativo_producto = 1;
         } else {
             $correlativo_producto++;
-        } 
-        
-        $codigo = substr(str_replace(' ', '',$request->input('prod_nombre')), 0, 3) . '' . $cod_marca . '' . $cod_categoria."".Carbon::now()->format("d")."".$correlativo_producto;
-        
-        $producto->prod_codigo_barra =  $codigo;
- 
+        }
+
+        $codigo = substr(str_replace(' ', '', $request->input('prod_nombre')), 0, 3) . '' . $cod_marca . '' . $cod_categoria . '' . Carbon::now()->format('dm') . '' . $correlativo_producto;
+
+        $producto->prod_codigo_barra = $codigo;
+
         $producto->user_id = Auth::id();
 
         $created = $producto->save();
@@ -295,16 +319,16 @@ class producto_controller extends Controller
                 }
             }
 
-            if( $array_modelo = explode(',', $request->input('modelo_moto'))){
-                foreach ($array_modelo as $modelo) {
-                    $producto_modelo = new producto_modelo();
-                    $producto_modelo->modelo_id = $modelo;
-                    $producto_modelo->prod_id = $producto->prod_id;
-                    $producto_modelo->save();
-                } 
+            if (!is_null($request->input('modelo_moto'))) {
+                if ($array_modelo = explode(',', $request->input('modelo_moto'))) {
+                    foreach ($array_modelo as $modelo) {
+                        $producto_modelo = new producto_modelo();
+                        $producto_modelo->modelo_id = $modelo;
+                        $producto_modelo->prod_id = $producto->prod_id;
+                        $producto_modelo->save();
+                    }
+                }
             }
-           
-
             
             session()->flash('success', 'Producto creado correctamente');
             return response()->json([
@@ -333,16 +357,7 @@ class producto_controller extends Controller
      */
     public function show($id)
     {
-        $get = producto::with([
-            'marca_producto', 
-            'unidad',
-            'categoria',
-            'marca',
-            'zona',
-            'imagen',
-            "usuario"
-        ])->find(decrypt_id($id));
- 
+        $get = producto::with(['marca_producto', 'unidad', 'categoria', 'marca', 'zona', 'imagen', 'usuario'])->find(decrypt_id($id));
 
         if ($get) {
             return view('modules.productos.show', ['get' => $get, 'id' => $id]);
@@ -370,12 +385,10 @@ class producto_controller extends Controller
             'imagen',
         ])->find(decrypt_id($id));
 
-        if ($get) { 
- 
-            $producto_modelo =  modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
-            ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
-            ->get();
-                
+        if ($get) {
+            $producto_modelo = modelo::join('marca', 'modelo.marca_id', '=', 'marca.marca_id')
+                ->select('modelo_id as id', DB::raw("CONCAT(marca.marca_nombre ,' / ',modelo.modelo_nombre,' / ',modelo.cilindraje ) as text"))
+                ->get();
 
             return view('modules.productos.edit', ['get' => $get, 'id' => $id, 'producto_modelo' => $producto_modelo]);
         } else {
@@ -463,14 +476,16 @@ class producto_controller extends Controller
             }
 
             $eliminar = producto_modelo::where('prod_id', decrypt_id($id))->delete();
- 
-            if( $array_modelo = explode(',', $request->input('modelo_moto'))){
-                foreach ($array_modelo as $modelo) {
-                    $producto_modelo = new producto_modelo();
-                    $producto_modelo->modelo_id = $modelo;
-                    $producto_modelo->prod_id = decrypt_id($id);
-                    $producto_modelo->save();
-                } 
+
+            if (!is_null($request->input('modelo_moto'))) {
+                if ($array_modelo = explode(',', $request->input('modelo_moto'))) {
+                    foreach ($array_modelo as $modelo) {
+                        $producto_modelo = new producto_modelo();
+                        $producto_modelo->modelo_id = $modelo;
+                        $producto_modelo->prod_id = decrypt_id($id);
+                        $producto_modelo->save();
+                    }
+                }
             }
 
             session()->flash('success', 'Producto editado correctamente');
@@ -500,7 +515,7 @@ class producto_controller extends Controller
     public function destroy($id)
     {
         try {
-            $destroy = producto::find(  decrypt_id($id));
+            $destroy = producto::find(decrypt_id($id));
             $destroy->delete();
 
             if ($destroy) {
@@ -515,7 +530,7 @@ class producto_controller extends Controller
             Log::error($th);
             session()->flash('error', 'error al eliminar');
             return redirect()->route('producto.index');
-        }   
+        }
     }
 
     public function importar()
@@ -612,54 +627,54 @@ class producto_controller extends Controller
     }
     /* *********************** */
 
-    function seleccionar_aceites(){
+    function seleccionar_aceites()
+    {
         return view('modules.productos.seleccionar_aceites');
     }
 
     //productos seleccionados
     public function productos_seleccionados(Request $request)
     {
-        $productos = producto::orderBy('created_at', 'desc')
-            ->get();
+        $productos = producto::orderBy('created_at', 'desc')->get();
 
         return view('modules.productos.productos_seleccionados', ['productos' => $productos]);
     }
-     //actualizar los productos por defecto
-     public function productos_defecto(Request $request)
-     {
-         try {
-             $datax = $request->all();
- 
-             $producto_defecto = productos_defecto::orderBy('created_at', 'desc')->get();
- 
-             if (count($producto_defecto) != 0) {
-                 foreach ($producto_defecto as $servicio) {
-                     $servicio->delete();
-                 }
-             }
- 
-             //insertando los servicios por defecto en la tabla servicios_defecto
-             foreach ($datax['seleccionados'] as $seleccionado) {
-                 $create = productos_defecto::create([
-                     'prod_id' => $seleccionado['prod_id'],
-                 ]);
-             }
- 
-             session()->flash('success', 'registro creado correctamente');
-             return response()->json([
-                 'message' => 'datos registrados correctamente',
-                 'error' => '',
-                 'success' => true,
-                 'data' => route("producto.index")
-             ]);
-         } catch (\Throwable $th) {
-             Log::error($th);
-             return response()->json([
-                 'message' => 'error al registrar los datos',
-                 'error' => $th->getMessage(),
-                 'success' => false,
-                 'data' => '',
-             ]);
-         }
-     }
+    //actualizar los productos por defecto
+    public function productos_defecto(Request $request)
+    {
+        try {
+            $datax = $request->all();
+
+            $producto_defecto = productos_defecto::orderBy('created_at', 'desc')->get();
+
+            if (count($producto_defecto) != 0) {
+                foreach ($producto_defecto as $servicio) {
+                    $servicio->delete();
+                }
+            }
+
+            //insertando los servicios por defecto en la tabla servicios_defecto
+            foreach ($datax['seleccionados'] as $seleccionado) {
+                $create = productos_defecto::create([
+                    'prod_id' => $seleccionado['prod_id'],
+                ]);
+            }
+
+            session()->flash('success', 'registro creado correctamente');
+            return response()->json([
+                'message' => 'datos registrados correctamente',
+                'error' => '',
+                'success' => true,
+                'data' => route('producto.index'),
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al registrar los datos',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
 }

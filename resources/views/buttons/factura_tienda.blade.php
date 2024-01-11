@@ -20,7 +20,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input name="_method" type="hidden" value="DELETE">
                 <button type="submit" style="width: 100%"
-                    onclick="FormDelete('tx{{ $venta_id }}','esta segur@ que desea eliminar esta usuario',event)"
+                    onclick="FormDelete('tx{{ $venta_id }}','esta segur@ que desea eliminar esta factura',event)"
                     class="btn btn-ligth btn-sm m-1 text-left"><i class="fa fa-trash fa-1x"> </i> Dar de baja</button>
             </form>
         </a>

@@ -409,27 +409,9 @@
                 if ($.fn.DataTable.isDataTable("#" + table)) {
                     $("#" + table).DataTable().destroy();
                 }
-                $("#" + table).DataTable({
-                    initComplete: search_input_by_column,
+                $("#" + table).DataTable({ 
                     language: {
-                        "decimal": "",
-                        "emptyTable": "No hay información",
-                        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-                        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
-                        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-                        "infoPostFix": "",
-                        "thousands": ",",
-                        "lengthMenu": "Mostrar _MENU_ Entradas",
-                        "loadingRecords": "Cargando...",
-                        "processing": "Procesando...",
-                        "search": "Buscar:",
-                        "zeroRecords": "Sin resultados encontrados",
-                        "paginate": {
-                            "first": "Primero",
-                            "last": "Ultimo",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
-                        }
+                        "url": "/spanish_datatable"
                     },
                     ajax: "/cotizacion_table_vue/" + progeso,
                     columns: [
@@ -491,19 +473,19 @@
                         },
 
                     ],
+                    order: [[0, 'desc']],
                     dom: 'Bfrtip',
                     "info": true,
-                    processing: true,
-                    language: {
-                        processing: '<div id="loading-indicator">Cargando datos...</div>',
-                    },
+                    processing: true, 
                     fixedColumns: true,
                     keys: true,
-                    colReorder: true,
-                    "lengthChange": true,
+                    colReorder: true, 
                     'responsive': true,
                     "autoWidth": false,
                     "ordering": true,
+                    "lengthChange": true,  
+                    paging: true, // Activa la paginación
+                    lengthMenu: [5, 10, 25, 50],
                     // Otras opciones y configuraciones de DataTables aquí
                 });
             },
