@@ -382,14 +382,17 @@ class ventas_controller extends Controller
             $ventas->save();
     
             $empresa->nro_baja = $empresa->nro_baja + 1;
-            $empresa->save();
-     
+            $empresa->save(); 
+
+            detalle_venta::where("venta_id", $ventas->venta_id)->delete();
+
             return response()->json([
                 'message' => $statusResult->getCdrResponse()->getDescription(),
                 'error' => '',
                 'success' => true,
                 'data' => '',
             ]); 
+
         } else {
              
             $detail = new SummaryDetail();
@@ -445,6 +448,8 @@ class ventas_controller extends Controller
     
             $empresa->nro_baja = $empresa->nro_baja + 1;
             $empresa->save();
+
+            detalle_venta::where("venta_id", $ventas->venta_id)->delete();
      
             return response()->json([
                 'message' => $statusResult->getCdrResponse()->getDescription(),
