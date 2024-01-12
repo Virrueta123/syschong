@@ -10,6 +10,7 @@
                     <th>Documento</th>
                     <th>numero</th>
                     <th>Estado</th>
+                    <th>Fecha de baja</th>
                     <th>Venta Total</th>
                     <th>MtoOperGravadas</th>
                     <th>SubTotal</th>
@@ -25,6 +26,7 @@
                     <td>{{ v_t . documento }}</td>
                     <td>{{ v_t . numero }}</td>
                     <td>{{ v_t . venta_estado }}</td>
+                    <td>{{ v_t . fecha_baja }}</td>
                     <td>{{ v_t . venta_total }}</td>
                     <td>{{ v_t . MtoOperGravadas }}</td>
                     <td>{{ v_t . SubTotal }}</td>

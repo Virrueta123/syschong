@@ -379,6 +379,7 @@ class ventas_controller extends Controller
             file_put_contents('R-' . $cDeBaja->getName() . '.zip', $statusResult->getCdrZip());
     
             $ventas->venta_estado = "B";
+            $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
             $ventas->save();
     
             $empresa->nro_baja = $empresa->nro_baja + 1;
@@ -444,6 +445,7 @@ class ventas_controller extends Controller
             file_put_contents('R-'.$resumen->getName().'.zip', $statusResult->getCdrZip());
 
             $ventas->venta_estado = "B";
+            $ventas->fecha_baja = Carbon::now()->format('Y-m-d');
             $ventas->save();
     
             $empresa->nro_baja = $empresa->nro_baja + 1;
