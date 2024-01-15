@@ -22,4 +22,8 @@ class detalle_venta extends Model
     public function producto( ){
         return $this->belongsTo(producto::class,"prod_id")->withTrashed();
     }
+
+    public function venta( ){
+        return $this->hasOne(ventas::class,"venta_id");
+    }
 }

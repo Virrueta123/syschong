@@ -216,7 +216,8 @@
                 };
                 const data = {
                     gastos_nombre: self.gastos_nombre,
-                    pagos: self.pagos
+                    pagos: self.pagos,
+                    sumar_pagos : this.sumar_pagos
                 };
                 axios
                     .post("/crear_gasto", data, {

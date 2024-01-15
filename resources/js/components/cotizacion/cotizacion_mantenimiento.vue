@@ -1724,10 +1724,7 @@
             if (this.cotizacion.ventas) {
                 this.print_comprobante = true;
                 this.rutaPDF = "/ventas_pdf/" + this.cotizacion.venta;
-            }
-
-
-
+            } 
             /* -- *********************** -- */
 
             console.log(this.cotizacion);
@@ -3224,6 +3221,9 @@
 </script>
 
 <style>
+    .tab-content > .tab-pane{
+        line-height:normal;
+    }
     :root {
         --sw-border-color: #eeeeee;
         --sw-toolbar-btn-color: #ffffff;

@@ -185,6 +185,14 @@ app.component('tablas-factura-tienda', require('./components/tablas/tablas_factu
 app.component('tablas-ventas', require('./components/tablas/tablas_ventas.vue').default);
 /* -- *********************** -- */
 
+/* -- ******** reportes ************* -- */
+app.component('reportes-documentos',  require('./components/reporte/reportes_documentos.vue').default);
+app.component('reportes-clientes',  require('./components/reporte/reportes_clientes.vue').default);
+app.component('reportes-producto_busqueda',  require('./components/reporte/reportes_producto_busqueda.vue').default);
+app.component('reportes-productos',  require('./components/reporte/reportes_productos.vue').default);
+app.component('reportes-notas_venta', require('./components/reporte/reportes_notas_venta.vue').default);
+/* -- *********************** -- */
+
 /* -- ******** orden de servicio ************* -- */
 app.component('crear-orden-servicio', require('./components/orden_servicio/crear-orden-servicio.vue').default);
 app.component('crear-cortesia-orden-activacion', require('./components/orden_servicio/crear-cortesia-orden-activacion.vue').default);
@@ -207,6 +215,8 @@ app.component('pdf-orden-servicio', require('./components/pdf/pdf-orden-servicio
 app.component('imagen-orden-de-servicio', require('./components/imagenes/imagen_orden_de_servicio.vue').default);
 /* -- *********************** -- */
 app.component('dashboard', require('./components/home/dashboard.vue').default);
+
+
 
 app.mount('#app');
 

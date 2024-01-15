@@ -232,7 +232,7 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'Reportes',
                         'icon' => 'fa fa-chart-pie',
                         'submenu' => [
-                            ['name' => 'Punto de venta', 'url' => 'pos.create']],
+                            ['name' => 'Reportes', 'url' => 'reportes.index']],
                     ],
                 ];
 

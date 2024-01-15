@@ -197,11 +197,13 @@ class gastos_controller extends Controller
     public function crear_gasto(Request $request){
         try {
             $datax = $request->all();
+ 
             $validate = $request->validate([
                 'gastos_nombre' => 'required|string|max:200',
             ]);
 
             $validate['user_id'] = Auth::user()->id;
+            $validate['monto'] =  $datax['sumar_pagos'];
              
             $caja_chica = caja_chica::where("user_id", auth()->user()->id)->where("is_abierto","Y")->first()->caja_chica_id;
             $validate['caja_chica_id'] = $caja_chica;

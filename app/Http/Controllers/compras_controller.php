@@ -218,29 +218,31 @@ class compras_controller extends Controller
                     $detalle_compra->zona_id = $detalle['zona_id'];
 
                     $detalle_compra->save();
- 
-                   foreach ( $detalle["cotizaccion"] as $coti) {
+                    
+                    if (!empty($detalle["cotizaccion"])) {
+                        foreach ( $detalle["cotizaccion"] as $coti) {
                    
-                        $cotizaion_detalle = new cotizacioncotizacion_detalle();
-
-                        // Asignar valores a los campos
-                        $cotizaion_detalle->cotizacion_id =$coti["cotizacion_id"]; // ID de la cotización relacionada
-                        $cotizaion_detalle->prod_id =$detalle_compra->prod_id; // ID del producto relacionado
-                        $cotizaion_detalle->servicios_id = 0; // ID del servicio relacionado
-                        $cotizaion_detalle->tipo = "P"; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
-                        $cotizaion_detalle->Precio = $detalle['is_precio_venta'] ? $detalle['precio_venta'] :  $detalle['precio_compra'];
-                        $cotizaion_detalle->Importe =$detalle['is_precio_venta'] ? $detalle['precio_venta'] *$coti["cantidad"] :  $detalle['precio_compra'] *$coti["cantidad"];
-                        $cotizaion_detalle->ImporteDescuento = 0;
-                        $cotizaion_detalle->Descuento = 0;
-                        $cotizaion_detalle->Descripcion = $detalle['Descripcion'];
-                        $cotizaion_detalle->Codigo = $producto->prod_codigo;
-                        $cotizaion_detalle->Cantidad = $coti["cantidad"];
-                        $cotizaion_detalle->ValorDescuento = 0;
-                        $cotizaion_detalle->Detalle = "";
-        
-                        // Guardar el registro en la base de datos
-                        $cotizaion_detalle->save();
-                    } 
+                            $cotizaion_detalle = new cotizacioncotizacion_detalle();
+    
+                            // Asignar valores a los campos
+                            $cotizaion_detalle->cotizacion_id =$coti["cotizacion_id"]; // ID de la cotización relacionada
+                            $cotizaion_detalle->prod_id =$detalle_compra->prod_id; // ID del producto relacionado
+                            $cotizaion_detalle->servicios_id = 0; // ID del servicio relacionado
+                            $cotizaion_detalle->tipo = "P"; // 'P' para producto, 'S' para servicio, ajusta según sea necesario
+                            $cotizaion_detalle->Precio = $detalle['is_precio_venta'] ? $detalle['precio_venta'] :  $detalle['precio_compra'];
+                            $cotizaion_detalle->Importe =$detalle['is_precio_venta'] ? $detalle['precio_venta'] *$coti["cantidad"] :  $detalle['precio_compra'] *$coti["cantidad"];
+                            $cotizaion_detalle->ImporteDescuento = 0;
+                            $cotizaion_detalle->Descuento = 0;
+                            $cotizaion_detalle->Descripcion = $detalle['Descripcion'];
+                            $cotizaion_detalle->Codigo = $producto->prod_codigo;
+                            $cotizaion_detalle->Cantidad = $coti["cantidad"];
+                            $cotizaion_detalle->ValorDescuento = 0;
+                            $cotizaion_detalle->Detalle = "";
+            
+                            // Guardar el registro en la base de datos
+                            $cotizaion_detalle->save();
+                        } 
+                    }   
                 }
 
                 foreach ($Datax['pagos'] as $pago) {
