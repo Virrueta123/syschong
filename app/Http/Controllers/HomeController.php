@@ -41,8 +41,7 @@ class HomeController extends Controller
 
         $primerDiaSemana = $primerDiaSemana->format('Y-m-d');
  
-       return Excel::download(new ExcelDocumento( ["datatable"=>"dsadasd"]), 'padroSunatF'.'_'.Carbon::now()->format("H:i:s").'.xlsx' );
-
+        
         return view('home', compact('primerDiaSemana', 'ultimoDiaSemana'));
 
  

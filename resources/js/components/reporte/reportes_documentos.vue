@@ -123,12 +123,12 @@
                                             PDF</button>
 
 
-                                        <button v-on:click="enviar_excel()" class="btn btn-icon icon-left btn-primary"><i
-                                                class="fa fa-file-excel"></i> Exportar Excel</button>
+                                        <button v-on:click="enviar_excel()"
+                                            class="btn btn-icon icon-left btn-primary"><i class="fa fa-file-excel"></i>
+                                            Exportar Excel</button>
 
-
-
-                                        <button class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
+                                        <button v-on:click="enviar_comprobante_modal()"
+                                            class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
                                             Enviar Correo</button>
 
                                     </div>
@@ -234,6 +234,43 @@
             </div>
         </div>
 
+        <CModal size="xl" :visible="is_enviar_comprobante_modal"
+            @close="() => { is_enviar_comprobante_modal = false }">
+
+            <CModalBody>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar comprobantes
+                    </h5>
+                    <button type="button" class="close" @click="is_enviar_comprobante_modal = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="body">
+                    <form id="form_cliente" method="POST" action="#">
+
+                        <div class="modal-body">
+
+                            <div class="card-body">
+
+                                <div class="form-group col-sm-12">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" v-model="correo" placeholder=""
+                                            aria-label="">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" v-on:click="send_correo()"
+                                                type="button"><i class="fa-solid fa-envelope"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </CModalBody>
+        </CModal>
+
         <CModal size="xl" :visible="is_producto" @close="() => { is_producto = false;  }">
             <CModalBody>
                 <div class="form-row">
@@ -256,6 +293,8 @@
                 </div>
             </CModalBody>
         </CModal>
+
+
     </div>
 
 
@@ -270,6 +309,8 @@
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
 
+    import * as XLSX from 'xlsx';
+
     import "bootstrap"
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
@@ -281,7 +322,9 @@
 
     import moment from 'moment';
     import 'moment-timezone';
-    import { saveAs } from 'file-saver';
+    import {
+        saveAs
+    } from 'file-saver';
     import Chart from 'primevue/chart';
 
     import TabView from 'primevue/tabview';
@@ -313,11 +356,13 @@
             CInputGroup,
             CFormSelect,
             CFormCheck,
-            CButton
+            CButton,
         },
         mixins: [myMixin],
         data() {
             return {
+                correo: "",
+                is_enviar_comprobante_modal: false,
                 datos: [],
                 productos_seleccionados: [],
                 is_producto: false,
@@ -405,11 +450,82 @@
 
         },
         methods: {
+
             /* -- ******** descargar reportes ************* -- */
+            enviar_comprobante_modal() {
+                this.is_enviar_comprobante_modal = true;
+            },
+            send_correo() {
+                this.showLoadingSpinner();
+                const table = document.getElementById('data');
+                const workbook = XLSX.utils.table_to_book(table);
+                const excelBuffer = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array'
+                });
+                const blob = new Blob([excelBuffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const fileName = 'archivo.xlsx';
+
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // Para Internet Explorer
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // Para otros navegadores
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+             
+                }
+                // Crear un formulario y agregar el archivo al formulario
+                const formData = new FormData();
+                formData.append('archivo', blob, fileName);
+                formData.append('correo', this.correo);
+
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                const data = formData
+
+                axios
+                    .post("/send_correo_documento", data, {
+                        headers,
+                    })
+                    .then((response) => {
+                        console.log(response.data);
+                        if (response.data.success) {
+                            this.hideLoadingSpinner();
+                            this.alert_success("se envio el correo " + this.correo + " exitosamente");
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            this.hideLoadingSpinner();
+                            console.error(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        this.hideLoadingSpinner();
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
             enviar_pdf() {
                 const headers = {
-                    "Content-Type": "application/json", 
-                    'Accept': 'application/pdf' 
+                    "Content-Type": "application/json",
+                    'Accept': 'application/pdf'
                 };
 
                 const data = {
@@ -443,35 +559,30 @@
                     });
             },
             enviar_excel() {
-                const headers = {
-                    "Content-Type": "application/json", 
-                    'Accept': 'application/vnd.ms-excel'
-                };
+                const table = document.getElementById('data');
+                const workbook = XLSX.utils.table_to_book(table);
+                const excelBuffer = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array'
+                });
+                const blob = new Blob([excelBuffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const fileName = 'archivo.xlsx';
 
-                const data = {
-                    datatable: this.datatable,
-                    total: this.total,
-                };
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // Para Internet Explorer
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // Para otros navegadores
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                }
 
-                axios
-                    .post("/descarga_excel_reporte_documento", data, { 
-                        responseType: 'blob',
-                        headers,
-                    })
-                    .then((response) => {
-                        const filename = 'items.xlsx';
-        const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
-        saveAs(blob, filename);
-                    })
-                    .catch((error) => {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error 500",
-                            text: "Error en el servidor, vuelva a intentar",
-                            footer: "-------",
-                        });
-                        console.error(error);
-                    });
             },
             /* -- *********************** -- */
             async view_productos(index) {

@@ -14,7 +14,7 @@ Route::get('/reportes_notas_venta', [App\Http\Controllers\reporte_controller::cl
   
 
 Route::post('/descarga_pdf_reporte_documento', [App\Http\Controllers\reporte_controller::class, 'descarga_pdf_reporte_documento'])->name('descarga_pdf_reporte_documento');  
-Route::get('/descarga_excel_reporte_documento', [App\Http\Controllers\reporte_controller::class, 'descarga_excel_reporte_documento'])->name('descarga_excel_reporte_documento');  
+ Route::post('/send_correo_documento', [App\Http\Controllers\reporte_controller::class, 'send_correo_documento'])->name('send_correo_documento');  
 
 
 Route::post('/load_data_dashboard', [App\Http\Controllers\reporte_controller::class, 'load_data_dashboard'])->name('load_data_dashboard'); 

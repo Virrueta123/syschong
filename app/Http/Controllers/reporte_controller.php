@@ -14,6 +14,7 @@ use Facade\Ignition\DumpRecorder\Dump;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -32,11 +33,46 @@ class reporte_controller extends Controller
     }
 
 
-    public function descarga_excel_reporte_documento( )
+    public function send_correo_documento(Request $request )
     {
-         
-        return Excel::download(new ExcelDocumento( ["datatable"=>"dsadasd"]), 'padroSunatF'.'_'.Carbon::now()->format("H:i:s").'.xlsx' );
-       
+         // Verificar si hay un archivo adjunto
+      
+        try {
+            
+            if ($request->hasFile('archivo')) {
+                // Guardar el archivo en el servidor
+                $archivo = $request->file('archivo');
+                $rutaArchivo = storage_path('app/public/') . $archivo->getClientOriginalName();
+                $archivo->move(storage_path('app/public/'), $archivo->getClientOriginalName());
+    
+                 
+                $destinatario = $request->all()['correo'];
+    
+                    $mensaje = Mail::send('pdf.enviar_correo_aviso', ['mensaje' => "Reporte de Documentos"], function ($message) use ($destinatario,$rutaArchivo) {
+                        $message->to($destinatario)->subject('Asunto del mensaje');
+                        $message->attach($rutaArchivo, ['as' => 'archivo.xlsx']);
+                    });
+    
+                // Eliminar el archivo después de enviarlo por correo (opcional)
+                unlink($rutaArchivo);
+     
+                return response()->json([
+                    'message' => 'Correo enviado con éxito',
+                    'error' => '',
+                    'success' => true,
+                    'data' => '',
+                ]);
+            }
+            
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
     /* reportes */
     public function reportes()
