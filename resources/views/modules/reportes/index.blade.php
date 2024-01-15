@@ -19,9 +19,11 @@
                             <li><a href="{{ route("reportes.producto_busqueda") }}">Producto - busqueda
                                     individual</a></li>
                             <li><a href="{{ route("reportes.productos") }}">Productos</a></li> 
-                            <li><a href="{{ route("reportes.notas_venta") }}">Notas de Venta</a></li>  
+
+                            <!-- ********  <li><a href="{{ route("reportes.notas_venta") }}">Notas de Venta</a></li>  
                              
-                            </li>
+                            </li> -->
+                            
                         </ul>
                     </div>
                 </div>

@@ -19,4 +19,7 @@ Route::post('/descarga_pdf_reporte_documento', [App\Http\Controllers\reporte_con
 
 Route::post('/load_data_dashboard', [App\Http\Controllers\reporte_controller::class, 'load_data_dashboard'])->name('load_data_dashboard'); 
  Route::post('/load_data_documento', [App\Http\Controllers\reporte_controller::class, 'load_data_documento'])->name('load_data_documento'); 
- 
+  Route::post('/load_data_documento_cliente', [App\Http\Controllers\reporte_controller::class, 'load_data_documento_cliente'])->name('load_data_documento_cliente');
+  Route::post('/load_data_documento_producto_general', [App\Http\Controllers\reporte_controller::class, 'load_data_documento_producto_general'])->name('load_data_documento_producto_general');
+
+    Route::post('/load_data_documento_producto_individual', [App\Http\Controllers\reporte_controller::class, 'load_data_documento_producto_individual'])->name('load_data_documento_producto_individual');

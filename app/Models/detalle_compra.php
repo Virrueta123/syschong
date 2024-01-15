@@ -20,4 +20,7 @@ class detalle_compra extends Model
     public function zona(){
         return $this->belongsTo(zona::class,"zona_id")->withTrashed();
     }
+    public function compra(){
+        return $this->belongsTo(compras::class,"compra_id")->withTrashed();
+    }
 }

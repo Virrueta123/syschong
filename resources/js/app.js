@@ -188,9 +188,9 @@ app.component('tablas-ventas', require('./components/tablas/tablas_ventas.vue').
 /* -- ******** reportes ************* -- */
 app.component('reportes-documentos',  require('./components/reporte/reportes_documentos.vue').default);
 app.component('reportes-clientes',  require('./components/reporte/reportes_clientes.vue').default);
-app.component('reportes-producto_busqueda',  require('./components/reporte/reportes_producto_busqueda.vue').default);
+app.component('reportes-producto-busqueda',  require('./components/reporte/reportes_producto_busqueda.vue').default);
 app.component('reportes-productos',  require('./components/reporte/reportes_productos.vue').default);
-app.component('reportes-notas_venta', require('./components/reporte/reportes_notas_venta.vue').default);
+app.component('reportes-notas-venta', require('./components/reporte/reportes_notas_venta.vue').default);
 /* -- *********************** -- */
 
 /* -- ******** orden de servicio ************* -- */

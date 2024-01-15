@@ -280,11 +280,13 @@
                             <table class="table">
                                 <tr>
                                     <th>Producto/Servicio</th>
+                                    <th>Cantidad</th>
                                     <th>Monto</th>
                                 </tr>
                                 <tr v-for="(p_s, index_p_s) in productos_seleccionados" :key="index_p_s">
                                     <td v-if="p_s.tipo=='p'">{{ p_s . producto . prod_nombre }}</td>
                                     <td v-else>{{ p_s . servicio . servicios_nombre }}</td>
+                                    <td  >{{ p_s.Cantidad}}</td>
                                     <td> {{ p_s . MtoValorVenta }} </td>
                                 </tr>
                             </table>

@@ -2,23 +2,40 @@
 
     <div class="card mb-0 pt-2 pt-md-0">
         <div class="card-header bg-danger">
-            <h3 class="my-0 text-white">Consulta de Documentos</h3>
+            <h3 class="my-0 text-white">Consulta de documentos por cliente</h3>
 
         </div>
+
         <div class="card mb-0">
             <div class="card-body">
                 <div>
                     <div class="row">
+                        
                         <div class="col-md-12 col-lg-12 col-xl-12 ">
                             <div class="row mt-2">
+                                <div class="form-group col-md-12">
+                                    <label class="control-label">Cliente</label>
+
+                                    <div class="input-group">
+                                        <select name="cli_id" id="cliente_select" ref="cliente_select"
+                                            class="form-control select2" aria-hidden="true" language="es"
+                                            placeholder="seleccionar un cliente">
+                                        </select>
+                                        <button type="button" 
+                                            class="btn btn-info boton-color form-control btn-xs col-md-1"
+                                            v-on:click="cliente_x()">
+                                            X
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <div class="form-group col-md-3">
                                     <label class="control-label">Periodo</label>
-
 
                                     <select class="form-control form-control-sm" v-on:change="change_periodo()">
                                         <option value="por_mes">Por mes</option>
                                         <option value="entres_meses">Entre meses</option>
-                                        <option value="por_fecha" n>Por fecha</option>
+                                        <option value="por_fecha">Por fecha</option>
                                         <option value="entre_fechas">Entre fechas</option>
                                     </select>
 
@@ -78,56 +95,43 @@
                                 <!-- *********************** -->
 
                                 <!-- *********************** -->
-
-                                <div class="form-group col-md-3">
-                                    <label class="control-label">Tipo de documento</label>
-
-
-                                    <select class="form-control form-control-sm" v-on:change="change_comprobante()">
-                                        <option value="S">Selecciona comprobante</option>
-                                        <option value="F">Factura electronica</option>
-                                        <option value="B">Boleta electronica</option>
-                                        <option value="N">Nota de venta</option>
-                                    </select>
-
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label class="control-label">Cliente</label>
-
-                                    <div class="input-group">
-                                        <select name="cli_id" id="cliente_select" ref="cliente_select"
-                                            class="form-control select2" aria-hidden="true" language="es"
-                                            placeholder="seleccionar un cliente">
-                                        </select>
-                                        <button type="button"
-                                            class="btn btn-info boton-color form-control btn-xs col-md-1"
-                                            v-on:click="cliente_x()">
-                                            X
-                                        </button>
-                                    </div>
-                                </div>
-
+ 
 
                                 <div class="form-group col-md-12">
                                     <label class="control-label">Opciones</label>
 
                                     <div class="buttons">
-
-                                        <button v-on:click="buscar_data()" class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
+                                        
+                                            <button v-on:click="buscar_data()" v-if="cli_id!=0 && por_mes" class="btn btn-icon icon-left btn-primary"><i
+                                                class="fa fa-search"></i>
                                             Buscar</button>
+                              
+                                            <button v-on:click="buscar_data()" v-if="cli_id!=0 && start_mounth && end_mounth && entres_meses" class="btn btn-icon icon-left btn-primary"><i
+                                                class="fa fa-search"></i>
+                                            Buscar</button>
+                                       
+                                            <button v-on:click="buscar_data()" v-if="cli_id!=0 && fecha_por_date && por_fecha" class="btn btn-icon icon-left btn-primary"><i
+                                                class="fa fa-search"></i>
+                                            Buscar</button>
+                                       
+                                            <button v-on:click="buscar_data()" v-if="cli_id!=0 && start_date && end_date && entre_fechas" class="btn btn-icon icon-left btn-primary"><i
+                                                class="fa fa-search"></i>
+                                            Buscar</button>
+                                       
+                                        
+                                    
 
-                                        <button class="btn btn-icon icon-left btn-primary"><i
+                                        <button v-on:click="enviar_pdf()" class="btn btn-icon icon-left btn-primary"><i
                                                 class="fa fa-file-pdf"></i> Exportar
                                             PDF</button>
 
 
-                                        <button class="btn btn-icon icon-left btn-primary"><i
-                                                class="fa fa-file-excel"></i> Exportar Excel</button>
- 
+                                        <button v-on:click="enviar_excel()"
+                                            class="btn btn-icon icon-left btn-primary"><i class="fa fa-file-excel"></i>
+                                            Exportar Excel</button>
 
-
-                                        <button class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
+                                        <button v-on:click="enviar_comprobante_modal()"
+                                            class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
                                             Enviar Correo</button>
 
                                     </div>
@@ -139,7 +143,7 @@
 
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="data">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -149,45 +153,48 @@
                                             <th>Numero</th>
                                             <th>Fecha emisión</th>
                                             <th>Fecha vencimiento</th> <!----> <!---->
-                                            <th>Doc. Afectado</th>
-                                            <th>Cotización</th>
-                                            <th>Caso</th> <!----> <!----> <!----> <!---->
                                             <th>Cliente</th> <!---->
                                             <th>Productos</th>
-                                            <th>Estado</th>
-                                            <th>Moneda</th> <!---->
-                                            <th>Orden de compra</th> <!----> <!----> <!----> <!----> <!---->
+                                            <th>Estado</th> <!----> <!----> <!----> <!----> <!---->
                                             <th>Total Exonerado</th>
                                             <th>Total Inafecto</th>
                                             <th>Total Gratuito</th>
                                             <th>Total Gravado</th>
                                             <th>Total IGV</th>
                                             <th>Total ISC</th>
-                                            <th>Total</th> <!---->
-                                            <th>Placa</th>
+                                            <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Administrador</td>
-                                            <td>FACTURA ELECTRÓNICA</td>
-                                            <td>F001</td>
-                                            <td>6</td>
-                                            <td>2024-01-08</td>
-                                            <td>2024-01-08</td> <!----> <!---->
-                                            <td></td>
-                                            <td></td>
-                                            <td></td> <!----> <!----> <!----> <!---->
-                                            <td>AGUAS ECO TERMALES CURATIVAS PAUCAR YACU
-                                                S.A.C.<br><small>20608252879</small></td> <!---->
+                                        <tr v-for="(d_t, index_d_t) in datatable" :key="index_d_t">
+                                            <td>{{ index_d_t + 1 }}</td>
+                                            <td>{{ d_t . vendedor . name }}</td>
+
+                                            <td v-if="d_t.tipo_comprobante=='F'">Factura electronica</td>
+                                            <td v-if="d_t.tipo_comprobante=='B'">Boleta electronica</td>
+                                            <td v-if="d_t.tipo_comprobante=='N'">Nota de venta electronica</td>
+
+                                            <td>{{ d_t . venta_serie }}</td>
+                                            <td>{{ d_t . venta_correlativo }}</td>
+                                            <td>{{ d_t . fecha_creacion }}</td>
+                                            <td>{{ d_t . fecha_vencimiento }}</td> <!----> <!---->
+                                            <!----> <!----> <!----> <!---->
+                                            <td v-if="d_t.Dni==0">
+                                                {{ d_t . razon_social }} <br><small>{{ d_t . ruc }}</small>
+                                            </td>
+                                            <td v-else>
+                                                {{ d_t . Nombre }}
+                                                {{ d_t . Apellido }}<br><small>{{ d_t . Dni }}</small>
+                                            </td>
+                                            <!---->
                                             <td class="text-center"><button type="button"
+                                                    v-on:click="view_productos(index_d_t)"
                                                     class="btn waves-effect waves-light btn-xs btn-primary"><i
                                                         class="fa fa-eye"></i></button></td>
-                                            <td>Aceptado</td>
-                                            <td>PEN</td> <!---->
-                                            <td></td> <!----> <!----> <!----> <!----> <!---->
-                                            <td>3.00
+                                            <td v-if="d_t.venta_estado=='B'">Anulado</td>
+                                            <td v-if="d_t.venta_estado=='A'">Aceptado</td>
+                                            <td v-if="d_t.venta_estado=='R'">Rechazado</td>
+                                            <td>{{ d_t . MtoOperExoneradas }}
                                             </td>
                                             <td>0.00
                                             </td>
@@ -200,220 +207,100 @@
                                             <td>
                                                 0.00
                                             </td>
-                                            <td>3.00
+                                            <td>{{ d_t . MtoOperExoneradas }}
                                             </td> <!---->
                                             <td></td>
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Administrador</td>
-                                            <td>FACTURA ELECTRÓNICA</td>
-                                            <td>F001</td>
-                                            <td>5</td>
-                                            <td>2024-01-07</td>
-                                            <td>2024-01-07</td> <!----> <!---->
-                                            <td></td>
-                                            <td></td>
-                                            <td></td> <!----> <!----> <!----> <!---->
-                                            <td>AGUAS ECO TERMALES CURATIVAS PAUCAR YACU
-                                                S.A.C.<br><small>20608252879</small></td> <!---->
-                                            <td class="text-center"><button type="button"
-                                                    class="btn waves-effect waves-light btn-xs btn-primary"><i
-                                                        class="fa fa-eye"></i></button></td>
-                                            <td>Aceptado</td>
-                                            <td>PEN</td> <!---->
-                                            <td></td> <!----> <!----> <!----> <!----> <!---->
-                                            <td>63.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>
-                                                0.00
-                                            </td>
-                                            <td>63.00
-                                            </td> <!---->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Administrador</td>
-                                            <td>FACTURA ELECTRÓNICA</td>
-                                            <td>F001</td>
-                                            <td>4</td>
-                                            <td>2024-01-06</td>
-                                            <td>2024-01-06</td> <!----> <!---->
-                                            <td></td>
-                                            <td></td>
-                                            <td></td> <!----> <!----> <!----> <!---->
-                                            <td>AMALIA PHARMA E.I.R.L.<br><small>20611496291</small></td> <!---->
-                                            <td class="text-center"><button type="button"
-                                                    class="btn waves-effect waves-light btn-xs btn-primary"><i
-                                                        class="fa fa-eye"></i></button></td>
-                                            <td>Anulado</td>
-                                            <td>PEN</td> <!---->
-                                            <td></td> <!----> <!----> <!----> <!----> <!---->
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>
-                                                0.00
-                                            </td>
-                                            <td>0.00
-                                            </td> <!---->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Administrador</td>
-                                            <td>FACTURA ELECTRÓNICA</td>
-                                            <td>F001</td>
-                                            <td>3</td>
-                                            <td>2024-01-03</td>
-                                            <td>2024-01-03</td> <!----> <!---->
-                                            <td></td>
-                                            <td></td>
-                                            <td></td> <!----> <!----> <!----> <!---->
-                                            <td>MEGO ZAMORA DUBER<br><small>10444586210</small></td> <!---->
-                                            <td class="text-center"><button type="button"
-                                                    class="btn waves-effect waves-light btn-xs btn-primary"><i
-                                                        class="fa fa-eye"></i></button></td>
-                                            <td>Aceptado</td>
-                                            <td>PEN</td> <!---->
-                                            <td></td> <!----> <!----> <!----> <!----> <!---->
-                                            <td>42.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>
-                                                0.00
-                                            </td>
-                                            <td>42.00
-                                            </td> <!---->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>Administrador</td>
-                                            <td>BOLETA DE VENTA ELECTRÓNICA</td>
-                                            <td>B001</td>
-                                            <td>3</td>
-                                            <td>2024-01-03</td>
-                                            <td>2024-01-03</td> <!----> <!---->
-                                            <td></td>
-                                            <td></td>
-                                            <td></td> <!----> <!----> <!----> <!---->
-                                            <td>Administrador<br><small>43023087</small></td> <!---->
-                                            <td class="text-center"><button type="button"
-                                                    class="btn waves-effect waves-light btn-xs btn-primary"><i
-                                                        class="fa fa-eye"></i></button></td>
-                                            <td>Aceptado</td>
-                                            <td>PEN</td> <!---->
-                                            <td></td> <!----> <!----> <!----> <!----> <!---->
-                                            <td>30.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>0.00
-                                            </td>
-                                            <td>
-                                                0.00
-                                            </td>
-                                            <td>30.00
-                                            </td> <!---->
-                                            <td></td>
-                                        </tr>
+
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td colspan="7"></td> <!----> <!----> <!----> <!---->
-                                            <td><strong>Totales PEN</strong></td>
-                                            <td>138</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td><strong></strong></td>
+                                            <td> </td>
                                             <td></td>
-                                            <td>138</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Totales {{ total }}</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="7"></td> <!----> <!----> <!----> <!---->
-                                            <td><strong>Totales USD</strong></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td></td>
-                                            <td>0</td>
-                                        </tr>
+
                                     </tfoot>
                                 </table>
-                                <div>
-                                    <div class="el-pagination"><span class="el-pagination__total">Total
-                                            5</span><button type="button" disabled="disabled" class="btn-prev"><i
-                                                class="el-icon el-icon-arrow-left"></i></button>
-                                        <ul class="el-pager">
-                                            <li class="number active">1</li><!----><!----><!---->
-                                        </ul><button type="button" class="btn-next" disabled="disabled"><i
-                                                class="el-icon el-icon-arrow-right"></i></button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <CModal size="xl" :visible="is_enviar_comprobante_modal"
+            @close="() => { is_enviar_comprobante_modal = false }">
+
+            <CModalBody>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-crear-cliente-label">Formulario para enviar comprobantes
+                    </h5>
+                    <button type="button" class="close" @click="is_enviar_comprobante_modal = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="body">
+                    <form id="form_cliente" method="POST" action="#">
+
+                        <div class="modal-body">
+
+                            <div class="card-body">
+
+                                <div class="form-group col-sm-12">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" v-model="correo" placeholder=""
+                                            aria-label="">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" v-on:click="send_correo()"
+                                                type="button"><i class="fa-solid fa-envelope"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="el-dialog__wrapper" style="display: none;">
-                        <div role="dialog" aria-modal="true" aria-label="Enviar correo" class="el-dialog"
-                            style="margin-top: 15vh; width: 30%;">
-                            <div class="el-dialog__header"><span class="el-dialog__title">Enviar correo</span><!---->
-                            </div><!---->
-                            <div class="el-dialog__footer"><span class="dialog-footer"><button type="button"
-                                        class="el-button el-button--default el-button--small"><!----><!----><span>Cerrar</span></button></span>
-                            </div>
+
+
+                    </form>
+                </div>
+            </CModalBody>
+        </CModal>
+
+        <CModal size="xl" :visible="is_producto" @close="() => { is_producto = false;  }">
+            <CModalBody>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <h2 class="text-center">Detalle servicios /producto</h2>
+                        <div>
+                            <table class="table">
+                                <tr>
+                                    <th>Producto/Servicio</th>
+                                    <th>cantidad</th>
+
+                                    <th>Monto</th>
+                                </tr>
+                                <tr v-for="(p_s, index_p_s) in productos_seleccionados" :key="index_p_s">
+                                    <td v-if="p_s.tipo=='p'">{{ p_s . producto . prod_nombre }}</td>
+                                    <td v-else>{{ p_s . servicio . servicios_nombre }}</td>
+                                    <td  >{{ p_s.Cantidad}}</td>
+                                    <td> {{ p_s . MtoValorVenta }} </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="el-dialog__wrapper" style="display: none;">
-            <div role="dialog" aria-modal="true" aria-label="dialog" class="el-dialog"
-                style="margin-top: 15vh; width: 30%;">
-                <div class="el-dialog__header"><span class="el-dialog__title"></span><!----></div><!---->
-                <div class="el-dialog__footer"><span class="dialog-footer"><button type="button"
-                            class="el-button el-button--default el-button--small"><!----><!----><span>Cerrar</span></button></span>
-                </div>
-            </div>
-        </div>
-        <div class="el-dialog__wrapper" style="display: none;">
-            <div role="dialog" aria-modal="true" aria-label="dialog" class="el-dialog"
-                style="margin-top: 7vh; width: 25%;">
-                <div class="el-dialog__header"><span class="el-dialog__title"></span><button type="button"
-                        aria-label="Close" class="el-dialog__headerbtn"><i
-                            class="el-dialog__close el-icon el-icon-close"></i></button></div><!----><!---->
-            </div>
-        </div>
+            </CModalBody>
+        </CModal>
+
+
     </div>
 
 
@@ -421,39 +308,43 @@
 
 
 <script>
-    import Vue from 'vue';
     import Swal from "sweetalert2";
     import axios from "axios";
     import $ from "jquery";
     import "jquery-validation";
     import "jquery-validation/dist/localization/messages_es"
     import "select2";
-    import "imask";
-    import "bootstrap"
-    import 'gasparesganga-jquery-loading-overlay';
 
+    import * as XLSX from 'xlsx';
+
+    import "bootstrap"
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
-
-    import 'datatables.net-buttons-bs5';
-    import 'datatables.net-fixedcolumns-bs5';
-    import 'datatables.net-responsive-bs5';
-    import 'datatables.net-searchbuilder-bs5';
-    import 'datatables.net-searchpanes-bs5';
-    import 'datatables.net-select-bs5';
-    import 'datatables.net-staterestore-bs5';
-
-    import "@uppy/core/dist/style.css";
-    import "@uppy/dashboard/dist/style.css";
-    import "@uppy/image-editor/dist/style.css";
+    import DataTable from 'primevue/datatable';
+    import Column from 'primevue/column';
+    import Paginator from 'primevue/paginator'
+    import ColumnGroup from 'primevue/columngroup'; // optional
+    import Row from 'primevue/row'; // optional
 
     import moment from 'moment';
     import 'moment-timezone';
-
+    import {
+        saveAs
+    } from 'file-saver';
     import Chart from 'primevue/chart';
 
     import TabView from 'primevue/tabview';
     import TabPanel from 'primevue/tabpanel';
+
+    import {
+        CModal,
+        CForm,
+        CFormInput,
+        CInputGroup,
+        CFormSelect,
+        CFormCheck,
+        CButton
+    } from '@coreui/vue';
 
     import {
         myMixin
@@ -465,11 +356,22 @@
             TabView,
             TabPanel,
             VueDatePicker,
+            CModal,
+            CForm,
+            CFormInput,
+            CInputGroup,
+            CFormSelect,
+            CFormCheck,
+            CButton,
         },
         mixins: [myMixin],
         data() {
             return {
+                correo: "",
+                is_enviar_comprobante_modal: false,
                 datos: [],
+                productos_seleccionados: [],
+                is_producto: false,
                 por_mes: false,
                 entres_meses: false,
                 por_fecha: false,
@@ -486,9 +388,11 @@
                 fecha_por_mes: null,
                 fecha_por_date: null,
                 datatable: [],
-                total:0,
+                total: 0,
                 comprobante: "S",
-                cli_id: 0
+
+                cli_id: 0,
+                is_load: true
             }
         },
         computed: {
@@ -504,17 +408,18 @@
                     fecha_por_date: this.fecha_por_date,
                     start_mounth: this.start_mounth,
                     end_mounth: this.end_mounth,
-                    fecha_por_mes: this.fecha_por_mes, 
-                    cli_id:this.cli_id,
-                    comprobante:this.comprobante,
+                    fecha_por_mes: this.fecha_por_mes,
+                    cli_id: this.cli_id,
+                    comprobante: this.comprobante,
                     por_mes: this.por_mes,
                     entres_meses: this.entres_meses,
                     por_fecha: this.por_fecha,
-                    entre_fechas: this.entre_fechas
+                    entre_fechas: this.entre_fechas,
+                    is_load: this.is_load
                 };
 
                 axios
-                    .post("/load_data_documento", data, {
+                    .post("/load_data_documento_cliente", data, {
                         headers,
                     })
                     .then((response) => {
@@ -523,9 +428,11 @@
 
                             this.datatable = response.data.data.datatable
                             this.total = response.data.data.total
+
+                            console.log(response.data.data);
+                            //this.load_datatable()
                             /* -- *********************** -- */
 
-                            this.loaded = true
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -549,6 +456,164 @@
 
         },
         methods: {
+
+            /* -- ******** descargar reportes ************* -- */
+            enviar_comprobante_modal() {
+                this.is_enviar_comprobante_modal = true;
+            },
+            send_correo() {
+                this.showLoadingSpinner();
+                const table = document.getElementById('data');
+                const workbook = XLSX.utils.table_to_book(table);
+                const excelBuffer = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array'
+                });
+                const blob = new Blob([excelBuffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const fileName = 'archivo.xlsx';
+
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // Para Internet Explorer
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // Para otros navegadores
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+             
+                }
+                // Crear un formulario y agregar el archivo al formulario
+                const formData = new FormData();
+                formData.append('archivo', blob, fileName);
+                formData.append('correo', this.correo);
+
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                const data = formData
+
+                axios
+                    .post("/send_correo_documento", data, {
+                        headers,
+                    })
+                    .then((response) => {
+                        console.log(response.data);
+                        if (response.data.success) {
+                            this.hideLoadingSpinner();
+                            this.alert_success("se envio el correo " + this.correo + " exitosamente");
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.message,
+                                footer: "-------",
+                            });
+                            this.hideLoadingSpinner();
+                            console.error(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        this.hideLoadingSpinner();
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
+            enviar_pdf() {
+                const headers = {
+                    "Content-Type": "application/json",
+                    'Accept': 'application/pdf'
+                };
+
+                const data = {
+                    datatable: this.datatable,
+                    total: this.total,
+                };
+
+                axios
+                    .post("/descarga_pdf_reporte_documento", data, {
+
+                        responseType: 'blob',
+                        headers,
+                    })
+                    .then((response) => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'reporte_documento.pdf');
+                        document.body.appendChild(link);
+                        link.click();
+
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error 500",
+                            text: "Error en el servidor, vuelva a intentar",
+                            footer: "-------",
+                        });
+                        console.error(error);
+                    });
+            },
+            enviar_excel() {
+                const table = document.getElementById('data');
+                const workbook = XLSX.utils.table_to_book(table);
+                const excelBuffer = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array'
+                });
+                const blob = new Blob([excelBuffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const fileName = 'archivo.xlsx';
+
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // Para Internet Explorer
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // Para otros navegadores
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                }
+
+            },
+            /* -- *********************** -- */
+            async view_productos(index) {
+                console.log(this.is_producto);
+                this.productos_seleccionados = this.datatable[index].detalle;
+                this.is_producto = true;
+            },
+            async load_datatable() {
+
+                $("#data").DataTable({
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    },
+                    "info": true,
+                    processing: true,
+                    fixedColumns: true,
+                    keys: true,
+                    colReorder: true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "ordering": true,
+                    paging: true, // Activa la paginación
+                    lengthMenu: [5, 10, 25, 50],
+                });
+            },
             /* -- ******** entre meses ************* -- */
             start_mounth_change(modelData) {
 
@@ -608,14 +673,17 @@
             //eventos
             por_mes_change(modelData) {
                 console.log(modelData);
+                this.is_load = false;
             },
             por_mes_click() {},
             por_fecha_click() {},
             fecha_por_date_change(modelData) {
                 console.log(modelData);
+
             },
             buscar_data() {
 
+                this.load_data;
             },
             change_select(event) {
                 this.cli_id = event.target.value
@@ -635,8 +703,10 @@
             });
 
             this.por_mes = true;
+            this.fecha_por_mes = moment().tz('America/Lima').format('YYYY-MM');
 
-            this.fecha_por_mes = moment().tz('America/Lima').format('YYYY-MM-DD');
+
+            this.load_data
 
             $(this.$refs.cliente_select).select2({
                 language: this.languajeSelect,

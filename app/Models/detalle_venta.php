@@ -24,6 +24,6 @@ class detalle_venta extends Model
     }
 
     public function venta( ){
-        return $this->hasOne(ventas::class,"venta_id");
+        return $this->belongsTo(ventas::class,"venta_id");
     }
 }

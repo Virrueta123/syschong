@@ -179,6 +179,7 @@ class compras_controller extends Controller
         try {
             $caja_chica = caja_chica::where("user_id", auth()->user()->id)->where("is_abierto","Y")->first()->caja_chica_id;
             $Datax = $request->all();
+             
             $compra = new compras();
             $compra->compra_correlativo = $Datax['correlativo'];
             $compra->compra_serie = $Datax['serie'];
@@ -206,6 +207,7 @@ class compras_controller extends Controller
                         $lote++;
                     }
 
+                   
                     $detalle_compra = new detalle_compra(); 
                     $detalle_compra->compra_id = $compra->compra_id;
                     $detalle_compra->lote = $lote;
@@ -216,6 +218,7 @@ class compras_controller extends Controller
                     $detalle_compra->precio_venta = $detalle['is_precio_venta'] ? $detalle['precio_venta'] : 0;
                     $detalle_compra->is_precio_venta = $detalle['is_precio_venta'] ? 'Y' : 'N';
                     $detalle_compra->zona_id = $detalle['zona_id'];
+                    $detalle_compra->Importe = $detalle['Importe'];
 
                     $detalle_compra->save();
                     

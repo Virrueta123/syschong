@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExcelDocumento;
 use App\Models\compras;
+use App\Models\detalle_compra;
 use App\Models\detalle_venta;
 use App\Models\gastos;
 use App\Models\pagos_ventas;
@@ -20,7 +21,10 @@ use Yajra\DataTables\Facades\DataTables;
 
 class reporte_controller extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     //descargar pdf
 
     public function descarga_pdf_reporte_documento(Request $request)
@@ -1084,4 +1088,942 @@ class reporte_controller extends Controller
             'datatable' => $datatable,
         ];
     }
+
+
+    //reporte documento por cliente
+
+    public function load_data_documento_cliente(Request $req)
+    {
+        try {
+            $datax = $req->all();
+            $datos = [];
+
+            if ($datax['por_mes']) {
+                $datos = $this->por_mes_documento_cliente($datax['fecha_por_mes'], $datax['comprobante'], $datax['cli_id'], $datax['is_load']);
+            }
+            if ($datax['entres_meses']) {
+                $datos = $this->entres_meses_documento_cliente($datax['start_mounth'], $datax['end_mounth'], $datax['comprobante'], $datax['cli_id']);
+            }
+            if ($datax['por_fecha']) {
+               
+                $datos = $this->por_fecha_documento_cliente($datax['fecha_por_date'], $datax['comprobante'], $datax['cli_id']);
+            }
+            if ($datax['entre_fechas']) {
+                $datos = $this->entre_fechas_documento_cliente($datax['start_date'], $datax['end_date'],$datax['comprobante'], $datax['cli_id']);
+            }
+
+            return response()->json([
+                'message' => 'datos cargados',
+                'error' => '',
+                'success' => true,
+                'data' => $datos,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al buscar los datos',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    private function por_mes_documento_cliente($fecha, $comprobante, $cliente, $is_load)
+    {
+        if ($is_load) {
+            $fecha_load = Carbon::parse($fecha);
+            $year = $fecha_load->format('Y');
+            $month = $fecha_load->format('m');
+        } else {
+            $year = $fecha['year'];
+            $month = $fecha['month'] + 1;
+        }
+ 
+           
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $cliente)
+                    ->whereYear('fecha_creacion', $year)
+                    ->whereMonth('fecha_creacion', $month)
+                    ->get();
+
+                $total = ventas::where('cli_id', $cliente)
+                    ->whereYear('fecha_creacion', $year)
+                    ->whereMonth('fecha_creacion', $month)
+                    ->sum('SubTotal');
+           
+       
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+    }
+    private function entres_meses_documento_cliente($start, $end,$comprobante,$cliente)
+    {
+        $fecha = $end['year'] . '-' . $this->aumentarCeroAIzquierda($end['month'] + 1) . '-01';
+        $carbon = Carbon::parse($fecha);
+
+        $startDate = $start['year'] . '-' . $this->aumentarCeroAIzquierda($start['month'] + 1) . '-01';
+        $endDate = $carbon->endOfMonth();
+
+
+      
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $cliente)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->get();
+
+                $total = ventas::where('cli_id', $cliente)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate]) 
+                    ->sum('SubTotal');
+           
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+
+ 
+    }
+    private function por_fecha_documento_cliente($fecha,$comprobante,$cliente)
+    {
+        $fecha = Carbon::parse($fecha)->subDays(1)->format('Y-m-d');
+ 
+  
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $cliente)
+                    ->where('fecha_creacion', $fecha)
+                    ->get();
+                 
+                $total = ventas::where('cli_id', $cliente)
+                    ->where('fecha_creacion', $fecha)
+                    ->sum('SubTotal');
+       
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+
+    }
+    private function entre_fechas_documento_cliente($startDate, $endDate,$comprobante,$cliente)
+    {
+        $startDate = Carbon::parse($startDate)->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $startDate_carbon = Carbon::parse($startDate);
+        $endDate_carbon = Carbon::parse($endDate);
+ 
+
+       
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $cliente)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->get();
+                 
+                $total = ventas::where('cli_id', $cliente)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->sum('SubTotal');
+            
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+    }
+
+
+    //reporte documento por producto individual
+
+    public function load_data_documento_producto_individual(Request $req)
+    {
+        try {
+            $datax = $req->all();
+            $datos = [];
+
+            if ($datax['por_mes']) {
+                $datos = $this->por_mes_documento_producto_individual($datax['fecha_por_mes'], $datax['comprobante'], $datax['pro_id'], $datax['is_load']);
+            }
+            if ($datax['entres_meses']) {
+                $datos = $this->entres_meses_documento_producto_individual($datax['start_mounth'], $datax['end_mounth'], $datax['comprobante'], $datax['pro_id']);
+            }
+            if ($datax['por_fecha']) {
+               
+                $datos = $this->por_fecha_documento_producto_individual($datax['fecha_por_date'], $datax['comprobante'], $datax['pro_id']);
+            }
+            if ($datax['entre_fechas']) {
+                $datos = $this->entre_fechas_documento_producto_individual($datax['start_date'], $datax['end_date'],$datax['comprobante'], $datax['pro_id']);
+            }
+
+            return response()->json([
+                'message' => 'datos cargados',
+                'error' => '',
+                'success' => true,
+                'data' => $datos,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al buscar los datos',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    private function por_mes_documento_producto_individual($fecha, $comprobante, $pro_id, $is_load)
+    {
+        if ($is_load) {
+            $fecha_load = Carbon::parse($fecha);
+            $year = $fecha_load->format('Y');
+            $month = $fecha_load->format('m');
+        } else {
+            $year = $fecha['year'];
+            $month = $fecha['month'] + 1;
+        }
+ 
+           
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) use ($pro_id) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) use ($pro_id){
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ]) 
+                    ->whereYear('fecha_creacion', $year)
+                    ->whereMonth('fecha_creacion', $month)
+                    ->whereHas('detalle', function ($query) use ($pro_id) {
+                        $query->where("prod_id", $pro_id);
+                    })
+                    ->get();
+
+                $total = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) use ($pro_id) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) use ($pro_id){
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])->whereYear('fecha_creacion', $year)
+                    ->whereMonth('fecha_creacion', $month)
+                    ->whereHas('detalle', function ($query) use ($pro_id) {
+                        $query->where("prod_id", $pro_id);
+                    })
+                    ->sum('SubTotal');
+           
+       
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+    }
+    private function entres_meses_documento_producto_individual($start, $end,$comprobante,$pro_id)
+    {
+        $fecha = $end['year'] . '-' . $this->aumentarCeroAIzquierda($end['month'] + 1) . '-01';
+        $carbon = Carbon::parse($fecha);
+
+        $startDate = $start['year'] . '-' . $this->aumentarCeroAIzquierda($start['month'] + 1) . '-01';
+        $endDate = $carbon->endOfMonth();
+
+
+      
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $pro_id)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->whereHas('detalle', function ($query) use ($pro_id) {
+                        $query->where("prod_id", $pro_id);
+                    })
+                    ->get();
+
+                $total = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) use ($pro_id) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) use ($pro_id){
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])->where('cli_id', $pro_id)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate]) 
+                    ->sum('SubTotal');
+           
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+
+ 
+    }
+    private function por_fecha_documento_producto_individual($fecha,$comprobante,$pro_id)
+    {
+        $fecha = Carbon::parse($fecha)->subDays(1)->format('Y-m-d');
+ 
+  
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $pro_id)
+                    ->where('fecha_creacion', $fecha)
+                    ->whereHas('detalle', function ($query) use ($pro_id) {
+                        $query->where("prod_id", $pro_id);
+                    })
+                    ->get();
+                 
+                $total = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) use ($pro_id) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) use ($pro_id){
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])->where('cli_id', $pro_id)
+                    ->where('fecha_creacion', $fecha)
+                    ->sum('SubTotal');
+       
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+
+    }
+    private function entre_fechas_documento_producto_individual($startDate, $endDate,$comprobante,$pro_id)
+    {
+        $startDate = Carbon::parse($startDate)->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $startDate_carbon = Carbon::parse($startDate);
+        $endDate_carbon = Carbon::parse($endDate);
+ 
+
+       
+                $datatable = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) {
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])
+                    ->where('cli_id', $pro_id)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->whereHas('detalle', function ($query) use ($pro_id) {
+                        $query->where("prod_id", $pro_id);
+                    })
+                    ->get();
+                 
+                $total = ventas::with([
+                    'vendedor',
+                    'pagos' => function ($query) {
+                        $query->with(['forma_pago']);
+                    },
+                    'detalle' => function ($query) use ($pro_id) {
+                        $query->with([
+                            'servicio',
+                            'producto' => function ($query) use ($pro_id){
+                                $query->with(['unidad']);
+                            },
+                        ]);
+                    },
+                ])->where('cli_id', $pro_id)
+                    ->whereBetween('fecha_creacion', [$startDate, $endDate])
+                    ->sum('SubTotal');
+            
+
+        return [
+            'total' => $total,
+            'datatable' => $datatable,
+        ];
+    }
+
+
+    //reporte documento por producto general
+
+    public function load_data_documento_producto_general(Request $req)
+    {
+        try {
+            $datax = $req->all();
+            $datos = [];
+
+            if ($datax['por_mes']) {
+                $datos = $this->por_mes_documento_producto_general($datax['fecha_por_mes'], $datax['comprobante'], $datax['pro_id'],$datax['cli_id'],$datax['tipo_venta'],$datax['marca_id'],$datax['categoria_producto_id'], $datax['is_load']);
+            }
+            if ($datax['entres_meses']) {
+                $datos = $this->entres_meses_documento_producto_general($datax['start_mounth'], $datax['end_mounth'], $datax['comprobante'], $datax['pro_id'],$datax['cli_id'],$datax['tipo_venta'],$datax['marca_id'],$datax['categoria_producto_id']);
+            }
+            if ($datax['por_fecha']) {
+               
+                $datos = $this->por_fecha_documento_producto_general($datax['fecha_por_date'], $datax['comprobante'], $datax['pro_id'],$datax['cli_id'],$datax['tipo_venta'],$datax['marca_id'],$datax['categoria_producto_id']);
+            }
+            if ($datax['entre_fechas']) {
+                $datos = $this->entre_fechas_documento_producto_general($datax['start_date'], $datax['end_date'],$datax['comprobante'], $datax['pro_id'],$datax['cli_id'],$datax['tipo_venta'],$datax['marca_id'],$datax['categoria_producto_id']);
+            }
+
+            return response()->json([
+                'message' => 'datos cargados',
+                'error' => '',
+                'success' => true,
+                'data' => $datos,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => 'error al buscar los datos',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
+    }
+
+    private function por_mes_documento_producto_general($fecha, $comprobante, $pro_id,  $cli_id,$tipo_venta,$marca_id,$categoria_producto_id,$is_load)
+    {
+        if ($is_load) {
+            $fecha_load = Carbon::parse($fecha);
+            $year = $fecha_load->format('Y');
+            $month = $fecha_load->format('m');
+        } else {
+            $year = $fecha['year'];
+            $month = $fecha['month'] + 1;
+        }
+    
+        if($tipo_venta =="V"){
+ 
+            $datatable = detalle_venta::query()->with([
+                'venta' => function ($query) use ($year,$month) {
+                    $query->with(['vendedor'])->whereYear('fecha_creacion', $year)->whereMonth('fecha_creacion', $month);
+                },
+                'servicio',
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+ 
+
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            if ($cli_id  == 0) {
+                $datatable->whereHas('venta', function ($query) use ($cli_id,$year,$month) {
+                    $query->whereYear('fecha_creacion', $year)->whereMonth('fecha_creacion', $month);
+ 
+                });
+            }
+                
+            $datatable = $datatable;  
+
+            return [
+                'total' => $datatable->sum("MtoValorVenta"),
+                'datatable' =>$datatable->get(),
+            ];
+        }else{
+            $datatable = detalle_compra::query()->with([
+                'compra' => function ($query) use ($year, $month) {
+                    $query->with(['proveedor'])->whereYear('fecha_emision', $year)->whereMonth('fecha_emision', $month);
+                }, 
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+
+            
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('compra', function ($query) use ($cli_id,$year, $month) {
+                    $query->whereYear('fecha_emision', $year)->whereMonth('fecha_emision', $month); 
+                });
+            }
+            $datatable = $datatable; 
+            return [
+                'total' => $datatable->sum("Importe"),
+                'datatable' =>$datatable->get(),
+            ];
+        }
+        
+    }
+    private function entres_meses_documento_producto_general($start, $end,$comprobante,$pro_id,$cli_id,$tipo_venta,$marca_id,$categoria_producto_id)
+    {
+        $fecha = $end['year'] . '-' . $this->aumentarCeroAIzquierda($end['month'] + 1) . '-01';
+        $carbon = Carbon::parse($fecha);
+
+        $startDate = $start['year'] . '-' . $this->aumentarCeroAIzquierda($start['month'] + 1) . '-01';
+        $endDate = $carbon->endOfMonth();
+ 
+        if($tipo_venta =="V"){
+   
+            $datatable = detalle_venta::query()->with([
+                'venta' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['vendedor'])->whereBetween('fecha_creacion', [$startDate, $endDate]);
+                },
+                'servicio',
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+ 
+
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) {
+               
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('venta', function ($query) use ($cli_id,$startDate, $endDate) {
+                    $query->whereBetween('fecha_creacion', [$startDate, $endDate]);
+ 
+                });
+            }
+                
+            $datatable = $datatable; 
+
+            return [
+                'total' => $datatable->sum("MtoValorVenta"),
+                'datatable' =>$datatable->get(),
+            ];
+        }else{
+            $datatable = detalle_compra::query()->with([
+                'compra' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['proveedor'])->whereBetween('fecha_emision', [$startDate, $endDate]);
+                }, 
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+
+            
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('compra', function ($query) use ($cli_id,$startDate, $endDate) {
+                    $query->whereBetween('fecha_emision', [$startDate, $endDate]); 
+                });
+            }
+            $datatable = $datatable; 
+            return [
+                'total' => $datatable->sum("Importe"),
+                'datatable' =>$datatable->get(),
+            ];
+        }
+
+ 
+    }
+    private function por_fecha_documento_producto_general($fecha,$comprobante,$pro_id,$cli_id,$tipo_venta,$marca_id,$categoria_producto_id)
+    {
+        $fecha = Carbon::parse($fecha)->subDays(1)->format('Y-m-d');
+   
+        
+        if($tipo_venta =="V"){
+   
+            $datatable = detalle_venta::query()->with([
+                'venta' => function ($query) use ($fecha) {
+                    $query->with(['vendedor'])->where('fecha_creacion', $fecha);
+                },
+                'servicio',
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+ 
+
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) {
+               
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('venta', function ($query) use ($cli_id,$fecha) {
+                    $query->where('fecha_creacion', $fecha);
+ 
+                });
+            }
+                
+            $datatable = $datatable; 
+
+            return [
+                'total' => $datatable->sum("MtoValorVenta"),
+                'datatable' =>$datatable->get(),
+            ];
+        }else{
+            $datatable = detalle_compra::query()->with([
+                'compra' => function ($query) use ($fecha) {
+                    $query->with(['proveedor'])->where('fecha_emision', $fecha);
+                }, 
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+
+            
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('compra', function ($query) use ($cli_id,$fecha) {
+                    $query->where('fecha_emision', $fecha); 
+                });
+            }
+            $datatable = $datatable; 
+            return [
+                'total' => $datatable->sum("Importe"),
+                'datatable' =>$datatable->get(),
+            ];
+        }  
+
+    }
+    private function entre_fechas_documento_producto_general($startDate, $endDate,$comprobante,$pro_id,$cli_id,$tipo_venta,$marca_id,$categoria_producto_id)
+    {
+        $startDate = Carbon::parse($startDate)->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $startDate_carbon = Carbon::parse($startDate);
+        $endDate_carbon = Carbon::parse($endDate);
+    
+        if($tipo_venta =="V"){
+ 
+            $datatable = detalle_venta::query()->with([
+                'venta' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['vendedor'])->whereBetween('fecha_creacion', [$startDate, $endDate]);
+                },
+                'servicio',
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+ 
+
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('venta', function ($query) use ($cli_id,$startDate, $endDate) {
+                    $query->whereBetween('fecha_creacion', [$startDate, $endDate]); 
+                });
+            }
+                
+            $datatable = $datatable; 
+
+            return [
+                'total' => $datatable->sum("MtoValorVenta"),
+                'datatable' =>$datatable->get(),
+            ];
+        }else{
+            $datatable = detalle_compra::query()->with([
+                'compra' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['proveedor'])->whereBetween('fecha_emision', [$startDate, $endDate]);
+                }, 
+                'producto' => function ($query){
+                   $query->with(['unidad',"categoria","marca"]);
+                }, 
+            ])->whereNotIn('prod_id', [0]);
+
+            
+            if ($cli_id  != 0) {
+                // Solo aplicar el filtro si se proporciona un cliente específico 
+                $datatable->whereHas('venta', function ($query) use ($cli_id) {
+                    $query->where("cli_id", $cli_id); 
+                });
+            }
+            if ($pro_id  != 0) { 
+                $datatable->where('prod_id', $pro_id);
+            }
+            if ($marca_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($marca_id) {
+                    $query->where("marca_id", $marca_id); 
+                }); 
+            }
+
+            if ($categoria_producto_id  != 0) {
+                $datatable->whereHas('producto', function ($query) use ($categoria_producto_id) {
+                    $query->where("categoria_id", $categoria_producto_id); 
+                });  
+            }
+            if ($comprobante  != "S") {
+                $datatable->whereHas('venta', function ($query) use ($comprobante) {
+                    $query->where("tipo_comprobante", $comprobante); 
+                });   
+            }  
+            
+            if ($cli_id  == 0) {
+                $datatable->whereHas('compra', function ($query) use ($cli_id,$startDate, $endDate) {
+                    $query->whereBetween('fecha_emision', [$startDate, $endDate]); 
+                });
+            }
+            $datatable = $datatable; 
+            return [
+                'total' => $datatable->sum("precio_compra"),
+                'datatable' =>$datatable->get(),
+            ];
+        }
+
+       
+    }  
 }
