@@ -17,6 +17,14 @@ class pagos_ventas extends Model
     public function ventas(){
         return $this->belongsTo(ventas::class, 'ventas_id'); 
     }
+
+    public function gastos(){
+        return $this->belongsTo(gastos::class, 'gastos_id'); 
+    }
+
+    public function compra(){
+        return $this->belongsTo(compras::class, 'compra_id'); 
+    }
     public function forma_pago(){
         return $this->belongsTo(forma_pago::class, 'forma_pago_id');  
     }

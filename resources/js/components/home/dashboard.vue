@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3" style="display:none;">
+            <div class="col-md-3"  >
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">Utitlidad <br>neta</div> <span
@@ -224,7 +224,7 @@
                             </div>
                         </section>
                     </div>
-                    <div class="col-xl-3 col-md-3">
+                    <div class="col-xl-6 col-md-6">
                         <section class="card card-dashboard"><!---->
                             <div class="card-body" style="">
                                 <div class="widget-summary">
@@ -291,7 +291,7 @@
                             </div>
                         </section>
                     </div>
-                    <div class="col-xl-3 col-md-3">
+                    <div class="col-xl-6 col-md-6">
                         <section class="card card-dashboard"><!---->
                             <div class="card-body" style="">
                                 <div class="widget-summary">
@@ -301,25 +301,8 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="chart-container">
-                                                    <div class="chartjs-size-monitor"
-                                                        style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                                                        <div class="chartjs-size-monitor-expand"
-                                                            style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                                            <div
-                                                                style="position:absolute;width:1000000px;height:1000000px;left:0;top:0">
-                                                            </div>
-                                                        </div>
-                                                        <div class="chartjs-size-monitor-shrink"
-                                                            style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                                            <div
-                                                                style="position:absolute;width:200%;height:200%;left:0; top:0">
-                                                            </div>
-                                                        </div>
-                                                    </div><canvas width="190" height="260"
-                                                        style="display: block; width: 190px; height: 260px;"
-                                                        class="chartjs-render-monitor"></canvas>
-                                                </div>
+                                                <Chart v-if="loaded" type="pie" :data="chartGananciaUtilidad"
+                                                    :options="chartOptions" class="w-full md:w-30rem" />
                                             </div>
                                         </div>
                                     </div>
@@ -327,41 +310,27 @@
                             </div>
                             <div class="card-body p-0" style="">
                                 <table class="table mb-0 table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="2"><label class="el-checkbox"><span
-                                                        class="el-checkbox__input"><span
-                                                            class="el-checkbox__inner"></span><input type="checkbox"
-                                                            aria-hidden="false" class="el-checkbox__original"
-                                                            value=""></span><span
-                                                        class="el-checkbox__label">Considerar
-                                                        gastos<!----></span></label><br> <label
-                                                    class="el-checkbox"><span class="el-checkbox__input"><span
-                                                            class="el-checkbox__inner"></span><input type="checkbox"
-                                                            aria-hidden="false" class="el-checkbox__original"
-                                                            value=""></span><span
-                                                        class="el-checkbox__label">Filtrar por
-                                                        producto<!----></span></label></td>
-                                        </tr> <!---->
+                                    <tbody> 
                                         <tr class="text-info text-bold">
                                             <td>Ingreso</td>
-                                            <td class="text-right font-weight-bold">S/&nbsp;27.50</td>
+                                            <td class="text-right font-weight-bold">S/ {{ data.ingresos }}</td>
                                         </tr>
                                         <tr class="text-danger text-bold">
                                             <td>Egreso</td>
-                                            <td class="text-right font-weight-bold">S/&nbsp;0.00</td>
+                                            <td class="text-right font-weight-bold">S/  {{ data.egresos  }}</td>
                                         </tr>
                                         <tr class="text-bold">
                                             <td>Utilidad</td>
-                                            <td class="text-right font-weight-bold">S/&nbsp;27.50</td>
+                                            <td class="text-right font-weight-bold">S/ {{ data.utilidad_neta }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </section>
                     </div>
-                    <div class="col-xl-6 col-md-6">
-                        <section class="card card-dashboard"><!---->
+
+<!-- ********  <div class="col-xl-6 col-md-6">
+                        <section class="card card-dashboard"> 
                             <div class="card-body" style="">
                                 <div class="widget-summary">
                                     <div class="widget-summary-col">
@@ -418,7 +387,10 @@
                                 </table>
                             </div>
                         </section>
-                    </div>
+                    </div> -->
+                    
+
+
                     <div class="col-xl-6 col-md-6">
                         <section class="card card-dashboard"><!---->
                             <div class="card-body pb-0" style=""><label>Ventas por producto</label>
@@ -798,6 +770,16 @@
                                 .total_cobrado_comprobante, response.data.data.total_credito_comprobante
                             ];
                             /* -- *********************** -- */
+                            /* -- ******** reporte  Ganancia Utilidad************* -- */
+                            
+
+                            this.chartGananciaUtilidad.labels = ["Ingresos","Egresos"];
+                            this.chartGananciaUtilidad.datasets[0].label = ["valor", ""];
+                            this.chartGananciaUtilidad.datasets[0].data = [
+                                this.data.ingresos, 
+                                this.data.compras + this.data.gastos 
+                            ];
+                            /* -- *********************** -- */
 
                             this.loaded = true
                         } else {
@@ -830,6 +812,15 @@
                 }
             }, 
             chartBalance(){
+                return {
+                    labels: ['A', 'B', 'C'],
+                    datasets: [{
+                        label: ['A', 'B', 'C'],
+                        data: [10, 20, 30],
+                    }, ],
+                }
+            },
+            chartGananciaUtilidad(){
                 return {
                     labels: ['A', 'B', 'C'],
                     datasets: [{

@@ -190,10 +190,7 @@
                                         <button v-on:click="buscar_data()"
                                             v-if=" start_date && end_date && entre_fechas"
                                             class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
-                                            Buscar</button>
-
-
-
+                                            Buscar</button> 
 
                                         <button  v-if="tipo_venta=='C'" v-on:click="enviar_pdf()" 
                                             class="btn btn-icon icon-left btn-primary"><i class="fa fa-file-pdf"></i>
@@ -427,12 +424,9 @@
                     </div>
                 </div>
             </CModalBody>
-        </CModal>
+        </CModal> 
 
-
-    </div>
-
-
+    </div> 
 </template>
 
 
