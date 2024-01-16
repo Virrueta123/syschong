@@ -192,7 +192,7 @@
                                             class="btn btn-icon icon-left btn-primary"><i class="fa fa-search"></i>
                                             Buscar</button> 
 
-                                        <button  v-if="tipo_venta=='C'" v-on:click="enviar_pdf()" 
+                                        <button  v-if="tipo_venta=='V'" v-on:click="enviar_pdf()" 
                                             class="btn btn-icon icon-left btn-primary"><i class="fa fa-file-pdf"></i>
                                             Exportar
                                             PDF</button>
